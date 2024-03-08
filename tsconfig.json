@@ -12,7 +12,7 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     "noImplicitAny": false,
-    "module": "NodeNext",
+    "module": "nodenext",
   },
   "include": ["src", "test", "deprecated/server_old.js", "deprecated/database.js"],
   "exclude": ["dist", "bundle", "node_modules"]
