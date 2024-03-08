@@ -1,0 +1,9 @@
+{
+    "outputDirectory": "dist",
+    "rewrite": [
+        {
+            "source": "/(.*)",
+            "destination": "api/serverless.ts"
+        }
+    ]
+}
