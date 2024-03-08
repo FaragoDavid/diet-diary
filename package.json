@@ -3,8 +3,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "npx nodemon dist/index.js",
     "build": "tsc",
+    "start": "node api/serverless.js",
+    "start:dev": "npx nodemon dist/server.js",
+    "build:dev": "tsc --project tsconfig.dev.json",
     "css": "npx tailwindcss -i ./css/input.css -o ./public/output.css --watch"
   },
   "license": "UNLICENSED",

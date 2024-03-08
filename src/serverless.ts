@@ -1,5 +1,5 @@
 import { fastifyStatic } from '@fastify/static';
-import { fastify } from 'fastify';
+import Fastify, { FastifyReply, FastifyRequest } from 'fastify';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -8,7 +8,7 @@ import registerRoutes from './routes.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const app = fastify({ logger: true });
+const app = Fastify({ logger: true });
 
 app.register(fastifyStatic, {
   root: path.join(__dirname, '../public'),
@@ -17,9 +17,7 @@ app.register(fastifyStatic, {
 
 registerRoutes(app);
 
-app.listen({ port: 3000 }, (err) => {
-  if (err) {
-    app.log.error(err);
-    process.exit(1);
-  }
-});
+export default async function handler(req: FastifyRequest, reply: FastifyReply) {
+  await app.ready();
+  app.server.emit('request', req, reply);
+}
