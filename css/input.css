@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.htmx-indicator {
+  display: none;
+}
+
+.htmx-request .loading-spinner {
+  display: inline-block;
+}
+
+.htmx-request.loading-spinner {
+  display: inline-block;
+}
