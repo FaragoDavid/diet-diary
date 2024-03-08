@@ -1,14 +1,8 @@
-import { html } from 'lit';
-import { SsrLitElement } from '../lib/ssr-lit-element.js';
 import config from '../config.js';
 
-export class Recipes extends SsrLitElement {
-  constructor() {
-    super();
-  }
-
+export class Recipes implements BaseComponent {
   async render() {
-    return html`
+    return `
       <div class="container py-3 mx-auto">
         <div class="flex flex-col items-center gap-8">
           <div class="flex-none text-center">

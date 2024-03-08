@@ -1,11 +1,7 @@
-import { html } from 'lit-html';
-import { render } from '@lit-labs/ssr';
-import { SsrLitElement } from '../lib/ssr-lit-element.js';
-
 const pathForPublicAsset = (fileName: string) => `http://localhost:3000/public/${fileName}`;
 
-const layout = async (body: SsrLitElement) => {
-  return render(html`<!DOCTYPE html>
+const layout = async (body: BaseComponent) => {
+  return `<!DOCTYPE html>
     <html data-theme="emerald">
       <head>
         <meta charset="UTF-8" />
@@ -27,7 +23,7 @@ const layout = async (body: SsrLitElement) => {
       <body hx-boost="true">
           <div class="flex flex-col items-center justify-between min-h-screen p-12">${await body.render()}</div>
       </body>
-    </html>`);
+    </html>`;
 };
 
 export { layout };

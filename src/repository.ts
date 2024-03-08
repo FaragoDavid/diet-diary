@@ -19,6 +19,30 @@ export type Recipe = {
   ingredients: Dish[];
 };
 
+export type Ingredient = {
+  id: string;
+  name: string;
+  calories: number;
+  CH: number;
+  fat: number;
+};
+
+const ingredients: Ingredient[] = [
+  { id: '1', name: 'Banana', calories: 89, CH: 23, fat: 0.3 },
+  { id: '2', name: 'Oatmeal', calories: 68, CH: 12, fat: 1.4 },
+  { id: '3', name: 'Milk', calories: 42, CH: 5, fat: 2 },
+  { id: '4', name: 'Apple', calories: 52, CH: 14, fat: 0.2 },
+  { id: '5', name: 'Chicken', calories: 165, CH: 0, fat: 3.6 },
+  { id: '6', name: 'Rice', calories: 130, CH: 28, fat: 0.3 },
+  { id: '7', name: 'Broccoli', calories: 34, CH: 7, fat: 0.4 },
+  { id: '8', name: 'Yogurt', calories: 59, CH: 5, fat: 3.3 },
+  { id: '9', name: 'Salmon', calories: 206, CH: 0, fat: 13 },
+  { id: '10', name: 'Potato', calories: 77, CH: 17, fat: 0.1 },
+  { id: '11', name: 'Asparagus', calories: 20, CH: 3, fat: 0.2 },
+  { id: '12', name: 'Cottage cheese', calories: 98, CH: 3, fat: 4.3 },
+  { id: '13', name: 'kale', calories: 49, CH: 10, fat: 0.4 },
+];
+
 const meals: Meal[] = [
   {
     id: '1',
@@ -131,4 +155,7 @@ export default {
   fetchRecipes: async (): Promise<Recipe[]> => {
     return recipes;
   },
+  fetchIngredients: async (): Promise<Ingredient[]> => {
+    return ingredients;
+  }
 };
