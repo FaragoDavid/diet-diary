@@ -1,6 +1,6 @@
-import config from '../config.js';
-import { Meals } from './meals.js';
-import { Recipes } from './recipes.js';
+import config from '../config';
+import { Meals } from './meals';
+import { Recipes } from './recipes';
 
 export class Dashboard implements BaseComponent {
   async render() {

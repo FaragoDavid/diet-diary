@@ -1,7 +1,7 @@
-import { Dashboard } from './components/dashboard.js';
-import { layout } from './components/layout.js';
+import { Dashboard } from './components/dashboard';
+import { layout } from './components/layout';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import { Days } from './components/days.js';
+import { Days } from './components/days';
 
 type GetMealsRequest = FastifyRequest<{ Querystring: { fromDate: number; toDate: number } }>;
 

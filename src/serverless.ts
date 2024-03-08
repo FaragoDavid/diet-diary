@@ -1,6 +1,6 @@
 import Fastify, { FastifyReply, FastifyRequest } from 'fastify';
 
-import registerRoutes from './routes.js';
+import registerRoutes from './routes';
 
 const app = Fastify({ logger: true });
 

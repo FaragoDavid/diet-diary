@@ -1,4 +1,4 @@
-import config from '../config.js';
+import config from '../config';
 
 export class Meals implements BaseComponent {
   async render() {

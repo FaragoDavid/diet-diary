@@ -1,4 +1,4 @@
-import config from './config.js';
+import config from './config';
 
 export type Dish = {
   id: string;
@@ -157,5 +157,5 @@ export default {
   },
   fetchIngredients: async (): Promise<Ingredient[]> => {
     return ingredients;
-  }
+  },
 };
