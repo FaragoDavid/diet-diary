@@ -16,7 +16,7 @@ module.exports = {
   },
   externalsPresets: { node: true }, // in order to ignore built-in modules like path, fs, etc.
   output: {
-    filename: 'index.js',
+    filename: 'index.cjs',
     path: path.resolve(__dirname, 'api'),
   },
 };

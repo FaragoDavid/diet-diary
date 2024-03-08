@@ -3,7 +3,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "webpack --mode production --stats-error-details",
+    "build": "webpack --mode production",
     "build:dev": "tsc --project tsconfig.dev.json",
     "start:dev": "npx nodemon dist/server.js",
     "css": "npx tailwindcss -i ./css/input.css -o ./public/output.css --watch"
