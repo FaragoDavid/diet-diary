@@ -3,23 +3,23 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start:dev": "npx nodemon dist/server.js",
     "build:dev": "tsc --project tsconfig.dev.json",
+    "start:dev": "npx nodemon dist/server.js",
     "css": "npx tailwindcss -i ./css/input.css -o ./public/output.css --watch"
   },
   "license": "UNLICENSED",
   "dependencies": {
     "@fastify/formbody": "7.4.0",
     "@fastify/static": "7.0.1",
+    "date-fns": "3.3.1",
     "fastify": "4.26.2",
-    "uuid": "9.0.1",
-    "date-fns": "3.3.1"
+    "uuid": "9.0.1"
   },
   "devDependencies": {
-    "@types/node": "20.11.25",
     "@tsconfig/node20": "20.1.2",
-    "typescript": "5.4.2",
+    "@types/node": "20.11.25",
     "daisyui": "4.7.2",
-    "tailwindcss": "3.4.1"
+    "tailwindcss": "3.4.1",
+    "typescript": "5.4.2"
   }
 }

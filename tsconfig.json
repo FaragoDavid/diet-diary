@@ -15,5 +15,5 @@
     "module": "nodenext",
   },
   "include": ["src"],
-  "exclude": ["api", "dist", "node_modules", "src/server.ts"]
+  "exclude": ["dist", "node_modules", "src/server.ts"]
 }
