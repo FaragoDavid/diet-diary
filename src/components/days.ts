@@ -1,7 +1,7 @@
 import { eachDayOfInterval } from 'date-fns';
 
-import config from '../config';
-import repository, { Dish, Meal } from '../repository';
+import config from '../config.js';
+import repository, { Dish, Meal } from '../repository.js';
 
 const renderDish = (dish: Dish, index: number, mealType: string) => `
   <div class="flex w-full">

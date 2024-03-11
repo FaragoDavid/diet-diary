@@ -3,8 +3,6 @@
   "compilerOptions": {
     "outDir": "dist",
     "baseUrl": ".",
-    "target": "ESNext",
-    "module": "NodeNext",
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
     "noFallthroughCasesInSwitch": true,
@@ -14,7 +12,8 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     "noImplicitAny": false,
+    "module": "NodeNext",
   },
-  "include": ["src"],
-  "exclude": ["dist", "node_modules", "src/server.ts"]
+  "include": ["src", "test"],
+  "exclude": ["dist", "bundle", "node_modules"]
 }
