@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 import registerRoutes from './routes.js';
+import config from './config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,7 +21,7 @@ app.register(fastifyStatic, {
 
 registerRoutes(app);
 
-app.listen({ port: 3000 }, (err) => {
+app.listen({ port: config.port }, (err) => {
   if (err) {
     app.log.error(err);
     process.exit(1);
