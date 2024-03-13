@@ -21,7 +21,7 @@ const layout = async (body: BaseComponent) => {
       </head>
 
       <body hx-boost="true">
-          <div class="flex flex-col items-center justify-between min-h-screen p-12">${await body.render()}</div>
+          <div class="flex flex-col items-center">${await body.render()}</div>
       </body>
     </html>`;
 };

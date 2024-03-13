@@ -5,9 +5,6 @@ import fastifyFormbody from '@fastify/formbody';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import * as dotenv from 'dotenv';
-dotenv.config();
-
 import registerRoutes from './routes.js';
 import config from './config.js';
 

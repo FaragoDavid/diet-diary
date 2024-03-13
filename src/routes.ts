@@ -1,7 +1,7 @@
 import { Dashboard } from './components/dashboard.js';
 import { layout } from './components/layout.js';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import { Days } from './components/days.js';
+import { Days } from './components/overview/days.js';
 
 type GetMealsRequest = FastifyRequest<{ Querystring: { fromDate: number; toDate: number } }>;
 
@@ -15,7 +15,7 @@ const registerRoutes = (fastify: FastifyInstance) => {
     return reply.type('text/html').send(template);
   });
 
-  fastify.get('/meals', async (request: GetMealsRequest, reply: FastifyReply) => {
+  fastify.get('/days', async (request: GetMealsRequest, reply: FastifyReply) => {
     const fromDate = new Date(request.query.fromDate);
     const toDate = new Date(request.query.toDate);
 

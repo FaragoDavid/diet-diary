@@ -1,11 +1,20 @@
 export default {
   port: Number(process.env.PORT) || 3000,
-  host: process.env.HOST || '0.0.0.0',
+  host: process.env.HOST || 'localhost',
+  nutrients: {
+    ingredient: 'Alapanyag',
+    calories: 'Kalória',
+    CH: 'CH',
+  },
   texts: {
     titles: {
       page: 'Diéta Napló',
+      ingredients: 'Alapanyagok',
       meals: 'Étkezések',
       recipes: 'Receptek',
+    },
+    buttons: {
+      add: 'Hozzáadás',
     },
   },
   mealTypes: {
