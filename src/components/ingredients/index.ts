@@ -1,7 +1,7 @@
 import config from '../../config.js';
 
 const ingredientValueInput = (placeholder: String, size: Number) => `
-  <input type="text" id="ingredient-name" class="input input-bordered  flex-none w-1/${size}" placeholder=${placeholder}>
+  <input type="text" id="ingredient-name" class="input input-bordered" placeholder=${placeholder}>
 `;
 
 const newIngredient = () => {
@@ -18,17 +18,11 @@ const newIngredient = () => {
 };
 
 export class Ingredients implements BaseComponent {
+  public title = config.texts.titles.ingredients;
+
   async render() {
     return `
-      <div tabindex="0" class="collapse collapse-arrow  bg-base-300">
-        <div class="collapse-title text-center text-2xl font-medium">
-          ${config.texts.titles.ingredients}
-        </div>
-
-        <div class="collapse-content">
-          ${newIngredient()}
-        </div>
-      </div>
+      ${newIngredient()}
     `;
   }
 }

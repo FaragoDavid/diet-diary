@@ -16,27 +16,21 @@ const dateInput = (id: string, defaultValue: Date) => `
 `;
 
 export class Overview implements BaseComponent {
+  public title = config.texts.titles.overview;
+
   async render() {
     const fromDate = subDays(new Date(), 7);
     const toDate = new Date();
-    
+
     return `
-      <div tabindex="0" class="collapse collapse-open collapse-arrow  bg-base-300">
-        <div class="collapse-title text-center text-2xl font-medium">
-          ${config.texts.titles.overview}
-        </div>
+      <div class="flex items-center justify-center space-x-4">
+        ${dateInput('fromDate', fromDate)}
+        <span class="text-center">-</span>
+        ${dateInput('toDate', toDate)}
+      </div>
 
-        <div class="collapse-content  px-4 pe-12">
-          <div class="flex items-center justify-center space-x-4">
-            ${dateInput('fromDate', fromDate)}
-            <span class="text-center">-</span>
-            ${dateInput('toDate', toDate)}
-          </div>
-
-          <div id="days" class="flex flex-col gap-6 w-full">
-            ${await new Days(fromDate, toDate).render()}
-          </div>
-        </div>
+      <div id="days" class="flex flex-col gap-6 w-full">
+        ${await new Days(fromDate, toDate).render()}
       </div>
     `;
   }

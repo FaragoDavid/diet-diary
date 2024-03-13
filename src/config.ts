@@ -6,6 +6,9 @@ export default {
     calories: 'Kalória',
     CH: 'CH',
   },
+  tableHeaders: {
+    meals: ['', 'Név', 'Mennyiség', 'Kalória', 'CH'],
+  },
   texts: {
     titles: {
       page: 'Diéta Napló',

@@ -1896,6 +1896,363 @@ details.collapse summary::-webkit-details-marker {
   display: inline-block;
 }
 
+@media (min-width: 640px) {
+  .sm\:input-sm[type="number"]::-webkit-inner-spin-button {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-inline-end: -0px;
+  }
+
+  .sm\:collapse-arrow > .collapse-title:after {
+    position: absolute;
+    display: block;
+    height: 0.5rem;
+    width: 0.5rem;
+    --tw-translate-y: -100%;
+    --tw-rotate: 45deg;
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    transition-duration: 150ms;
+    transition-duration: 0.2s;
+    top: 1.9rem;
+    inset-inline-end: 1.4rem;
+    content: "";
+    transform-origin: 75% 75%;
+    box-shadow: 2px 2px;
+    pointer-events: none;
+  }
+
+  .sm\:collapse-arrow.collapse[open] > .collapse-title:after,.sm\:collapse-arrow
+.collapse-open > .collapse-title:after,.sm\:collapse-arrow:focus:not(.collapse-close) > .collapse-title:after,.sm\:collapse-arrow:not(.collapse-close) > input[type="checkbox"]:checked ~ .collapse-title:after,.sm\:collapse-arrow:not(.collapse-close) > input[type="radio"]:checked ~ .collapse-title:after {
+    --tw-translate-y: -50%;
+    --tw-rotate: 225deg;
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  }
+
+  .sm\:input-sm {
+    height: 2rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 2rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .md\:input {
+    flex-shrink: 1;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    height: 3rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-size: 1rem;
+    line-height: 2;
+    line-height: 1.5rem;
+    border-radius: var(--rounded-btn, 0.5rem);
+    border-width: 1px;
+    border-color: transparent;
+    --tw-bg-opacity: 1;
+    background-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-bg-opacity)));
+  }
+
+  .md\:input[type="number"]::-webkit-inner-spin-button {
+    margin-top: -1rem;
+    margin-bottom: -1rem;
+    margin-inline-end: -1rem;
+  }
+
+  .md\:input input {
+    --tw-bg-opacity: 1;
+    background-color: var(--fallback-p,oklch(var(--p)/var(--tw-bg-opacity)));
+    background-color: transparent;
+  }
+
+  .md\:input input:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+
+  .md\:input[list]::-webkit-calendar-picker-indicator {
+    line-height: 1em;
+  }
+
+  .md\:input:focus,.md\:input:focus-within {
+    box-shadow: none;
+    border-color: var(--fallback-bc,oklch(var(--bc)/0.2));
+    outline-style: solid;
+    outline-width: 2px;
+    outline-offset: 2px;
+    outline-color: var(--fallback-bc,oklch(var(--bc)/0.2));
+  }
+
+  .md\:input:disabled,.md\:input[disabled] {
+    cursor: not-allowed;
+    --tw-border-opacity: 1;
+    border-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity)));
+    --tw-bg-opacity: 1;
+    background-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-bg-opacity)));
+    color: var(--fallback-bc,oklch(var(--bc)/0.4));
+  }
+
+  .md\:input:disabled::-moz-placeholder, .md\:input[disabled]::-moz-placeholder {
+    color: var(--fallback-bc,oklch(var(--bc)/var(--tw-placeholder-opacity)));
+    --tw-placeholder-opacity: 0.2;
+  }
+
+  .md\:input:disabled::placeholder,.md\:input[disabled]::placeholder {
+    color: var(--fallback-bc,oklch(var(--bc)/var(--tw-placeholder-opacity)));
+    --tw-placeholder-opacity: 0.2;
+  }
+
+  .md\:input::-webkit-date-and-time-value {
+    text-align: inherit;
+  }
+
+  .mockup-browser .mockup-browser-toolbar .md\:input {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    height: 1.75rem;
+    width: 24rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    --tw-bg-opacity: 1;
+    background-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-bg-opacity)));
+    padding-left: 2rem;
+    direction: ltr;
+  }
+
+  .mockup-browser .mockup-browser-toolbar .md\:input:before {
+    content: "";
+    position: absolute;
+    left: 0.5rem;
+    top: 50%;
+    aspect-ratio: 1 / 1;
+    height: 0.75rem;
+    --tw-translate-y: -50%;
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+    border-radius: 9999px;
+    border-width: 2px;
+    border-color: currentColor;
+    opacity: 0.6;
+  }
+
+  .mockup-browser .mockup-browser-toolbar .md\:input:after {
+    content: "";
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    height: 0.5rem;
+    --tw-translate-y: 25%;
+    --tw-rotate: -45deg;
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+    border-radius: 9999px;
+    border-width: 1px;
+    border-color: currentColor;
+    opacity: 0.6;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lg\:input {
+    flex-shrink: 1;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    height: 3rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-size: 1rem;
+    line-height: 2;
+    line-height: 1.5rem;
+    border-radius: var(--rounded-btn, 0.5rem);
+    border-width: 1px;
+    border-color: transparent;
+    --tw-bg-opacity: 1;
+    background-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-bg-opacity)));
+  }
+
+  .lg\:input[type="number"]::-webkit-inner-spin-button {
+    margin-top: -1rem;
+    margin-bottom: -1rem;
+    margin-inline-end: -1rem;
+  }
+
+  .lg\:collapse-arrow > .collapse-title:after {
+    position: absolute;
+    display: block;
+    height: 0.5rem;
+    width: 0.5rem;
+    --tw-translate-y: -100%;
+    --tw-rotate: 45deg;
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    transition-duration: 150ms;
+    transition-duration: 0.2s;
+    top: 1.9rem;
+    inset-inline-end: 1.4rem;
+    content: "";
+    transform-origin: 75% 75%;
+    box-shadow: 2px 2px;
+    pointer-events: none;
+  }
+
+  .lg\:collapse-arrow.collapse[open] > .collapse-title:after,.lg\:collapse-arrow
+.collapse-open > .collapse-title:after,.lg\:collapse-arrow:focus:not(.collapse-close) > .collapse-title:after,.lg\:collapse-arrow:not(.collapse-close) > input[type="checkbox"]:checked ~ .collapse-title:after,.lg\:collapse-arrow:not(.collapse-close) > input[type="radio"]:checked ~ .collapse-title:after {
+    --tw-translate-y: -50%;
+    --tw-rotate: 225deg;
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  }
+
+  .lg\:input input {
+    --tw-bg-opacity: 1;
+    background-color: var(--fallback-p,oklch(var(--p)/var(--tw-bg-opacity)));
+    background-color: transparent;
+  }
+
+  .lg\:input input:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+
+  .lg\:input[list]::-webkit-calendar-picker-indicator {
+    line-height: 1em;
+  }
+
+  .lg\:input:focus,.lg\:input:focus-within {
+    box-shadow: none;
+    border-color: var(--fallback-bc,oklch(var(--bc)/0.2));
+    outline-style: solid;
+    outline-width: 2px;
+    outline-offset: 2px;
+    outline-color: var(--fallback-bc,oklch(var(--bc)/0.2));
+  }
+
+  .lg\:input:disabled,.lg\:input[disabled] {
+    cursor: not-allowed;
+    --tw-border-opacity: 1;
+    border-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity)));
+    --tw-bg-opacity: 1;
+    background-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-bg-opacity)));
+    color: var(--fallback-bc,oklch(var(--bc)/0.4));
+  }
+
+  .lg\:input:disabled::-moz-placeholder, .lg\:input[disabled]::-moz-placeholder {
+    color: var(--fallback-bc,oklch(var(--bc)/var(--tw-placeholder-opacity)));
+    --tw-placeholder-opacity: 0.2;
+  }
+
+  .lg\:input:disabled::placeholder,.lg\:input[disabled]::placeholder {
+    color: var(--fallback-bc,oklch(var(--bc)/var(--tw-placeholder-opacity)));
+    --tw-placeholder-opacity: 0.2;
+  }
+
+  .lg\:input::-webkit-date-and-time-value {
+    text-align: inherit;
+  }
+
+  .mockup-browser .mockup-browser-toolbar .lg\:input {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    height: 1.75rem;
+    width: 24rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    --tw-bg-opacity: 1;
+    background-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-bg-opacity)));
+    padding-left: 2rem;
+    direction: ltr;
+  }
+
+  .mockup-browser .mockup-browser-toolbar .lg\:input:before {
+    content: "";
+    position: absolute;
+    left: 0.5rem;
+    top: 50%;
+    aspect-ratio: 1 / 1;
+    height: 0.75rem;
+    --tw-translate-y: -50%;
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+    border-radius: 9999px;
+    border-width: 2px;
+    border-color: currentColor;
+    opacity: 0.6;
+  }
+
+  .mockup-browser .mockup-browser-toolbar .lg\:input:after {
+    content: "";
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    height: 0.5rem;
+    --tw-translate-y: 25%;
+    --tw-rotate: -45deg;
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+    border-radius: 9999px;
+    border-width: 1px;
+    border-color: currentColor;
+    opacity: 0.6;
+  }
+}
+
+@media (min-width: 640px) {
+  .sm\:flex {
+    display: flex;
+  }
+
+  .sm\:w-full {
+    width: 100%;
+  }
+
+  .sm\:flex-col {
+    flex-direction: column;
+  }
+
+  .sm\:border-2 {
+    border-width: 2px;
+  }
+
+  .sm\:border-pink-500 {
+    --tw-border-opacity: 1;
+    border-color: rgb(236 72 153 / var(--tw-border-opacity));
+  }
+
+  .sm\:bg-pink-300 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(249 168 212 / var(--tw-bg-opacity));
+  }
+}
+
+@media (min-width: 768px) {
+  .md\:flex {
+    display: flex;
+  }
+
+  .md\:justify-center {
+    justify-content: center;
+  }
+
+  .md\:border-2 {
+    border-width: 2px;
+  }
+
+  .md\:border-pink-500 {
+    --tw-border-opacity: 1;
+    border-color: rgb(236 72 153 / var(--tw-border-opacity));
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   .dark\:bg-gray-700 {
     --tw-bg-opacity: 1;
