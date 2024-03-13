@@ -2,9 +2,9 @@ export default {
   port: Number(process.env.PORT) || 3000,
   host: process.env.HOST || 'localhost',
   nutrients: {
-    ingredient: 'Alapanyag',
-    calories: 'Kalória',
-    CH: 'CH',
+    ingredient: { placeholder: 'Alapanyag', type: 'text' },
+    calories: { placeholder: 'Kalória', type: 'number' },
+    ch: { placeholder: 'CH', type: 'number'}
   },
   tableHeaders: {
     meals: ['', 'Név', 'Mennyiség', 'Kalória', 'CH'],

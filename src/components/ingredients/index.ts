@@ -1,17 +1,19 @@
 import config from '../../config.js';
 
-const ingredientValueInput = (placeholder: String, size: Number) => `
-  <input type="text" id="ingredient-name" class="input input-bordered" placeholder=${placeholder}>
+const ingredientValueInput = (placeholder: String, type: string, width: string) => `
+  <input type="${type}" class="input input-bordered w-${width} placeholder:text-xs placeholder:sm:text-base" placeholder=${placeholder}>
 `;
 
 const newIngredient = () => {
+  const width = `1/${Object.values(config.nutrients).length}`;
   return `
-    <div class="flex justify-center space-x-4">
+    <div class="flex items-center justify-center space-x-4 space-y-0">
       ${Object.values(config.nutrients)
-        .map((placeholder, _, values) => ingredientValueInput(placeholder, values.length + 1))
+        .map(({ placeholder, type }) => ingredientValueInput(placeholder, type, width))
         .join('')}
-      <div class="flex-none w-1/${Object.values(config.nutrients).length + 1}">
-        <button class="btn btn-primary">${config.texts.buttons.add}</button>
+      <div class="flex-none">
+        <button class="btn btn-primary sm:hidden">+</button>
+        <button class="btn btn-primary hidden sm:block">${config.texts.buttons.add}</button>
       </div>
     </div>
   `;

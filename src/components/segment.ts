@@ -8,7 +8,7 @@ export class Segment implements BaseComponent {
                 ${this.component.title}
             </div>
 
-            <div class="collapse-content  px-4 pe-12">
+            <div class="collapse-content px-4">
                 ${await this.component.render()}
             </div>
         </div>
