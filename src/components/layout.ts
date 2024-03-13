@@ -1,6 +1,6 @@
 import config from '../config.js';
 
-const pathForPublicAsset = (fileName: string) => `https://${config.host}:${config.port}/public/${fileName}`;
+const pathForPublicAsset = (fileName: string) => `${config.publicAssetsPath}/public/${fileName}`;
 
 const layout = async (body: BaseComponent) => {
   return `<!DOCTYPE html>

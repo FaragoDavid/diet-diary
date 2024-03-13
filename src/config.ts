@@ -1,6 +1,7 @@
 export default {
   port: Number(process.env.PORT) || 3000,
   host: process.env.HOST || 'localhost',
+  publicAssetsPath: process.env.PUBLIC_ASSETS_PATH,
   nutrients: {
     ingredient: { placeholder: 'Alapanyag', type: 'text' },
     calories: { placeholder: 'Kalória', type: 'number' },
