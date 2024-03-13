@@ -955,6 +955,12 @@ html {
   margin-inline-end: -1rem;
 }
 
+.input-sm[type="number"]::-webkit-inner-spin-button {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-inline-end: -0px;
+}
+
 .join {
   display: inline-flex;
   align-items: stretch;
@@ -1633,6 +1639,14 @@ details.collapse summary::-webkit-details-marker {
   padding: 0px;
 }
 
+.input-sm {
+  height: 2rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 2rem;
+}
+
 .join.join-vertical {
   flex-direction: column;
 }
@@ -2081,6 +2095,14 @@ details.collapse summary::-webkit-details-marker {
 
 .pe-12 {
   padding-inline-end: 3rem;
+}
+
+.pe-0 {
+  padding-inline-end: 0px;
+}
+
+.pe-2 {
+  padding-inline-end: 0.5rem;
 }
 
 .text-center {

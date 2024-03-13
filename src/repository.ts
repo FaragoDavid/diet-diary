@@ -158,4 +158,8 @@ export default {
   fetchIngredients: async (query: string): Promise<Ingredient[]> => {
     return ingredients.filter((ingredient) => ingredient.name.toLowerCase().includes(query.toLowerCase()));
   },
+  addIngredient: async (name: string, calories: string, ch: string) => {
+    const id = String(Math.max(...ingredients.map((ingr) => Number(ingr.id))) + 1);
+    ingredients.push({ id, name, calories: parseInt(calories), CH: parseInt(ch), fat: 0 });
+  },
 };

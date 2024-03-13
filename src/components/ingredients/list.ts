@@ -4,7 +4,7 @@ import config from '../../config.js';
 const header = () => `
   <thead>
     <tr>
-      ${config.ingredients.props.map(({ name }) => `<th>${name}</th>`).join('')}
+      ${Object.values(config.ingredients.props).map(({ name }) => `<th>${name}</th>`).join('')}
     </tr>
   </thead>
 `;

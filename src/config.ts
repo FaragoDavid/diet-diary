@@ -4,11 +4,11 @@ export default {
   publicAssetsPath: process.env.PUBLIC_ASSETS_PATH || 'http://localhost:3000',
   ingredients: {
     title: 'Alapanyagok',
-    props: [
-      { name: 'Név', type: 'text' },
-      { name: 'Kalória', type: 'number' },
-      { name: 'CH', type: 'number' },
-    ],
+    props: {
+      name: { name: 'Név', type: 'text' },
+      calories: { name: 'Kalória', type: 'number' },
+      ch: { name: 'CH', type: 'number' },
+    },
     search: 'Keresés',
     add: 'Hozzáadás',
   },

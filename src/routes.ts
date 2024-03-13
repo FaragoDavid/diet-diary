@@ -3,9 +3,10 @@ import { layout } from './components/layout.js';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { Days } from './components/overview/days.js';
 import { IngredientList } from './components/ingredients/list.js';
+import repository from './repository.js';
 
 type GetMealsRequest = FastifyRequest<{ Querystring: { fromDate: number; toDate: number } }>;
-// type GetIngredientsRequest = FastifyRequest<{ Body: { query: string } }>;
+type PostIngredientsRequest = FastifyRequest<{ Body: { name: string, calories: string, ch: string } }>;
 type GetIngredientsRequest = FastifyRequest<{ Querystring: { query: string } }>;
 
 const registerRoutes = (fastify: FastifyInstance) => {
@@ -31,6 +32,15 @@ const registerRoutes = (fastify: FastifyInstance) => {
     console.log({ query });
 
     const template = await new IngredientList(query).render();
+    return reply.type('text/html').send(template);
+  });
+
+  fastify.post('/ingredients', async (request: PostIngredientsRequest, reply: FastifyReply) => {
+    const { name, calories, ch } = request.body;
+
+    await repository.addIngredient(name, calories, ch);
+
+    const template = await new IngredientList(name).render();
     return reply.type('text/html').send(template);
   });
 };
