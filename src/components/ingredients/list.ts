@@ -4,7 +4,7 @@ import config from '../../config.js';
 const header = () => `
   <thead>
     <tr>
-      ${config.tableHeaders.ingredients.map((header) => `<th>${header}</th>`).join('')}
+      ${config.ingredients.props.map(({ name }) => `<th>${name}</th>`).join('')}
     </tr>
   </thead>
 `;
@@ -24,14 +24,14 @@ export class IngredientList implements BaseComponent {
     const ingredients = await repository.fetchIngredients(this.query);
 
     return `
-    <div class="overflow-x-auto">
-    <table class="table table-zebra table-pin-rows">
-      ${header()}
-      <tbody>
-        ${ingredients.map(ingredient).join('')}
-      </tbody>
-    </table>
-  </div>
+      <div id="ingredient-list" class="overflow-x-auto w-full">
+        <table class="table table-zebra table-pin-rows">
+          ${header()}
+          <tbody>
+            ${ingredients.map(ingredient).join('')}
+          </tbody>
+        </table>
+      </div>
     `;
   }
 }

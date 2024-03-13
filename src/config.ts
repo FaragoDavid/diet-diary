@@ -1,20 +1,23 @@
 export default {
   port: Number(process.env.PORT) || 3000,
   host: process.env.HOST || 'localhost',
-  publicAssetsPath: process.env.PUBLIC_ASSETS_PATH,
-  nutrients: {
-    ingredient: { placeholder: 'Alapanyag', type: 'text' },
-    calories: { placeholder: 'Kalória', type: 'number' },
-    ch: { placeholder: 'CH', type: 'number' },
+  publicAssetsPath: process.env.PUBLIC_ASSETS_PATH || 'http://localhost:3000',
+  ingredients: {
+    title: 'Alapanyagok',
+    props: [
+      { name: 'Név', type: 'text' },
+      { name: 'Kalória', type: 'number' },
+      { name: 'CH', type: 'number' },
+    ],
+    search: 'Keresés',
+    add: 'Hozzáadás',
   },
   tableHeaders: {
     meals: ['', 'Név', 'Mennyiség', 'Kalória', 'CH'],
-    ingredients: ['Név', 'Kalória', 'CH'],
   },
   texts: {
     titles: {
       page: 'Diéta Napló',
-      ingredients: 'Alapanyagok',
       overview: 'Étkezések',
       recipes: 'Receptek',
     },

@@ -5,7 +5,8 @@ import { Days } from './components/overview/days.js';
 import { IngredientList } from './components/ingredients/list.js';
 
 type GetMealsRequest = FastifyRequest<{ Querystring: { fromDate: number; toDate: number } }>;
-type GetIngredientsRequest = FastifyRequest<{ Body: { query: string } }>;
+// type GetIngredientsRequest = FastifyRequest<{ Body: { query: string } }>;
+type GetIngredientsRequest = FastifyRequest<{ Querystring: { query: string } }>;
 
 const registerRoutes = (fastify: FastifyInstance) => {
   fastify.get('/', function handler(request: FastifyRequest, reply: FastifyReply) {
@@ -25,8 +26,9 @@ const registerRoutes = (fastify: FastifyInstance) => {
     return reply.type('text/html').send(template);
   });
 
-  fastify.post('/ingredients', async (request: GetIngredientsRequest, reply: FastifyReply) => {
-    const query = request.body.query;
+  fastify.get('/ingredients', async (request: GetIngredientsRequest, reply: FastifyReply) => {
+    const query = request.query.query;
+    console.log({ query });
 
     const template = await new IngredientList(query).render();
     return reply.type('text/html').send(template);

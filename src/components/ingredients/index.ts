@@ -11,35 +11,38 @@ const ingredientValueInput = (placeholder: String, type: string, width: string) 
 `;
 
 const newIngredient = () => {
-  const width = `1/${Object.values(config.nutrients).length}`;
+  const width = `1/${Object.values(config.ingredients.props).length}`;
   return `
     <div class="flex items-center justify-center space-x-4 space-y-0">
-      ${Object.values(config.nutrients)
-        .map(({ placeholder, type }) => ingredientValueInput(placeholder, type, width))
+      ${Object.values(config.ingredients.props)
+        .map(({ name, type }) => ingredientValueInput(name, type, width))
         .join('')}
       <div class="flex-none">
         <button class="btn btn-primary sm:hidden">+</button>
-        <button class="btn btn-primary hidden sm:block">${config.texts.buttons.add}</button>
+        <button class="btn btn-primary hidden sm:block">${config.ingredients.add}</button>
       </div>
     </div>
   `;
 };
 
 const search = () => `
-  <form class="flex space-x-4">
-    <input type="text" name="query" class="input input-bordered placeholder:text-xs placeholder:sm:text-base w-full" placeholder="Keresés">
-    <button 
-      id=search
-      type="submit"
-      class="btn btn-primary" 
-      hx-target="#ingredients"
-      hx-post="/ingredients"
-    >${magnifyingGlass}</button>
-  </form>
+  <label class="input input-bordered flex items-center gap-2">
+    <input 
+      type="text" 
+      id=search-ingr
+      placeholder="${config.ingredients.search}"
+      hx-get="/ingredients"
+      hx-target="#ingredient-list"
+      hx-trigger="change"
+      hx-vals="js:{query: document.getElementById('search-ingr').value}"
+      hx-swap="outerHTML"
+    ></input>
+    ${magnifyingGlass}
+  </label>
 `;
 
 export class Ingredients implements BaseComponent {
-  public title = config.texts.titles.ingredients;
+  public title = config.ingredients.title;
 
   async render() {
     return `
@@ -47,7 +50,7 @@ export class Ingredients implements BaseComponent {
       ${newIngredient()}
       <div class="divider divider-base-200"></div>
       ${search()}
-      <div id="ingredients"></div>
+      <div id="ingredient-list"></div>
     </div>
     `;
   }
