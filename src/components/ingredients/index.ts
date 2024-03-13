@@ -20,12 +20,12 @@ const newIngredient = () => {
 export class Ingredients implements BaseComponent {
   async render() {
     return `
-      <div tabindex="0" class="collapse collapse-open collapse-arrow  border-2 border-base-200 bg-base-200">
+      <div tabindex="0" class="collapse collapse-arrow  bg-base-300">
         <div class="collapse-title text-center text-2xl font-medium">
           ${config.texts.titles.ingredients}
         </div>
 
-        <div class="collapse-content p-4">
+        <div class="collapse-content">
           ${newIngredient()}
         </div>
       </div>

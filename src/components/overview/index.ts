@@ -1,10 +1,13 @@
+import { format, subDays } from 'date-fns';
 import config from '../../config.js';
+import { Days } from './days.js';
 
-const renderDateInput = (id: string) => `
+const dateInput = (id: string, defaultValue: Date) => `
   <input
     id="${id}"
     type="date"
     class="border rounded px-2 py-1"
+    value="${format(defaultValue, 'yyyy-MM-dd')}"
     hx-get="/days"
     hx-target="#days"
     hx-trigger="change"
@@ -14,20 +17,25 @@ const renderDateInput = (id: string) => `
 
 export class Overview implements BaseComponent {
   async render() {
+    const fromDate = subDays(new Date(), 7);
+    const toDate = new Date();
+    
     return `
-      <div class="container bg-base-200 py-3 mx-auto">
-        <div class="flex flex-col items-center gap-8">
-          <div class="flex-none text-center">
-            <h2 class="text-2xl mb-2 font-bold">${config.texts.titles.meals}</h2>
+      <div tabindex="0" class="collapse collapse-open collapse-arrow  bg-base-300">
+        <div class="collapse-title text-center text-2xl font-medium">
+          ${config.texts.titles.overview}
+        </div>
+
+        <div class="collapse-content  px-4 pe-12">
+          <div class="flex items-center justify-center space-x-4">
+            ${dateInput('fromDate', fromDate)}
+            <span class="text-center">-</span>
+            ${dateInput('toDate', toDate)}
           </div>
 
-          <div class="flex">
-            ${renderDateInput('fromDate')}
-            <span class="mx-2">-</span>
-            ${renderDateInput('toDate')}
+          <div id="days" class="flex flex-col gap-6 w-full">
+            ${await new Days(fromDate, toDate).render()}
           </div>
-
-          <div id="days" class="flex flex-col gap-6 w-full"></div>
         </div>
       </div>
     `;

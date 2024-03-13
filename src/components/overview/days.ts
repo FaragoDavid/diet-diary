@@ -3,29 +3,29 @@ import { eachDayOfInterval } from 'date-fns';
 import config from '../../config.js';
 import repository, { Dish, Meal } from '../../repository.js';
 
-const renderDish = (dish: Dish, index: number, mealType: string) => `
-  <div class="flex w-full">
-    <div class="flex w-1/3">${index === 0 ? config.mealTypes[mealType].name : ''}</div>
-    <div class="flex w-1/3">${dish.name}</div>
-    <div class="flex w-1/3">${dish.amount}</div>
-  </div>
-`;
-
-const renderMeals = (meals: Meal[]) => `
-  <div class="flex flex-col gap-2 w-full">
-    <div class="flex gap-2 w-full">
-      <div class="flex w-1/3"></div>
-      <div class="flex w-1/3">Alapanyag</div>
-      <div class="flex w-1/3">Mennyiség</div>
-    </div>
-    ${meals
-      .map(
-        (meal, mealIndex) => `
-        ${meal.dishes.map((dish, dishIndex) => renderDish(dish, dishIndex, meal.type)).join('')}
-        ${mealIndex < meals.length - 1 ? '<hr class="h-px my-1 bg-gray-200 border-0 dark:bg-gray-700"/>' : ''}
-      `,
-      )
-      .join('')}
+const day = (date: Date, meals: Meal[]) => `
+  <h2 class="text-xl">${date.toLocaleDateString('hu-hu', { month: 'short', day: 'numeric' })}</h2>
+  <div class="overflow-x-auto">
+    <table class="table table-zebra table-pin-rows">
+      <thead>
+        <tr>
+          ${['', 'Név', 'Mennyiség']
+            .map((ingredient) => `<th>${ingredient}</th>`)
+            .join('')}
+        </tr>
+      </thead>
+      <tbody>
+      ${meals.map((meal) => `
+          ${meal.dishes.map((dish: Dish, dishIndex: number) => `
+            <tr>
+              <td>${dishIndex === 0 ? config.mealTypes[meal.type].name : ''}</td>
+              <td>${dish.name}</td>
+              <td>${dish.amount}</td>
+            </tr>
+          `).join('')}
+      `).join('')}
+      </tbody>
+    </table>
   </div>
 `;
 
@@ -39,16 +39,6 @@ export class Days implements BaseComponent {
       if (meals.length > 0) days.push({ date: day, meals });
     }
 
-    return days
-      .map(
-        ({ date, meals }, index) => `
-          <div class="flex flex-col  w-full">
-            <h3 class="text-xl">${date.toLocaleDateString('hu-hu', { month: 'short', day: 'numeric', weekday: 'short' })}</h3>
-            ${renderMeals(meals)}
-            ${index < days.length - 1 ? '<hr class="h-1 my-2 bg-gray-200 border-0 dark:bg-gray-700"/>' : ''}
-          </div>
-        `,
-      )
-      .join('');
+    return days.map(({ date, meals }) => day(date, meals)).join('');
   }
 }

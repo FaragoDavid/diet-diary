@@ -10,7 +10,7 @@ export default {
     titles: {
       page: 'Diéta Napló',
       ingredients: 'Alapanyagok',
-      meals: 'Étkezések',
+      overview: 'Étkezések',
       recipes: 'Receptek',
     },
     buttons: {
