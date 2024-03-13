@@ -155,7 +155,7 @@ export default {
   fetchRecipes: async (): Promise<Recipe[]> => {
     return recipes;
   },
-  fetchIngredients: async (): Promise<Ingredient[]> => {
-    return ingredients;
+  fetchIngredients: async (query: string): Promise<Ingredient[]> => {
+    return ingredients.filter((ingredient) => ingredient.name.toLowerCase().includes(query.toLowerCase()));
   },
 };

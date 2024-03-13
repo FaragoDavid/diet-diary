@@ -4,10 +4,11 @@ export default {
   nutrients: {
     ingredient: { placeholder: 'Alapanyag', type: 'text' },
     calories: { placeholder: 'Kalória', type: 'number' },
-    ch: { placeholder: 'CH', type: 'number'}
+    ch: { placeholder: 'CH', type: 'number' },
   },
   tableHeaders: {
     meals: ['', 'Név', 'Mennyiség', 'Kalória', 'CH'],
+    ingredients: ['Név', 'Kalória', 'CH'],
   },
   texts: {
     titles: {
