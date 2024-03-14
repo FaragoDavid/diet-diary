@@ -1,17 +1,24 @@
+import icons from '../../utils/icons.js';
 import config from '../../config.js';
-import repository, { Recipe } from '../../repository.js';
+import repository, { RecipeType } from '../../repository.js';
 
 const header = () => `
   <thead>
     <tr>
-      ${Object.values(config.recipes.props).map(({ name }) => `<th>${name}</th>`).join('')}
+      ${Object.values(config.recipes.props)
+        .map(({ name }) => `<th>${name}</th>`)
+        .join('')}
+      <th />
     </tr>
   </thead>
 `;
 
-const recipe = (recipe: Recipe) => `
+const recipe = (recipe: RecipeType) => `
   <tr>
     <td>${recipe.name}</td>
+    <td>
+      <a href="/recipe/${recipe.id}" class="btn btn-sm btn-primary">${icons.edit}</a>
+    </td>
   </tr> 
 `;
 

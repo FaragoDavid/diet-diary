@@ -1,5 +1,5 @@
 import config from '../../config.js';
-import magnifyingGlass from '../../utils/magnifying-glass.js';
+import icons from '../../utils/icons.js';
 
 const propInput = (prop: string, name: String, type: string, width: string) => `
   <input type="${type}" name="${prop}" class="input input-sm input-bordered w-${width} placeholder:text-xs placeholder:sm:text-base" placeholder=${name}>
@@ -18,7 +18,7 @@ const newIngredient = () => {
           hx-post="/ingredients"
           hx-target="#ingredient-list"
           hx-swap="outerHTML"
-        >+</button>
+        >${icons.add}</button>
         <button 
           class="btn btn-sm btn-primary hidden sm:block"
           hx-post="/ingredients"
@@ -30,9 +30,9 @@ const newIngredient = () => {
   `;
 };
 
-const search = () => `
+const searchIngredients = () => `
   <label class="input input-sm input-bordered flex items-center gap-2">
-    ${magnifyingGlass}
+    ${icons.search}
     <input 
       type="text" 
       id=search-ingr
@@ -54,7 +54,7 @@ export class Ingredients implements BaseComponent {
       <div class="flex flex-col items-center justify-center space-y-4">
         ${newIngredient()}
         <div class="divider divider-base-200"></div>
-        ${search()}
+        ${searchIngredients()}
         <div id="ingredient-list"></div>
       </div>
     `;

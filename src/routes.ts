@@ -4,13 +4,15 @@ import { Dashboard } from './components/dashboard.js';
 import { IngredientList } from './components/ingredients/list.js';
 import { layout } from './components/layout.js';
 import { Days } from './components/overview/days.js';
-import { RecipeList } from './components/recipes/list.js';
 import repository from './repository.js';
+import { Recipe } from './components/recipes/recipe.js';
+import { RecipeList } from './components/recipes/list.js';
 
 type GetMealsRequest = FastifyRequest<{ Querystring: { fromDate: number; toDate: number } }>;
 type GetIngredientsRequest = FastifyRequest<{ Querystring: { query: string } }>;
 type PostIngredientsRequest = FastifyRequest<{ Body: { name: string; calories: string; ch: string } }>;
 type GetRecipesRequest = FastifyRequest<{ Querystring: { query: string } }>;
+type GetRecipeRequest = FastifyRequest<{ Params: { recipeId: string } }>;
 
 const registerRoutes = (fastify: FastifyInstance) => {
   fastify.get('/', function handler(request: FastifyRequest, reply: FastifyReply) {
@@ -47,11 +49,18 @@ const registerRoutes = (fastify: FastifyInstance) => {
     return reply.type('text/html').send(template);
   });
 
-  fastify.get('/recipes', async (request: GetRecipesRequest, reply: FastifyReply) => {
-    const query = request.query.query;
-    console.log({ query });
+  fastify.get('/recipe', async (request: FastifyRequest, reply: FastifyReply) => {
+    const template = await layout(new Recipe());
+    return reply.type('text/html').send(template);
+  });
 
-    const template = await new RecipeList(query).render();
+  fastify.get('/recipes', async (request: GetRecipesRequest, reply: FastifyReply) => {
+    const template = await layout(new RecipeList(request.query.query));
+    return reply.type('text/html').send(template);
+  });
+
+  fastify.get('/recipe/:recipeId', async (request: GetRecipeRequest, reply: FastifyReply) => {
+    const template = await layout(new Recipe(request.params.recipeId));
     return reply.type('text/html').send(template);
   });
 };

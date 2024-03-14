@@ -21,7 +21,7 @@ export default {
   },
   texts: {
     search: 'Keresés',
-    add: 'Hozzáadás',
+    add: 'Új',
     titles: {
       page: 'Diéta Napló',
       overview: 'Étkezések',

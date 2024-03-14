@@ -13,7 +13,7 @@ export type Meal = {
   dishes: Dish[];
 };
 
-export type Recipe = {
+export type RecipeType = {
   id: string;
   name: string;
   ingredients: Dish[];
@@ -99,7 +99,7 @@ const meals: Meal[] = [
   },
 ];
 
-const recipes: Recipe[] = [
+const recipes: RecipeType[] = [
   {
     id: '1',
     name: 'Banana',
@@ -152,9 +152,23 @@ export default {
   fetchDay: async (date: Date): Promise<Meal[]> => {
     return meals.filter((meal) => meal.date.toDateString() === date.toDateString());
   },
-  fetchRecipes: async (query: string): Promise<Recipe[]> => {
+
+  fetchRecipes: async (query: string): Promise<RecipeType[]> => {
     return recipes.filter((recipe) => recipe.name.toLowerCase().includes(query.toLowerCase()));
   },
+  fetchRecipe: async (id: string | undefined): Promise<RecipeType | undefined> => {
+    return recipes.find((recipe) => recipe.id === id);
+  },
+  addRecipe: async (name: string, ingredients: Dish[]) => {
+    const id = String(Math.max(...recipes.map((recipe) => Number(recipe.id))) + 1);
+    recipes.push({ id, name, ingredients });
+  },
+  updateRecipe: async (id: string, ingredients: Dish[]) => {
+    const recipe = recipes.find((recipe) => recipe.id === id);
+    if (!recipe) return;
+    recipe.ingredients = ingredients;
+  },
+
   fetchIngredients: async (query: string): Promise<Ingredient[]> => {
     return ingredients.filter((ingredient) => ingredient.name.toLowerCase().includes(query.toLowerCase()));
   },
