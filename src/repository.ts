@@ -152,8 +152,8 @@ export default {
   fetchDay: async (date: Date): Promise<Meal[]> => {
     return meals.filter((meal) => meal.date.toDateString() === date.toDateString());
   },
-  fetchRecipes: async (): Promise<Recipe[]> => {
-    return recipes;
+  fetchRecipes: async (query: string): Promise<Recipe[]> => {
+    return recipes.filter((recipe) => recipe.name.toLowerCase().includes(query.toLowerCase()));
   },
   fetchIngredients: async (query: string): Promise<Ingredient[]> => {
     return ingredients.filter((ingredient) => ingredient.name.toLowerCase().includes(query.toLowerCase()));

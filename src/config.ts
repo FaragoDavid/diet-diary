@@ -9,20 +9,22 @@ export default {
       calories: { name: 'Kalória', type: 'number' },
       ch: { name: 'CH', type: 'number' },
     },
-    search: 'Keresés',
-    add: 'Hozzáadás',
+  },
+  recipes: {
+    title: 'Receptek',
+    props: {
+      name: { name: 'Név', type: 'text' },
+    },
   },
   tableHeaders: {
     meals: ['', 'Név', 'Mennyiség', 'Kalória', 'CH'],
   },
   texts: {
+    search: 'Keresés',
+    add: 'Hozzáadás',
     titles: {
       page: 'Diéta Napló',
       overview: 'Étkezések',
-      recipes: 'Receptek',
-    },
-    buttons: {
-      add: 'Hozzáadás',
     },
   },
   mealTypes: {

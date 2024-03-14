@@ -1,13 +1,16 @@
-import { Dashboard } from './components/dashboard.js';
-import { layout } from './components/layout.js';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import { Days } from './components/overview/days.js';
+
+import { Dashboard } from './components/dashboard.js';
 import { IngredientList } from './components/ingredients/list.js';
+import { layout } from './components/layout.js';
+import { Days } from './components/overview/days.js';
+import { RecipeList } from './components/recipes/list.js';
 import repository from './repository.js';
 
 type GetMealsRequest = FastifyRequest<{ Querystring: { fromDate: number; toDate: number } }>;
-type PostIngredientsRequest = FastifyRequest<{ Body: { name: string, calories: string, ch: string } }>;
 type GetIngredientsRequest = FastifyRequest<{ Querystring: { query: string } }>;
+type PostIngredientsRequest = FastifyRequest<{ Body: { name: string; calories: string; ch: string } }>;
+type GetRecipesRequest = FastifyRequest<{ Querystring: { query: string } }>;
 
 const registerRoutes = (fastify: FastifyInstance) => {
   fastify.get('/', function handler(request: FastifyRequest, reply: FastifyReply) {
@@ -41,6 +44,14 @@ const registerRoutes = (fastify: FastifyInstance) => {
     await repository.addIngredient(name, calories, ch);
 
     const template = await new IngredientList(name).render();
+    return reply.type('text/html').send(template);
+  });
+
+  fastify.get('/recipes', async (request: GetRecipesRequest, reply: FastifyReply) => {
+    const query = request.query.query;
+    console.log({ query });
+
+    const template = await new RecipeList(query).render();
     return reply.type('text/html').send(template);
   });
 };

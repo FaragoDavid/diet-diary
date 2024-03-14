@@ -1,7 +1,7 @@
 import config from '../config.js';
 import { Ingredients } from './ingredients/index.js';
 import { Overview } from './overview/index.js';
-import { Recipes } from './recipes.js';
+import { Recipes } from './recipes/index.js';
 import { Segment } from './segment.js';
 
 export class Dashboard implements BaseComponent {
