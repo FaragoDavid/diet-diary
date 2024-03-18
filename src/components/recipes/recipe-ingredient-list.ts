@@ -37,7 +37,7 @@ export class RecipeIngredientList implements BaseComponent {
     <tr>
       <td class="max-w-1/2">
         <select name="newIngredient" class="select select-bordered select-sm w-full max-w-xs">
-          ${ingredients.map((ingredient) => `<option>${ingredient.name}</option>`).join('')}
+          ${ingredients.map((ingredient) => `<option value="${ingredient.id}" >${ingredient.name}</option>`).join('')}
         </select>
       </td>
       <td class="max-w-1/2">
@@ -53,7 +53,7 @@ export class RecipeIngredientList implements BaseComponent {
           type="submit"
           class="btn btn-primary btn-sm"
           hx-post="/recipe/${this.id}"
-          hx-target="#recipe-ingredient-list"
+          hx-target="#recipe-list"
           hx-swap="outerHTML"
         >${icons.add}</button>
       </td>
@@ -69,14 +69,14 @@ export class RecipeIngredientList implements BaseComponent {
 
 
     return `
-      <div id="recipe-list" class="overflow-x-auto w-full">
+      <form id="recipe-list" class="overflow-x-auto w-full">
         <table class="table table-zebra table-pin-rows">
           <tbody>
             ${recipeIngrs.map((ingredient) => renderIngredient(ingredient)).join('')}
             ${this.addIngredient(ingredients)}
           </tbody>
         </table>
-      </div>
+      </form>
     `;
   }
 }

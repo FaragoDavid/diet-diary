@@ -99,10 +99,7 @@ export class Recipe implements BaseComponent {
           <div class="text text-center">
             Alapanyagok
           </div>
-
-          <form>
-            ${this.id && await new RecipeIngredientList(this.id).render()}
-          </form>
+          ${this.id && (await new RecipeIngredientList(this.id).render())}
         </div>
       </div>
     `;
