@@ -33,17 +33,17 @@ const registerRoutes = (fastify: FastifyInstance) => {
     return reply.type('text/html').send(template);
   });
 
-  fastify.get('/ingredients', async (request: GetIngredientsRequest, reply: FastifyReply) => {
+  fastify.get('/ingredient', async (request: GetIngredientsRequest, reply: FastifyReply) => {
     const query = request.query.query;
 
     const template = await new IngredientList(query).render();
     return reply.type('text/html').send(template);
   });
 
-  fastify.post('/ingredients', async (request: PostIngredientsRequest, reply: FastifyReply) => {
+  fastify.post('/ingredient', async (request: PostIngredientsRequest, reply: FastifyReply) => {
     const { name, calories, ch } = request.body;
 
-    await repository.addIngredient(name, calories, ch);
+    if (name) await repository.addIngredient(name, calories, ch);
 
     const template = await new IngredientList(name).render();
     return reply.type('text/html').send(template);

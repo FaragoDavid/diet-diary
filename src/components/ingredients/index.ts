@@ -1,35 +1,31 @@
 import config from '../../config.js';
 import icons from '../../utils/icons.js';
 
-const propInput = (prop: string, name: String, type: string, width: string) => `
+const propInput = (prop: string, name: String, type: string) => `
   <input 
     type="${type}" 
     name="${prop}" 
     class="input input-sm input-bordered w-full"
     placeholder=${name}
+    ${type === 'number' ? 'min="0"' : ''}
   >
 `;
 
-const y = `    style = 'flex: 1 0 10rem'; `
-
-
 const newIngredient = () => {
-  const width = `1/${Object.values(config.ingredients.props).length}`;
-  const propCount = `1/${Object.values(config.ingredients.props).length}`;
   return `
-    <div class="grid gap-3 grid-rows-1 grid-flow-col items-center">
+    <form class="grid gap-3 grid-rows-1 grid-flow-col items-center">
       <div class="grid gap-2  sm:grid-rows-1 sm:grid-flow-col">
         ${Object.entries(config.ingredients.props)
-          .map(([prop, { name, type }]) => propInput(prop, name, type, width))
+          .map(([prop, { name, type }]) => propInput(prop, name, type))
           .join('')}
       </div>
       <button 
         class="btn btn-sm btn-primary"
-        hx-post="/ingredients"
+        hx-post="/ingredient"
         hx-target="#ingredient-list"
         hx-swap="outerHTML"
       >${icons.add}</button>
-    </div>
+    </form>
   `;
 };
 
@@ -40,7 +36,7 @@ const searchIngredients = () => `
       type="text" 
       id=search-ingr
       placeholder="${config.texts.search}"
-      hx-get="/ingredients"
+      hx-get="/ingredient"
       hx-target="#ingredient-list"
       hx-trigger="input"
       hx-vals="js:{query: document.getElementById('search-ingr').value}"
