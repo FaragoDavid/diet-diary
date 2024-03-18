@@ -16,8 +16,19 @@ export type Meal = {
 export type RecipeType = {
   id: string;
   name: string;
-  ingredients: Dish[];
+  ingredients: RecipeIngredient[];
 };
+
+export type RecipeWithIngredientName = Omit<RecipeType, 'ingredients'> & {
+  ingredients: RecipeIngredientWithName[];
+};
+
+export type RecipeIngredient = {
+  id: string;
+  amount: number;
+};
+
+export type RecipeIngredientWithName = RecipeIngredient & { name: string };
 
 export type Ingredient = {
   id: string;
@@ -103,48 +114,48 @@ const recipes: RecipeType[] = [
   {
     id: '1',
     name: 'Banana',
-    ingredients: [{ id: '1', name: 'Banana', amount: 1 }],
+    ingredients: [{ id: '1', amount: 1 }],
   },
   {
     id: '2',
     name: 'Oatmeal',
     ingredients: [
-      { id: '2', name: 'Oatmeal', amount: 1 },
-      { id: '3', name: 'Milk', amount: 1 },
+      { id: '2', amount: 1 },
+      { id: '3', amount: 1 },
     ],
   },
   {
     id: '3',
     name: 'Apple',
-    ingredients: [{ id: '4', name: 'Apple', amount: 1 }],
+    ingredients: [{ id: '4', amount: 1 }],
   },
   {
     id: '4',
     name: 'Chicken with rice and broccoli',
     ingredients: [
-      { id: '5', name: 'Chicken', amount: 1 },
-      { id: '6', name: 'Rice', amount: 1 },
-      { id: '7', name: 'Broccoli', amount: 1 },
+      { id: '5', amount: 1 },
+      { id: '6', amount: 1 },
+      { id: '7', amount: 1 },
     ],
   },
   {
     id: '5',
     name: 'Yogurt',
-    ingredients: [{ id: '8', name: 'Yogurt', amount: 1 }],
+    ingredients: [{ id: '8', amount: 1 }],
   },
   {
     id: '6',
     name: 'Salmon with potato and asparagus',
     ingredients: [
-      { id: '9', name: 'Salmon', amount: 1 },
-      { id: '10', name: 'Potato', amount: 1 },
-      { id: '11', name: 'Asparagus', amount: 1 },
+      { id: '9', amount: 1 },
+      { id: '10', amount: 1 },
+      { id: '11', amount: 1 },
     ],
   },
   {
     id: '7',
     name: 'Cottage cheese',
-    ingredients: [{ id: '12', name: 'Cottage cheese', amount: 1 }],
+    ingredients: [{ id: '12', amount: 1 }],
   },
 ];
 
@@ -156,20 +167,31 @@ export default {
   fetchRecipes: async (query: string): Promise<RecipeType[]> => {
     return recipes.filter((recipe) => recipe.name.toLowerCase().includes(query.toLowerCase()));
   },
-  fetchRecipe: async (id: string | undefined): Promise<RecipeType | undefined> => {
-    return recipes.find((recipe) => recipe.id === id);
+  fetchRecipe: async (id: string | undefined): Promise<RecipeWithIngredientName | undefined> => {
+    const recipe = recipes.find((recipe) => recipe.id === id);
+    if (!recipe) return;
+    return {
+      ...recipe,
+      ingredients: recipe.ingredients.map(
+        (ingredient) =>
+          ({
+            ...ingredient,
+            name: ingredients.find((ingr) => ingr.id === ingredient.id)!.name,
+          } as RecipeIngredientWithName),
+      ),
+    };
   },
   addRecipe: async (name: string, ingredients: Dish[]) => {
     const id = String(Math.max(...recipes.map((recipe) => Number(recipe.id))) + 1);
     recipes.push({ id, name, ingredients });
   },
-  updateRecipe: async (id: string, ingredients: Dish[]) => {
+  updateRecipe: async (id: string, ingredients: RecipeIngredient[]) => {
     const recipe = recipes.find((recipe) => recipe.id === id);
     if (!recipe) return;
     recipe.ingredients = ingredients;
   },
 
-  fetchIngredients: async (query: string): Promise<Ingredient[]> => {
+  fetchIngredients: async (query: string = ''): Promise<Ingredient[]> => {
     return ingredients.filter((ingredient) => ingredient.name.toLowerCase().includes(query.toLowerCase()));
   },
   addIngredient: async (name: string, calories: string, ch: string) => {

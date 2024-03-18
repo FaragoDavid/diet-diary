@@ -2,31 +2,34 @@ import config from '../../config.js';
 import icons from '../../utils/icons.js';
 
 const propInput = (prop: string, name: String, type: string, width: string) => `
-  <input type="${type}" name="${prop}" class="input input-sm input-bordered w-${width} placeholder:text-xs placeholder:sm:text-base" placeholder=${name}>
+  <input 
+    type="${type}" 
+    name="${prop}" 
+    class="input input-sm input-bordered w-full"
+    placeholder=${name}
+  >
 `;
+
+const y = `    style = 'flex: 1 0 10rem'; `
+
 
 const newIngredient = () => {
   const width = `1/${Object.values(config.ingredients.props).length}`;
+  const propCount = `1/${Object.values(config.ingredients.props).length}`;
   return `
-    <form class="flex items-center justify-center space-x-4 space-y-0">
-      ${Object.entries(config.ingredients.props)
-        .map(([prop, { name, type }]) => propInput(prop, name, type, width))
-        .join('')}
-      <div class="flex-none">
-        <button 
-          class="btn btn-sm btn-primary sm:hidden"
-          hx-post="/ingredients"
-          hx-target="#ingredient-list"
-          hx-swap="outerHTML"
-        >${icons.add}</button>
-        <button 
-          class="btn btn-sm btn-primary hidden sm:block"
-          hx-post="/ingredients"
-          hx-target="#ingredient-list"
-          hx-swap="outerHTML"
-        >${config.texts.add}</button>
+    <div class="grid gap-3 grid-rows-1 grid-flow-col items-center">
+      <div class="grid gap-2  sm:grid-rows-1 sm:grid-flow-col">
+        ${Object.entries(config.ingredients.props)
+          .map(([prop, { name, type }]) => propInput(prop, name, type, width))
+          .join('')}
       </div>
-    </form>
+      <button 
+        class="btn btn-sm btn-primary"
+        hx-post="/ingredients"
+        hx-target="#ingredient-list"
+        hx-swap="outerHTML"
+      >${icons.add}</button>
+    </div>
   `;
 };
 

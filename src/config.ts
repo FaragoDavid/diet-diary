@@ -14,6 +14,7 @@ export default {
     title: 'Receptek',
     props: {
       name: { name: 'Név', type: 'text' },
+      amount: { name: 'Mennyiség', type: 'number' },
     },
   },
   tableHeaders: {

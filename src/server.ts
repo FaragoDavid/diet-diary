@@ -13,9 +13,6 @@ const __dirname = path.dirname(__filename);
 
 const app = fastify({ logger: true });
 
-console.log({pap: config.publicAssetsPath});
-
-
 app.register(fastifyFormbody);
 app.register(fastifyStatic, {
   root: path.join(__dirname, '../public'),

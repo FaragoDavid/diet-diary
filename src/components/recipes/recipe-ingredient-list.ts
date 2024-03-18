@@ -1,7 +1,6 @@
 import icons from '../../utils/icons.js';
 import config from '../../config.js';
 import repository, { Dish, Ingredient } from '../../repository.js';
-import { RecipeIngredientList } from './recipe-ingredient-list.js';
 
 const ingredientPropInput = (prop: string, name: string, type: string, value: number | string = '', ingredientId: string) => `
   <td class="max-w-1/2">
@@ -31,23 +30,8 @@ const renderIngredient = (ingredient: Dish) => `
   </tr>
 `;
 
-const textHeader = (recipeName: string) => `
-  <div class="text-center text-3xl font-medium">
-    ${recipeName}
-  </div>
-`;
-
-const inputHeader = () => `
-  <input 
-    type="text" 
-    name="recipe-name" 
-    class="input input-bordered" 
-    placeholder="Recept neve"
-  />
-`;
-
-export class Recipe implements BaseComponent {
-  constructor(private id?: string) {}
+export class RecipeIngredientList implements BaseComponent {
+  constructor(private id: string) {}
 
   addIngredient = (ingredients: Ingredient[]) => `
     <tr>
@@ -75,35 +59,23 @@ export class Recipe implements BaseComponent {
       </td>
     </tr>
   `;
-
+  
   async render() {
     const recipe = await repository.fetchRecipe(this.id);
+    if (!recipe) return 'Error: Recipe not found';
 
-    if(this.id && !recipe) return 'Recept nem található';
-
-    const recipeIngrs = recipe?.ingredients || [];
+    const recipeIngrs = recipe.ingredients;
     const ingredients = await repository.fetchIngredients();
 
-    return `
-      <div class="container py-6 px-2 mx-auto ">
-        <div class="flex flex-col place-items-center gap-4">
-          <div class="flex items-top w-full">
-            <a href="/dashboard">
-              <button type="submit" class="btn bg-base-100 border-0 btn-sm">${icons.back}</button>
-            </a>
-            <div class="flex-grow"></div>
-            ${recipe ? textHeader(recipe.name) : inputHeader()}
-            <div class="flex-grow"></div>
-          </div>
-          ...
-          <div class="text text-center">
-            Alapanyagok
-          </div>
 
-          <form>
-            ${this.id && await new RecipeIngredientList(this.id).render()}
-          </form>
-        </div>
+    return `
+      <div id="recipe-list" class="overflow-x-auto w-full">
+        <table class="table table-zebra table-pin-rows">
+          <tbody>
+            ${recipeIngrs.map((ingredient) => renderIngredient(ingredient)).join('')}
+            ${this.addIngredient(ingredients)}
+          </tbody>
+        </table>
       </div>
     `;
   }
