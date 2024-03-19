@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
-import { Dashboard } from './components/dashboard.js';
+import { Dashboard } from './components/pages/dashboard.js';
 import { IngredientList } from './components/ingredients/list.js';
 import { layout } from './components/layout.js';
 import { Days } from './components/overview/days.js';
@@ -8,6 +8,8 @@ import repository from './repository.js';
 import { Recipe } from './components/recipes/recipe.js';
 import { RecipeList } from './components/recipes/recipe-list.js';
 import { RecipeIngredientList } from './components/recipes/recipe-ingredient-list.js';
+import { Login } from './components/pages/login.js';
+import config from './config.js';
 
 type GetMealsRequest = FastifyRequest<{ Querystring: { fromDate: number; toDate: number } }>;
 type GetIngredientsRequest = FastifyRequest<{ Querystring: { query: string } }>;
@@ -15,10 +17,28 @@ type PostIngredientsRequest = FastifyRequest<{ Body: { name: string; calories: s
 type GetRecipesRequest = FastifyRequest<{ Querystring: { query: string } }>;
 type GetRecipeRequest = FastifyRequest<{ Params: { recipeId: string } }>;
 type PostRecipeRequest = FastifyRequest<{ Params: { recipeId: string }; Body: { newIngredient: string[] } & Record<string, string> }>;
+type PostLoginRequest = FastifyRequest<{ Body: { password: string } & Record<string, string> }>;
 
 const registerRoutes = (fastify: FastifyInstance) => {
   fastify.get('/', function handler(request: FastifyRequest, reply: FastifyReply) {
-    reply.redirect(301, '/dashboard');
+    reply.redirect(301, '/login');
+  });
+
+  fastify.get('/login', async (request: FastifyRequest, reply: FastifyReply) => {
+    const template = await layout(new Login());
+    return reply.type('text/html').send(template);
+  });
+
+  fastify.post('/login', async (request: PostLoginRequest, reply: FastifyReply) => {
+    const { password } = request.body;
+
+    console.log({ body: request.body, configPassword: config.password });
+    
+    if (password === config.password) {
+      reply.redirect(301, '/dashboard');
+    } else {
+      reply.redirect(301, '/login');
+    }
   });
 
   fastify.get('/dashboard', async (request: FastifyRequest, reply: FastifyReply) => {

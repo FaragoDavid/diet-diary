@@ -1,7 +1,13 @@
 export default {
   port: Number(process.env.PORT) || 3000,
   host: process.env.HOST || 'localhost',
+  password: process.env.PASSWORD || 'admin',
   publicAssetsPath: process.env.PUBLIC_ASSETS_PATH || 'http://localhost:3000',
+  pages: {
+    login: {
+      login: 'Bejelentkezés',
+    },
+  },
   ingredients: {
     title: 'Alapanyagok',
     props: {
