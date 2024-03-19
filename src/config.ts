@@ -2,6 +2,7 @@ export default {
   port: Number(process.env.PORT) || 3000,
   host: process.env.HOST || 'localhost',
   password: process.env.PASSWORD || 'admin',
+  cookieSecret: process.env.COOKIE_SECRET || 'cookie_secret',
   publicAssetsPath: process.env.PUBLIC_ASSETS_PATH || 'http://localhost:3000',
   pages: {
     login: {
