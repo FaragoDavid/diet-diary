@@ -15,27 +15,29 @@ const registerLoginRoutes = (fastify: FastifyInstance) => {
   fastify.post('/login', postLogin);
 };
 
+
 const cookieValidator = async (request: FastifyRequest, reply: FastifyReply) => {
   if (!request.cookies.loggedIn) return reply.status(401).send('Unauthorized');
 };
+
 const registerRoutes = (fastify: FastifyInstance) => {
   fastify.get('/dashboard', {
     preHandler: cookieValidator,
-    handler: async (request: FastifyRequest, reply: FastifyReply) => {
+    handler: async (_, reply: FastifyReply) => {
       const template = await layout(new Dashboard());
       return reply.type('text/html').send(template);
     },
   });
 
-  fastify.get('/days', getDays);
+  fastify.get('/days', { preHandler: cookieValidator, handler: getDays });
 
-  fastify.get('/ingredient', getIngredient);
-  fastify.post('/ingredient', adIngredient);
+  fastify.get('/ingredient', { preHandler: cookieValidator, handler: getIngredient });
+  fastify.post('/ingredient', { preHandler: cookieValidator, handler: adIngredient });
 
-  fastify.get('/recipe', getRecipe);
-  fastify.get('/recipes', getRecipes);
-  fastify.get('/recipe/:recipeId', getRecipeById);
-  fastify.post('/recipe/:recipeId', updateRecipe);
+  fastify.get('/recipe', { preHandler: cookieValidator, handler: getRecipe });
+  fastify.get('/recipes', { preHandler: cookieValidator, handler: getRecipes });
+  fastify.get('/recipe/:recipeId', { preHandler: cookieValidator, handler: getRecipeById });
+  fastify.post('/recipe/:recipeId', { preHandler: cookieValidator, handler: updateRecipe });
 };
 
 export { registerLoginRoutes, registerRoutes };

@@ -10,7 +10,7 @@ type GetRecipesRequest = FastifyRequest<{ Querystring: { query: string } }>;
 type GetRecipeRequest = FastifyRequest<{ Params: { recipeId: string } }>;
 type PostRecipeRequest = FastifyRequest<{ Params: { recipeId: string }; Body: { newIngredient: string[] } & Record<string, string> }>;
 
-export const getRecipe = async (request: FastifyRequest, reply: FastifyReply) => {
+export const getRecipe = async (_: FastifyRequest, reply: FastifyReply) => {
   const template = await layout(new Recipe());
   return reply.type('text/html').send(template);
 };
