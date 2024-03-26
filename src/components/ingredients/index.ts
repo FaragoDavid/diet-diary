@@ -49,7 +49,7 @@ export class Ingredients implements BaseComponent {
   public title = config.ingredients.title;
 
   async render() {
-    return `
+    return `  
       <div class="flex flex-col items-center justify-center space-y-4">
         ${newIngredient()}
         <div class="divider divider-base-200"></div>

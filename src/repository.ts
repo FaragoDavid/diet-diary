@@ -17,6 +17,7 @@ export type RecipeType = {
   id: string;
   name: string;
   ingredients: RecipeIngredient[];
+  amount?: number;
 };
 
 export type RecipeWithIngredientName = Omit<RecipeType, 'ingredients'> & {
@@ -113,25 +114,16 @@ const meals: Meal[] = [
 const recipes: RecipeType[] = [
   {
     id: '1',
-    name: 'Banana',
-    ingredients: [{ id: '1', amount: 1 }],
+    name: 'Banana smoothie',
+    ingredients: [
+      { id: '1', amount: 1 },
+      { id: '3', amount: 1 },
+    ],
+    amount: 12,
   },
   {
     id: '2',
-    name: 'Oatmeal',
-    ingredients: [
-      { id: '2', amount: 1 },
-      { id: '3', amount: 1 },
-    ],
-  },
-  {
-    id: '3',
-    name: 'Apple',
-    ingredients: [{ id: '4', amount: 1 }],
-  },
-  {
-    id: '4',
-    name: 'Chicken with rice and broccoli',
+    name: 'Chicken with rice',
     ingredients: [
       { id: '5', amount: 1 },
       { id: '6', amount: 1 },
@@ -139,13 +131,8 @@ const recipes: RecipeType[] = [
     ],
   },
   {
-    id: '5',
-    name: 'Yogurt',
-    ingredients: [{ id: '8', amount: 1 }],
-  },
-  {
-    id: '6',
-    name: 'Salmon with potato and asparagus',
+    id: '3',
+    name: 'Salmon with potato',
     ingredients: [
       { id: '9', amount: 1 },
       { id: '10', amount: 1 },
@@ -153,9 +140,94 @@ const recipes: RecipeType[] = [
     ],
   },
   {
+    id: '4',
+    name: 'Cottage cheese with kale',
+    ingredients: [
+      { id: '12', amount: 1 },
+      { id: '13', amount: 1 },
+    ],
+    amount: 1,
+  },
+  {
+    id: '5',
+    name: 'Oatmeal with apple',
+    ingredients: [
+      { id: '2', amount: 1 },
+      { id: '4', amount: 1 },
+    ],
+    amount: 1,
+  },
+  {
+    id: '6',
+    name: 'Yogurt with banana',
+    ingredients: [
+      { id: '1', amount: 1 },
+      { id: '8', amount: 1 },
+    ],
+    amount: 1,
+  },
+  {
     id: '7',
-    name: 'Cottage cheese',
-    ingredients: [{ id: '12', amount: 1 }],
+    name: 'Chicken with broccoli',
+    ingredients: [
+      { id: '5', amount: 1 },
+      { id: '7', amount: 1 },
+    ],
+    amount: 1,
+  },
+  {
+    id: '8',
+    name: 'Salmon with asparagus',
+    ingredients: [
+      { id: '9', amount: 1 },
+      { id: '11', amount: 1 },
+    ],
+    amount: 1,
+  },
+  {
+    id: '9',
+    name: 'Oatmeal with milk',
+    ingredients: [
+      { id: '2', amount: 1 },
+      { id: '3', amount: 1 },
+    ],
+    amount: 1,
+  },
+  {
+    id: '10',
+    name: 'Chicken with potato',
+    ingredients: [
+      { id: '5', amount: 1 },
+      { id: '10', amount: 1 },
+    ],
+    amount: 1,
+  },
+  {
+    id: '11',
+    name: 'Salmon with rice',
+    ingredients: [
+      { id: '9', amount: 1 },
+      { id: '6', amount: 1 },
+    ],
+    amount: 1,
+  },
+  {
+    id: '12',
+    name: 'Cottage cheese with apple',
+    ingredients: [
+      { id: '12', amount: 1 },
+      { id: '4', amount: 1 },
+    ],
+    amount: 1,
+  },
+  {
+    id: '13',
+    name: 'Yogurt with oatmeal',
+    ingredients: [
+      { id: '8', amount: 1 },
+      { id: '2', amount: 1 },
+    ],
+    amount: 1,
   },
 ];
 
@@ -170,8 +242,6 @@ export default {
   fetchRecipe: async (id: string): Promise<RecipeWithIngredientName | undefined> => {
     const recipe = recipes.find((recipe) => recipe.id === id);
     if (!recipe) return;
-
-    console.log({ ingr: recipe.ingredients });
 
     return {
       ...recipe,
@@ -205,6 +275,12 @@ export default {
         ingredient.amount = amount;
       }
     });
+  },
+  updateRecipeAmount: async (recipeId: string, amount: number) => {
+    const recipe = recipes.find((recipe) => recipe.id === recipeId);
+    if (!recipe) return;
+
+    recipe.amount = amount;
   },
 
   fetchIngredients: async (query: string = ''): Promise<Ingredient[]> => {

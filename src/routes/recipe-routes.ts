@@ -10,10 +10,11 @@ import { EditRecipe } from '../components/recipes/edit-recipe.js';
 type GetRecipesRequest = FastifyRequest<{ Querystring: { query: string } }>;
 type GetRecipeRequest = FastifyRequest<{ Params: { recipeId: string } }>;
 type PostRecipeRequest = FastifyRequest<{ Params: { recipeId: string }; Body: { newIngredient: string[] } & Record<string, string> }>;
-type PostRecipeIngredientRequest = FastifyRequest<{
+type UpdateRecipeIngredientRequest = FastifyRequest<{
   Params: { recipeId: string; ingredientId: string };
   Body: { newIngredient: string[] } & Record<string, string>;
 }>;
+type UpdateRecipeAmountRequest = FastifyRequest<{ Params: { recipeId: string }; Body: { amount: string; query: string } }>;
 type CreateRecipeRequest = FastifyRequest<{ Body: { name: string; ingredient: string; amount: string } }>;
 
 export const getRecipes = async (request: GetRecipesRequest, reply: FastifyReply) => {
@@ -45,10 +46,7 @@ export const updateRecipe = async (request: PostRecipeRequest, reply: FastifyRep
   return reply.type('text/html').send(template);
 };
 
-export const updateRecipeIngredient = async (request: PostRecipeIngredientRequest, reply: FastifyReply) => {
-  console.log({ body: request.body });
-  console.log({ params: request.params });
-
+export const updateRecipeIngredient = async (request: UpdateRecipeIngredientRequest, reply: FastifyReply) => {
   const { recipeId, ingredientId } = request.params;
 
   const recipe = await repository.fetchRecipe(recipeId);
@@ -60,6 +58,17 @@ export const updateRecipeIngredient = async (request: PostRecipeIngredientReques
   await repository.updateRecipeIngredient(recipeId, ingredientId, Number(request.body[ingredientId]));
 
   const template = await layout(new RecipeIngredientList(recipeId));
+  return reply.type('text/html').send(template);
+};
+
+export const updateRecipeAmount = async (request: UpdateRecipeAmountRequest, reply: FastifyReply) => {
+  const recipeId = request.params.recipeId;
+  const recipe = await repository.fetchRecipe(recipeId);
+  if (!recipe) throw new Error('Recipe not found');
+
+  await repository.updateRecipeAmount(recipeId, Number(request.body.amount));
+
+  const template = await layout(new RecipeList(request.body.query));
   return reply.type('text/html').send(template);
 };
 

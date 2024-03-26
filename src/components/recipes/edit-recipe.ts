@@ -9,6 +9,34 @@ const header = (recipeName: string) => `
   </div>
 `;
 
+const recipeStats = async (recipeId: string) => {
+  const recipe = await repository.fetchRecipe(recipeId);
+  const ingredients = await repository.fetchIngredients();
+
+  const recipeCalories = recipe!.ingredients.reduce((cals, ingredient) => {
+    const fullIngredient = ingredients.find(({ id }) => id === ingredient.id);
+    return cals + (fullIngredient?.calories ?? 0) * ingredient.amount;
+  }, 0);
+  const recipeCH = recipe!.ingredients.reduce((ch, ingredient) => {
+    const fullIngredient = ingredients.find(({ id }) => id === ingredient.id);
+    return ch + (fullIngredient?.CH ?? 0) * ingredient.amount;
+  }, 0);
+  const recipeFat = recipe!.ingredients.reduce((fat, ingredient) => {
+    const fullIngredient = ingredients.find(({ id }) => id === ingredient.id);
+    return fat + (fullIngredient?.fat ?? 0) * ingredient.amount;
+  }, 0);
+
+  return `
+    <div class="flex justify-center">
+      <div class="text">Cal: ${recipeCalories}</div>
+      <div class="divider divider-horizontal" ></div> 
+      <div class="text">CH: ${recipeCH}</div>
+      <div class="divider divider-horizontal" ></div> 
+      <div class="text">Zsír: ${recipeFat}</div>
+    </div>
+  `;
+};
+
 export class EditRecipe implements BaseComponent {
   constructor(private id: string) {}
 
@@ -41,40 +69,15 @@ export class EditRecipe implements BaseComponent {
 
   async render() {
     const recipe = await repository.fetchRecipe(this.id);
-    const ingredients = await repository.fetchIngredients();
 
     if (!recipe) return 'Recept nem található';
-    const recipeCalories = recipe.ingredients.reduce((cals, ingredient) => {
-      const fullIngredient = ingredients.find(({ id }) => id === ingredient.id);
-      return cals + (fullIngredient?.calories ?? 0) * ingredient.amount;
-    }, 0);
-    const recipeCH = recipe.ingredients.reduce((ch, ingredient) => {
-      const fullIngredient = ingredients.find(({ id }) => id === ingredient.id);
-      return ch + (fullIngredient?.CH ?? 0) * ingredient.amount;
-    }, 0);
-    const recipeFat = recipe.ingredients.reduce((fat, ingredient) => {
-      const fullIngredient = ingredients.find(({ id }) => id === ingredient.id);
-      return fat + (fullIngredient?.fat ?? 0) * ingredient.amount;
-    }, 0);
 
     return `
       ${await new BackLink().render()}
       <div class="container py-10 px-2 mx-auto ">
         <div class="flex flex-col place-items-center gap-4">
           ${header(recipe.name)}
-          <div class="flex justify-center">
-            <div class="text">
-              Cal: ${recipeCalories}
-            </div>
-            <div class="divider divider-horizontal" ></div> 
-            <div class="text">
-              CH: ${recipeCH}
-            </div>
-            <div class="divider divider-horizontal" ></div> 
-            <div class="text">
-              Zsír: ${recipeFat}
-            </div>
-          </div>
+          ${await recipeStats(this.id)}
           <div class="text text-center">
             Alapanyagok
           </div>

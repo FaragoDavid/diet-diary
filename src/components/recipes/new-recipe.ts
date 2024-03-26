@@ -37,10 +37,10 @@ export class NewRecipe implements BaseComponent {
     </div>
     <div class="flex justify-center">
       <input 
-      type="number" 
-      name="amount"
-      class="input input-bordered input-sm placeholder-neutral max-w-32 sm:max-w-full"
-      placeholder="Mennyiség"
+        type="number" 
+        name="amount"
+        class="input input-bordered input-sm placeholder-neutral max-w-32 sm:max-w-full"
+        placeholder="Mennyiség"
       />
     </div>
     <div class="flex justify-center">

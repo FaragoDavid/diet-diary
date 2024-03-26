@@ -17,7 +17,7 @@ const searchRecipes = () => `
     ${icons.search}
     <input 
       type="text" 
-      id=search-recipe
+      id="search-recipe"
       placeholder="${config.texts.search}"
       hx-get="/recipes"
       hx-target="#recipe-list"
@@ -35,9 +35,9 @@ export class Recipes implements BaseComponent {
     return `
         <div class="flex flex-col items-center justify-center space-y-4">
           <div class="flex items-center justify-center space-x-2">
-            ${addRecipe()}
-            <div class="divider divider-horizontal" ></div> 
             ${searchRecipes()}
+            <div class="divider divider-horizontal" ></div> 
+            ${addRecipe()}
           </div>
         <div id="recipe-list"></div>
       </div>

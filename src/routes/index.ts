@@ -2,7 +2,7 @@ import fastify, { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 
 import { layout } from '../components/layout.js';
 import { Dashboard } from '../components/pages/dashboard.js';
-import { createRecipe, editRecipe, getRecipes, newRecipe, updateRecipe, updateRecipeIngredient } from './recipe-routes.js';
+import { createRecipe, editRecipe, getRecipes, newRecipe, updateRecipe, updateRecipeAmount, updateRecipeIngredient } from './recipe-routes.js';
 import { getLogin, postLogin } from './login-routes.js';
 import { adIngredient, getIngredient } from './ingredient-routes.js';
 import { getDays } from './meal-routes.js';
@@ -38,6 +38,7 @@ const registerRoutes = (fastify: FastifyInstance) => {
   fastify.get('/recipes', { preHandler: cookieValidator, handler: getRecipes });
   fastify.get('/recipe/:recipeId', { preHandler: cookieValidator, handler: editRecipe });
   fastify.post('/recipe/:recipeId', { preHandler: cookieValidator, handler: updateRecipe });
+  fastify.post('/recipe/:recipeId/amount', { preHandler: cookieValidator, handler: updateRecipeAmount });
   fastify.post('/recipe/:recipeId/ingredient/:ingredientId', { preHandler: cookieValidator, handler: updateRecipeIngredient });
 };
 

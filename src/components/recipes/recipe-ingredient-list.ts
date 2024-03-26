@@ -16,12 +16,14 @@ const ingredientName = (ingredient: RecipeIngredientWithName) => `
 const ingredientAmount = (ingredient: RecipeIngredientWithName) => `
 <div class="flex justify-center">
   <input 
-    type="number" 
+    type="number"
     name="${ingredient.id}" 
-    class="input input-bordered input-sm max-w-32 sm:max-w-full"
+    class="input input-sm input-bordered max-w-16 bg-base-200  pr-5 text-right" 
     value="${ingredient.amount}"
-    placeholder="Mennyiség"
-  />
+    min="0" max="9999"
+  >
+    <span class="relative right-4 top-2 text-sm">g</span>
+  </input>
 </div>`;
 
 const saveIngredient = (ingredient: RecipeIngredientWithName, id: string) => `
