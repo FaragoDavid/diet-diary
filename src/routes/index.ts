@@ -2,7 +2,7 @@ import fastify, { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 
 import { layout } from '../components/layout.js';
 import { Dashboard } from '../components/pages/dashboard.js';
-import { getRecipe, getRecipeById, getRecipes, updateRecipe } from './recipe-routes.js';
+import { createRecipe, editRecipe, getRecipes, newRecipe, updateRecipe, updateRecipeIngredient } from './recipe-routes.js';
 import { getLogin, postLogin } from './login-routes.js';
 import { adIngredient, getIngredient } from './ingredient-routes.js';
 import { getDays } from './meal-routes.js';
@@ -14,7 +14,6 @@ const registerLoginRoutes = (fastify: FastifyInstance) => {
   fastify.get('/login', getLogin);
   fastify.post('/login', postLogin);
 };
-
 
 const cookieValidator = async (request: FastifyRequest, reply: FastifyReply) => {
   if (!request.cookies.loggedIn) return reply.status(401).send('Unauthorized');
@@ -34,10 +33,12 @@ const registerRoutes = (fastify: FastifyInstance) => {
   fastify.get('/ingredient', { preHandler: cookieValidator, handler: getIngredient });
   fastify.post('/ingredient', { preHandler: cookieValidator, handler: adIngredient });
 
-  fastify.get('/recipe', { preHandler: cookieValidator, handler: getRecipe });
+  fastify.get('/new-recipe', { preHandler: cookieValidator, handler: newRecipe });
+  fastify.post('/new-recipe', { preHandler: cookieValidator, handler: createRecipe });
   fastify.get('/recipes', { preHandler: cookieValidator, handler: getRecipes });
-  fastify.get('/recipe/:recipeId', { preHandler: cookieValidator, handler: getRecipeById });
+  fastify.get('/recipe/:recipeId', { preHandler: cookieValidator, handler: editRecipe });
   fastify.post('/recipe/:recipeId', { preHandler: cookieValidator, handler: updateRecipe });
+  fastify.post('/recipe/:recipeId/ingredient/:ingredientId', { preHandler: cookieValidator, handler: updateRecipeIngredient });
 };
 
 export { registerLoginRoutes, registerRoutes };

@@ -7,6 +7,13 @@ module.exports = {
       fontFamily: {
         sans: ['Poppins', ...defaultTheme.fontFamily.sans],
       },
+      gridTemplateColumns: {
+        'max-2': 'max-content max-content',
+        'max-3': 'max-content max-content max-content',
+        'max-4': 'max-content max-content max-content max-content',
+        'max-5': 'max-content max-content max-content max-content max-content',
+        'max-6': 'max-content max-content max-content max-content max-content max-content',
+      },
     },
   },
   plugins: [require('daisyui')],

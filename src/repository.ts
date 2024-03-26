@@ -167,9 +167,12 @@ export default {
   fetchRecipes: async (query: string): Promise<RecipeType[]> => {
     return recipes.filter((recipe) => recipe.name.toLowerCase().includes(query.toLowerCase()));
   },
-  fetchRecipe: async (id: string | undefined): Promise<RecipeWithIngredientName | undefined> => {
+  fetchRecipe: async (id: string): Promise<RecipeWithIngredientName | undefined> => {
     const recipe = recipes.find((recipe) => recipe.id === id);
     if (!recipe) return;
+
+    console.log({ ingr: recipe.ingredients });
+
     return {
       ...recipe,
       ingredients: recipe.ingredients.map(
@@ -181,14 +184,27 @@ export default {
       ),
     };
   },
-  addRecipe: async (name: string, ingredients: Dish[]) => {
+  addRecipe: async (name: string, ingredient: RecipeIngredient) => {
     const id = String(Math.max(...recipes.map((recipe) => Number(recipe.id))) + 1);
-    recipes.push({ id, name, ingredients });
+    recipes.push({ id, name, ingredients: [ingredient] });
+    return id;
   },
   updateRecipe: async (id: string, ingredients: RecipeIngredient[]) => {
     const recipe = recipes.find((recipe) => recipe.id === id);
     if (!recipe) return;
     recipe.ingredients = ingredients;
+  },
+  updateRecipeIngredient: async (recipeId: string, ingredientId: string, amount: number) => {
+    const recipe = recipes.find((recipe) => recipe.id === recipeId);
+    if (!recipe) return;
+
+    console.info({ recipeId, ingredientId, amount });
+
+    recipe.ingredients.forEach((ingredient) => {
+      if (ingredient.id === ingredientId) {
+        ingredient.amount = amount;
+      }
+    });
   },
 
   fetchIngredients: async (query: string = ''): Promise<Ingredient[]> => {

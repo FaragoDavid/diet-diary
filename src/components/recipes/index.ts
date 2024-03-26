@@ -3,7 +3,7 @@ import icons from '../../utils/icons.js';
 
 const addRecipe = () => {
   return `
-    <a href="/recipe">
+    <a href="/new-recipe">
         <button 
           type="submit"
           class="btn btn-primary btn-sm"
