@@ -1827,9 +1827,17 @@ details.collapse summary::-webkit-details-marker {
   grid-column: span 3 / span 3;
 }
 
+.row-span-3 {
+  grid-row: span 3 / span 3;
+}
+
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
 }
 
 .flex {
@@ -1868,6 +1876,10 @@ details.collapse summary::-webkit-details-marker {
   max-width: 20rem;
 }
 
+.max-w-32 {
+  max-width: 8rem;
+}
+
 .flex-grow {
   flex-grow: 1;
 }
@@ -1886,6 +1898,10 @@ details.collapse summary::-webkit-details-marker {
 
 .grid-rows-1 {
   grid-template-rows: repeat(1, minmax(0, 1fr));
+}
+
+.grid-rows-max-3 {
+  grid-template-rows: max-content max-content max-content;
 }
 
 .flex-col {
@@ -1918,6 +1934,15 @@ details.collapse summary::-webkit-details-marker {
 
 .gap-6 {
   gap: 1.5rem;
+}
+
+.gap-x-2 {
+  -moz-column-gap: 0.5rem;
+       column-gap: 0.5rem;
+}
+
+.gap-y-4 {
+  row-gap: 1rem;
 }
 
 .space-x-2 > :not([hidden]) ~ :not([hidden]) {
@@ -2003,8 +2028,21 @@ details.collapse summary::-webkit-details-marker {
   padding-bottom: 1.5rem;
 }
 
+.py-10 {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+}
+
 .pe-2 {
   padding-inline-end: 0.5rem;
+}
+
+.pl-10 {
+  padding-left: 2.5rem;
+}
+
+.ps-10 {
+  padding-inline-start: 2.5rem;
 }
 
 .text-center {
@@ -2026,6 +2064,11 @@ details.collapse summary::-webkit-details-marker {
   line-height: 1.75rem;
 }
 
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
 .font-medium {
   font-weight: 500;
 }
@@ -2034,9 +2077,23 @@ details.collapse summary::-webkit-details-marker {
   font-weight: 600;
 }
 
+.italic {
+  font-style: italic;
+}
+
 .text-primary {
   --tw-text-opacity: 1;
   color: var(--fallback-p,oklch(var(--p)/var(--tw-text-opacity)));
+}
+
+.text-neutral {
+  --tw-text-opacity: 1;
+  color: var(--fallback-n,oklch(var(--n)/var(--tw-text-opacity)));
+}
+
+.text-neutral-content {
+  --tw-text-opacity: 1;
+  color: var(--fallback-nc,oklch(var(--nc)/var(--tw-text-opacity)));
 }
 
 .placeholder-neutral::-moz-placeholder {
@@ -2110,8 +2167,20 @@ details.collapse summary::-webkit-details-marker {
 }
 
 @media (min-width: 640px) {
+  .sm\:col-span-3 {
+    grid-column: span 3 / span 3;
+  }
+
+  .sm\:max-w-full {
+    max-width: 100%;
+  }
+
   .sm\:grid-flow-col {
     grid-auto-flow: column;
+  }
+
+  .sm\:grid-cols-max-3 {
+    grid-template-columns: max-content max-content max-content;
   }
 
   .sm\:grid-rows-1 {

@@ -14,16 +14,16 @@ export class EditRecipe implements BaseComponent {
 
   addIngredient = (ingredients: Ingredient[]) => `
     <tr>
-      <td class="max-w-1/2">
-        <select name="newIngredient" class="select select-bordered select-sm w-full max-w-xs">
+      <td>
+        <select name="newIngredient" class="select select-bordered select-sm >
           ${ingredients.map((ingredient) => `<option>${ingredient.name}</option>`).join('')}
         </select>
       </td>
-      <td class="max-w-1/2">
+      <td>
         <input 
           type="number" 
           name="newIngredient"
-          class="input input-bordered input-sm w-full read-only:bg-inherit placeholder-neutral" 
+          class="input input-bordered input-sm read-only:bg-inherit placeholder-neutral" 
           placeholder="Mennyiség"
         />
       </td>
@@ -41,19 +41,40 @@ export class EditRecipe implements BaseComponent {
 
   async render() {
     const recipe = await repository.fetchRecipe(this.id);
+    const ingredients = await repository.fetchIngredients();
 
     if (!recipe) return 'Recept nem található';
+    const recipeCalories = recipe.ingredients.reduce((cals, ingredient) => {
+      const fullIngredient = ingredients.find(({ id }) => id === ingredient.id);
+      return cals + (fullIngredient?.calories ?? 0) * ingredient.amount;
+    }, 0);
+    const recipeCH = recipe.ingredients.reduce((ch, ingredient) => {
+      const fullIngredient = ingredients.find(({ id }) => id === ingredient.id);
+      return ch + (fullIngredient?.CH ?? 0) * ingredient.amount;
+    }, 0);
+    const recipeFat = recipe.ingredients.reduce((fat, ingredient) => {
+      const fullIngredient = ingredients.find(({ id }) => id === ingredient.id);
+      return fat + (fullIngredient?.fat ?? 0) * ingredient.amount;
+    }, 0);
 
     return `
       ${await new BackLink().render()}
-      <div class="container py-6 px-2 mx-auto ">
+      <div class="container py-10 px-2 mx-auto ">
         <div class="flex flex-col place-items-center gap-4">
-          <div class="flex items-top w-full">
-            <div class="flex-grow"></div>
-            ${header(recipe.name)}
-            <div class="flex-grow"></div>
+          ${header(recipe.name)}
+          <div class="flex justify-center">
+            <div class="text">
+              Cal: ${recipeCalories}
+            </div>
+            <div class="divider divider-horizontal" ></div> 
+            <div class="text">
+              CH: ${recipeCH}
+            </div>
+            <div class="divider divider-horizontal" ></div> 
+            <div class="text">
+              Zsír: ${recipeFat}
+            </div>
           </div>
-          ...
           <div class="text text-center">
             Alapanyagok
           </div>

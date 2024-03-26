@@ -1,66 +1,105 @@
 import icons from '../../utils/icons.js';
-import config from '../../config.js';
-import repository, { Dish, Ingredient } from '../../repository.js';
+import repository, { Ingredient, RecipeIngredientWithName } from '../../repository.js';
 
-const ingredientPropInput = (prop: string, name: string, type: string, value: number | string = '', ingredientId: string) => `
-  <td class="max-w-1/2">
-    <input 
-      name="${ingredientId}"
-      type="${type}" 
-      ${prop === 'name' && value ? 'disabled readonly' : ''}
-      value="${value}"
-      class="input input-bordered input-sm w-full read-only:bg-inherit placeholder-neutral" 
-      placeholder="${name}"
-    />
-  </td>
+const ingredientName = (ingredient: RecipeIngredientWithName) => `
+<div class="flex justify-center">
+  <input 
+    type="text" 
+    name="${ingredient.id}" 
+    class="input input-bordered input-sm max-w-32 sm:max-w-full"
+    readonly disabled
+    value="${ingredient.name}"
+    placeholder="Alapanyag neve"
+  />
+</div>`;
+
+const ingredientAmount = (ingredient: RecipeIngredientWithName) => `
+<div class="flex justify-center">
+  <input 
+    type="number" 
+    name="${ingredient.id}" 
+    class="input input-bordered input-sm max-w-32 sm:max-w-full"
+    value="${ingredient.amount}"
+    placeholder="Mennyiség"
+  />
+</div>`;
+
+const saveIngredient = (ingredient: RecipeIngredientWithName, id: string) => `
+<div class="flex justify-center">
+  <button 
+    type="submit"
+    class="btn btn-primary btn-sm"
+    hx-post="/recipe/${id}/ingredient/${ingredient.id}"
+    hx-target="#recipe-ingredient-list"
+    hx-swap="outerHTML"
+  />
+  ${icons.save}
+</div>`;
+
+const ingredientStats = (ingredient: RecipeIngredientWithName, fullIngredient: Ingredient) => `
+<div class="flex justify-center col-span-3 mb-4">
+  <div class="text text-sm italic text-neutral-content">
+    Cal: ${fullIngredient.calories * ingredient.amount}
+  </div>
+  <div class="divider divider-horizontal" ></div> 
+  <div class="text text-sm italic text-neutral-content">
+    CH: ${fullIngredient.CH * ingredient.amount}
+  </div>
+  <div class="divider divider-horizontal" ></div> 
+  <div class="text text-sm italic text-neutral-content">
+    Zsír: ${fullIngredient.fat * ingredient.amount}
+  </div>
+</div>`;
+
+const ingredientSelector = (ingredients: Ingredient[]) => `
+<div class="flex justify-center">
+  <select name="newIngredient" class="select select-bordered select-sm max-w-32 sm:max-w-full">
+    ${ingredients.map((ingredient) => `<option value="${ingredient.id}" >${ingredient.name}</option>`).join('')}
+  </select>
+</div>
 `;
 
+const newIngredientAmount = () => `
+<div class="flex justify-center">
+  <input 
+    type="number" 
+    name="newIngredient"
+    class="input input-bordered input-sm read-only:bg-inherit placeholder-neutral max-w-32 sm:max-w-full" 
+    placeholder="Mennyiség"
+  />
+</div>`;
+
+const addIngredient = (id: string) => `
+<div class="flex justify-center">
+  <button  
+    type="submit"
+    class="btn btn-primary btn-sm"
+    hx-post="/recipe/${id}"
+    hx-target="#recipe-ingredient-list"
+    hx-swap="outerHTML"
+  >${icons.add}</button>
+</div>`;
+
 export class RecipeIngredientList implements BaseComponent {
+  private ingredients: Ingredient[] = [];
   constructor(private id: string) {}
 
-  renderIngredient = (ingredient: Dish) => `
-    <tr">
-      ${Object.entries(config.recipes.props)
-        .map(([prop, { name, type }]) => ingredientPropInput(prop, name, type, ingredient[prop], ingredient.id))
-        .join('')}    
-      <td>
-        <button 
-          type="submit"
-          class="btn btn-primary btn-sm"
-          hx-post="/recipe/${this.id}/ingredient/${ingredient.id}"
-          hx-target="#recipe-ingredient-list"
-          hx-swap="outerHTML"
-        />
-        ${icons.save}
-      </td>
-    </tr>
-  `;
+  renderIngredient = (ingredient: RecipeIngredientWithName) => {
+    const fullIngredient = this.ingredients.find((ingr) => ingr.id === ingredient.id);
+    if (!fullIngredient) return '';
 
-  addIngredient = (ingredients: Ingredient[]) => `
-    <tr>
-      <td class="max-w-1/2">
-        <select name="newIngredient" class="select select-bordered select-sm w-full max-w-xs">
-          ${ingredients.map((ingredient) => `<option value="${ingredient.id}" >${ingredient.name}</option>`).join('')}
-        </select>
-      </td>
-      <td class="max-w-1/2">
-        <input 
-          type="number" 
-          name="newIngredient"
-          class="input input-bordered input-sm w-full read-only:bg-inherit placeholder-neutral" 
-          placeholder="Mennyiség"
-        />
-      </td>
-      <td>
-        <button 
-          type="submit"
-          class="btn btn-primary btn-sm"
-          hx-post="/recipe/${this.id}"
-          hx-target="#recipe-ingredient-list"
-          hx-swap="outerHTML"
-        >${icons.add}</button>
-      </td>
-    </tr>
+    return `
+      ${ingredientName(ingredient)}
+      ${ingredientAmount(ingredient)}
+      ${saveIngredient(ingredient, this.id)}
+      ${ingredientStats(ingredient, fullIngredient)}
+    `;
+  };
+
+  addIngredient = () => `
+    ${ingredientSelector(this.ingredients)}
+    ${newIngredientAmount()}
+    ${addIngredient(this.id)}
   `;
 
   async render() {
@@ -68,16 +107,16 @@ export class RecipeIngredientList implements BaseComponent {
     if (!recipe) return 'Error: Recipe not found';
 
     const recipeIngrs = recipe.ingredients;
-    const ingredients = await repository.fetchIngredients();
+    this.ingredients = await repository.fetchIngredients();
 
     return `
-      <form id="recipe-ingredient-list" class="overflow-x-auto w-full">
-        <table class="table table-zebra table-pin-rows">
+      <form id="recipe-ingredient-list">
+        <div class="grid grid-cols-max-3 grid-row-flex gap-2">
           <tbody>
             ${recipeIngrs.map((ingredient) => this.renderIngredient(ingredient)).join('')}
-            ${this.addIngredient(ingredients)}
+            ${this.addIngredient()}
           </tbody>
-        </table>
+        </div>
       </form>
     `;
   }

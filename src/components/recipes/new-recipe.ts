@@ -30,36 +30,41 @@ export class NewRecipe implements BaseComponent {
   constructor() {}
 
   addIngredient = (ingredients: Ingredient[]) => `
-    <select name="ingredient" class="select select-bordered select-sm w-full max-w-xs">
+    <div class="flex justify-center">
+      <select name="ingredient" class="select select-bordered select-sm max-w-32 sm:max-w-full">
       ${ingredients.map((ingredient) => `<option value="${ingredient.id}">${ingredient.name}</option>`).join('')}
-    </select>
-    <input 
+      </select>
+    </div>
+    <div class="flex justify-center">
+      <input 
       type="number" 
       name="amount"
-      class="input input-bordered input-sm w-full read-only:bg-inherit placeholder-neutral" 
+      class="input input-bordered input-sm placeholder-neutral max-w-32 sm:max-w-full"
       placeholder="Mennyiség"
-    />
-    <button 
+      />
+    </div>
+    <div class="flex justify-center">
+      <button 
       type="submit"
       class="btn btn-primary btn-sm"
       hx-post="/new-recipe"
       hx-target="#new-recipe"
       hx-swap="outerHTML"
-    >${icons.add}</button>
+      >${icons.add}</button>
+    </div>
   `;
 
   async render() {
     const ingredients = await repository.fetchIngredients();
 
     return `
-      <div id="new-recipe">
+      <div id="new-recipe" class="w-full">
         ${await new BackLink().render()}
         <div class="container py-6 px-2 mx-auto ">
-          <div class="flex flex-col place-items-center gap-4">
+          <div class="flex flex-col items-center gap-4">
             ${header()}
-            ...
-            <form class="overflow-x-auto w-full">
-              <div class="grid grid-cols-max-3 gap-4">
+            <form class="w-full flex justify-center">
+              <div class="grid grid-cols-max-3 gap-x-2 gap-y-4">
                 ${recipeName()}
                 ${this.addIngredient(ingredients)}
               </div>
