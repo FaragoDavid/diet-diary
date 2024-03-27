@@ -28,26 +28,23 @@ export const editRecipe = async (request: GetRecipeRequest, reply: FastifyReply)
   return reply.type('text/html').send(template);
 };
 
-export const updateRecipe = async (request: PostRecipeRequest, reply: FastifyReply) => {
+export const addRecipeIngredient = async (request: PostRecipeRequest, reply: FastifyReply) => {
   const recipeId = request.params.recipeId;
 
   const recipe = await repository.fetchRecipe(recipeId);
   if (!recipe) throw new Error('Recipe not found');
 
-  const { newIngredient, ...ingredients } = request.body;
+  const { newIngredient } = request.body;
   if (!newIngredient) throw new Error('New ingredient not found');
   if (!newIngredient[0] || !newIngredient[1]) throw new Error('New ingredient not found');
 
-  await repository.updateRecipe(recipeId, [
-    ...recipe.ingredients.map((ingredient) => ({ id: ingredient.id, amount: Number(ingredients[String(ingredient.id)]) })),
-    { id: newIngredient[0], amount: Number(newIngredient[1]) },
-  ]);
+  await repository.addRecipeIngredient(recipeId, newIngredient[0], Number(newIngredient[1]));
 
-  const template = await layout(new RecipeIngredientList(recipeId));
+  const template = await layout(new EditRecipe(recipeId));
   return reply.type('text/html').send(template);
 };
 
-export const updateRecipeIngredient = async (request: UpdateRecipeIngredientRequest, reply: FastifyReply) => {
+export const updateRecipeIngredientAmount = async (request: UpdateRecipeIngredientRequest, reply: FastifyReply) => {
   const { recipeId, ingredientId } = request.params;
 
   const recipe = await repository.fetchRecipe(recipeId);
@@ -56,7 +53,7 @@ export const updateRecipeIngredient = async (request: UpdateRecipeIngredientRequ
   const ingredient = recipe.ingredients.find((ingredient) => ingredient.id === ingredientId);
   if (!ingredient) throw new Error('Ingredient not found in recipe');
 
-  await repository.updateRecipeIngredient(recipeId, ingredientId, Number(request.body[ingredientId]));
+  await repository.updateRecipeIngredientAmount(recipeId, ingredientId, Number(request.body[ingredientId]));
 
   const template = await layout(new EditRecipe(recipeId));
   return reply.type('text/html').send(template);

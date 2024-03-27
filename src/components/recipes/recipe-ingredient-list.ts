@@ -65,27 +65,19 @@ const ingredientSelector = (ingredients: Ingredient[]) => `
 </div>
 `;
 
-const newIngredientAmount = () => `
+const newIngredientAmount = (id: string) => `
 <div class="flex justify-center items-center">
   <input 
     type="number"
     name="newIngredient"
     class="input input-sm input-bordered w-16 bg-base-200  pr-5 text-right placeholder:text-neutral peer" 
     placeholder="0"
+    hx-post="/recipe/${id}"
+    hx-target="#recipe"
+    hx-swap="outerHTML"
   >
     <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>
   </input>
-</div>`;
-
-const addIngredient = (id: string) => `
-<div class="flex justify-center">
-  <button  
-    type="submit"
-    class="btn btn-primary btn-sm"
-    hx-post="/recipe/${id}"
-    hx-target="#recipe-ingredient-list"
-    hx-swap="outerHTML"
-  >${icons.add}</button>
 </div>`;
 
 export class RecipeIngredientList implements BaseComponent {
@@ -107,8 +99,7 @@ export class RecipeIngredientList implements BaseComponent {
 
   addIngredient = () => `
     ${ingredientSelector(this.ingredients)}
-    ${newIngredientAmount()}
-    ${addIngredient(this.id)}
+    ${newIngredientAmount(this.id)}
   `;
 
   async render() {
