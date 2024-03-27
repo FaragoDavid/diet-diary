@@ -539,10 +539,12 @@ html {
   --bc: 0.746477 0.0216 264.435964;
 }
 
-input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button {
+input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number'] {
   -webkit-appearance: none;
   margin: 0;
+  -moz-appearance: textfield !important;
 }
 
 *, ::before, ::after {
