@@ -268,8 +268,6 @@ export default {
     const recipe = recipes.find((recipe) => recipe.id === recipeId);
     if (!recipe) return;
 
-    console.info({ recipeId, ingredientId, amount });
-
     recipe.ingredients.forEach((ingredient) => {
       if (ingredient.id === ingredientId) {
         ingredient.amount = amount;
@@ -284,7 +282,9 @@ export default {
   },
 
   fetchIngredients: async (query: string = ''): Promise<Ingredient[]> => {
-    return ingredients.filter((ingredient) => ingredient.name.toLowerCase().includes(query.toLowerCase()));
+    return ingredients
+      .filter((ingredient) => ingredient.name.toLowerCase().includes(query.toLowerCase()))
+      .map((ingredient) => ({ ...ingredient, calories: ingredient.calories / 100, CH: ingredient.CH / 100, fat: ingredient.fat / 100 }));
   },
   addIngredient: async (name: string, calories: string, ch: string) => {
     const id = String(Math.max(...ingredients.map((ingr) => Number(ingr.id))) + 1);

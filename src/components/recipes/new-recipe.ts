@@ -3,7 +3,7 @@ import repository, { Ingredient } from '../../repository.js';
 import { BackLink } from '../back-link.js';
 
 const header = () => `
-  <div class="flex items-center justify-center">
+  <div class="flex justify-center items-center">
     <div class="text-center text-3xl font-medium">
       Új recept
     </div>

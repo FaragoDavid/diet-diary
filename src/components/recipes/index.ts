@@ -33,8 +33,8 @@ export class Recipes implements BaseComponent {
 
   async render() {
     return `
-        <div class="flex flex-col items-center justify-center space-y-4">
-          <div class="flex items-center justify-center space-x-2">
+        <div class="flex flex-col justify-center items-center space-y-4">
+          <div class="flex justify-center items-center space-x-2">
             ${searchRecipes()}
             <div class="divider divider-horizontal" ></div> 
             ${addRecipe()}

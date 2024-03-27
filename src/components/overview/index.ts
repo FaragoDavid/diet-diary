@@ -23,7 +23,7 @@ export class Overview implements BaseComponent {
     const toDate = new Date();
 
     return `
-      <div class="flex items-center justify-center space-x-4">
+      <div class="flex justify-center items-center space-x-4">
         ${dateInput('fromDate', fromDate)}
         <span class="text-center">-</span>
         ${dateInput('toDate', toDate)}

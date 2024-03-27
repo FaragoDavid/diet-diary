@@ -1,5 +1,4 @@
-import repository, { Ingredient } from '../../repository.js';
-import icons from '../../utils/icons.js';
+import repository, { RecipeWithIngredientName } from '../../repository.js';
 import { BackLink } from '../back-link.js';
 import { RecipeIngredientList } from './recipe-ingredient-list.js';
 
@@ -10,74 +9,79 @@ const header = (recipeName: string) => `
 `;
 
 const recipeStats = async (recipeId: string) => {
-  const recipe = await repository.fetchRecipe(recipeId);
   const ingredients = await repository.fetchIngredients();
+  const recipe = await repository.fetchRecipe(recipeId);
+  if (!recipe) return '';
 
-  const recipeCalories = recipe!.ingredients.reduce((cals, ingredient) => {
-    const fullIngredient = ingredients.find(({ id }) => id === ingredient.id);
-    return cals + (fullIngredient?.calories ?? 0) * ingredient.amount;
-  }, 0);
-  const recipeCH = recipe!.ingredients.reduce((ch, ingredient) => {
-    const fullIngredient = ingredients.find(({ id }) => id === ingredient.id);
-    return ch + (fullIngredient?.CH ?? 0) * ingredient.amount;
-  }, 0);
-  const recipeFat = recipe!.ingredients.reduce((fat, ingredient) => {
-    const fullIngredient = ingredients.find(({ id }) => id === ingredient.id);
-    return fat + (fullIngredient?.fat ?? 0) * ingredient.amount;
-  }, 0);
+  const { recipeCalories, recipeCH, recipeFat } = recipe.ingredients.reduce(
+    (acc, ingredient) => {
+      const fullIngredient = ingredients.find(({ id }) => id === ingredient.id);
+      if (!fullIngredient) return acc;
+      return {
+        recipeCalories: acc.recipeCalories + fullIngredient.calories * ingredient.amount,
+        recipeCH: acc.recipeCH + fullIngredient.CH * ingredient.amount,
+        recipeFat: acc.recipeFat + fullIngredient.fat * ingredient.amount,
+      };
+    },
+    { recipeCalories: 0, recipeCH: 0, recipeFat: 0 },
+  );
 
   return `
-    <div class="flex justify-center">
-      <div class="text">Cal: ${recipeCalories}</div>
+    <div class="flex justify-center items-center">
+      <div class="flex flex-col justify-center items-center gap-y-1">
+        <div class="text text-center text-sm italic">Cal</div>
+        <div class="text text-center text-lg">${Math.round(recipeCalories * (recipe.amount || 0) * 100) / 100}</div>
+      </div>
       <div class="divider divider-horizontal" ></div> 
-      <div class="text">CH: ${recipeCH}</div>
+      <div class="flex flex-col justify-center items-center gap-y-1">
+        <div class="text text-center text-sm italic">CH</div>
+        <div class="text text-center text-lg">${Math.round(recipeCH * (recipe.amount || 0) * 100) / 100}</div>
+      </div>
       <div class="divider divider-horizontal" ></div> 
-      <div class="text">Zsír: ${recipeFat}</div>
+      <div class="flex flex-col justify-center items-center gap-y-1">
+        <div class="text text-center text-sm italic">Zsír</div>
+        <div class="text text-center text-lg">${Math.round(recipeFat * (recipe.amount || 0) * 100) / 100}</div>
+      </div>
     </div>
   `;
+};
+
+const recipeAmount = (recipe: RecipeWithIngredientName) => {
+  const recipeAmount = recipe.amount || recipe.ingredients.reduce((acc, ingredient) => acc + ingredient.amount, 0);
+
+  return `
+<div class="flex flex-col justify-center items-center gap-y-1">
+  <div class="text text-center">Menny.</div>
+  <div class="flex justify-center items-center">
+    <input 
+      type="number"
+      class="input input-sm input-bordered w-16 bg-base-200  pr-5 text-right" 
+      value="${recipeAmount}"
+    >
+      <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>
+    </input>
+  </div>
+</div>
+`;
 };
 
 export class EditRecipe implements BaseComponent {
   constructor(private id: string) {}
 
-  addIngredient = (ingredients: Ingredient[]) => `
-    <tr>
-      <td>
-        <select name="newIngredient" class="select select-bordered select-sm >
-          ${ingredients.map((ingredient) => `<option>${ingredient.name}</option>`).join('')}
-        </select>
-      </td>
-      <td>
-        <input 
-          type="number" 
-          name="newIngredient"
-          class="input input-bordered input-sm read-only:bg-inherit placeholder-neutral" 
-          placeholder="Mennyiség"
-        />
-      </td>
-      <td>
-        <button 
-          type="submit"
-          class="btn btn-primary btn-sm"
-          hx-post="/recipe/${this.id}"
-          hx-target="#recipe-ingredient-list"
-          hx-swap="outerHTML"
-        >${icons.add}</button>
-      </td>
-    </tr>
-  `;
-
   async render() {
     const recipe = await repository.fetchRecipe(this.id);
-
     if (!recipe) return 'Recept nem található';
 
     return `
       ${await new BackLink().render()}
       <div class="container py-10 px-2 mx-auto ">
-        <div class="flex flex-col place-items-center gap-4">
+        <div class="flex flex-col place-items-center gap-y-4">
           ${header(recipe.name)}
-          ${await recipeStats(this.id)}
+          <div class="flex justify-center items-center">
+            ${recipeAmount(recipe)}
+            <div class="divider divider-horizontal" ></div> 
+            ${await recipeStats(this.id)}
+          </div>
           <div class="text text-center">
             Alapanyagok
           </div>

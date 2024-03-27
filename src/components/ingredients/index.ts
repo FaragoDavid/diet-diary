@@ -7,7 +7,6 @@ const propInput = (prop: string, name: String, type: string) => `
     name="${prop}" 
     class="input input-sm input-bordered w-full"
     placeholder=${name}
-    ${type === 'number' ? 'min="0"' : ''}
   >
 `;
 
@@ -50,7 +49,7 @@ export class Ingredients implements BaseComponent {
 
   async render() {
     return `  
-      <div class="flex flex-col items-center justify-center space-y-4">
+      <div class="flex flex-col justify-center items-center space-y-4">
         ${newIngredient()}
         <div class="divider divider-base-200"></div>
         ${searchIngredients()}

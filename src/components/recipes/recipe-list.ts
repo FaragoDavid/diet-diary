@@ -46,13 +46,12 @@ const renderRecipes = async (recipes: RecipeType[]) => {
   for (const recipe of recipes) {
     renderedRecipes += `
     <div class="text">${recipe.name}</div>
-    <div class="flex items-center justify-center">
+    <div class="flex justify-center items-center">
       <input 
         id="amount-${recipe.id}"
         type="number"
-        class="input input-xs input-bordered max-w-16 bg-base-200  pr-5 text-right" 
+        class="input input-xs input-bordered w-16 bg-base-200  pr-5 text-right" 
         value="${recipe.amount ?? 0}"
-        min="0" max="9999"
         hx-trigger="change"
         hx-target="#recipe-list"
         hx-post="/recipe/${recipe.id}/amount"
@@ -61,10 +60,10 @@ const renderRecipes = async (recipes: RecipeType[]) => {
           query: document.getElementById('search-recipe').value
         }"
       >
-        <span class="relative right-4 text-xs">g</span>
+        <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>
       </input>
     </div>
-    <div class="flex items-center justify-center row-span-2">
+    <div class="flex justify-center items-center row-span-2">
       <a 
         href="/recipe/${recipe.id}" 
         class="btn btn-sm btn-primary"

@@ -14,20 +14,19 @@ const ingredientName = (ingredient: RecipeIngredientWithName) => `
 </div>`;
 
 const ingredientAmount = (ingredient: RecipeIngredientWithName) => `
-<div class="flex justify-center">
+<div class="flex justify-center items-center">
   <input 
     type="number"
     name="${ingredient.id}" 
-    class="input input-sm input-bordered max-w-16 bg-base-200  pr-5 text-right" 
+    class="input input-sm input-bordered w-16 bg-base-200  pr-5 text-right" 
     value="${ingredient.amount}"
-    min="0" max="9999"
   >
-    <span class="relative right-4 top-2 text-sm">g</span>
+    <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>
   </input>
 </div>`;
 
 const saveIngredient = (ingredient: RecipeIngredientWithName, id: string) => `
-<div class="flex justify-center">
+<div class="flex justify-center items-center row-span-2">
   <button 
     type="submit"
     class="btn btn-primary btn-sm"
@@ -38,20 +37,22 @@ const saveIngredient = (ingredient: RecipeIngredientWithName, id: string) => `
   ${icons.save}
 </div>`;
 
-const ingredientStats = (ingredient: RecipeIngredientWithName, fullIngredient: Ingredient) => `
-<div class="flex justify-center col-span-3 mb-4">
-  <div class="text text-sm italic text-neutral-content">
-    Cal: ${fullIngredient.calories * ingredient.amount}
-  </div>
-  <div class="divider divider-horizontal" ></div> 
-  <div class="text text-sm italic text-neutral-content">
-    CH: ${fullIngredient.CH * ingredient.amount}
-  </div>
-  <div class="divider divider-horizontal" ></div> 
-  <div class="text text-sm italic text-neutral-content">
-    Zsír: ${fullIngredient.fat * ingredient.amount}
-  </div>
-</div>`;
+const ingredientStats = (ingredient: RecipeIngredientWithName, fullIngredient: Ingredient) => {
+  return `
+  <div class="flex justify-center col-span-2">
+    <div class="text text-sm italic text-neutral-content">
+      Cal: ${Math.round(fullIngredient.calories * ingredient.amount * 100) / 100}
+    </div>
+    <div class="divider divider-horizontal" ></div> 
+    <div class="text text-sm italic text-neutral-content">
+      CH: ${Math.round(fullIngredient.CH * ingredient.amount * 100) / 100}
+    </div>
+    <div class="divider divider-horizontal" ></div> 
+    <div class="text text-sm italic text-neutral-content">
+      Zsír: ${Math.round(fullIngredient.fat * ingredient.amount * 100) / 100}
+    </div>
+  </div>`;
+};
 
 const ingredientSelector = (ingredients: Ingredient[]) => `
 <div class="flex justify-center">
@@ -62,13 +63,15 @@ const ingredientSelector = (ingredients: Ingredient[]) => `
 `;
 
 const newIngredientAmount = () => `
-<div class="flex justify-center">
+<div class="flex justify-center items-center">
   <input 
-    type="number" 
+    type="number"
     name="newIngredient"
-    class="input input-bordered input-sm read-only:bg-inherit placeholder-neutral max-w-32 sm:max-w-full" 
-    placeholder="Mennyiség"
-  />
+    class="input input-sm input-bordered w-16 bg-base-200  pr-5 text-right placeholder:text-neutral peer" 
+    placeholder="0"
+  >
+    <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>
+  </input>
 </div>`;
 
 const addIngredient = (id: string) => `
@@ -95,6 +98,7 @@ export class RecipeIngredientList implements BaseComponent {
       ${ingredientAmount(ingredient)}
       ${saveIngredient(ingredient, this.id)}
       ${ingredientStats(ingredient, fullIngredient)}
+      <div class="divider col-span-3 my-0" ></div>
     `;
   };
 
@@ -112,13 +116,9 @@ export class RecipeIngredientList implements BaseComponent {
     this.ingredients = await repository.fetchIngredients();
 
     return `
-      <form id="recipe-ingredient-list">
-        <div class="grid grid-cols-max-3 grid-row-flex gap-2">
-          <tbody>
-            ${recipeIngrs.map((ingredient) => this.renderIngredient(ingredient)).join('')}
-            ${this.addIngredient()}
-          </tbody>
-        </div>
+      <form id="recipe-ingredient-list" class="grid grid-cols-max-3 grid-row-flex gap-2">
+        ${recipeIngrs.map((ingredient) => this.renderIngredient(ingredient)).join('')}
+        ${this.addIngredient()}
       </form>
     `;
   }
