@@ -75,19 +75,21 @@ export class EditRecipe implements BaseComponent {
     if (!recipe) return 'Recept nem található';
 
     return `
-      ${await new BackLink().render()}
-      <div class="container py-10 px-2 mx-auto ">
-        <div class="flex flex-col place-items-center gap-y-4">
-          ${header(recipe.name)}
-          <div class="flex justify-center items-center">
-            ${recipeAmount(recipe)}
-            <div class="divider divider-horizontal" ></div> 
-            ${await recipeStats(this.id)}
+      <div id="recipe">
+        ${await new BackLink().render()}
+        <div class="container py-10 px-2 mx-auto ">
+          <div class="flex flex-col place-items-center gap-y-4">
+            ${header(recipe.name)}
+            <div class="flex justify-center items-center">
+              ${recipeAmount(recipe)}
+              <div class="divider divider-horizontal" ></div> 
+              ${await recipeStats(this.id)}
+            </div>
+            <div class="text text-center">
+              Alapanyagok
+            </div>
+            ${await new RecipeIngredientList(this.id).render()}
           </div>
-          <div class="text text-center">
-            Alapanyagok
-          </div>
-          ${await new RecipeIngredientList(this.id).render()}
         </div>
       </div>
     `;

@@ -31,7 +31,7 @@ const saveIngredient = (ingredient: RecipeIngredientWithName, id: string) => `
     type="submit"
     class="btn btn-primary btn-sm"
     hx-post="/recipe/${id}/ingredient/${ingredient.id}"
-    hx-target="#recipe-ingredient-list"
+    hx-target="#recipe"
     hx-swap="outerHTML"
   />
   ${icons.save}

@@ -57,7 +57,7 @@ export const updateRecipeIngredient = async (request: UpdateRecipeIngredientRequ
 
   await repository.updateRecipeIngredient(recipeId, ingredientId, Number(request.body[ingredientId]));
 
-  const template = await layout(new RecipeIngredientList(recipeId));
+  const template = await layout(new EditRecipe(recipeId));
   return reply.type('text/html').send(template);
 };
 
