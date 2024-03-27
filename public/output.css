@@ -1913,6 +1913,10 @@ details.collapse summary::-webkit-details-marker {
   height: 1rem;
 }
 
+.h-6 {
+  height: 1.5rem;
+}
+
 .w-full {
   width: 100%;
 }
@@ -1923,6 +1927,10 @@ details.collapse summary::-webkit-details-marker {
 
 .w-4 {
   width: 1rem;
+}
+
+.w-6 {
+  width: 1.5rem;
 }
 
 .max-w-16 {

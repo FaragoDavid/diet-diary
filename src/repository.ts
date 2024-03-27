@@ -274,6 +274,13 @@ export default {
       }
     });
   },
+  deleteRecipeIngredient: async (recipeId: string, ingredientId: string) => {
+    const recipe = recipes.find((recipe) => recipe.id === recipeId);
+    if (!recipe) throw new Error('Recipe not found');
+    
+    recipe.ingredients = recipe.ingredients.filter((ingredient) => ingredient.id !== ingredientId);
+    
+  },
   updateRecipeAmount: async (recipeId: string, amount: number) => {
     const recipe = recipes.find((recipe) => recipe.id === recipeId);
     if (!recipe) return;

@@ -13,28 +13,31 @@ const ingredientName = (ingredient: RecipeIngredientWithName) => `
   />
 </div>`;
 
-const ingredientAmount = (ingredient: RecipeIngredientWithName) => `
+const ingredientAmount = (ingredient: RecipeIngredientWithName, id: string) => `
 <div class="flex justify-center items-center">
   <input 
     type="number"
     name="${ingredient.id}" 
     class="input input-sm input-bordered w-16 bg-base-200  pr-5 text-right" 
     value="${ingredient.amount}"
+    hx-post="/recipe/${id}/ingredient/${ingredient.id}"
+    hx-target="#recipe"
+    hx-swap="outerHTML"
   >
     <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>
   </input>
 </div>`;
 
-const saveIngredient = (ingredient: RecipeIngredientWithName, id: string) => `
+const deleteIngredient = (ingredient: RecipeIngredientWithName, id: string) => `
 <div class="flex justify-center items-center row-span-2">
   <button 
     type="submit"
     class="btn btn-primary btn-sm"
-    hx-post="/recipe/${id}/ingredient/${ingredient.id}"
+    hx-delete="/recipe/${id}/ingredient/${ingredient.id}"
     hx-target="#recipe"
     hx-swap="outerHTML"
   />
-  ${icons.save}
+  ${icons.delete}
 </div>`;
 
 const ingredientStats = (ingredient: RecipeIngredientWithName, fullIngredient: Ingredient) => {
@@ -95,8 +98,8 @@ export class RecipeIngredientList implements BaseComponent {
 
     return `
       ${ingredientName(ingredient)}
-      ${ingredientAmount(ingredient)}
-      ${saveIngredient(ingredient, this.id)}
+      ${ingredientAmount(ingredient, this.id)}
+      ${deleteIngredient(ingredient, this.id)}
       ${ingredientStats(ingredient, fullIngredient)}
       <div class="divider col-span-3 my-0" ></div>
     `;

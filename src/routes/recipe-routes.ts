@@ -14,6 +14,7 @@ type UpdateRecipeIngredientRequest = FastifyRequest<{
   Params: { recipeId: string; ingredientId: string };
   Body: { newIngredient: string[] } & Record<string, string>;
 }>;
+type DeleteRecipeIngredientRequest = UpdateRecipeIngredientRequest;
 type UpdateRecipeAmountRequest = FastifyRequest<{ Params: { recipeId: string }; Body: { amount: string; query: string } }>;
 type CreateRecipeRequest = FastifyRequest<{ Body: { name: string; ingredient: string; amount: string } }>;
 
@@ -56,6 +57,22 @@ export const updateRecipeIngredient = async (request: UpdateRecipeIngredientRequ
   if (!ingredient) throw new Error('Ingredient not found in recipe');
 
   await repository.updateRecipeIngredient(recipeId, ingredientId, Number(request.body[ingredientId]));
+
+  const template = await layout(new EditRecipe(recipeId));
+  return reply.type('text/html').send(template);
+};
+
+export const deleteRecipeIngredient = async (request: DeleteRecipeIngredientRequest, reply: FastifyReply) => {
+  const { recipeId, ingredientId } = request.params;
+  
+
+  const recipe = await repository.fetchRecipe(recipeId);
+  if (!recipe) throw new Error('Recipe not found');
+
+  const ingredient = recipe.ingredients.find((ingredient) => ingredient.id === ingredientId);
+  if (!ingredient) throw new Error('Ingredient not found in recipe');
+
+  await repository.deleteRecipeIngredient(recipeId, ingredientId);
 
   const template = await layout(new EditRecipe(recipeId));
   return reply.type('text/html').send(template);

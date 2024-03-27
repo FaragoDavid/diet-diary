@@ -2,7 +2,7 @@ import fastify, { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 
 import { layout } from '../components/layout.js';
 import { Dashboard } from '../components/pages/dashboard.js';
-import { createRecipe, editRecipe, getRecipes, newRecipe, updateRecipe, updateRecipeAmount, updateRecipeIngredient } from './recipe-routes.js';
+import { createRecipe, deleteRecipeIngredient, editRecipe, getRecipes, newRecipe, updateRecipe, updateRecipeAmount, updateRecipeIngredient } from './recipe-routes.js';
 import { getLogin, postLogin } from './login-routes.js';
 import { adIngredient, getIngredient } from './ingredient-routes.js';
 import { getDays } from './meal-routes.js';
@@ -40,6 +40,7 @@ const registerRoutes = (fastify: FastifyInstance) => {
   fastify.post('/recipe/:recipeId', { preHandler: cookieValidator, handler: updateRecipe });
   fastify.post('/recipe/:recipeId/amount', { preHandler: cookieValidator, handler: updateRecipeAmount });
   fastify.post('/recipe/:recipeId/ingredient/:ingredientId', { preHandler: cookieValidator, handler: updateRecipeIngredient });
+  fastify.delete('/recipe/:recipeId/ingredient/:ingredientId', { preHandler: cookieValidator, handler: deleteRecipeIngredient });
 };
 
 export { registerLoginRoutes, registerRoutes };
