@@ -1965,6 +1965,10 @@ details.collapse summary::-webkit-details-marker {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.grid-cols-max-2 {
+  grid-template-columns: max-content max-content;
+}
+
 .grid-rows-1 {
   grid-template-rows: repeat(1, minmax(0, 1fr));
 }
@@ -2089,6 +2093,10 @@ details.collapse summary::-webkit-details-marker {
   background-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-bg-opacity)));
 }
 
+.bg-inherit {
+  background-color: inherit;
+}
+
 .p-2 {
   padding: 0.5rem;
 }
@@ -2204,6 +2212,11 @@ details.collapse summary::-webkit-details-marker {
   color: var(--fallback-p,oklch(var(--p)/var(--tw-text-opacity)));
 }
 
+.text-pink-500 {
+  --tw-text-opacity: 1;
+  color: rgb(236 72 153 / var(--tw-text-opacity));
+}
+
 .placeholder-neutral::-moz-placeholder {
   --tw-placeholder-opacity: 1;
   color: var(--fallback-n,oklch(var(--n)/var(--tw-placeholder-opacity)));
@@ -2292,6 +2305,11 @@ details.collapse summary::-webkit-details-marker {
 
 .read-only\:bg-inherit:read-only {
   background-color: inherit;
+}
+
+.hover\:text-pink-500:hover {
+  --tw-text-opacity: 1;
+  color: rgb(236 72 153 / var(--tw-text-opacity));
 }
 
 .peer:-moz-placeholder-shown ~ .peer-\[\:-moz-placeholder-shown\]\:text-neutral {

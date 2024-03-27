@@ -13,9 +13,11 @@ const recipeStats = async (recipeId: string) => {
   const recipe = await repository.fetchRecipe(recipeId);
   if (!recipe) return '';
 
+  const recipeAmount = recipe.amount || recipe.ingredients.reduce((acc, ingredient) => acc + ingredient.amount, 0);
   const { recipeCalories, recipeCH, recipeFat } = recipe.ingredients.reduce(
     (acc, ingredient) => {
       const fullIngredient = ingredients.find(({ id }) => id === ingredient.id);
+
       if (!fullIngredient) return acc;
       return {
         recipeCalories: acc.recipeCalories + fullIngredient.calories * ingredient.amount,
@@ -30,17 +32,17 @@ const recipeStats = async (recipeId: string) => {
     <div class="flex justify-center items-center">
       <div class="flex flex-col justify-center items-center gap-y-1">
         <div class="text text-center text-sm italic">Cal</div>
-        <div class="text text-center text-lg">${Math.round(recipeCalories * (recipe.amount || 0) * 100) / 100}</div>
+        <div class="text text-center text-lg">${Math.round(recipeCalories * recipeAmount * 100) / 100}</div>
       </div>
       <div class="divider divider-horizontal" ></div> 
       <div class="flex flex-col justify-center items-center gap-y-1">
         <div class="text text-center text-sm italic">CH</div>
-        <div class="text text-center text-lg">${Math.round(recipeCH * (recipe.amount || 0) * 100) / 100}</div>
+        <div class="text text-center text-lg">${Math.round(recipeCH * recipeAmount * 100) / 100}</div>
       </div>
       <div class="divider divider-horizontal" ></div> 
       <div class="flex flex-col justify-center items-center gap-y-1">
         <div class="text text-center text-sm italic">Zsír</div>
-        <div class="text text-center text-lg">${Math.round(recipeFat * (recipe.amount || 0) * 100) / 100}</div>
+        <div class="text text-center text-lg">${Math.round(recipeFat * recipeAmount * 100) / 100}</div>
       </div>
     </div>
   `;
@@ -50,19 +52,19 @@ const recipeAmount = (recipe: RecipeWithIngredientName) => {
   const recipeAmount = recipe.amount || recipe.ingredients.reduce((acc, ingredient) => acc + ingredient.amount, 0);
 
   return `
-<div class="flex flex-col justify-center items-center gap-y-1">
-  <div class="text text-center">Menny.</div>
-  <div class="flex justify-center items-center">
-    <input 
-      type="number"
-      class="input input-sm input-bordered w-16 bg-base-200  pr-5 text-right" 
-      value="${recipeAmount}"
-    >
-      <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>
-    </input>
-  </div>
-</div>
-`;
+    <div class="flex flex-col justify-center items-center gap-y-1">
+      <div class="text text-center">Menny.</div>
+      <div class="flex justify-center items-center">
+        <input 
+          type="number"
+          class="input input-sm input-bordered w-16 bg-base-200  pr-5 text-right" 
+          value="${recipeAmount}"
+        >
+          <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>
+        </input>
+      </div>
+    </div>
+  `;
 };
 
 export class EditRecipe implements BaseComponent {
