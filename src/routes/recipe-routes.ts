@@ -1,11 +1,10 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { layout } from '../components/layout.js';
-import { RecipeIngredientList } from '../components/recipes/recipe-ingredient-list.js';
 import { RecipeList } from '../components/recipes/recipe-list.js';
 import repository from '../repository.js';
 import { NewRecipe } from '../components/recipes/new-recipe.js';
-import { EditRecipe } from '../components/recipes/edit-recipe.js';
+import { Recipe } from '../pages/recipe.js';
 
 type GetRecipesRequest = FastifyRequest<{ Querystring: { query: string } }>;
 type GetRecipeRequest = FastifyRequest<{ Params: { recipeId: string } }>;
@@ -24,7 +23,7 @@ export const getRecipes = async (request: GetRecipesRequest, reply: FastifyReply
 };
 
 export const editRecipe = async (request: GetRecipeRequest, reply: FastifyReply) => {
-  const template = await layout(new EditRecipe(request.params.recipeId));
+  const template = await layout(new Recipe(request.params.recipeId));
   return reply.type('text/html').send(template);
 };
 
@@ -40,7 +39,7 @@ export const addRecipeIngredient = async (request: PostRecipeRequest, reply: Fas
 
   await repository.addRecipeIngredient(recipeId, newIngredient[0], Number(newIngredient[1]));
 
-  const template = await layout(new EditRecipe(recipeId));
+  const template = await layout(new Recipe(recipeId));
   return reply.type('text/html').send(template);
 };
 
@@ -55,13 +54,12 @@ export const updateRecipeIngredientAmount = async (request: UpdateRecipeIngredie
 
   await repository.updateRecipeIngredientAmount(recipeId, ingredientId, Number(request.body[ingredientId]));
 
-  const template = await layout(new EditRecipe(recipeId));
+  const template = await layout(new Recipe(recipeId));
   return reply.type('text/html').send(template);
 };
 
 export const deleteRecipeIngredient = async (request: DeleteRecipeIngredientRequest, reply: FastifyReply) => {
   const { recipeId, ingredientId } = request.params;
-  
 
   const recipe = await repository.fetchRecipe(recipeId);
   if (!recipe) throw new Error('Recipe not found');
@@ -71,7 +69,7 @@ export const deleteRecipeIngredient = async (request: DeleteRecipeIngredientRequ
 
   await repository.deleteRecipeIngredient(recipeId, ingredientId);
 
-  const template = await layout(new EditRecipe(recipeId));
+  const template = await layout(new Recipe(recipeId));
   return reply.type('text/html').send(template);
 };
 
@@ -94,7 +92,8 @@ export const newRecipe = async (_: FastifyRequest, reply: FastifyReply) => {
 export const createRecipe = async (request: CreateRecipeRequest, reply: FastifyReply) => {
   const { name, ingredient, amount } = request.body;
 
-  const id = await repository.addRecipe(name, { id: ingredient, amount: Number(amount) });
+  const recipeId = await repository.addRecipe(name, { id: ingredient, amount: Number(amount) });
 
-  return reply.type('text/html').send(`<script>window.location.href = '/recipe/${id}'</script>`);
+  const template = await layout(new Recipe(recipeId));
+  return reply.type('text/html').header('HX-Push-Url', `/recipe/${recipeId}`).send(template);
 };

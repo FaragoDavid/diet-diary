@@ -6,7 +6,7 @@ const ingredientName = (ingredient: RecipeIngredientWithName) => `
   <input 
     type="text" 
     name="${ingredient.id}" 
-    class="input input-bordered input-sm max-w-32 sm:max-w-full"
+    class="input input-bordered input-sm max-w-32 sm:max-w-full disabled:text-neutral"
     readonly disabled
     value="${ingredient.name}"
     placeholder="Alapanyag neve"
@@ -43,15 +43,15 @@ const deleteIngredient = (ingredient: RecipeIngredientWithName, id: string) => `
 const ingredientStats = (ingredient: RecipeIngredientWithName, fullIngredient: Ingredient) => {
   return `
   <div class="flex justify-center col-span-2">
-    <div class="text text-sm italic text-neutral-content">
+    <div class="text text-sm italic text-neutral">
       Cal: ${Math.round(fullIngredient.calories * ingredient.amount * 100) / 100}
     </div>
     <div class="divider divider-horizontal" ></div> 
-    <div class="text text-sm italic text-neutral-content">
+    <div class="text text-sm italic text-neutral">
       CH: ${Math.round(fullIngredient.CH * ingredient.amount * 100) / 100}
     </div>
     <div class="divider divider-horizontal" ></div> 
-    <div class="text text-sm italic text-neutral-content">
+    <div class="text text-sm italic text-neutral">
       Zsír: ${Math.round(fullIngredient.fat * ingredient.amount * 100) / 100}
     </div>
   </div>`;

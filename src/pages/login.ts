@@ -1,5 +1,5 @@
-import icons from '../../utils/icons.js';
-import config from '../../config.js';
+import icons from '../utils/icons.js';
+import config from '../config.js';
 
 export class Login implements BaseComponent {
   async render() {
@@ -15,6 +15,7 @@ export class Login implements BaseComponent {
             <button 
               class="btn btn-primary"
               hx-post="/login"
+              hx-push-url="/dashboard"
               hx-target="#login-page"
               hx-swap="outerHTML"
             >${config.pages.login.login}</button>

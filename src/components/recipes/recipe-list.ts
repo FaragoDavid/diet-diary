@@ -41,38 +41,45 @@ const recipeStats = async (recipeId: string) => {
   `;
 };
 
+const recipeAmount = (recipe: RecipeType) => `
+<div class="flex justify-center items-center">
+  <input 
+    id="amount-${recipe.id}"
+    type="number"
+    class="input input-xs input-bordered w-16  pr-5 text-right peer placeholder:text-neutral placeholder:text-xs" 
+    ${recipe.amount ? `value="${recipe.amount}"` : ''}
+    placeholder="0"
+    hx-trigger="change"
+    hx-target="#recipe-list"
+    hx-post="/recipe/${recipe.id}"
+    hx-vals="js:{
+      amount: document.getElementById('amount-${recipe.id}').value,
+      query: document.getElementById('search-recipe').value
+    }"
+  >
+    <span class="relative right-4 text-xs peer-[:placeholder-shown]:text-neutral">g</span>
+  </input>
+</div>
+`;
+
+const renderRecipe = async (recipe: RecipeType) => `
+<div class="text">${recipe.name}</div>
+${recipeAmount(recipe)}
+<div class="flex justify-center items-center row-span-2">
+  <a 
+    href="/recipe/${recipe.id}" 
+    class="btn btn-sm btn-primary"
+  >${icons.edit}</a>
+</div>
+<div class="flex justify-center col-span-2 pb-3">
+  ${await recipeStats(recipe.id)}
+</div>
+`;
+
 const renderRecipes = async (recipes: RecipeType[]) => {
   let renderedRecipes = '';
   for (const recipe of recipes) {
-    renderedRecipes += `
-    <div class="text">${recipe.name}</div>
-    <div class="flex justify-center items-center">
-      <input 
-        id="amount-${recipe.id}"
-        type="number"
-        class="input input-xs input-bordered w-16 bg-base-200  pr-5 text-right" 
-        value="${recipe.amount ?? 0}"
-        hx-trigger="change"
-        hx-target="#recipe-list"
-        hx-post="/recipe/${recipe.id}/amount"
-        hx-vals="js:{
-          amount: document.getElementById('amount-${recipe.id}').value,
-          query: document.getElementById('search-recipe').value
-        }"
-      >
-        <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>
-      </input>
-    </div>
-    <div class="flex justify-center items-center row-span-2">
-      <a 
-        href="/recipe/${recipe.id}" 
-        class="btn btn-sm btn-primary"
-      >${icons.edit}</a>
-    </div>
-    <div class="flex justify-center col-span-2 pb-3">
-      ${await recipeStats(recipe.id)}
-    </div>
-    `;
+    renderedRecipes += await renderRecipe(recipe);
   }
   return renderedRecipes;
 };

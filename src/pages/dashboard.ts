@@ -1,8 +1,8 @@
-import config from '../../config.js';
-import { Ingredients } from '../ingredients/index.js';
-import { Overview } from '../overview/index.js';
-import { Recipes } from '../recipes/index.js';
-import { Segment } from '../segment.js';
+import config from '../config.js';
+import { Ingredients } from '../components/ingredients/index.js';
+import { Overview } from '../components/overview/index.js';
+import { Recipes } from '../components/recipes/index.js';
+import { Segment } from '../components/segment.js';
 
 export class Dashboard implements BaseComponent {
   async render() {

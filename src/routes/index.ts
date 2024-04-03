@@ -1,7 +1,7 @@
 import fastify, { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
 import { layout } from '../components/layout.js';
-import { Dashboard } from '../components/pages/dashboard.js';
+import { Dashboard } from '../pages/dashboard.js';
 import {
   createRecipe,
   deleteRecipeIngredient,
@@ -46,8 +46,8 @@ const registerRoutes = (fastify: FastifyInstance) => {
   fastify.post('/new-recipe', { preHandler: cookieValidator, handler: createRecipe });
   fastify.get('/recipes', { preHandler: cookieValidator, handler: getRecipes });
   fastify.get('/recipe/:recipeId', { preHandler: cookieValidator, handler: editRecipe });
-  fastify.post('/recipe/:recipeId', { preHandler: cookieValidator, handler: addRecipeIngredient });
-  fastify.post('/recipe/:recipeId/amount', { preHandler: cookieValidator, handler: updateRecipeAmount });
+  fastify.post('/recipe/:recipeId', { preHandler: cookieValidator, handler: updateRecipeAmount });
+  fastify.post('/recipe/:recipeId/ingredient', { preHandler: cookieValidator, handler: addRecipeIngredient });
   fastify.post('/recipe/:recipeId/ingredient/:ingredientId', { preHandler: cookieValidator, handler: updateRecipeIngredientAmount });
   fastify.delete('/recipe/:recipeId/ingredient/:ingredientId', { preHandler: cookieValidator, handler: deleteRecipeIngredient });
 };
