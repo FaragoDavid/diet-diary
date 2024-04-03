@@ -1,6 +1,6 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { layout } from '../components/layout.js';
-import { Login } from '../components/pages/login.js';
+import { Login } from '../pages/login.js';
 import config from '../config.js';
 
 type PostLoginRequest = FastifyRequest<{ Body: { password: string } & Record<string, string> }>;
@@ -14,9 +14,9 @@ export const getLogin = async (_: FastifyRequest, reply: FastifyReply) => {
 
 export const postLogin = async (request: PostLoginRequest, reply: FastifyReply) => {
   const { password } = request.body;
-  
+
   if (password === config.password) {
-    reply.setCookie('loggedIn', 'true').redirect(301, '/dashboard');
+    return reply.setCookie('loggedIn', 'true').type('text/html').send(`<script>window.location.href = '/dashboard'</script>`);
   } else {
     reply.redirect(301, '/login');
   }
