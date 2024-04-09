@@ -13,8 +13,12 @@ import {
   updateRecipeIngredientAmount,
 } from './recipe-routes.js';
 import { getLogin, postLogin } from './login-routes.js';
-import { adIngredient, getIngredient } from './ingredient-routes.js';
+import { addIngredient, getIngredient } from './ingredient-routes.js';
 import { getDays } from './meal-routes.js';
+
+const createHandler = (handler: (request: FastifyRequest<any>, reply: FastifyReply) => Promise<void>) => {
+  return { preHandler: cookieValidator, handler };
+}
 
 const registerLoginRoutes = (fastify: FastifyInstance) => {
   fastify.get('/', function handler(_: FastifyRequest, reply: FastifyReply) {
@@ -37,19 +41,20 @@ const registerRoutes = (fastify: FastifyInstance) => {
     },
   });
 
-  fastify.get('/days', { preHandler: cookieValidator, handler: getDays });
+  fastify.get('/days', createHandler(getDays));
 
-  fastify.get('/ingredient', { preHandler: cookieValidator, handler: getIngredient });
-  fastify.post('/ingredient', { preHandler: cookieValidator, handler: adIngredient });
+  fastify.get('/ingredient', createHandler(getIngredient));
+  fastify.post('/ingredient', createHandler(addIngredient));
 
-  fastify.get('/new-recipe', { preHandler: cookieValidator, handler: newRecipe });
-  fastify.post('/new-recipe', { preHandler: cookieValidator, handler: createRecipe });
-  fastify.get('/recipes', { preHandler: cookieValidator, handler: getRecipes });
-  fastify.get('/recipe/:recipeId', { preHandler: cookieValidator, handler: editRecipe });
-  fastify.post('/recipe/:recipeId', { preHandler: cookieValidator, handler: updateRecipeAmount });
-  fastify.post('/recipe/:recipeId/ingredient', { preHandler: cookieValidator, handler: addRecipeIngredient });
-  fastify.post('/recipe/:recipeId/ingredient/:ingredientId', { preHandler: cookieValidator, handler: updateRecipeIngredientAmount });
-  fastify.delete('/recipe/:recipeId/ingredient/:ingredientId', { preHandler: cookieValidator, handler: deleteRecipeIngredient });
+  fastify.get('/new-recipe', createHandler(newRecipe));
+  fastify.post('/new-recipe', createHandler(createRecipe));
+  fastify.get('/recipes', createHandler(getRecipes));
+  fastify.get('/recipe/:recipeId', createHandler(editRecipe));
+  fastify.post('/recipe/:recipeId', createHandler(updateRecipeAmount('list')));
+  fastify.post('/recipe/:recipeId/detail', createHandler(updateRecipeAmount('detail')));
+  fastify.post('/recipe/:recipeId/ingredient', createHandler(addRecipeIngredient));
+  fastify.post('/recipe/:recipeId/ingredient/:ingredientId', createHandler(updateRecipeIngredientAmount));
+  fastify.delete('/recipe/:recipeId/ingredient/:ingredientId', createHandler(deleteRecipeIngredient));
 };
 
 export { registerLoginRoutes, registerRoutes };

@@ -12,7 +12,7 @@ export const getIngredient = async (request: GetIngredientsRequest, reply: Fasti
   return reply.type('text/html').send(template);
 };
 
-export const adIngredient = async (request: PostIngredientsRequest, reply: FastifyReply) => {
+export const addIngredient = async (request: PostIngredientsRequest, reply: FastifyReply) => {
   const { name, calories, ch } = request.body;
 
   if (name) await repository.addIngredient(name, calories, ch);

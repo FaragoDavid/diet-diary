@@ -34,7 +34,6 @@ export const addRecipeIngredient = async (request: PostRecipeRequest, reply: Fas
   if (!recipe) throw new Error('Recipe not found');
 
   const { newIngredient } = request.body;
-  if (!newIngredient) throw new Error('New ingredient not found');
   if (!newIngredient[0] || !newIngredient[1]) throw new Error('New ingredient not found');
 
   await repository.addRecipeIngredient(recipeId, newIngredient[0], Number(newIngredient[1]));
@@ -73,15 +72,18 @@ export const deleteRecipeIngredient = async (request: DeleteRecipeIngredientRequ
   return reply.type('text/html').send(template);
 };
 
-export const updateRecipeAmount = async (request: UpdateRecipeAmountRequest, reply: FastifyReply) => {
-  const recipeId = request.params.recipeId;
-  const recipe = await repository.fetchRecipe(recipeId);
-  if (!recipe) throw new Error('Recipe not found');
+export const updateRecipeAmount = (bodyType: 'list' | 'detail') => {
+  const bodyTypeMap = { list: RecipeList, detail: Recipe };
+  return async (request: UpdateRecipeAmountRequest, reply: FastifyReply) => {
+    const recipeId = request.params.recipeId;
+    const recipe = await repository.fetchRecipe(recipeId);
+    if (!recipe) throw new Error('Recipe not found');
 
-  await repository.updateRecipeAmount(recipeId, Number(request.body.amount));
+    await repository.updateRecipeAmount(recipeId, Number(request.body.amount));
 
-  const template = await layout(new RecipeList(request.body.query));
-  return reply.type('text/html').send(template);
+    const template = await layout(new bodyTypeMap[bodyType](request.body.query));
+    return reply.type('text/html').send(template);
+  };
 };
 
 export const newRecipe = async (_: FastifyRequest, reply: FastifyReply) => {
