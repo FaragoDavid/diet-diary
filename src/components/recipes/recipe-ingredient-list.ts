@@ -31,7 +31,7 @@ const ingredientAmount = (ingredient: RecipeIngredientWithName, id: string) => `
 const deleteIngredient = (ingredient: RecipeIngredientWithName, id: string) => `
 <div class="flex justify-center items-center row-span-2">
   <button 
-    type="submit"
+    type="button"
     class="btn btn-primary btn-sm"
     hx-delete="/recipe/${id}/ingredient/${ingredient.id}"
     hx-target="#recipe"
@@ -72,7 +72,7 @@ const newIngredientAmount = (id: string) => `
     name="newIngredient"
     class="input input-sm input-bordered w-16 bg-base-200  pr-5 text-right placeholder:text-neutral peer" 
     placeholder="0"
-    hx-post="/recipe/${id}"
+    hx-post="/recipe/${id}/ingredient"
     hx-target="#recipe"
     hx-swap="outerHTML"
   >
