@@ -19,8 +19,10 @@ export class Overview implements BaseComponent {
   public title = config.texts.titles.overview;
 
   async render() {
-    const fromDate = subDays(new Date(), 7);
-    const toDate = new Date();
+    // const fromDate = subDays(new Date(), 7);
+    // const toDate = new Date();
+    const fromDate = new Date('2024-02-02T00:00:00');
+    const toDate = new Date(new Date('2024-02-03T00:00:00'));
 
     return `
       <div class="flex justify-center items-center space-x-4">
@@ -29,7 +31,7 @@ export class Overview implements BaseComponent {
         ${dateInput('toDate', toDate)}
       </div>
 
-      <div id="days" class="flex flex-col gap-6 w-full">
+      <div id="days" class="flex flex-col justify-center items-center gap-6 w-full">
         ${await new Days(fromDate, toDate).render()}
       </div>
     `;
