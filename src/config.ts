@@ -14,7 +14,7 @@ export default {
     props: {
       name: { name: 'Név', type: 'text' },
       calories: { name: 'Kalória', type: 'number' },
-      ch: { name: 'CH', type: 'number' },
+      carbs: { name: 'carbs', type: 'number' },
     },
   },
   recipes: {
@@ -23,9 +23,6 @@ export default {
       name: { name: 'Név', type: 'text' },
       amount: { name: 'Mennyiség', type: 'number' },
     },
-  },
-  tableHeaders: {
-    meals: ['', 'Név', 'Mennyiség', 'Kalória', 'CH'],
   },
   texts: {
     search: 'Keresés',

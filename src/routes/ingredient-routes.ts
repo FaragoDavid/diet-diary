@@ -3,7 +3,7 @@ import { IngredientList } from '../components/ingredients/list.js';
 import repository from '../repository.js';
 
 type GetIngredientsRequest = FastifyRequest<{ Querystring: { query: string } }>;
-type PostIngredientsRequest = FastifyRequest<{ Body: { name: string; calories: string; ch: string } }>;
+type PostIngredientsRequest = FastifyRequest<{ Body: { name: string; calories: string; carbs: string } }>;
 
 export const getIngredient = async (request: GetIngredientsRequest, reply: FastifyReply) => {
   const query = request.query.query;
@@ -13,9 +13,9 @@ export const getIngredient = async (request: GetIngredientsRequest, reply: Fasti
 };
 
 export const addIngredient = async (request: PostIngredientsRequest, reply: FastifyReply) => {
-  const { name, calories, ch } = request.body;
+  const { name, calories, carbs } = request.body;
 
-  if (name) await repository.addIngredient(name, calories, ch);
+  if (name) await repository.addIngredient(name, calories, carbs);
 
   const template = await new IngredientList(name).render();
   return reply.type('text/html').send(template);

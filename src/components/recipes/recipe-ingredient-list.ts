@@ -50,7 +50,7 @@ export class RecipeIngredientList implements BaseComponent {
     </div>`;
   }
 
-  ingredientStats(ingredientAmount: number, { calories, CH, fat }: Ingredient) {
+  ingredientStats(ingredientAmount: number, { calories, carbs, fat }: Ingredient) {
     return `
       <div class="flex justify-center col-span-2">
         <div class="text text-sm italic text-neutral">
@@ -58,7 +58,7 @@ export class RecipeIngredientList implements BaseComponent {
         </div>
         <div class="divider divider-horizontal" ></div> 
         <div class="text text-sm italic text-neutral">
-          CH: ${Math.round(CH * ingredientAmount * 100) / 100}
+          CH: ${Math.round(carbs * ingredientAmount * 100) / 100}
         </div>
         <div class="divider divider-horizontal" ></div> 
         <div class="text text-sm italic text-neutral">

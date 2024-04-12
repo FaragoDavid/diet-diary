@@ -13,7 +13,7 @@ const ingredient = (ingredient: Ingredient) => `
   <tr>
     <td>${ingredient.name}</td>
     <td>${ingredient.calories}</td>
-    <td>${ingredient.CH}</td>
+    <td>${ingredient.carbs}</td>
   </tr> 
 `;
 

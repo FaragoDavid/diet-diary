@@ -1,48 +1,64 @@
-import { eachDayOfInterval } from 'date-fns';
+import { format } from 'date-fns';
 
-import config from '../../config.js';
-import repository, { Dish, Meal } from '../../repository.js';
-
-const header = () => `
-  <thead>
-    <tr>
-      ${config.tableHeaders.meals.map((header) => `<th>${header}</th>`).join('')}
-    </tr>
-  </thead>
-`;
-
-const renderDish = (dish: Dish, dishIndex: number, mealType: string) => `
-  <tr>
-    <td>${dishIndex === 0 ? config.mealTypes[mealType].name : ''}</td>
-    <td>${dish.name}</td>
-    <td>${dish.amount}</td>
-  </tr> 
-`;
-
-const meal = (meal: Meal) => meal.dishes.map((dish: Dish, dishIndex: number) => renderDish(dish, dishIndex, meal.type)).join('');
-
-const day = (date: Date, meals: Meal[]) => `
-  <h2 class="text-xl">${date.toLocaleDateString('hu-hu', { month: 'short', day: 'numeric' })}</h2>
-  <div class="overflow-x-auto">
-    <table class="table table-zebra table-pin-rows">
-      ${header()}
-      <tbody>
-        ${meals.map(meal).join('')}
-      </tbody>
-    </table>
-  </div>
-`;
+import repository, { Dish, DishWithMacros, Meal, MealWithDishMacros } from '../../repository.js';
 
 export class Days implements BaseComponent {
   constructor(private fromDate: Date, private toDate: Date) {}
 
-  async render() {
-    const days: { date: Date; meals: Meal[] }[] = [];
-    for (const day of eachDayOfInterval({ start: this.fromDate, end: this.toDate })) {
-      const meals = await repository.fetchDay(day);
-      if (meals.length > 0) days.push({ date: day, meals });
-    }
+  dish(dish: DishWithMacros) {
+    return `
+      <div class="text pl-4">${dish.name}</div>
+      <div class="text pl-4">${dish.amount}</div>
+      <div class="text pl-4">${dish.calories}</div>
+      <div class="text pl-4">${dish.carbs}</div>
+      <div class="text pl-4">${dish.fat}</div>
+    `;
+  }
 
-    return days.map(({ date, meals }) => day(date, meals)).join('');
+  mealStats(dishes: DishWithMacros[]) {
+    const { mealCals, mealCH, mealFat } = dishes.reduce(
+      (acc, dish) => ({
+        mealCals: acc.mealCals + dish.calories,
+        mealCH: acc.mealCH + dish.carbs,
+        mealFat: acc.mealFat + dish.fat,
+      }),
+      { mealCals: 0, mealCH: 0, mealFat: 0 },
+    );
+
+    return `
+      <div class="text text-sm italic">Cal: ${mealCals}</div>
+      <div class="divider divider-horizontal" ></div> 
+      <div class="text text-sm italic">CH: ${mealCH}</div>
+      <div class="divider divider-horizontal" ></div> 
+      <div class="text text-sm italic">Zsír: ${mealFat}</div>
+    `;
+  }
+
+  meal(type: string, dishes: DishWithMacros[]) {
+    return `
+      <div class="text col-span-1 pl-2">${type}</div>
+      <div class="text col-span-4 flex">${this.mealStats(dishes)}</div>
+      <div class="text col-span-2 pl-2"></div>
+      <div class="text-sm text-center italic pl-2">cal</div>
+      <div class="text-sm text-center italic pl-2">CH</div>
+      <div class="text-sm text-center italic pl-2">zsír</div>
+      ${dishes.map((dish) => this.dish(dish)).join('')}
+    `;
+  }
+
+  day(date: Date, meals: Omit<MealWithDishMacros, 'date'>[]) {
+    return `
+      <div class="text-lg col-span-5">${format(date, 'MMM. d. (EEE)')}</div>
+      ${meals.map(({ id, type, dishes }) => this.meal(type, dishes)).join('<div class="divider divider-base-200 col-span-5 m-0"></div>')}
+    `;
+  }
+
+  async render() {
+    const days = await repository.fetchDayMeals(this.fromDate, this.toDate);
+
+    return `
+      <div id="meal-list" class="grid grid-cols-max-5 grid-row-flex gap-2">
+        ${days.map(({ date, meals }) => this.day(date, meals)).join('<div class="divider divider-primary col-span-5"></div>')}
+      </div>`;
   }
 }

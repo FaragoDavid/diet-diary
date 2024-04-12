@@ -2,17 +2,6 @@ import icons from '../../utils/icons.js';
 import config from '../../config.js';
 import repository, { RecipeType } from '../../repository.js';
 
-const header = () => `
-  <thead>
-    <tr>
-      ${Object.values(config.recipes.props)
-        .map(({ name }) => `<th>${name}</th>`)
-        .join('')}
-      <th />
-    </tr>
-  </thead>
-`;
-
 const recipeStats = async (recipeId: string) => {
   const ingredients = await repository.fetchIngredients();
   const recipe = await repository.fetchRecipe(recipeId);
@@ -22,10 +11,10 @@ const recipeStats = async (recipeId: string) => {
 
   const { recipeCalories, recipeCH, recipeFat } = recipe.ingredients.reduce(
     (acc, ingredient) => {
-      const { calories, CH, fat } = ingredients.find(({ id }) => id === ingredient.id) || { calories: 0, CH: 0, fat: 0 };
+      const { calories, carbs, fat } = ingredients.find(({ id }) => id === ingredient.id) || { calories: 0, carbs: 0, fat: 0 };
       return {
         recipeCalories: acc.recipeCalories + calories * ingredient.amount,
-        recipeCH: acc.recipeCH + CH * ingredient.amount,
+        recipeCH: acc.recipeCH + carbs * ingredient.amount,
         recipeFat: acc.recipeFat + fat * ingredient.amount,
       };
     },
@@ -33,11 +22,11 @@ const recipeStats = async (recipeId: string) => {
   );
 
   return `
-    <div class="text text-sm italic">Cal: ${Math.round(recipeCalories *100) * recipeAmount / 100}</div>
+    <div class="text text-sm italic">Cal: ${(Math.round(recipeCalories * 100) * recipeAmount) / 100}</div>
     <div class="divider divider-horizontal" ></div> 
-    <div class="text text-sm italic">CH: ${Math.round(recipeCH *100) * recipeAmount / 100}</div>
+    <div class="text text-sm italic">CH: ${(Math.round(recipeCH * 100) * recipeAmount) / 100}</div>
     <div class="divider divider-horizontal" ></div> 
-    <div class="text text-sm italic">Zsír: ${Math.round(recipeFat *100) * recipeAmount / 100}</div>
+    <div class="text text-sm italic">Zsír: ${(Math.round(recipeFat * 100) * recipeAmount) / 100}</div>
   `;
 };
 

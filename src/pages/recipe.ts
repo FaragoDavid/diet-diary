@@ -39,7 +39,7 @@ export class Recipe implements BaseComponent {
         if (!fullIngredient) return acc;
         return {
           recipeCalories: acc.recipeCalories + fullIngredient.calories * ingredient.amount,
-          recipeCH: acc.recipeCH + fullIngredient.CH * ingredient.amount,
+          recipeCH: acc.recipeCH + fullIngredient.carbs * ingredient.amount,
           recipeFat: acc.recipeFat + fullIngredient.fat * ingredient.amount,
         };
       },
