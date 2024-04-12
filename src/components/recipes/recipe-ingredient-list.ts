@@ -1,117 +1,126 @@
 import icons from '../../utils/icons.js';
 import repository, { Ingredient, RecipeIngredientWithName } from '../../repository.js';
 
-const ingredientName = (ingredient: RecipeIngredientWithName) => `
-<div class="flex justify-center">
-  <input 
-    type="text" 
-    name="${ingredient.id}" 
-    class="input input-bordered input-sm max-w-32 sm:max-w-full disabled:text-neutral"
-    readonly disabled
-    value="${ingredient.name}"
-    placeholder="Alapanyag neve"
-  />
-</div>`;
-
-const ingredientAmount = (ingredient: RecipeIngredientWithName, id: string) => `
-<div class="flex justify-center items-center">
-  <input 
-    type="number"
-    name="${ingredient.id}" 
-    class="input input-sm input-bordered w-16 bg-base-200  pr-5 text-right" 
-    value="${ingredient.amount}"
-    hx-post="/recipe/${id}/ingredient/${ingredient.id}"
-    hx-target="#recipe"
-    hx-swap="outerHTML"
-  >
-    <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>
-  </input>
-</div>`;
-
-const deleteIngredient = (ingredient: RecipeIngredientWithName, id: string) => `
-<div class="flex justify-center items-center row-span-2">
-  <button 
-    type="button"
-    class="btn btn-primary btn-sm"
-    hx-delete="/recipe/${id}/ingredient/${ingredient.id}"
-    hx-target="#recipe"
-    hx-swap="outerHTML"
-  />
-  ${icons.delete}
-</div>`;
-
-const ingredientStats = (ingredient: RecipeIngredientWithName, fullIngredient: Ingredient) => {
-  return `
-  <div class="flex justify-center col-span-2">
-    <div class="text text-sm italic text-neutral">
-      Cal: ${Math.round(fullIngredient.calories * ingredient.amount * 100) / 100}
-    </div>
-    <div class="divider divider-horizontal" ></div> 
-    <div class="text text-sm italic text-neutral">
-      CH: ${Math.round(fullIngredient.CH * ingredient.amount * 100) / 100}
-    </div>
-    <div class="divider divider-horizontal" ></div> 
-    <div class="text text-sm italic text-neutral">
-      Zsír: ${Math.round(fullIngredient.fat * ingredient.amount * 100) / 100}
-    </div>
-  </div>`;
-};
-
-const ingredientSelector = (ingredients: Ingredient[]) => `
-<div class="flex justify-center">
-  <select name="newIngredient" class="select select-bordered select-sm max-w-32 sm:max-w-full">
-    ${ingredients.map((ingredient) => `<option value="${ingredient.id}" >${ingredient.name}</option>`).join('')}
-  </select>
-</div>
-`;
-
-const newIngredientAmount = (id: string) => `
-<div class="flex justify-center items-center">
-  <input 
-    type="number"
-    name="newIngredient"
-    class="input input-sm input-bordered w-16 bg-base-200  pr-5 text-right placeholder:text-neutral peer" 
-    placeholder="0"
-    hx-post="/recipe/${id}/ingredient"
-    hx-target="#recipe"
-    hx-swap="outerHTML"
-  >
-    <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>
-  </input>
-</div>`;
-
 export class RecipeIngredientList implements BaseComponent {
   private ingredients: Ingredient[] = [];
   constructor(private id: string) {}
 
-  renderIngredient = (ingredient: RecipeIngredientWithName) => {
-    const fullIngredient = this.ingredients.find((ingr) => ingr.id === ingredient.id);
+  ingredientName(ingredientId: string, ingredientName: string) {
+    return `
+      <div class="flex justify-center">
+        <input 
+          type="text" 
+          name="${ingredientId}" 
+          class="input input-bordered input-sm max-w-32 sm:max-w-full disabled:text-neutral"
+          readonly disabled
+          value="${ingredientName}"
+          placeholder="Alapanyag neve"
+        />
+      </div>`;
+  }
+
+  ingredientAmount(ingredientId: string, ingredientAmount: number) {
+    return `
+    <div class="flex justify-center items-center">
+      <input 
+        type="number"
+        name="${ingredientId}" 
+        class="input input-sm input-bordered w-16 bg-base-200  pr-5 text-right" 
+        value="${ingredientAmount}"
+        hx-post="/recipe/${this.id}/ingredient/${ingredientId}"
+        hx-target="#recipe"
+        hx-swap="outerHTML"
+      >
+        <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>
+      </input>
+    </div>`;
+  }
+
+  deleteIngredient(ingredientId: string) {
+    return `
+    <div class="flex justify-center items-center row-span-2">
+      <button 
+        type="button"
+        class="btn btn-primary btn-sm"
+        hx-delete="/recipe/${this.id}/ingredient/${ingredientId}"
+        hx-target="#recipe"
+        hx-swap="outerHTML"
+      />
+      ${icons.delete}
+    </div>`;
+  }
+
+  ingredientStats(ingredientAmount: number, { calories, CH, fat }: Ingredient) {
+    return `
+      <div class="flex justify-center col-span-2">
+        <div class="text text-sm italic text-neutral">
+          Cal: ${Math.round(calories * ingredientAmount * 100) / 100}
+        </div>
+        <div class="divider divider-horizontal" ></div> 
+        <div class="text text-sm italic text-neutral">
+          CH: ${Math.round(CH * ingredientAmount * 100) / 100}
+        </div>
+        <div class="divider divider-horizontal" ></div> 
+        <div class="text text-sm italic text-neutral">
+          Zsír: ${Math.round(fat * ingredientAmount * 100) / 100}
+        </div>
+      </div>`;
+  }
+
+  ingredientSelector() {
+    return `
+    <div class="flex justify-center">
+      <select name="newIngredient" class="select select-bordered select-sm max-w-32 sm:max-w-full">
+        ${this.ingredients.map(({ id, name }) => `<option value="${id}" >${name}</option>`).join('')}
+      </select>
+    </div>`;
+  }
+
+  newIngredientAmount() {
+    return `
+    <div class="flex justify-center items-center">
+      <input 
+        type="number"
+        name="newIngredient"
+        class="input input-sm input-bordered w-16 bg-base-200  pr-5 text-right placeholder:text-neutral peer" 
+        placeholder="0"
+        hx-post="/recipe/${this.id}/ingredient"
+        hx-target="#recipe"
+        hx-swap="outerHTML"
+      >
+        <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>
+      </input>
+    </div>`;
+  }
+
+  renderIngredient({ id, name, amount }: RecipeIngredientWithName) {
+    const fullIngredient = this.ingredients.find((ingr) => ingr.id === id);
     if (!fullIngredient) return '';
 
     return `
-      ${ingredientName(ingredient)}
-      ${ingredientAmount(ingredient, this.id)}
-      ${deleteIngredient(ingredient, this.id)}
-      ${ingredientStats(ingredient, fullIngredient)}
-      <div class="divider col-span-3 my-0" ></div>
-    `;
-  };
+      ${this.ingredientName(id, name)}
+      ${this.ingredientAmount(id, amount)}
+      ${this.deleteIngredient(id)}
+      ${this.ingredientStats(amount, fullIngredient)}
+      `;
+  }
 
-  addIngredient = () => `
-    ${ingredientSelector(this.ingredients)}
-    ${newIngredientAmount(this.id)}
-  `;
+  addIngredient() {
+    return `
+      ${this.ingredientSelector()}
+      ${this.newIngredientAmount()}`;
+  }
 
   async render() {
     const recipe = await repository.fetchRecipe(this.id);
     if (!recipe) return 'Error: Recipe not found';
 
-    const recipeIngrs = recipe.ingredients;
     this.ingredients = await repository.fetchIngredients();
 
     return `
       <form id="recipe-ingredient-list" class="grid grid-cols-max-3 grid-row-flex gap-2">
-        ${recipeIngrs.map((ingredient) => this.renderIngredient(ingredient)).join('')}
+        ${recipe.ingredients.map((ingredient) => this.renderIngredient(ingredient)).join('<div class="divider col-span-3 my-0" ></div>')}
+        <div class="divider col-span-3 my-0" ></div>
         ${this.addIngredient()}
       </form>
     `;
