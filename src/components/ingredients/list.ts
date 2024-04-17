@@ -1,10 +1,12 @@
-import repository, { Ingredient } from '../../repository.js';
+import repository, { Ingredient } from '../../repository/ingredient.js';
 import config from '../../config.js';
 
 const header = () => `
   <thead>
     <tr>
-      ${Object.values(config.ingredients.props).map(({ name }) => `<th>${name}</th>`).join('')}
+      ${Object.values(config.ingredients.props)
+        .map(({ name }) => `<th>${name}</th>`)
+        .join('')}
     </tr>
   </thead>
 `;

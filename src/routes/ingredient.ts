@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { IngredientList } from '../components/ingredients/list.js';
-import repository from '../repository.js';
+import repository from '../repository/ingredient.js';
 
 type GetIngredientsRequest = FastifyRequest<{ Querystring: { query: string } }>;
 type PostIngredientsRequest = FastifyRequest<{ Body: { name: string; calories: string; carbs: string } }>;

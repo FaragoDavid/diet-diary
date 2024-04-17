@@ -1,8 +1,8 @@
 import config from '../config.js';
 import { Ingredients } from '../components/ingredients/index.js';
-import { Overview } from '../components/overview/index.js';
 import { Recipes } from '../components/recipes/index.js';
 import { Segment } from '../components/segment.js';
+import { DaySearch } from '../components/meals/day-search.js';
 
 export class Dashboard implements BaseComponent {
   async render() {
@@ -14,7 +14,7 @@ export class Dashboard implements BaseComponent {
           </div>
           ${await new Segment(new Ingredients()).render()} 
           ${await new Segment(new Recipes()).render()} 
-          ${await new Segment(new Overview()).render()} 
+          ${await new Segment(new DaySearch()).render()} 
         </div>
       </div>
     `;

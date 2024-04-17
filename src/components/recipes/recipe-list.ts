@@ -1,10 +1,10 @@
 import icons from '../../utils/icons.js';
-import config from '../../config.js';
-import repository, { RecipeType } from '../../repository.js';
+import repository from '../../repository/ingredient.js';
+import { RecipeType, fetchRecipe, fetchRecipes } from '../../repository/recipe.js';
 
 const recipeStats = async (recipeId: string) => {
   const ingredients = await repository.fetchIngredients();
-  const recipe = await repository.fetchRecipe(recipeId);
+  const recipe = await fetchRecipe(recipeId);
   if (!recipe) return '';
 
   const recipeAmount = recipe.amount || recipe.ingredients.reduce((amount, ingredient) => amount + ingredient.amount, 0);
@@ -79,7 +79,7 @@ export class RecipeList implements BaseComponent {
   constructor(private query: string) {}
 
   async render() {
-    const recipes = await repository.fetchRecipes(this.query);
+    const recipes = await fetchRecipes(this.query);
 
     return `
       <div id="recipe-list" class="grid grid-cols-max-3 grid-row-flex gap-2 bg-base-100">

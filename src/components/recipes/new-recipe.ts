@@ -1,5 +1,5 @@
 import icons from '../../utils/icons.js';
-import repository, { Ingredient } from '../../repository.js';
+import repository, { Ingredient } from '../../repository/ingredient.js';
 import { BackLink } from '../back-link.js';
 
 const header = () => `

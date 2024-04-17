@@ -1,8 +1,10 @@
 import { format } from 'date-fns';
 
-import repository, { DishWithMacros, Ingredient, MealWithDishMacros } from '../../repository.js';
 import config from '../../config.js';
 import icons from '../../utils/icons.js';
+import repository, { Ingredient } from '../../repository/ingredient.js';
+import { Dish, Meal, fetchDayMeals } from '../../repository/meal.js';
+import { DayStats } from './day-stats.js';
 
 export class Days implements BaseComponent {
   private ingredients?: Ingredient[];
@@ -23,7 +25,7 @@ export class Days implements BaseComponent {
     </div>`;
   }
 
-  dish({ name, amount, calories, carbs, fat }: DishWithMacros) {
+  dish({ name, amount, calories, carbs, fat }: Dish) {
     return `
       <div class="text pl-4">${name}</div>
       ${this.dishAmount({ amount })}
@@ -47,7 +49,7 @@ export class Days implements BaseComponent {
     `;
   }
 
-  mealStats(dishes: DishWithMacros[]) {
+  mealStats(dishes: Dish[]) {
     const { mealCals, mealCH, mealFat } = dishes.reduce(
       (acc, dish) => ({
         mealCals: acc.mealCals + dish.calories,
@@ -58,24 +60,18 @@ export class Days implements BaseComponent {
     );
 
     return `
-      <div class="text text-sm italic">Cal: ${mealCals}</div>
+      <div class="text text-sm text-secondary italic">Cal: ${mealCals}</div>
       <div class="divider divider-horizontal" ></div> 
-      <div class="text text-sm italic">CH: ${mealCH}</div>
+      <div class="text text-sm text-secondary italic">CH: ${mealCH}</div>
       <div class="divider divider-horizontal" ></div> 
-      <div class="text text-sm italic">Zsír: ${mealFat}</div>
+      <div class="text text-sm text-secondary italic">Zsír: ${mealFat}</div>
     `;
   }
 
-  meal(type: string, dishes: DishWithMacros[], date: Date, mealId: string) {
+  meal(type: string, dishes: Dish[], date: Date, mealId: string) {
     return `
-      <div class="text col-span-1 pl-2">${config.mealTypes[type].name}</div>
-      <div class="text col-span-4 flex">${this.mealStats(dishes)}</div>
-      <div class="text col-span-2 pl-2"></div>
-      <div class="text-sm text-center italic pl-2">cal</div>
-      <div class="text-sm text-center italic pl-2">CH</div>
-      <div class="text-sm text-center italic pl-2">zsír</div>
-      ${dishes.map((dish) => this.dish(dish)).join('')}
-      ${this.newDish(date, mealId)}
+      <div class="text text-secondary col-span-1 pl-2">${config.mealTypes[type].name}</div>
+      <div class="text col-span-2 flex">${this.mealStats(dishes)}</div>
     `;
   }
 
@@ -90,7 +86,7 @@ export class Days implements BaseComponent {
     `;
   }
 
-  dayStats(meals: Omit<MealWithDishMacros, 'date'>[]) {
+  dayStats(meals: Omit<Meal, 'date'>[]) {
     const { dayCals, dayCarbs, dayFat } = meals.reduce(
       (acc, meal) =>
         meal.dishes.reduce(
@@ -105,48 +101,42 @@ export class Days implements BaseComponent {
     );
 
     return `
-      <div class="flex justify-center items-center">
+      <div class="flex justify-center items-center col-span-2">
         <div class="flex flex-col justify-center items-center">
-          <div class="text text-center text-sm italic">Cal</div>
-          <div class="text text-center">${dayCals}</div>
+          <div class="text text-center text-primary text-sm italic">Cal</div>
+          <div class="text text-center text-primary">${dayCals}</div>
         </div>
         <div class="divider divider-horizontal" ></div> 
         <div class="flex flex-col justify-center items-center">
-          <div class="text text-center text-sm italic">CH</div>
-          <div class="text text-center">${dayCarbs}</div>
+          <div class="text text-center text-primary text-sm italic">CH</div>
+          <div class="text text-center text-primary">${dayCarbs}</div>
         </div>
         <div class="divider divider-horizontal" ></div> 
         <div class="flex flex-col justify-center items-center">
-          <div class="text text-center text-sm italic">Zsír</div>
-          <div class="text text-center">${dayFat}</div>
+          <div class="text text-center text-primary text-sm italic">Zsír</div>
+          <div class="text text-center text-primary">${dayFat}</div>
         </div>
       </div>
   `;
   }
 
-  day(date: Date, meals: Omit<MealWithDishMacros, 'date'>[]) {
-    const fullDayStats = `
-      <div class="text-lg col-span-4 flex">${this.dayStats(meals)}</div>`
-    const partialDaystats = `
-      <div class="text-lg col-span-3 flex">${this.dayStats(meals)}</div>
-      <button type="button" class="btn btn-secondary btn-sm col-span-1 flex p-0">${icons.add}</button>`;
-
+  day(date: Date, meals: Omit<Meal, 'date'>[]) {
     return `
-      <div class="flex items-center text-lg col-span-1">${format(date, 'MMM. d. (EEE)')}</div>
-      ${meals.length < Object.keys(config.mealTypes).length ? partialDaystats : fullDayStats}
+      <div class="flex items-center text-lg text-primary col-span-1">${format(date, 'MMM. d. (EEE)')}</div>
+      ${this.dayStats(meals)}
       ${meals
         .map(({ id, type, dishes }) => this.meal(type, dishes, date, id))
-        .join('<div class="divider divider-secondary col-span-5 m-0 pl-2"></div>')}
+        .join('<div class="divider divider-secondary col-span-3 m-0 pl-2"></div>')}
     `;
   }
 
   async render() {
-    const days = await repository.fetchDayMeals(this.fromDate, this.toDate);
+    const days = await fetchDayMeals(this.fromDate, this.toDate);
     this.ingredients = await repository.fetchIngredients();
 
     return `
-      <div id="meal-list" class="grid grid-cols-max-5 grid-row-flex gap-1 py-4">
-        ${days.map(({ date, meals }) => this.day(date, meals)).join('<div class="divider divider-primary col-span-5"></div>')}
+      <div id="meal-list" class="grid grid-cols-max-3 grid-row-flex gap-1 py-4">
+        ${days.map(({ date, meals }) => this.day(date, meals)).join('<div class="divider divider-primary col-span-3"></div>')}
       </div>`;
   }
 }

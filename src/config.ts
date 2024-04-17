@@ -32,34 +32,24 @@ export default {
       overview: 'Étkezések',
     },
   },
-  mealTypes: {
-    morningSnack: {
-      name: 'Előreggeli',
-      targetCal: 160,
-    },
-    breakfast: {
-      name: 'Reggeli',
-      targetCal: 330,
-    },
-    brunch: {
-      name: 'Tízórai',
-      targetCal: 220,
-    },
-    lunch: {
-      name: 'Ebéd',
-      targetCal: 440,
-    },
-    afternoonSnack: {
-      name: 'Uzsonna',
-      targetCal: 220,
-    },
-    dinner: {
-      name: 'Vacsora',
-      targetCal: 330,
-    },
-    lateNightSnack: {
-      name: 'Utóvacsora',
-      targetCal: 165,
-    },
-  },
+  mealTypes: [
+    { key: MEAL_TYPE.morningSnack, name: 'Előreggeli', targetCal: 160 },
+    { key: MEAL_TYPE.breakfast, name: 'Reggeli', targetCal: 330 },
+    { key: MEAL_TYPE.brunch, name: 'Tízórai', targetCal: 220 },
+    { key: MEAL_TYPE.lunch, name: 'Ebéd', targetCal: 440 },
+    { key: MEAL_TYPE.afternoonSnack, name: 'Uzsonna', targetCal: 220 },
+    { key: MEAL_TYPE.dinner, name: 'Vacsora', targetCal: 330 },
+    { key: MEAL_TYPE.lateNightSnack, name: 'Utóvacsora', targetCal: 165 },
+  ]
 };
+
+const enum MEAL_TYPE {
+  morningSnack = 'morningSnack',
+  breakfast = 'breakfast',
+  brunch = 'brunch',
+  lunch = 'lunch',
+  afternoonSnack = 'afternoonSnack',
+  dinner = 'dinner',
+  lateNightSnack = 'lateNightSnack',
+}
+export type MealType = `${MEAL_TYPE}`;

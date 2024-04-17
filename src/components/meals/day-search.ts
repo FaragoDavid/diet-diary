@@ -1,6 +1,8 @@
 import { format, subDays } from 'date-fns';
 import config from '../../config.js';
 import { Days } from './days.js';
+import icons from '../../utils/icons.js';
+import { fetchDayMeals } from '../../repository/meal.js';
 
 const dateInput = (id: string, defaultValue: Date) => `
   <input
@@ -15,25 +17,30 @@ const dateInput = (id: string, defaultValue: Date) => `
   />
 `;
 
-export class Overview implements BaseComponent {
+export class DaySearch implements BaseComponent {
   public title = config.texts.titles.overview;
 
   async render() {
-    // const fromDate = subDays(new Date(), 7);
-    // const toDate = new Date();
-    const fromDate = new Date('2024-02-02T00:00:00');
-    const toDate = new Date(new Date('2024-02-03T00:00:00'));
+    const fromDate = subDays(new Date(), 7);
+    const toDate = new Date();
 
     return `
-      <div class="flex justify-center items-center space-x-4">
+      <div class="flex justify-center items-center max-w-96">
         ${dateInput('fromDate', fromDate)}
-        <span class="text-center">-</span>
+        <span class="text-center p-1">-</span>
         ${dateInput('toDate', toDate)}
+        <div class="divider divider-horizontal m-1"></div>
+        <a href="/new-day">
+          <button 
+            class="btn btn-secondary btn-sm"
+          >${icons.add}</button>
+        </a>
       </div>
 
       <div id="days" class="flex flex-col justify-center items-center gap-6 w-full">
         ${await new Days(fromDate, toDate).render()}
       </div>
-    `;
+      `;
+    }
   }
-}
+  

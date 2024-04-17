@@ -1,5 +1,6 @@
 import icons from '../../utils/icons.js';
-import repository, { Ingredient, RecipeIngredientWithName } from '../../repository.js';
+import repository, { Ingredient } from '../../repository/ingredient.js';
+import { RecipeIngredientWithName, fetchRecipe } from '../../repository/recipe.js';
 
 export class RecipeIngredientList implements BaseComponent {
   private ingredients: Ingredient[] = [];
@@ -112,7 +113,7 @@ export class RecipeIngredientList implements BaseComponent {
   }
 
   async render() {
-    const recipe = await repository.fetchRecipe(this.id);
+    const recipe = await fetchRecipe(this.id);
     if (!recipe) return 'Error: Recipe not found';
 
     this.ingredients = await repository.fetchIngredients();
