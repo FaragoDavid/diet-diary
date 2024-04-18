@@ -1,6 +1,6 @@
-import repository from '../repository/ingredient.js';
 import { BackLink } from '../components/back-link.js';
 import { RecipeIngredientList } from '../components/recipes/recipe-ingredient-list.js';
+import { fetchIngredients } from '../repository/ingredient.js';
 import { RecipeWithIngredientName, fetchRecipe } from '../repository/recipe.js';
 
 export class Recipe implements BaseComponent {
@@ -31,7 +31,7 @@ export class Recipe implements BaseComponent {
   `;
 
   recipeStats = async () => {
-    const ingredients = await repository.fetchIngredients();
+    const ingredients = await fetchIngredients();
 
     const { recipeCalories, recipeCH, recipeFat } = this.recipe!.ingredients.reduce(
       (acc, ingredient) => {

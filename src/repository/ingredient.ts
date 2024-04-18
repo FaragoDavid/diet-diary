@@ -24,19 +24,18 @@ export const ingredients: Ingredient[] = [
   { id: uuid(), name: 'kale', calories: 49, carbs: 10, fat: 0.4 },
 ];
 
-export default {
-  fetchIngredients: async (query: string = ''): Promise<Ingredient[]> => {
-    return ingredients
-      .filter((ingredient) => ingredient.name.toLowerCase().includes(query.toLowerCase()))
-      .map((ingredient) => ({
-        ...ingredient,
-        calories: ingredient.calories / 100,
-        carbs: ingredient.carbs / 100,
-        fat: ingredient.fat / 100,
-      }));
-  },
-  addIngredient: async (name: string, calories: string, carbs: string) => {
-    const id = String(Math.max(...ingredients.map((ingr) => Number(ingr.id))) + 1);
-    ingredients.push({ id, name, calories: parseInt(calories), carbs: parseInt(carbs), fat: 0 });
-  },
-};
+export async function fetchIngredients(query: string = ''): Promise<Ingredient[]> {
+  return ingredients
+    .filter((ingredient) => ingredient.name.toLowerCase().includes(query.toLowerCase()))
+    .map((ingredient) => ({
+      ...ingredient,
+      calories: ingredient.calories / 100,
+      carbs: ingredient.carbs / 100,
+      fat: ingredient.fat / 100,
+    }));
+}
+
+export async function addIngredient(name: string, calories: string, carbs: string) {
+  const id = String(Math.max(...ingredients.map((ingr) => Number(ingr.id))) + 1);
+  ingredients.push({ id, name, calories: parseInt(calories), carbs: parseInt(carbs), fat: 0 });
+}

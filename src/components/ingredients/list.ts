@@ -1,5 +1,5 @@
-import repository, { Ingredient } from '../../repository/ingredient.js';
 import config from '../../config.js';
+import { Ingredient, fetchIngredients } from '../../repository/ingredient.js';
 
 const header = () => `
   <thead>
@@ -23,7 +23,7 @@ export class IngredientList implements BaseComponent {
   constructor(private query: string) {}
 
   async render() {
-    const ingredients = await repository.fetchIngredients(this.query);
+    const ingredients = await fetchIngredients(this.query);
 
     return `
       <div id="ingredient-list" class="overflow-x-auto w-full">

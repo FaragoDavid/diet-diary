@@ -1,5 +1,5 @@
 import icons from '../../utils/icons.js';
-import repository, { Ingredient } from '../../repository/ingredient.js';
+import { Ingredient, fetchIngredients } from '../../repository/ingredient.js';
 import { RecipeIngredientWithName, fetchRecipe } from '../../repository/recipe.js';
 
 export class RecipeIngredientList implements BaseComponent {
@@ -116,7 +116,7 @@ export class RecipeIngredientList implements BaseComponent {
     const recipe = await fetchRecipe(this.id);
     if (!recipe) return 'Error: Recipe not found';
 
-    this.ingredients = await repository.fetchIngredients();
+    this.ingredients = await fetchIngredients();
 
     return `
       <form id="recipe-ingredient-list" class="grid grid-cols-max-3 grid-row-flex gap-2">

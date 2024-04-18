@@ -1,9 +1,9 @@
 import icons from '../../utils/icons.js';
-import repository from '../../repository/ingredient.js';
+import { fetchIngredients } from '../../repository/ingredient.js';
 import { RecipeType, fetchRecipe, fetchRecipes } from '../../repository/recipe.js';
 
 const recipeStats = async (recipeId: string) => {
-  const ingredients = await repository.fetchIngredients();
+  const ingredients = await fetchIngredients();
   const recipe = await fetchRecipe(recipeId);
   if (!recipe) return '';
 

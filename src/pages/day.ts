@@ -1,10 +1,10 @@
-import { format } from 'date-fns';
 
 import { BackLink } from '../components/back-link.js';
 import { dayHeader, newDayHeader } from '../components/meals/day-header.js';
 import { DayStats } from '../components/meals/day-stats.js';
 import { MealComponent } from '../components/meals/meal.js';
 import { MissingMeals } from '../components/meals/missing-meals.js';
+import { fetchIngredients } from '../repository/ingredient.js';
 import { Day } from '../repository/meal.js';
 
 export class NewDayPage implements BaseComponent {
@@ -25,11 +25,11 @@ export class DayPage implements BaseComponent {
   constructor(private day: Day) {}
 
   async render() {
+    const ingredients = await fetchIngredients();
     const meals: string[] = [];
     for (const meal of this.day.meals) {
-      meals.push(await new MealComponent(format(this.day.date, 'yyyyMMdd'), meal, false).render());
+      meals.push(await new MealComponent({ ...meal, date: this.day.date }, ingredients, false).render());
     }
-    
 
     return `
       <div id="day">

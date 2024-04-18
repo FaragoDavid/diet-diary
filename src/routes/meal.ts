@@ -10,7 +10,7 @@ import { MealComponent } from '../components/meals/meal.js';
 import { MissingMeals } from '../components/meals/missing-meals.js';
 import { MealType } from '../config.js';
 import { DayPage, NewDayPage } from '../pages/day.js';
-import repository from '../repository/ingredient.js';
+import { fetchIngredients } from '../repository/ingredient.js';
 import * as mealRepository from '../repository/meal.js';
 import { fetchDayMeals } from '../repository/meal.js';
 
@@ -34,7 +34,7 @@ export const getDays = async (request: GetMealsRequest, reply: FastifyReply) => 
   const toDate = new Date(request.query.toDate);
 
   const days = await fetchDayMeals(fromDate, toDate);
-  const ingredients = await repository.fetchIngredients();
+  const ingredients = await fetchIngredients();
 
   const template = await new Days(days, ingredients).render();
   return reply.type('text/html').send(template);
@@ -76,13 +76,15 @@ export const editDay = async (request: EditDayRequest, reply: FastifyReply) => {
 };
 
 export const addMeal = async (request: AddMealRequest, reply: FastifyReply) => {
-  const { date } = request.params;
+  const date = convertDateParam(request.params.date);
 
-  const meal = await mealRepository.addMeal(convertDateParam(date), request.body.mealType);
-  const day = await mealRepository.fetchDay(convertDateParam(date));
+  const meal = await mealRepository.addMeal(date, request.body.mealType);
+  const day = await mealRepository.fetchDay(date);
+  const ingredients = await fetchIngredients();
+
   const template = `
     ${await new MissingMeals(day, true).render()}
-    ${await new MealComponent(date, meal, day.meals.length === 1).render()}
+    ${await new MealComponent({ ...meal, date }, ingredients, day.meals.length === 1).render()}
   `;
 
   return reply.type('text/html').send(template);

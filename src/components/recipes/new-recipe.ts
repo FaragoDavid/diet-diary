@@ -1,5 +1,5 @@
 import icons from '../../utils/icons.js';
-import repository, { Ingredient } from '../../repository/ingredient.js';
+import { Ingredient, fetchIngredients } from '../../repository/ingredient.js';
 import { BackLink } from '../back-link.js';
 
 const header = () => `
@@ -55,7 +55,7 @@ export class NewRecipe implements BaseComponent {
   `;
 
   async render() {
-    const ingredients = await repository.fetchIngredients();
+    const ingredients = await fetchIngredients();
 
     return `
       <div id="new-recipe" class="w-full">
