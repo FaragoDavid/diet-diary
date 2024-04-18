@@ -4,6 +4,7 @@ import { v4 as uuid } from 'uuid';
 
 import config, { MealType } from '../config.js';
 import { ingredients } from './ingredient.js';
+import { nutrientFromDish } from '../utils/nutrient-from-dish.js';
 
 export type Dish = {
   id: string;
@@ -31,7 +32,7 @@ const meals = (() => {
     const meals: Meal[] = [];
     const count = Math.floor(Math.random() * 6) + 1;
     while (meals.length < count) {
-      const missingMeals = config.mealTypes.filter(({key}) => !meals.some(meal => meal.type === key));
+      const missingMeals = config.mealTypes.filter(({ key }) => !meals.some((meal) => meal.type === key));
       const type = missingMeals[Math.floor(Math.random() * missingMeals.length)]!.key;
       const dishes = Array.from(
         { length: Math.floor(Math.random() * 3) },
@@ -65,9 +66,9 @@ export async function fetchDayMeals(start: Date, end: Date) {
           ...nextMeal,
           dishes: nextMeal.dishes.map((dish) => ({
             ...dish,
-            calories: Math.floor((ingredients.find(({ id }) => id === dish.id)!.calories / 100) * dish.amount),
-            carbs: Math.floor((ingredients.find(({ id }) => id === dish.id)!.carbs / 100) * dish.amount),
-            fat: Math.floor((ingredients.find(({ id }) => id === dish.id)!.fat / 100) * dish.amount),
+            calories: nutrientFromDish(dish.id, dish.amount, 'calories', ingredients),
+            carbs: nutrientFromDish(dish.id, dish.amount, 'carbs', ingredients),
+            fat: nutrientFromDish(dish.id, dish.amount, 'fat', ingredients),
           })),
         };
 
@@ -83,7 +84,18 @@ export async function fetchDayMeals(start: Date, end: Date) {
 export async function fetchDay(date: Date): Promise<Day> {
   const day = days.find((day) => isSameDay(day.date, date));
   if (!day) throw new Error('Day not found');
-  return day;
+  return {
+    ...day,
+    meals: day.meals.map((meal) => ({
+      ...meal,
+      dishes: meal.dishes.map((dish) => ({
+        ...dish,
+        calories: nutrientFromDish(dish.id, dish.amount, 'calories', ingredients),
+        carbs: nutrientFromDish(dish.id, dish.amount, 'carbs', ingredients),
+        fat: nutrientFromDish(dish.id, dish.amount, 'fat', ingredients),
+      })),
+    })),
+  };
 }
 
 export async function fetchMeal(date: Date, mealType: MealType): Promise<Meal> {
@@ -119,9 +131,9 @@ export async function addDish(date: Date, mealType: MealType, mealId: string, am
     id: mealId,
     amount,
     name: ingredient.name,
-    calories: Math.floor((ingredient.calories / 100) * amount),
-    carbs: Math.floor((ingredient.carbs / 100) * amount),
-    fat: Math.floor((ingredient.fat / 100) * amount),
+    calories: nutrientFromDish(mealId, amount, 'calories', ingredients),
+    carbs: nutrientFromDish(mealId, amount, 'carbs', ingredients),
+    fat: nutrientFromDish(mealId, amount, 'fat', ingredients),
   };
   meal.dishes.push(newDish);
 

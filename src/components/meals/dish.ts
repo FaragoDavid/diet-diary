@@ -1,4 +1,4 @@
-import { Dish } from "src/repository/meal.js";
+import { Dish } from "../../repository/meal.js";
 
 export class DishComponent implements BaseComponent {
   constructor(private dish: Dish) {}
