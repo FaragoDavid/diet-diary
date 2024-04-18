@@ -1,10 +1,8 @@
 import { format } from 'date-fns';
 
 import config from '../../config.js';
-import icons from '../../utils/icons.js';
 import repository, { Ingredient } from '../../repository/ingredient.js';
 import { Dish, Meal, fetchDayMeals } from '../../repository/meal.js';
-import { DayStats } from './day-stats.js';
 
 export class Days implements BaseComponent {
   private ingredients?: Ingredient[];

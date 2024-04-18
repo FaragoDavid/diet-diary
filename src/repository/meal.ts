@@ -22,24 +22,30 @@ export type Meal = {
 
 export type Day = { date: Date; meals: Omit<Meal, 'date'>[] };
 
-const meals: Meal[] = Array.from({ length: 30 }, (_, i) => {
-  const date = subDays(new Date(), Math.floor(Math.random() * 7));
-  const dishes = Array.from(
-    { length: Math.floor(Math.random() * 3) },
-    () =>
-      ({
-        id: ingredients[randomInt(ingredients.length - 1)]!.id,
-        amount: Math.floor(Math.random() * 399) + 1,
-      } as Dish),
-  );
+const meals = (() => {
+  const days = Array.from({ length: 7 }, (_, i) => subDays(new Date(), i));
+  let result: Meal[] = [];
 
-  return {
-    id: uuid(),
-    type: config.mealTypes[Math.floor(Math.random() * 7)]!.key,
-    date,
-    dishes,
-  } as Meal;
-});
+  for (const day of days) {
+    const meals: Meal[] = [];
+    const count = Math.floor(Math.random() * 6) + 1;
+    while (meals.length < count) {
+      const missingMeals = config.mealTypes.filter(({key}) => !meals.some(meal => meal.type === key));
+      const type = missingMeals[Math.floor(Math.random() * missingMeals.length)]!.key;
+      const dishes = Array.from(
+        { length: Math.floor(Math.random() * 3) },
+        () =>
+          ({
+            id: ingredients[randomInt(ingredients.length - 1)]!.id,
+            amount: Math.floor(Math.random() * 399) + 1,
+          } as Dish),
+      );
+      meals.push({ id: uuid(), type, date: day, dishes });
+    }
+    result = result.concat(meals);
+  }
+  return result;
+})();
 
 const days = (meals: Meal[]): Day[] =>
   meals.reduce((days, { date: nextMealDate, ...nextMeal }) => {
@@ -74,10 +80,12 @@ export async function fetchDayMeals(start: Date, end: Date) {
 }
 
 export async function fetchDay(date: Date): Promise<Day> {
+  if(!meals.some((meal) => isSameDay(meal.date, date))) throw new Error('Day not found');
   return {
     date,
     meals: meals
       .filter((meal) => isSameDay(meal.date, date))
+      .sort((a, b) => config.mealTypes.findIndex(({ key }) => key === a.type) - config.mealTypes.findIndex(({ key }) => key === b.type))
       .map((meal) => ({
         ...meal,
         dishes: meal.dishes.map((dish) => ({

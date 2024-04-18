@@ -1,10 +1,11 @@
-import { MissingMeals } from '../components/meals/missing-meals.js';
+import { format } from 'date-fns';
 import { BackLink } from '../components/back-link.js';
 import { dayHeader, newDayHeader } from '../components/meals/day-header.js';
 import { DayStats } from '../components/meals/day-stats.js';
-import { Day } from '../repository/meal.js';
 import { MealComponent } from '../components/meals/meal.js';
-import { format } from 'date-fns';
+import { MissingMeals } from '../components/meals/missing-meals.js';
+import config from '../config.js';
+import { Day } from '../repository/meal.js';
 
 export class NewDayPage implements BaseComponent {
   async render() {
