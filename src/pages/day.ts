@@ -4,7 +4,7 @@ import { dayHeader, newDayHeader } from '../components/meals/day-header.js';
 import { DayStats } from '../components/meals/day-stats.js';
 import { MealComponent } from '../components/meals/meal.js';
 import { MissingMeals } from '../components/meals/missing-meals.js';
-import { fetchIngredients } from '../repository/ingredient.js';
+import { Ingredient } from '../repository/ingredient.js';
 import { Day } from '../repository/meal.js';
 
 export class NewDayPage implements BaseComponent {
@@ -22,13 +22,14 @@ export class NewDayPage implements BaseComponent {
 }
 
 export class DayPage implements BaseComponent {
-  constructor(private day: Day) {}
+  constructor(private day: Day, private ingredients: Ingredient[]) {}
 
   async render() {
-    const ingredients = await fetchIngredients();
     const meals: string[] = [];
     for (const meal of this.day.meals) {
-      meals.push(await new MealComponent({ ...meal, date: this.day.date }, ingredients, false).render());
+      meals.push(
+        await new MealComponent({ ...meal, date: this.day.date }, this.ingredients, MealComponent.STATS_SPAN.FOUR, false).render(),
+      );
     }
 
     return `
@@ -37,7 +38,7 @@ export class DayPage implements BaseComponent {
         <div class="container py-6">
           <div id="day-container" class="flex flex-col justify-center items-center gap-4">
             ${dayHeader(this.day)}
-            ${await new DayStats(this.day).render()}
+            ${await new DayStats(this.day, DayStats.SPAN.FIVE).render()}
             ${await new MissingMeals(this.day).render()}
             <div id="meals" class="grid grid-cols-max-5 gap-x-2 gap-y-4">
               ${meals.join('')}

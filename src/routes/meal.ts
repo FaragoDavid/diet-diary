@@ -43,7 +43,9 @@ export const getDays = async (request: GetMealsRequest, reply: FastifyReply) => 
 export const getDay = async (request: GetDayRequest, reply: FastifyReply) => {
   const { date } = request.params;
   const day = await mealRepository.fetchDay(convertDateParam(date));
-  const template = await layout(new DayPage(day));
+  const ingredients = await fetchIngredients();
+
+  const template = await layout(new DayPage(day, ingredients));
 
   return reply.type('text/html').send(template);
 };
@@ -59,7 +61,7 @@ export const createDay = async (request: CreateDayRequest, reply: FastifyReply) 
   const day = await mealRepository.createDay(bodyDate);
 
   const template = `${dayHeader(day)}
-      ${await new DayStats(day).render()}
+      ${await new DayStats(day, DayStats.SPAN.FIVE).render()}
       ${await new MissingMeals(day).render()}`;
 
   const dateParam = request.body.date.split('-').join('');
@@ -69,8 +71,9 @@ export const createDay = async (request: CreateDayRequest, reply: FastifyReply) 
 export const editDay = async (request: EditDayRequest, reply: FastifyReply) => {
   const { date } = request.params;
   const day = await mealRepository.fetchDay(convertDateParam(date));
+  const ingredients = await fetchIngredients();
 
-  const template = await new DayPage(day).render();
+  const template = await new DayPage(day, ingredients).render();
 
   return reply.type('text/html').send(template);
 };
@@ -84,7 +87,7 @@ export const addMeal = async (request: AddMealRequest, reply: FastifyReply) => {
 
   const template = `
     ${await new MissingMeals(day, true).render()}
-    ${await new MealComponent({ ...meal, date }, ingredients, day.meals.length === 1).render()}
+    ${await new MealComponent({ ...meal, date }, ingredients, MealComponent.STATS_SPAN.FOUR, day.meals.length === 1).render()}
   `;
 
   return reply.type('text/html').send(template);
@@ -103,8 +106,8 @@ export const addDish = async (request: AddDishRequest, reply: FastifyReply) => {
   const meal = await mealRepository.fetchMeal(convertDateParam(date), mealType);
   const template = `
     ${await new DishComponent(dish).render()}
-    ${await new MealStats(meal, true).render()}
-    ${await new DayStats(day, true).render()}
+    ${await new MealStats(meal, MealStats.SPAN.FOUR, true).render()}
+    ${await new DayStats(day, DayStats.SPAN.FIVE, true).render()}
   `;
 
   return reply.type('text/html').send(template);

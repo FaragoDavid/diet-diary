@@ -1,9 +1,14 @@
 import { Meal } from "../../repository/meal.js";
 
-
+enum SPAN {
+  TWO = 'col-span-2',
+  FOUR = 'col-span-4',
+}
 
 export class MealStats implements BaseComponent {
-  constructor(private meal: Omit<Meal, 'date'>, private swap: boolean = false) {}
+  static SPAN = SPAN;
+
+  constructor(private meal: Omit<Meal, 'date'>, private span: `${SPAN}`, private swap: boolean = false) {}
 
   async render() {
     const { mealCals, mealCH, mealFat } = this.meal.dishes.reduce(
@@ -16,7 +21,7 @@ export class MealStats implements BaseComponent {
     );
 
     return `
-      <div id="${this.meal.type}-stats" class="text col-span-4 flex" ${this.swap ? `hx-swap-oob="true"` : ''}>
+      <div id="${this.meal.type}-stats" class="text ${this.span} flex" ${this.swap ? `hx-swap-oob="true"` : ''}>
         <div class="text text-sm text-secondary italic">Kal: ${mealCals}</div>
         <div class="divider divider-horizontal" ></div> 
         <div class="text text-sm text-secondary italic">CH: ${mealCH}</div>

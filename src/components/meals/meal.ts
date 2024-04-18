@@ -5,8 +5,15 @@ import { Ingredient } from '../../repository/ingredient.js';
 import { Meal } from '../../repository/meal.js';
 import { MealStats } from './meal-stats.js';
 
+enum STATS_SPAN {
+  TWO = 'col-span-2',
+  FOUR = 'col-span-4',
+}
+
 export class MealComponent implements BaseComponent {
-  constructor(private meal: Meal, private ingredients: Ingredient[], private isFirst: boolean) {}
+  static STATS_SPAN = STATS_SPAN;
+
+  constructor(private meal: Meal, private ingredients: Ingredient[], private statsSpan: `${STATS_SPAN}`, private isFirst: boolean) {}
 
   newDishAmount() {
     return `
@@ -48,7 +55,7 @@ export class MealComponent implements BaseComponent {
     return `
       ${this.isFirst ? `<div id="meals" class="grid grid-cols-max-5 gap-x-2 gap-y-4">` : ''}
         <div class="text text-secondary col-span-1">${config.mealTypes.find(({ key }) => key === this.meal.type)!.name}</div>
-				${await new MealStats(this.meal).render()}
+				${await new MealStats(this.meal, this.statsSpan).render()}
 				${this.meal.dishes.length > 0 ? `<div class="text col-span-2"></div>` : ''}
 				${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">cal</div>` : ''}
 				${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">CH</div>` : ''}
