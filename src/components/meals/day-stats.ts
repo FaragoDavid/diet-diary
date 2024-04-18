@@ -1,8 +1,8 @@
-import { format } from 'date-fns';
 import { Day } from '../../repository/meal.js';
+import { dateToParam } from '../../utils/converters.js';
 
 enum SPAN {
-  TWO = 'col-span-2',
+  NONE = '',
   FIVE = 'col-span-5',
 }
 
@@ -27,7 +27,7 @@ export class DayStats implements BaseComponent {
 
     return `
       <div
-        id="${format(this.day.date, 'yyyyMMdd')}-stats" 
+        id="${dateToParam(this.day.date)}-stats" 
         class="flex text-lg ${this.span}" 
       >
         <div class="flex justify-center items-center">

@@ -1,6 +1,6 @@
-import { format } from 'date-fns';
 import config, { MealType } from '../../config.js';
 import { Day } from '../../repository/meal.js';
+import { dateToParam } from '../../utils/converters.js';
 
 const ID = 'add-meals';
 
@@ -12,14 +12,13 @@ export class MissingMeals implements BaseComponent {
   constructor(private day: Day, private swap = false) {}
 
   missingMealButton(value: MealType, name: string) {
-
     return `
 			<button
 				type="button"
 				name="mealType"
 				value="${value}"
 				class="btn btn-sm btn-secondary"
-				hx-post="/day/${format(this.day!.date, 'yyyyMMdd')}/meal"
+				hx-post="/day/${dateToParam(this.day.date)}/meal"
 				hx-target="${this.day.meals.length === 0 ? `#day-container` : '#meals'}"
 				hx-swap="beforeend"
 			>

@@ -3,6 +3,8 @@ import { format } from 'date-fns';
 import config from '../../config.js';
 import { Ingredient } from '../../repository/ingredient.js';
 import { Day, Dish, Meal } from '../../repository/meal.js';
+import { dateToParam } from '../../utils/converters.js';
+import icons from '../../utils/icons.js';
 import { DayStats } from './day-stats.js';
 import { MealComponent } from './meal.js';
 
@@ -35,7 +37,7 @@ export class Days implements BaseComponent {
   }
 
   newDish(date, mealId) {
-    const name = `newDish-${format(date, 'yyyyMMdd')}-${mealId}`;
+    const name = `newDish-${dateToParam(date)}-${mealId}`;
     return `
       <select name="${name}" class="select select-bordered select-sm bg-white w-28">
         <option disabled selected>Válassz</option>
@@ -123,8 +125,13 @@ export class Days implements BaseComponent {
     }
 
     return `
-      <div class="flex items-center text-lg text-primary col-span-1">${format(day.date, 'MMM. d. (EEE)')}</div>
-      ${await new DayStats(day, DayStats.SPAN.TWO).render()}
+      <div class="flex items-center text-lg text-primary">${format(day.date, 'MMM. d. (EEE)')}</div>
+      ${await new DayStats(day, DayStats.SPAN.NONE).render()}
+      <button 
+        type="button" 
+        class="btn btn-primary btn-sm"
+        hx-get="/day/${dateToParam(day.date)}/edit"
+      >${icons.edit}</button>
       ${mealComponents.join('<div class="divider divider-secondary col-span-3 m-0 pl-2"></div>')}
     `;
   }

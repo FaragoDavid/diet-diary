@@ -1,5 +1,6 @@
-import { format, subDays } from 'date-fns';
+import { subDays } from 'date-fns';
 
+import { dateToInput } from '../../utils/converters.js';
 import config from '../../config.js';
 import { Ingredient } from '../../repository/ingredient.js';
 import { fetchDayMeals } from '../../repository/meal.js';
@@ -11,7 +12,7 @@ const dateInput = (id: string, defaultValue: Date) => `
     id="${id}"
     type="date"
     class="border rounded px-2 py-1"
-    value="${format(defaultValue, 'yyyy-MM-dd')}"
+    value="${dateToInput(defaultValue)}"
     hx-get="/days"
     hx-target="#days"
     hx-trigger="change"

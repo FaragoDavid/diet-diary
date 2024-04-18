@@ -1,8 +1,7 @@
-import { format } from 'date-fns';
-
 import config from '../../config.js';
 import { Ingredient } from '../../repository/ingredient.js';
 import { Meal } from '../../repository/meal.js';
+import { dateToParam } from '../../utils/converters.js';
 import { MealStats } from './meal-stats.js';
 
 enum STATS_SPAN {
@@ -34,7 +33,7 @@ export class MealComponent implements BaseComponent {
 				name="amount"
         class="input input-sm input-bordered w-[4.5rem] bg-white pr-5 text-right placeholder:text-neutral peer" 
         placeholder="0"
-				hx-post="/day/${format(this.meal.date, 'yyyyMMdd')}/meal/${this.meal.type}/dish"
+				hx-post="/day/${dateToParam(this.meal.date)}/meal/${this.meal.type}/dish"
 				hx-trigger="change delay:100ms"
 				hx-include="[name=${this.meal.type}-dishId]"
 				hx-target="[name=${this.meal.type}-dishId]"

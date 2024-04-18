@@ -13,11 +13,9 @@ import { DayPage, NewDayPage } from '../pages/day.js';
 import { fetchIngredients } from '../repository/ingredient.js';
 import * as mealRepository from '../repository/meal.js';
 import { fetchDayMeals } from '../repository/meal.js';
+import { paramToDate } from '../utils/converters.js';
 
 type DashDate = `${string}-${string}-${string}`;
-function convertDateParam(date: string): Date {
-  return new Date(`${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}`);
-}
 
 type GetMealsRequest = FastifyRequest<{ Querystring: { fromDate: number; toDate: number } }>;
 type CreateDayRequest = FastifyRequest<{ Body: { date: DashDate } }>;
@@ -42,7 +40,7 @@ export const getDays = async (request: GetMealsRequest, reply: FastifyReply) => 
 
 export const getDay = async (request: GetDayRequest, reply: FastifyReply) => {
   const { date } = request.params;
-  const day = await mealRepository.fetchDay(convertDateParam(date));
+  const day = await mealRepository.fetchDay(paramToDate(date));
   const ingredients = await fetchIngredients();
 
   const template = await layout(new DayPage(day, ingredients));
@@ -70,7 +68,7 @@ export const createDay = async (request: CreateDayRequest, reply: FastifyReply) 
 
 export const editDay = async (request: EditDayRequest, reply: FastifyReply) => {
   const { date } = request.params;
-  const day = await mealRepository.fetchDay(convertDateParam(date));
+  const day = await mealRepository.fetchDay(paramToDate(date));
   const ingredients = await fetchIngredients();
 
   const template = await new DayPage(day, ingredients).render();
@@ -79,7 +77,7 @@ export const editDay = async (request: EditDayRequest, reply: FastifyReply) => {
 };
 
 export const addMeal = async (request: AddMealRequest, reply: FastifyReply) => {
-  const date = convertDateParam(request.params.date);
+  const date = paramToDate(request.params.date);
 
   const meal = await mealRepository.addMeal(date, request.body.mealType);
   const day = await mealRepository.fetchDay(date);
@@ -100,14 +98,9 @@ export const addMeal = async (request: AddMealRequest, reply: FastifyReply) => {
 export const addDish = async (request: AddDishRequest, reply: FastifyReply) => {
   const { date, mealType } = request.params;
 
-  const dish = await mealRepository.addDish(
-    convertDateParam(date),
-    mealType,
-    request.body[`${mealType}-dishId`],
-    Number(request.body.amount),
-  );
-  const day = await mealRepository.fetchDay(convertDateParam(date));
-  const meal = await mealRepository.fetchMeal(convertDateParam(date), mealType);
+  const dish = await mealRepository.addDish(paramToDate(date), mealType, request.body[`${mealType}-dishId`], Number(request.body.amount));
+  const day = await mealRepository.fetchDay(paramToDate(date));
+  const meal = await mealRepository.fetchMeal(paramToDate(date), mealType);
   const template = `
     ${await new DishComponent(dish).render()}
     ${await new MealStats(meal, MealStats.SPAN.FOUR, true).render()}

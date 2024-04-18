@@ -1,6 +1,7 @@
 import { addDays, format } from 'date-fns';
 
 import { Day } from '../../repository/meal.js';
+import { dateToInput } from '../../utils/converters.js';
 
 export function dayHeader(day: Day) {
   return `
@@ -14,7 +15,7 @@ export function dayHeader(day: Day) {
 export function newDayHeader() {
   return `<input 
 			id="day-header" 
-			type="date" min="${format(addDays(new Date(), 1), 'yyyy-MM-dd')}"
+			type="date" min="${dateToInput(addDays(new Date(), 1))}"
 			name="date" 
 			class="input input-bordered"
 			hx-post="/new-day"
