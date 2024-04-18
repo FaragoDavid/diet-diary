@@ -10,8 +10,6 @@ const layout = async (body: BaseComponent) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Diet Diary</title>
 
-        <link rel="manifest" href="${pathForPublicAsset('site.webmanifest')}" />
-
         <link rel="stylesheet" href="${pathForPublicAsset('output.css')}" />
 
         <script src="https://unpkg.com/htmx.org@1.9.5"></script>
