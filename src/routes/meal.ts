@@ -87,7 +87,11 @@ export const addMeal = async (request: AddMealRequest, reply: FastifyReply) => {
 
   const template = `
     ${await new MissingMeals(day, true).render()}
-    ${await new MealComponent({ ...meal, date }, ingredients, MealComponent.STATS_SPAN.FOUR, day.meals.length === 1).render()}
+    ${await new MealComponent({ ...meal, date }, ingredients, {
+      statsSpan: MealComponent.STATS_SPAN.FOUR,
+      isFirst: day.meals.length === 1,
+      showDishes: true,
+    }).render()}
   `;
 
   return reply.type('text/html').send(template);

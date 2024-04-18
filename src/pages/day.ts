@@ -28,7 +28,11 @@ export class DayPage implements BaseComponent {
     const meals: string[] = [];
     for (const meal of this.day.meals) {
       meals.push(
-        await new MealComponent({ ...meal, date: this.day.date }, this.ingredients, MealComponent.STATS_SPAN.FOUR, false).render(),
+        await new MealComponent({ ...meal, date: this.day.date }, this.ingredients, {
+          statsSpan: MealComponent.STATS_SPAN.FOUR,
+          isFirst: false,
+          showDishes: true,
+        }).render(),
       );
     }
 

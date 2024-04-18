@@ -113,7 +113,13 @@ export class Days implements BaseComponent {
   async day(day: Day) {
     const mealComponents: string[] = [];
     for (const meal of day.meals) {
-      mealComponents.push(await new MealComponent({ ...meal, date: day.date }, this.ingredients, MealComponent.STATS_SPAN.TWO, false).render());
+      mealComponents.push(
+        await new MealComponent({ ...meal, date: day.date }, this.ingredients, {
+          statsSpan: MealComponent.STATS_SPAN.TWO,
+          isFirst: false,
+          showDishes: false,
+        }).render(),
+      );
     }
 
     return `
