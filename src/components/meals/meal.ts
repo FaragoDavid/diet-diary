@@ -2,6 +2,7 @@ import config from '../../config.js';
 import { Ingredient } from '../../repository/ingredient.js';
 import { Meal } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
+import { DishComponent } from './dish.js';
 import { MealStats } from './meal-stats.js';
 
 enum STATS_SPAN {
@@ -61,12 +62,20 @@ export class MealComponent implements BaseComponent {
     `;
   }
 
-  dishes() {
+  async dishes() {
+    const dishComponents: string[] = [];
+    for (const dish of this.meal.dishes) {
+      console.log({ meal: this.meal.type, dish });
+      
+      dishComponents.push(await new DishComponent(dish).render());
+    }
+
     return `
     ${this.meal.dishes.length > 0 ? `<div class="text col-span-2"></div>` : ''}
     ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">cal</div>` : ''}
     ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">CH</div>` : ''}
     ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">zsír</div>` : ''}
+    ${dishComponents.join('')}
     ${this.newDish()}
     `;
   }
@@ -76,7 +85,7 @@ export class MealComponent implements BaseComponent {
       ${this.isFirst ? `<div id="meals" class="grid grid-cols-max-5 gap-x-2 gap-y-4">` : ''}
         <div class="text text-secondary col-span-1">${config.mealTypes.find(({ key }) => key === this.meal.type)!.name}</div>
 				${await new MealStats(this.meal, this.statsSpan).render()}
-				${this.showDishes ? this.dishes() : ''}
+				${this.showDishes ? await this.dishes() : ''}
       ${this.isFirst ? `</div>` : ''}
     `;
   }

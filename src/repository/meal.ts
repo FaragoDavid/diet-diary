@@ -3,8 +3,8 @@ import { endOfDay, isSameDay, isWithinInterval, subDays } from 'date-fns';
 import { v4 as uuid } from 'uuid';
 
 import config, { MealType } from '../config.js';
-import { ingredients } from './ingredient.js';
 import { nutrientFromDish } from '../utils/nutrient-from-dish.js';
+import { ingredients } from './ingredient.js';
 
 export type Dish = {
   id: string;
@@ -37,10 +37,18 @@ const meals = (() => {
       const dishes = Array.from(
         { length: Math.floor(Math.random() * 3) },
         () =>
-          ({
-            id: ingredients[randomInt(ingredients.length - 1)]!.id,
-            amount: Math.floor(Math.random() * 399) + 1,
-          } as Dish),
+          {
+            const ingredient = ingredients[randomInt(ingredients.length - 1)];
+            const amount = Math.floor(Math.random() * 399) + 1;
+            return ({
+              id: ingredient!.id,
+              name: ingredient!.name,
+              amount,
+              calories: nutrientFromDish(ingredient!.id, amount, 'calories', ingredients),
+              carbs: nutrientFromDish(ingredient!.id, amount, 'carbs', ingredients),
+              fat: nutrientFromDish(ingredient!.id, amount, 'fat', ingredients),
+            } as Dish);
+          },
       );
       meals.push({ id: uuid(), type, date: day, dishes });
     }
@@ -121,19 +129,19 @@ export async function addMeal(date: Date, type: MealType): Promise<Meal> {
   return newMeal;
 }
 
-export async function addDish(date: Date, mealType: MealType, mealId: string, amount: number): Promise<Dish> {
+export async function addDish(date: Date, mealType: MealType, dishId: string, amount: number): Promise<Dish> {
   const meal = meals.find((meal) => isSameDay(meal.date, date) && meal.type === mealType);
   if (!meal) throw new Error('Meal not found');
-  const ingredient = ingredients.find(({ id }) => id === mealId);
+  const ingredient = ingredients.find(({ id }) => id === dishId);
   if (!ingredient) throw new Error('Ingredient not found');
 
   const newDish: Dish = {
-    id: mealId,
+    id: dishId,
     amount,
     name: ingredient.name,
-    calories: nutrientFromDish(mealId, amount, 'calories', ingredients),
-    carbs: nutrientFromDish(mealId, amount, 'carbs', ingredients),
-    fat: nutrientFromDish(mealId, amount, 'fat', ingredients),
+    calories: nutrientFromDish(dishId, amount, 'calories', ingredients),
+    carbs: nutrientFromDish(dishId, amount, 'carbs', ingredients),
+    fat: nutrientFromDish(dishId, amount, 'fat', ingredients),
   };
   meal.dishes.push(newDish);
 

@@ -59,7 +59,7 @@ export const createDay = async (request: CreateDayRequest, reply: FastifyReply) 
   const day = await mealRepository.createDay(bodyDate);
 
   const template = `${dayHeader(day)}
-      ${await new DayStats(day, DayStats.SPAN.FIVE).render()}
+      ${await new DayStats(day, {span: DayStats.SPAN.FIVE, swap: false}).render()}
       ${await new MissingMeals(day).render()}`;
 
   const dateParam = request.body.date.split('-').join('');
@@ -104,7 +104,7 @@ export const addDish = async (request: AddDishRequest, reply: FastifyReply) => {
   const template = `
     ${await new DishComponent(dish).render()}
     ${await new MealStats(meal, MealStats.SPAN.FOUR, true).render()}
-    ${await new DayStats(day, DayStats.SPAN.FIVE, true).render()}
+    ${await new DayStats(day, {span: DayStats.SPAN.FIVE, swap: true}).render()}
   `;
 
   return reply.type('text/html').send(template);

@@ -22,11 +22,11 @@ export class MealStats implements BaseComponent {
 
     return `
       <div id="${this.meal.type}-stats" class="text ${this.span} flex" ${this.swap ? `hx-swap-oob="true"` : ''}>
-        <div class="text text-sm text-secondary italic">Kal: ${mealCals}</div>
+        <div class="text text-sm text-secondary italic">Kal: ${Math.floor(mealCals)}</div>
         <div class="divider divider-horizontal" ></div> 
-        <div class="text text-sm text-secondary italic">CH: ${mealCH}</div>
+        <div class="text text-sm text-secondary italic">CH: ${Math.floor(mealCH)}</div>
         <div class="divider divider-horizontal" ></div> 
-        <div class="text text-sm text-secondary italic">Zsír: ${mealFat}</div>
+        <div class="text text-sm text-secondary italic">Zsír: ${Math.floor(mealFat)}</div>
       </div>
     `;
   }

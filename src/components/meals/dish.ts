@@ -24,9 +24,9 @@ export class DishComponent implements BaseComponent {
     return `
       <div class="text">${name}</div>
       ${this.dishAmount({ amount })}
-      <div class="text text-right">${calories}</div>
-      <div class="text text-right">${carbs}</div>
-      <div class="text text-right">${fat}</div>
+      <div class="text text-right">${Math.floor(calories)}</div>
+      <div class="text text-right">${Math.floor(carbs)}</div>
+      <div class="text text-right">${Math.floor(fat)}</div>
     `;
   }
 }

@@ -8,8 +8,13 @@ enum SPAN {
 
 export class DayStats implements BaseComponent {
   static SPAN = SPAN;
+  span: string;
+  swap: boolean;
 
-  constructor(private day: Day, private span: `${SPAN}`, private swap: boolean = false) {}
+  constructor(private day: Day, options: { span: `${SPAN}`; swap: boolean }) {
+    this.span = options.span;
+    this.swap = options.swap;
+  }
 
   async render() {
     const { dayCals, dayCarbs, dayFat } = this.day.meals.reduce(
@@ -27,23 +32,24 @@ export class DayStats implements BaseComponent {
 
     return `
       <div
-        id="${dateToParam(this.day.date)}-stats" 
+        id="day-${dateToParam(this.day.date)}-stats" 
         class="flex text-lg ${this.span}" 
+        ${this.swap ? 'hx-swap-oob="true"' : ''}
       >
         <div class="flex justify-center items-center">
           <div class="flex flex-col justify-center items-center">
             <div class="text text-center text-primary text-sm italic">Kal</div>
-            <div class="text text-center text-primary">${dayCals}</div>
+            <div class="text text-center text-primary">${Math.floor(dayCals)}</div>
           </div>
           <div class="divider divider-horizontal" ></div> 
           <div class="flex flex-col justify-center items-center">
             <div class="text text-center text-primary text-sm italic">CH</div>
-            <div class="text text-center text-primary">${dayCarbs}</div>
+            <div class="text text-center text-primary">${Math.floor(dayCarbs)}</div>
           </div>
           <div class="divider divider-horizontal" ></div> 
           <div class="flex flex-col justify-center items-center">
             <div class="text text-center text-primary text-sm italic">Zsír</div>
-            <div class="text text-center text-primary">${dayFat}</div>
+            <div class="text text-center text-primary">${Math.floor(dayFat)}</div>
           </div>
         </div>
       </div>

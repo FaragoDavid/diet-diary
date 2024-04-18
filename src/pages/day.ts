@@ -42,7 +42,7 @@ export class DayPage implements BaseComponent {
         <div class="container py-6">
           <div id="day-container" class="flex flex-col justify-center items-center gap-4">
             ${dayHeader(this.day)}
-            ${await new DayStats(this.day, DayStats.SPAN.NONE).render()}
+            ${await new DayStats(this.day, { span: DayStats.SPAN.NONE, swap: false }).render()}
             ${await new MissingMeals(this.day).render()}
             <div id="meals" class="grid grid-cols-max-5 gap-x-2 gap-y-4">
               ${meals.join('')}

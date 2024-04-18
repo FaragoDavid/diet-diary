@@ -24,7 +24,7 @@ export class Days implements BaseComponent {
 
     return `
       <div class="flex items-center text-lg text-primary">${format(day.date, 'MMM. d. (EEE)')}</div>
-      ${await new DayStats(day, DayStats.SPAN.NONE).render()}
+      ${await new DayStats(day, {span: DayStats.SPAN.NONE, swap: false}).render()}
       <a href="/day/${dateToParam(day.date)}">
         <button 
           class="btn btn-primary btn-sm"
