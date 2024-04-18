@@ -1,5 +1,5 @@
+import { Ingredient } from '../../repository/ingredient.js';
 import icons from '../../utils/icons.js';
-import { Ingredient, fetchIngredients } from '../../repository/ingredient.js';
 import { BackLink } from '../back-link.js';
 
 const header = () => `
@@ -27,12 +27,12 @@ const recipeName = () => `
 `;
 
 export class NewRecipe implements BaseComponent {
-  constructor() {}
+  constructor(private ingredients: Ingredient[]) {}
 
-  addIngredient = (ingredients: Ingredient[]) => `
+  addIngredient = () => `
     <div class="flex justify-center">
       <select name="ingredient" class="select select-bordered select-sm max-w-32 sm:max-w-full">
-      ${ingredients.map((ingredient) => `<option value="${ingredient.id}">${ingredient.name}</option>`).join('')}
+      ${this.ingredients.map((ingredient) => `<option value="${ingredient.id}">${ingredient.name}</option>`).join('')}
       </select>
     </div>
     <div class="flex justify-center">
@@ -55,8 +55,6 @@ export class NewRecipe implements BaseComponent {
   `;
 
   async render() {
-    const ingredients = await fetchIngredients();
-
     return `
       <div id="new-recipe" class="w-full">
         ${await new BackLink().render()}
@@ -66,7 +64,7 @@ export class NewRecipe implements BaseComponent {
             <form class="w-full flex justify-center">
               <div class="grid grid-cols-max-3 gap-x-2 gap-y-4">
                 ${recipeName()}
-                ${this.addIngredient(ingredients)}
+                ${this.addIngredient()}
               </div>
             </form>
           </div>

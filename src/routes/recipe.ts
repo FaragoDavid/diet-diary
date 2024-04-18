@@ -5,6 +5,7 @@ import { RecipeList } from '../components/recipes/recipe-list.js';
 import { NewRecipe } from '../components/recipes/new-recipe.js';
 import { Recipe } from '../pages/recipe.js';
 import * as recipeRepository from '../repository/recipe.js';
+import { fetchIngredients } from '../repository/ingredient.js';
 
 type GetRecipesRequest = FastifyRequest<{ Querystring: { query: string } }>;
 type GetRecipeRequest = FastifyRequest<{ Params: { recipeId: string } }>;
@@ -87,7 +88,9 @@ export const updateRecipeAmount = (bodyType: 'list' | 'detail') => {
 };
 
 export const newRecipe = async (_: FastifyRequest, reply: FastifyReply) => {
-  const template = await layout(new NewRecipe());
+  const ingredients = await fetchIngredients();
+
+  const template = await layout(new NewRecipe(ingredients));
   return reply.type('text/html').send(template);
 };
 

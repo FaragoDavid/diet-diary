@@ -1,20 +1,21 @@
-import fastify, { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
 import { layout } from '../components/layout.js';
 import { Dashboard } from '../pages/dashboard.js';
+import { fetchIngredients } from '../repository/ingredient.js';
+import { addIngr, getIngredient } from './ingredient.js';
+import { getLogin, postLogin } from './login.js';
+import { addDish, addMeal, createDay, getDay, getDays, newDay } from './meal.js';
 import {
+  addRecipeIngredient,
   createRecipe,
   deleteRecipeIngredient,
   editRecipe,
   getRecipes,
   newRecipe,
-  addRecipeIngredient,
   updateRecipeAmount,
   updateRecipeIngredientAmount,
 } from './recipe.js';
-import { getLogin, postLogin } from './login.js';
-import { addIngr, getIngredient } from './ingredient.js';
-import { addDish, addMeal, createDay, editDay, getDay, getDays, newDay } from './meal.js';
 
 const createHandler = (handler: (request: FastifyRequest<any>, reply: FastifyReply) => Promise<void>) => {
   return { preHandler: cookieValidator, handler };
@@ -36,7 +37,9 @@ const registerRoutes = (fastify: FastifyInstance) => {
   fastify.get('/dashboard', {
     preHandler: cookieValidator,
     handler: async (_, reply: FastifyReply) => {
-      const template = await layout(new Dashboard());
+      const ingredients = await fetchIngredients();
+
+      const template = await layout(new Dashboard(ingredients));
       return reply.type('text/html').send(template);
     },
   });

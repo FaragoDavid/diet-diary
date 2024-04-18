@@ -1,10 +1,13 @@
-import config from '../config.js';
 import { Ingredients } from '../components/ingredients/index.js';
+import { DaySearch } from '../components/meals/day-search.js';
 import { Recipes } from '../components/recipes/index.js';
 import { Segment } from '../components/segment.js';
-import { DaySearch } from '../components/meals/day-search.js';
+import config from '../config.js';
+import { Ingredient } from '../repository/ingredient.js';
 
 export class Dashboard implements BaseComponent {
+  constructor(private ingredients: Ingredient[]) {}
+
   async render() {
     return `
       <div class="container p-2 mx-auto">
@@ -14,7 +17,7 @@ export class Dashboard implements BaseComponent {
           </div>
           ${await new Segment(new Ingredients()).render()} 
           ${await new Segment(new Recipes()).render()} 
-          ${await new Segment(new DaySearch()).render()} 
+          ${await new Segment(new DaySearch(this.ingredients)).render()} 
         </div>
       </div>
     `;
