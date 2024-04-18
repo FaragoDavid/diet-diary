@@ -14,7 +14,7 @@ import {
 } from './recipe.js';
 import { getLogin, postLogin } from './login.js';
 import { addIngredient, getIngredient } from './ingredient.js';
-import { addDish, addMeal, createDay, editDay, getDays, newDay } from './meal.js';
+import { addDish, addMeal, createDay, editDay, getDay, getDays, newDay } from './meal.js';
 
 const createHandler = (handler: (request: FastifyRequest<any>, reply: FastifyReply) => Promise<void>) => {
   return { preHandler: cookieValidator, handler };
@@ -57,7 +57,7 @@ const registerRoutes = (fastify: FastifyInstance) => {
   fastify.get('/days', createHandler(getDays));
   fastify.get('/new-day', createHandler(newDay));
   fastify.post('/new-day', createHandler(createDay));
-  fastify.get('/day/:date', createHandler(editDay));
+  fastify.get('/day/:date', createHandler(getDay));
   fastify.post('/day/:date/meal', createHandler(addMeal));
   fastify.post('/day/:date/meal/:mealType/dish', createHandler(addDish));
 };

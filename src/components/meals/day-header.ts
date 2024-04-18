@@ -1,7 +1,7 @@
 import { addDays, format } from 'date-fns';
 import { Day } from '../../repository/meal.js';
 
-function editHeader(day: Day) {
+export function dayHeader(day: Day) {
   return `
 		<div 
 			id="day-header" 
@@ -11,18 +11,12 @@ function editHeader(day: Day) {
 	`;
 }
 
-export function dayHeader(type: 'create' | 'edit'): string | typeof editHeader {
-  switch (type) {
-    case 'create':
-      return `<input 
-				id="day-header" 
-				type="date" min="${format(addDays(new Date(), 1), 'yyyy-MM-dd')}"
-				name="date" 
-				class="input input-bordered"
-				hx-post="/new-day"
-			>
-		`;
-    case 'edit':
-      return editHeader;
-  }
+export function newDayHeader() {
+  return `<input 
+			id="day-header" 
+			type="date" min="${format(addDays(new Date(), 1), 'yyyy-MM-dd')}"
+			name="date" 
+			class="input input-bordered"
+			hx-post="/new-day"
+		>`;
 }

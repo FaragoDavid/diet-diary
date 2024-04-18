@@ -22,8 +22,7 @@ export class DayStats implements BaseComponent {
       <div
         id="${format(this.day.date, 'yyyyMMdd')}-stats" 
         class="text-lg col-span-5" 
-        ${this.swap ? `hx-swap-oob="true"` : ''}
-      >
+        ${this.swap ? `hx-swap-oob="true"` : ''}>
         <div class="flex justify-center items-center">
           <div class="flex flex-col justify-center items-center">
             <div class="text text-center text-primary text-sm italic">Cal</div>

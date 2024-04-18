@@ -3,7 +3,7 @@ import { Meal } from "../../repository/meal.js";
 
 
 export class MealStats implements BaseComponent {
-  constructor(private meal: Meal, private swap: boolean = false) {}
+  constructor(private meal: Omit<Meal, 'date'>, private swap: boolean = false) {}
 
   async render() {
     const { mealCals, mealCH, mealFat } = this.meal.dishes.reduce(
@@ -14,9 +14,6 @@ export class MealStats implements BaseComponent {
       }),
       { mealCals: 0, mealCH: 0, mealFat: 0 },
     );
-
-    console.log('UMWHAT');
-    
 
     return `
       <div id="${this.meal.type}-stats" class="text col-span-4 flex" ${this.swap ? `hx-swap-oob="true"` : ''}>

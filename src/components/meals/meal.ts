@@ -5,7 +5,7 @@ import { MealStats } from './meal-stats.js';
 
 export class MealComponent implements BaseComponent {
   private ingredients: Ingredient[];
-  constructor(private date: string, private meal: Meal) {
+  constructor(private date: string, private meal: Omit<Meal, 'date'>) {
     this.ingredients = [];
   }
 

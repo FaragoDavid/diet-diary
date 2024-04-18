@@ -2,14 +2,14 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { layout } from '../components/layout.js';
 import { MissingMeals } from '../components/meals/missing-meals.js';
-import { dayHeader } from '../components/meals/day-header.js';
+import { dayHeader, newDayHeader } from '../components/meals/day-header.js';
 import { DayStats } from '../components/meals/day-stats.js';
 import { Days } from '../components/meals/days.js';
 import { DishComponent } from '../components/meals/dish.js';
 import { MealStats } from '../components/meals/meal-stats.js';
 import { MealComponent } from '../components/meals/meal.js';
 import { MealType } from '../config.js';
-import { DayPage } from '../pages/day.js';
+import { DayPage, NewDayPage } from '../pages/day.js';
 import * as mealRepository from '../repository/meal.js';
 
 type DashDate = `${string}-${string}-${string}`;
@@ -20,6 +20,7 @@ function convertDateParam(date: string): Date {
 type GetMealsRequest = FastifyRequest<{ Querystring: { fromDate: number; toDate: number } }>;
 type CreateDayRequest = FastifyRequest<{ Body: { date: DashDate } }>;
 type EditDayRequest = FastifyRequest<{ Params: { date: string } }>;
+type GetDayRequest = FastifyRequest<{ Params: { date: string } }>;
 type AddMealRequest = FastifyRequest<{ Params: { date: string }; Body: { mealType: MealType } }>;
 type AddDishRequest = FastifyRequest<{
   Params: { date: string; mealType: MealType };
@@ -34,8 +35,16 @@ export const getDays = async (request: GetMealsRequest, reply: FastifyReply) => 
   return reply.type('text/html').send(template);
 };
 
+export const getDay = async (request: GetDayRequest, reply: FastifyReply) => {
+  const { date } = request.params;
+  const day = await mealRepository.fetchDay(convertDateParam(date));
+  const template = await layout(new DayPage(day));
+
+  return reply.type('text/html').send(template);
+};
+
 export const newDay = async (_: FastifyRequest, reply: FastifyReply) => {
-  const template = await layout(new DayPage());
+  const template = await layout(new NewDayPage());
 
   return reply.type('text/html').send(template);
 };
@@ -43,13 +52,10 @@ export const newDay = async (_: FastifyRequest, reply: FastifyReply) => {
 export const createDay = async (request: CreateDayRequest, reply: FastifyReply) => {
   const bodyDate = new Date(request.body.date);
   const day = await mealRepository.createDay(bodyDate);
-  console.log({ day });
-  
-  const template = `
-    ${(dayHeader('edit') as Function)(day)}
-    ${await new MissingMeals(day).render()}
-    ${await new DayStats(day).render()}
-  `;
+
+  const template = `${dayHeader(day)}
+      ${await new DayStats(day).render()}
+      ${await new MissingMeals(day).render()}`;
 
   const dateParam = request.body.date.split('-').join('');
   return reply.type('text/html').header('HX-Push-Url', `/day/${dateParam}`).send(template);
@@ -57,9 +63,9 @@ export const createDay = async (request: CreateDayRequest, reply: FastifyReply) 
 
 export const editDay = async (request: EditDayRequest, reply: FastifyReply) => {
   const { date } = request.params;
-  const day = await mealRepository.fetchDay(new Date(`${date}`));
+  const day = await mealRepository.fetchDay(convertDateParam(date));
 
-  const template = await new DayPage().render();
+  const template = await new DayPage(day).render();
 
   return reply.type('text/html').send(template);
 };
@@ -79,8 +85,6 @@ export const addMeal = async (request: AddMealRequest, reply: FastifyReply) => {
 
 export const addDish = async (request: AddDishRequest, reply: FastifyReply) => {
   const { date, mealType } = request.params;
-  console.log({ params: request.params });
-  console.log({ body: request.body });
 
   const dish = await mealRepository.addDish(
     convertDateParam(date),

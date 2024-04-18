@@ -35,7 +35,7 @@ const meals: Meal[] = Array.from({ length: 30 }, (_, i) => {
 
   return {
     id: uuid(),
-    type: Object.keys(config.mealTypes)[Math.floor(Math.random() * 7)],
+    type: config.mealTypes[Math.floor(Math.random() * 7)]!.key,
     date,
     dishes,
   } as Meal;

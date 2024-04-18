@@ -1,8 +1,12 @@
+import { MissingMeals } from '../components/meals/missing-meals.js';
 import { BackLink } from '../components/back-link.js';
-import { missingMealsPlaceholder } from '../components/meals/missing-meals.js';
-import { dayHeader } from '../components/meals/day-header.js';
+import { dayHeader, newDayHeader } from '../components/meals/day-header.js';
+import { DayStats } from '../components/meals/day-stats.js';
+import { Day } from '../repository/meal.js';
+import { MealComponent } from '../components/meals/meal.js';
+import { format } from 'date-fns';
 
-export class DayPage implements BaseComponent {
+export class NewDayPage implements BaseComponent {
   async render() {
     return `
       <div id="day">
@@ -10,13 +14,39 @@ export class DayPage implements BaseComponent {
         <div class="container py-6">
            <div class="flex justify-center items-center">
             <div class="flex flex-col items-center gap-4">
-              ${dayHeader('create')}
-              ${missingMealsPlaceholder()}
-              <div id="meals" class="grid grid-cols-max-5 gap-x-2 gap-y-4"></div>
+              ${newDayHeader()}
             </div>
           </div>
         </div>
-      </div>
-    `;
+      </div>`;
+  }
+}
+
+export class DayPage implements BaseComponent {
+  constructor(private day: Day) {}
+
+  async render() {
+    const meals: string[] = [];
+    for (const meal of this.day.meals) {
+      meals.push(await new MealComponent(format(this.day.date, 'yyyyMMdd'), meal).render());
+    }
+    
+
+    return `
+      <div id="day">
+        ${await new BackLink().render()}
+        <div class="container py-6">
+           <div class="flex justify-center items-center">
+            <div class="flex flex-col items-center gap-4">
+              ${dayHeader(this.day)}
+              ${await new DayStats(this.day).render()}
+              ${await new MissingMeals(this.day).render()}
+              <div id="meals" class="grid grid-cols-max-5 gap-x-2 gap-y-4">
+                ${meals.join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
   }
 }
