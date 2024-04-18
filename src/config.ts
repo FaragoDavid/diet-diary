@@ -32,6 +32,9 @@ export default {
       overview: 'Étkezések',
     },
   },
+  meals: {
+    title: 'Étkezések',
+  },
   mealTypes: [
     { key: MEAL_TYPE.morningSnack, name: 'Előreggeli', targetCal: 160 },
     { key: MEAL_TYPE.breakfast, name: 'Reggeli', targetCal: 330 },

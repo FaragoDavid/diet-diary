@@ -18,7 +18,7 @@ export class Recipe implements BaseComponent {
         <input 
           type="number"
           name="amount"
-          class="input input-sm input-bordered w-16 bg-base-200  pr-5 text-right" 
+          class="input input-sm input-bordered w-16 pr-5 text-right" 
           value="${this.recipeAmount}"
           hx-post="/recipe/${this.id}/amount"
           hx-target="#recipe"

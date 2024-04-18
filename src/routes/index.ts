@@ -3,13 +3,14 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { layout } from '../components/layout.js';
 import { Dashboard } from '../pages/dashboard.js';
 import { fetchIngredients } from '../repository/ingredient.js';
-import { addIngr, getIngredient } from './ingredient.js';
+import { addIngr, displayIngredientsTab, getIngredient } from './ingredient.js';
 import { getLogin, postLogin } from './login.js';
-import { addDish, addMeal, createDay, getDay, getDays, newDay } from './meal.js';
+import { addDish, addMeal, createDay, displayMealsTab, getDay, getDays, newDay } from './meal.js';
 import {
   addRecipeIngredient,
   createRecipe,
   deleteRecipeIngredient,
+  displayRecipesTab,
   editRecipe,
   getRecipes,
   newRecipe,
@@ -43,6 +44,10 @@ const registerRoutes = (fastify: FastifyInstance) => {
       return reply.type('text/html').send(template);
     },
   });
+
+  fastify.get('/ingredientsTab', createHandler(displayIngredientsTab));
+  fastify.get('/recipesTab', createHandler(displayRecipesTab));
+  fastify.get('/mealsTab', createHandler(displayMealsTab));
 
   fastify.get('/ingredient', createHandler(getIngredient));
   fastify.post('/ingredient', createHandler(addIngr));

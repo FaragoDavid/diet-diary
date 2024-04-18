@@ -26,7 +26,7 @@ export class RecipeIngredientList implements BaseComponent {
       <input 
         type="number"
         name="${ingredientId}" 
-        class="input input-sm input-bordered w-16 bg-base-200  pr-5 text-right" 
+        class="input input-sm input-bordered w-16 pr-5 text-right" 
         value="${ingredientAmount}"
         hx-post="/recipe/${this.id}/ingredient/${ingredientId}"
         hx-target="#recipe"
@@ -83,7 +83,7 @@ export class RecipeIngredientList implements BaseComponent {
       <input 
         type="number"
         name="newIngredient"
-        class="input input-sm input-bordered w-16 bg-base-200  pr-5 text-right placeholder:text-neutral peer" 
+        class="input input-sm input-bordered w-16 pr-5 text-right placeholder:text-neutral peer" 
         placeholder="0"
         hx-post="/recipe/${this.id}/ingredient"
         hx-target="#recipe"

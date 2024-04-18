@@ -10,7 +10,7 @@ export class DishComponent implements BaseComponent {
         type="number"
         ${name ? `name="${name}"` : ''}
         ${amount ? `value="${amount}"` : ''}
-        class="input input-sm input-bordered w-[4.5rem] bg-white pr-5 text-right placeholder:text-neutral peer" 
+        class="input input-sm input-bordered w-[4.5rem] pr-5 text-right placeholder:text-neutral peer" 
         placeholder="0"
       >
         <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>

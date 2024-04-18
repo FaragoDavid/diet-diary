@@ -32,7 +32,7 @@ export class MealComponent implements BaseComponent {
       <input 
         type="number"
 				name="amount"
-        class="input input-sm input-bordered w-[4.5rem] bg-white pr-5 text-right placeholder:text-neutral peer" 
+        class="input input-sm input-bordered w-[4.5rem] pr-5 text-right placeholder:text-neutral peer" 
         placeholder="0"
 				hx-post="/day/${dateToParam(this.meal.date)}/meal/${this.meal.type}/dish"
 				hx-trigger="change delay:100ms"
@@ -49,7 +49,7 @@ export class MealComponent implements BaseComponent {
     return `
       <select 
         name="${this.meal.type}-dishId" 
-        class="select select-bordered select-sm bg-white w-28"
+        class="select select-bordered select-sm w-28"
       >
         <option disabled selected>Válassz</option>
         ${this.ingredients

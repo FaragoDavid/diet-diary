@@ -1,11 +1,13 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { layout } from '../components/layout.js';
-import { RecipeList } from '../components/recipes/recipe-list.js';
+import { Recipes } from '../components/recipes/index.js';
 import { NewRecipe } from '../components/recipes/new-recipe.js';
+import { RecipeList } from '../components/recipes/recipe-list.js';
+import { TAB_NAME, tabList } from '../components/tab-list.js';
 import { Recipe } from '../pages/recipe.js';
-import * as recipeRepository from '../repository/recipe.js';
 import { fetchIngredients } from '../repository/ingredient.js';
+import * as recipeRepository from '../repository/recipe.js';
 
 type GetRecipesRequest = FastifyRequest<{ Querystring: { query: string } }>;
 type GetRecipeRequest = FastifyRequest<{ Params: { recipeId: string } }>;
@@ -17,6 +19,13 @@ type UpdateRecipeIngredientRequest = FastifyRequest<{
 type DeleteRecipeIngredientRequest = UpdateRecipeIngredientRequest;
 type UpdateRecipeAmountRequest = FastifyRequest<{ Params: { recipeId: string }; Body: { amount: string; query: string } }>;
 type CreateRecipeRequest = FastifyRequest<{ Body: { name: string; ingredient: string; amount: string } }>;
+
+
+export const displayRecipesTab = async (_: FastifyRequest, reply: FastifyReply) => {
+  const template = `${await new Recipes().render()}${tabList(TAB_NAME.recipes)}`;
+
+  return reply.type('text/html').send(template);
+};
 
 export const getRecipes = async (request: GetRecipesRequest, reply: FastifyReply) => {
   const template = await layout(new RecipeList(request.query.query));

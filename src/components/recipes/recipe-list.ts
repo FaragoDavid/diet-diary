@@ -82,7 +82,7 @@ export class RecipeList implements BaseComponent {
     const recipes = await fetchRecipes(this.query);
 
     return `
-      <div id="recipe-list" class="grid grid-cols-max-3 grid-row-flex gap-2 bg-base-100">
+      <div id="recipe-list" class="grid grid-cols-max-3 grid-row-flex gap-2">
         ${await renderRecipes(recipes)}
       </div>
     `;

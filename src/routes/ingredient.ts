@@ -1,10 +1,19 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
+import { Ingredients } from '../components/ingredients/index.js';
 import { IngredientList } from '../components/ingredients/list.js';
+import { layout } from '../components/layout.js';
+import { TAB_NAME, tabList } from '../components/tab-list.js';
 import { addIngredient } from '../repository/ingredient.js';
 
 type GetIngredientsRequest = FastifyRequest<{ Querystring: { query: string } }>;
 type PostIngredientsRequest = FastifyRequest<{ Body: { name: string; calories: string; carbs: string } }>;
+
+export const displayIngredientsTab = async (_: FastifyRequest, reply: FastifyReply) => {
+  const template = `${await new Ingredients().render()}${tabList(TAB_NAME.ingredients)}`;
+
+  return reply.type('text/html').send(template);
+};
 
 export const getIngredient = async (request: GetIngredientsRequest, reply: FastifyReply) => {
   const query = request.query.query;

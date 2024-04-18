@@ -2,6 +2,7 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { layout } from '../components/layout.js';
 import { dayHeader } from '../components/meals/day-header.js';
+import { DaySearch } from '../components/meals/day-search.js';
 import { DayStats } from '../components/meals/day-stats.js';
 import { Days } from '../components/meals/days.js';
 import { DishComponent } from '../components/meals/dish.js';
@@ -14,6 +15,7 @@ import { fetchIngredients } from '../repository/ingredient.js';
 import * as mealRepository from '../repository/meal.js';
 import { fetchDayMeals } from '../repository/meal.js';
 import { paramToDate } from '../utils/converters.js';
+import { TAB_NAME, tabList } from '../components/tab-list.js';
 
 type DashDate = `${string}-${string}-${string}`;
 
@@ -26,6 +28,13 @@ type AddDishRequest = FastifyRequest<{
   Params: { date: string; mealType: MealType };
   Body: { dishId: string; amount: number };
 }>;
+
+export const displayMealsTab = async (_: FastifyRequest, reply: FastifyReply) => {
+  const ingredients = await fetchIngredients();
+  const template = `${await new DaySearch(ingredients).render()}${tabList(TAB_NAME.meals)}`;
+
+  return reply.type('text/html').send(template);
+}
 
 export const getDays = async (request: GetMealsRequest, reply: FastifyReply) => {
   const fromDate = new Date(request.query.fromDate);
