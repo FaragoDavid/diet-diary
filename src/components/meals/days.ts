@@ -1,12 +1,11 @@
 import { format } from 'date-fns';
 
 import config from '../../config.js';
-import repository, { Ingredient } from '../../repository/ingredient.js';
-import { Dish, Meal, fetchDayMeals } from '../../repository/meal.js';
+import { Ingredient } from '../../repository/ingredient.js';
+import { Day, Dish, Meal } from '../../repository/meal.js';
 
 export class Days implements BaseComponent {
-  private ingredients?: Ingredient[];
-  constructor(private fromDate: Date, private toDate: Date) {}
+  constructor(private days: Day[], private ingredients: Ingredient[]) {}
 
   dishAmount({ amount, name }: { amount?: number; name?: string }) {
     return `
@@ -38,13 +37,12 @@ export class Days implements BaseComponent {
     return `
       <select name="${name}" class="select select-bordered select-sm bg-white w-28">
         <option disabled selected>Válassz</option>
-        ${this.ingredients!.map(({ id, name }) => `<option value="${id}" >${name}</option>`).join('')}
+        ${this.ingredients.map(({ id, name }) => `<option value="${id}" >${name}</option>`).join('')}
       </select>
       ${this.dishAmount({ name })}
       <div class="text text-right"></div>
       <div class="text text-right"></div>
-      <div class="text text-right"></div>
-    `;
+      <div class="text text-right"></div>`;
   }
 
   mealStats(dishes: Dish[]) {
@@ -58,7 +56,7 @@ export class Days implements BaseComponent {
     );
 
     return `
-      <div class="text text-sm text-secondary italic">Cal: ${mealCals}</div>
+      <div class="text text-sm text-secondary italic">Kal: ${mealCals}</div>
       <div class="divider divider-horizontal" ></div> 
       <div class="text text-sm text-secondary italic">CH: ${mealCH}</div>
       <div class="divider divider-horizontal" ></div> 
@@ -66,21 +64,10 @@ export class Days implements BaseComponent {
     `;
   }
 
-  meal(type: string, dishes: Dish[], date: Date, mealId: string) {
+  meal(type: string, dishes: Dish[]) {
     return `
-      <div class="text text-secondary col-span-1 pl-2">${config.mealTypes[type].name}</div>
+      <div class="text text-secondary col-span-1 pl-2">${config.mealTypes.find(({key}) => key === type)!.name}</div>
       <div class="text col-span-2 flex">${this.mealStats(dishes)}</div>
-    `;
-  }
-
-  newMeal() {
-    return `
-      <select name="newMeal" class="select select-bordered select-sm bg-white w-28">
-        <option disabled selected>Válassz</option>
-        ${Object.entries(config.mealTypes)
-          .map(([key, { name }]) => `<option value="${key}" >${name}</option>`)
-          .join('')}
-      </select
     `;
   }
 
@@ -101,7 +88,7 @@ export class Days implements BaseComponent {
     return `
       <div class="flex justify-center items-center col-span-2">
         <div class="flex flex-col justify-center items-center">
-          <div class="text text-center text-primary text-sm italic">Cal</div>
+          <div class="text text-center text-primary text-sm italic">Kal</div>
           <div class="text text-center text-primary">${dayCals}</div>
         </div>
         <div class="divider divider-horizontal" ></div> 
@@ -123,18 +110,14 @@ export class Days implements BaseComponent {
       <div class="flex items-center text-lg text-primary col-span-1">${format(date, 'MMM. d. (EEE)')}</div>
       ${this.dayStats(meals)}
       ${meals
-        .map(({ id, type, dishes }) => this.meal(type, dishes, date, id))
-        .join('<div class="divider divider-secondary col-span-3 m-0 pl-2"></div>')}
-    `;
+        .map(({ type, dishes }) => this.meal(type, dishes))
+        .join('<div class="divider divider-secondary col-span-3 m-0 pl-2"></div>')}`;
   }
 
   async render() {
-    const days = await fetchDayMeals(this.fromDate, this.toDate);
-    this.ingredients = await repository.fetchIngredients();
-
     return `
       <div id="meal-list" class="grid grid-cols-max-3 grid-row-flex gap-1 py-4">
-        ${days.map(({ date, meals }) => this.day(date, meals)).join('<div class="divider divider-primary col-span-3"></div>')}
+        ${this.days.map(({ date, meals }) => this.day(date, meals)).join('<div class="divider divider-primary col-span-3"></div>')}
       </div>`;
   }
 }

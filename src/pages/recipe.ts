@@ -50,7 +50,7 @@ export class Recipe implements BaseComponent {
     return `
     <div class="flex justify-center items-center">
       <div class="flex flex-col justify-center items-center gap-y-1">
-        <div class="text text-center text-sm italic">Cal</div>
+        <div class="text text-center text-sm italic">Kal</div>
         <div class="text text-center text-lg">${Math.round(recipeCalories * this.recipeAmount! * 100) / 100}</div>
       </div>
       <div class="divider divider-horizontal" ></div> 

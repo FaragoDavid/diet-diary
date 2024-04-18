@@ -22,7 +22,7 @@ const recipeStats = async (recipeId: string) => {
   );
 
   return `
-    <div class="text text-sm italic">Cal: ${(Math.round(recipeCalories * 100) * recipeAmount) / 100}</div>
+    <div class="text text-sm italic">Kal: ${(Math.round(recipeCalories * 100) * recipeAmount) / 100}</div>
     <div class="divider divider-horizontal" ></div> 
     <div class="text text-sm italic">CH: ${(Math.round(recipeCH * 100) * recipeAmount) / 100}</div>
     <div class="divider divider-horizontal" ></div> 

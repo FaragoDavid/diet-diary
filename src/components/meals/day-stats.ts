@@ -25,7 +25,7 @@ export class DayStats implements BaseComponent {
         ${this.swap ? `hx-swap-oob="true"` : ''}>
         <div class="flex justify-center items-center">
           <div class="flex flex-col justify-center items-center">
-            <div class="text text-center text-primary text-sm italic">Cal</div>
+            <div class="text text-center text-primary text-sm italic">Kal</div>
             <div class="text text-center text-primary">${dayCals}</div>
           </div>
           <div class="divider divider-horizontal" ></div> 

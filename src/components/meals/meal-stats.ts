@@ -17,7 +17,7 @@ export class MealStats implements BaseComponent {
 
     return `
       <div id="${this.meal.type}-stats" class="text col-span-4 flex" ${this.swap ? `hx-swap-oob="true"` : ''}>
-        <div class="text text-sm text-secondary italic">Cal: ${mealCals}</div>
+        <div class="text text-sm text-secondary italic">Kal: ${mealCals}</div>
         <div class="divider divider-horizontal" ></div> 
         <div class="text text-sm text-secondary italic">CH: ${mealCH}</div>
         <div class="divider divider-horizontal" ></div> 

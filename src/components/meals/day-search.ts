@@ -1,8 +1,9 @@
 import { format, subDays } from 'date-fns';
 import config from '../../config.js';
-import { Days } from './days.js';
-import icons from '../../utils/icons.js';
 import { fetchDayMeals } from '../../repository/meal.js';
+import repository from '../../repository/ingredient.js';
+import icons from '../../utils/icons.js';
+import { Days } from './days.js';
 
 const dateInput = (id: string, defaultValue: Date) => `
   <input
@@ -23,6 +24,8 @@ export class DaySearch implements BaseComponent {
   async render() {
     const fromDate = subDays(new Date(), 7);
     const toDate = new Date();
+    const days = await fetchDayMeals(fromDate, toDate);
+    const ingredients = await repository.fetchIngredients();
 
     return `
       <div class="flex justify-center items-center max-w-96">
@@ -38,7 +41,7 @@ export class DaySearch implements BaseComponent {
       </div>
 
       <div id="days" class="flex flex-col justify-center items-center gap-6 w-full">
-        ${await new Days(fromDate, toDate).render()}
+        ${await new Days(days, ingredients).render()}
       </div>
       `;
     }

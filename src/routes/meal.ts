@@ -1,16 +1,18 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { layout } from '../components/layout.js';
-import { MissingMeals } from '../components/meals/missing-meals.js';
-import { dayHeader, newDayHeader } from '../components/meals/day-header.js';
+import { dayHeader } from '../components/meals/day-header.js';
 import { DayStats } from '../components/meals/day-stats.js';
 import { Days } from '../components/meals/days.js';
 import { DishComponent } from '../components/meals/dish.js';
 import { MealStats } from '../components/meals/meal-stats.js';
 import { MealComponent } from '../components/meals/meal.js';
+import { MissingMeals } from '../components/meals/missing-meals.js';
 import { MealType } from '../config.js';
 import { DayPage, NewDayPage } from '../pages/day.js';
+import repository from '../repository/ingredient.js';
 import * as mealRepository from '../repository/meal.js';
+import { fetchDayMeals } from '../repository/meal.js';
 
 type DashDate = `${string}-${string}-${string}`;
 function convertDateParam(date: string): Date {
@@ -31,7 +33,10 @@ export const getDays = async (request: GetMealsRequest, reply: FastifyReply) => 
   const fromDate = new Date(request.query.fromDate);
   const toDate = new Date(request.query.toDate);
 
-  const template = await new Days(fromDate, toDate).render();
+  const days = await fetchDayMeals(fromDate, toDate);
+  const ingredients = await repository.fetchIngredients();
+
+  const template = await new Days(days, ingredients).render();
   return reply.type('text/html').send(template);
 };
 

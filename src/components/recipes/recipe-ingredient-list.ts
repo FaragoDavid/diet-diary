@@ -55,7 +55,7 @@ export class RecipeIngredientList implements BaseComponent {
     return `
       <div class="flex justify-center col-span-2">
         <div class="text text-sm italic text-neutral">
-          Cal: ${Math.round(calories * ingredientAmount * 100) / 100}
+          Kal: ${Math.round(calories * ingredientAmount * 100) / 100}
         </div>
         <div class="divider divider-horizontal" ></div> 
         <div class="text text-sm italic text-neutral">
