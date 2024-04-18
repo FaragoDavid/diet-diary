@@ -81,8 +81,8 @@ export const addMeal = async (request: AddMealRequest, reply: FastifyReply) => {
   const meal = await mealRepository.addMeal(convertDateParam(date), request.body.mealType);
   const day = await mealRepository.fetchDay(convertDateParam(date));
   const template = `
-    ${await new MissingMeals(day).render()}
-    ${await new MealComponent(date, meal).render()}
+    ${await new MissingMeals(day, true).render()}
+    ${await new MealComponent(date, meal, day.meals.length === 1).render()}
   `;
 
   return reply.type('text/html').send(template);

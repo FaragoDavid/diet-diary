@@ -9,9 +9,10 @@ export function missingMealsPlaceholder() {
 }
 
 export class MissingMeals implements BaseComponent {
-  constructor(private day: Day) {}
+  constructor(private day: Day, private swap = false) {}
 
   missingMealButton(value: MealType, name: string) {
+
     return `
 			<button
 				type="button"
@@ -19,7 +20,7 @@ export class MissingMeals implements BaseComponent {
 				value="${value}"
 				class="btn btn-sm btn-secondary"
 				hx-post="/day/${format(this.day!.date, 'yyyyMMdd')}/meal"
-				hx-target="#meals"
+				hx-target="${this.day.meals.length === 0 ? `#day-container` : '#meals'}"
 				hx-swap="beforeend"
 			>
 				${name}
@@ -33,7 +34,7 @@ export class MissingMeals implements BaseComponent {
       <div 
 				id=${ID}
 				class="flex flex-wrap	items-center justify-center gap-1"
-				hx-swap-oob="true"
+				${this.swap ? 'hx-swap-oob="true"' : ''}
 			>
         ${missingMeals.length > 0 ? missingMeals.map(({ key, name }) => this.missingMealButton(key, name)).join('') : ''}
       </div>

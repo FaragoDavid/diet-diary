@@ -21,8 +21,7 @@ export class DayStats implements BaseComponent {
     return `
       <div
         id="${format(this.day.date, 'yyyyMMdd')}-stats" 
-        class="text-lg col-span-5" 
-        ${this.swap ? `hx-swap-oob="true"` : ''}>
+        class="flex text-lg col-span-5" 
         <div class="flex justify-center items-center">
           <div class="flex flex-col justify-center items-center">
             <div class="text text-center text-primary text-sm italic">Kal</div>

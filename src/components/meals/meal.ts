@@ -5,7 +5,7 @@ import { MealStats } from './meal-stats.js';
 
 export class MealComponent implements BaseComponent {
   private ingredients: Ingredient[];
-  constructor(private date: string, private meal: Omit<Meal, 'date'>) {
+  constructor(private date: string, private meal: Omit<Meal, 'date'>, private isFirst: boolean) {
     this.ingredients = [];
   }
 
@@ -46,8 +46,8 @@ export class MealComponent implements BaseComponent {
 
   async render() {
     this.ingredients = await ingredientRepo.fetchIngredients();
-
     return `
+      ${this.isFirst ? `<div id="meals" class="grid grid-cols-max-5 gap-x-2 gap-y-4">` : ''}
         <div class="text text-secondary col-span-1">${config.mealTypes.find(({ key }) => key === this.meal.type)!.name}</div>
 				${await new MealStats(this.meal).render()}
 				${this.meal.dishes.length > 0 ? `<div class="text col-span-2"></div>` : ''}
@@ -55,6 +55,7 @@ export class MealComponent implements BaseComponent {
 				${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">CH</div>` : ''}
 				${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">zsír</div>` : ''}
 				${this.newDish()}
+      ${this.isFirst ? `</div>` : ''}
     `;
   }
 }
