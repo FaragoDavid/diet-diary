@@ -17,9 +17,14 @@ function tab(label: string, isActive: boolean, href: string) {
   `;
 }
 
-export function tabList(activeTab: `${TAB_NAME}`) {
+export function tabList(activeTab: `${TAB_NAME}`, swap: boolean) {
   return `
-    <div id="tab-list" role="tablist" class="tabs tabs-lifted" hx-swap-oob="true">
+    <div 
+      id="tab-list" 
+      role="tablist" 
+      class="tabs tabs-lifted" 
+      ${swap ? 'hx-swap-oob="true"' : ''}
+    >
       ${tab(config.ingredients.title, activeTab === TAB_NAME.ingredients, '/ingredientsTab')}
       ${tab(config.recipes.title, activeTab === TAB_NAME.recipes, '/recipesTab')}
       ${tab(config.meals.title, activeTab === TAB_NAME.meals, '/mealsTab')}

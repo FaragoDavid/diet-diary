@@ -22,7 +22,10 @@ type CreateRecipeRequest = FastifyRequest<{ Body: { name: string; ingredient: st
 
 
 export const displayRecipesTab = async (_: FastifyRequest, reply: FastifyReply) => {
-  const template = `${await new Recipes().render()}${tabList(TAB_NAME.recipes)}`;
+  const template = `
+    ${tabList(TAB_NAME.recipes, true)}
+    ${await new Recipes().render()}
+  `;
 
   return reply.type('text/html').send(template);
 };

@@ -31,7 +31,10 @@ type AddDishRequest = FastifyRequest<{
 
 export const displayMealsTab = async (_: FastifyRequest, reply: FastifyReply) => {
   const ingredients = await fetchIngredients();
-  const template = `${await new DaySearch(ingredients).render()}${tabList(TAB_NAME.meals)}`;
+  const template = `
+    ${tabList(TAB_NAME.meals, true)}
+    ${await new DaySearch(ingredients).render()}
+  `;
 
   return reply.type('text/html').send(template);
 }

@@ -10,7 +10,10 @@ type GetIngredientsRequest = FastifyRequest<{ Querystring: { query: string } }>;
 type PostIngredientsRequest = FastifyRequest<{ Body: { name: string; calories: string; carbs: string } }>;
 
 export const displayIngredientsTab = async (_: FastifyRequest, reply: FastifyReply) => {
-  const template = `${await new Ingredients().render()}${tabList(TAB_NAME.ingredients)}`;
+  const template = `
+    ${tabList(TAB_NAME.ingredients, true)}
+    ${await new Ingredients().render()}
+  `;
 
   return reply.type('text/html').send(template);
 };
