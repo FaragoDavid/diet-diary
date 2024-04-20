@@ -28,7 +28,7 @@ const searchRecipes = () => `
   </label>
 `;
 
-export class Recipes implements BaseComponent {
+export class RecipeTab implements BaseComponent {
   public title = config.recipes.title;
 
   async render() {

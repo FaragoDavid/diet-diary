@@ -4,10 +4,6 @@ import { dateToParam } from '../../utils/converters.js';
 
 const ID = 'add-meals';
 
-export function missingMealsPlaceholder() {
-  return `<div id="${ID}" hx-swap-oob="true"></div>`;
-}
-
 export class MissingMeals implements BaseComponent {
   constructor(private day: Day, private swap = false) {}
 

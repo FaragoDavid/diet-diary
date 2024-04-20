@@ -19,7 +19,14 @@ import {
 } from './recipe.js';
 
 const createHandler = (handler: (request: FastifyRequest<any>, reply: FastifyReply) => Promise<void>) => {
-  return { preHandler: cookieValidator, handler };
+  return {
+    preHandler: cookieValidator,
+    handler,
+    errorHandler: (error: Error) => {
+      console.log(error);
+      throw error;
+    },
+  };
 };
 
 const registerLoginRoutes = (fastify: FastifyInstance) => {
@@ -35,15 +42,15 @@ const cookieValidator = async (request: FastifyRequest, reply: FastifyReply) => 
 };
 
 const registerRoutes = (fastify: FastifyInstance) => {
-  fastify.get('/dashboard', {
-    preHandler: cookieValidator,
-    handler: async (_, reply: FastifyReply) => {
+  fastify.get(
+    '/dashboard',
+    createHandler(async (_, reply: FastifyReply) => {
       const ingredients = await fetchIngredients();
 
       const template = await layout(new Dashboard(ingredients));
       return reply.type('text/html').send(template);
-    },
-  });
+    }),
+  );
 
   fastify.get('/ingredientsTab', createHandler(displayIngredientsTab));
   fastify.get('/recipesTab', createHandler(displayRecipesTab));

@@ -1,6 +1,7 @@
 import icons from '../../utils/icons.js';
 import { Ingredient, fetchIngredients } from '../../repository/ingredient.js';
 import { RecipeIngredientWithName, fetchRecipe } from '../../repository/recipe.js';
+import { stats } from '../stats.js';
 
 export class RecipeIngredientList implements BaseComponent {
   private ingredients: Ingredient[] = [];
@@ -51,23 +52,6 @@ export class RecipeIngredientList implements BaseComponent {
     </div>`;
   }
 
-  ingredientStats(ingredientAmount: number, { calories, carbs, fat }: Ingredient) {
-    return `
-      <div class="flex justify-center col-span-2">
-        <div class="text text-sm italic text-neutral">
-          Kal: ${Math.round(calories * ingredientAmount * 100) / 100}
-        </div>
-        <div class="divider divider-horizontal" ></div> 
-        <div class="text text-sm italic text-neutral">
-          CH: ${Math.round(carbs * ingredientAmount * 100) / 100}
-        </div>
-        <div class="divider divider-horizontal" ></div> 
-        <div class="text text-sm italic text-neutral">
-          Zsír: ${Math.round(fat * ingredientAmount * 100) / 100}
-        </div>
-      </div>`;
-  }
-
   ingredientSelector() {
     return `
     <div class="flex justify-center">
@@ -97,12 +81,16 @@ export class RecipeIngredientList implements BaseComponent {
   renderIngredient({ id, name, amount }: RecipeIngredientWithName) {
     const fullIngredient = this.ingredients.find((ingr) => ingr.id === id);
     if (!fullIngredient) return '';
+    const macros = { cal: fullIngredient.calories * amount, carbs: fullIngredient.carbs * amount, fat: fullIngredient.fat * amount };
 
     return `
       ${this.ingredientName(id, name)}
       ${this.ingredientAmount(id, amount)}
       ${this.deleteIngredient(id)}
-      ${this.ingredientStats(amount, fullIngredient)}
+      ${stats(
+        { cal: macros.cal, carbs: macros.carbs, fat: macros.fat },
+        { id: `ingredient-${id}-stats`, orientation: 'horizontal', size: 'sm' },
+      )}
       `;
   }
 

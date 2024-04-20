@@ -1,15 +1,16 @@
+import { stats } from '../components/stats.js';
 import { BackLink } from '../components/back-link.js';
 import { RecipeIngredientList } from '../components/recipes/recipe-ingredient-list.js';
 import { fetchIngredients } from '../repository/ingredient.js';
-import { RecipeWithIngredientName, fetchRecipe } from '../repository/recipe.js';
+import { Recipe } from '../repository/recipe.js';
 
-export class Recipe implements BaseComponent {
-  private recipe?: RecipeWithIngredientName;
-  private recipeAmount?: number;
+export class RecipePage implements BaseComponent {
+  recipeAmount: number;
+  constructor(private recipe: Recipe) {
+    this.recipeAmount = this.recipe.amount || this.recipe.ingredients.reduce((acc, ingredient) => acc + ingredient.amount, 0);
+  }
 
-  constructor(private id: string) {}
-
-  header = () => `<div class="text-center text-3xl font-medium">${this.recipe!.name}</div>`;
+  header = () => `<div class="text-center text-3xl font-medium">${this.recipe.name}</div>`;
 
   amount = () => `
     <div class="flex flex-col justify-center items-center gap-y-1">
@@ -20,7 +21,7 @@ export class Recipe implements BaseComponent {
           name="amount"
           class="input input-sm input-bordered w-16 pr-5 text-right" 
           value="${this.recipeAmount}"
-          hx-post="/recipe/${this.id}/amount"
+          hx-post="/recipe/${this.recipe.id}/amount"
           hx-target="#recipe"
           hx-swap="outerHTML"
         >
@@ -33,7 +34,7 @@ export class Recipe implements BaseComponent {
   recipeStats = async () => {
     const ingredients = await fetchIngredients();
 
-    const { recipeCalories, recipeCH, recipeFat } = this.recipe!.ingredients.reduce(
+    const { recipeCalories, recipeCH, recipeFat } = this.recipe.ingredients.reduce(
       (acc, ingredient) => {
         const fullIngredient = ingredients.find(({ id }) => id === ingredient.id);
 
@@ -47,30 +48,17 @@ export class Recipe implements BaseComponent {
       { recipeCalories: 0, recipeCH: 0, recipeFat: 0 },
     );
 
-    return `
-    <div class="flex justify-center items-center">
-      <div class="flex flex-col justify-center items-center gap-y-1">
-        <div class="text text-center text-sm italic">Kal</div>
-        <div class="text text-center text-lg">${Math.round(recipeCalories * this.recipeAmount! * 100) / 100}</div>
-      </div>
-      <div class="divider divider-horizontal" ></div> 
-      <div class="flex flex-col justify-center items-center gap-y-1">
-        <div class="text text-center text-sm italic">CH</div>
-        <div class="text text-center text-lg">${Math.round(recipeCH * this.recipeAmount! * 100) / 100}</div>
-      </div>
-      <div class="divider divider-horizontal" ></div> 
-      <div class="flex flex-col justify-center items-center gap-y-1">
-        <div class="text text-center text-sm italic">Zsír</div>
-        <div class="text text-center text-lg">${Math.round(recipeFat * this.recipeAmount! * 100) / 100}</div>
-      </div>
-    </div>
-  `;
+    return stats(
+      { cal: recipeCalories, carbs: recipeCH, fat: recipeFat },
+      {
+        id: `recipe-${this.recipe.id}-stats`,
+        orientation: 'vertical',
+        size: 'lg',
+      },
+    )
   };
 
   async render() {
-    this.recipe = await fetchRecipe(this.id);
-    if (!this.recipe) return 'Recept nem található';
-    this.recipeAmount = this.recipe!.amount || this.recipe!.ingredients.reduce((acc, ingredient) => acc + ingredient.amount, 0);
     return `
       <div id="recipe">
         ${await new BackLink().render()}
@@ -85,7 +73,7 @@ export class Recipe implements BaseComponent {
             <div class="text text-center">
               Alapanyagok
             </div>
-            ${await new RecipeIngredientList(this.id).render()}
+            ${await new RecipeIngredientList(this.recipe.id).render()}
           </div>
         </div>
       </div>

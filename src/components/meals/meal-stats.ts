@@ -1,4 +1,5 @@
 import { Meal } from "../../repository/meal.js";
+import { stats } from '../stats.js';
 
 enum SPAN {
   TWO = 'col-span-2',
@@ -20,14 +21,15 @@ export class MealStats implements BaseComponent {
       { mealCals: 0, mealCH: 0, mealFat: 0 },
     );
 
-    return `
-      <div id="${this.meal.type}-stats" class="text ${this.span} flex" ${this.swap ? `hx-swap-oob="true"` : ''}>
-        <div class="text text-sm text-secondary italic">Kal: ${Math.floor(mealCals)}</div>
-        <div class="divider divider-horizontal" ></div> 
-        <div class="text text-sm text-secondary italic">CH: ${Math.floor(mealCH)}</div>
-        <div class="divider divider-horizontal" ></div> 
-        <div class="text text-sm text-secondary italic">Zsír: ${Math.floor(mealFat)}</div>
-      </div>
-    `;
+    return stats(
+      { cal: mealCals, carbs: mealCH, fat: mealFat },
+      {
+        id: `${this.meal.type}-stats`,
+        orientation: 'horizontal',
+        size: 'sm',
+        span: this.span,
+        swap: this.swap,
+      },
+    );
   }
 }

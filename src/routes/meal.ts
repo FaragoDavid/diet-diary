@@ -4,7 +4,7 @@ import { layout } from '../components/layout.js';
 import { dayHeader } from '../components/meals/day-header.js';
 import { DaySearch } from '../components/meals/day-search.js';
 import { DayStats } from '../components/meals/day-stats.js';
-import { Days } from '../components/meals/days.js';
+import { DayList } from '../components/meals/day-list.js';
 import { DishComponent } from '../components/meals/dish.js';
 import { MealStats } from '../components/meals/meal-stats.js';
 import { MealComponent } from '../components/meals/meal.js';
@@ -37,7 +37,7 @@ export const displayMealsTab = async (_: FastifyRequest, reply: FastifyReply) =>
   `;
 
   return reply.type('text/html').send(template);
-}
+};
 
 export const getDays = async (request: GetMealsRequest, reply: FastifyReply) => {
   const fromDate = new Date(request.query.fromDate);
@@ -46,7 +46,7 @@ export const getDays = async (request: GetMealsRequest, reply: FastifyReply) => 
   const days = await fetchDayMeals(fromDate, toDate);
   const ingredients = await fetchIngredients();
 
-  const template = await new Days(days, ingredients).render();
+  const template = await new DayList(days, ingredients).render();
   return reply.type('text/html').send(template);
 };
 

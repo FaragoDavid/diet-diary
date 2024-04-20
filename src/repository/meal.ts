@@ -24,6 +24,7 @@ export type Meal = {
 
 export type Day = { date: Date; meals: Omit<Meal, 'date'>[] };
 
+
 const meals = (() => {
   const days = Array.from({ length: 7 }, (_, i) => subDays(new Date(), i));
   let result: Meal[] = [];
@@ -54,8 +55,17 @@ const meals = (() => {
     }
     result = result.concat(meals);
   }
+
+  result.sort((a, b) => {
+    if (a.date.getTime() !== b.date.getTime()) return a.date.getTime() - b.date.getTime();
+    const aIndex = config.mealTypes.findIndex(({ key }) => key === a.type);
+    const bIndex = config.mealTypes.findIndex(({ key }) => key === b.type);
+    return aIndex - bIndex;
+  });
+  
   return result;
 })();
+
 
 const days = ((meals: Meal[]): Day[] =>
   meals.reduce((days, { date: nextMealDate, ...nextMeal }) => {

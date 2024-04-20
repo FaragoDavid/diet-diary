@@ -7,7 +7,7 @@ import icons from '../../utils/icons.js';
 import { DayStats } from './day-stats.js';
 import { MealComponent } from './meal.js';
 
-export class Days implements BaseComponent {
+export class DayList implements BaseComponent {
   constructor(private days: Day[], private ingredients: Ingredient[]) {}
 
   async day(day: Day) {
@@ -24,7 +24,7 @@ export class Days implements BaseComponent {
 
     return `
       <div class="flex items-center text-lg text-primary">${format(day.date, 'MMM. d. (EEE)')}</div>
-      ${await new DayStats(day, {span: DayStats.SPAN.NONE, swap: false}).render()}
+      ${await new DayStats(day, { span: DayStats.SPAN.NONE, swap: false }).render()}
       <a href="/day/${dateToParam(day.date)}">
         <button 
           class="btn btn-primary btn-sm"

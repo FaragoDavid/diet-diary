@@ -5,7 +5,7 @@ import config from '../../config.js';
 import { Ingredient } from '../../repository/ingredient.js';
 import { fetchDayMeals } from '../../repository/meal.js';
 import icons from '../../utils/icons.js';
-import { Days } from './days.js';
+import { DayList } from './day-list.js';
 
 const dateInput = (id: string, defaultValue: Date) => `
   <input
@@ -44,7 +44,7 @@ export class DaySearch implements BaseComponent {
       </div>
 
       <div id="days" class="flex flex-col justify-center items-center gap-6 w-full">
-        ${await new Days(days, this.ingredients).render()}
+        ${await new DayList(days, this.ingredients).render()}
       </div>
       `;
   }

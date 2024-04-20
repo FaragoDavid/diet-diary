@@ -1,11 +1,11 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { layout } from '../components/layout.js';
-import { Recipes } from '../components/recipes/index.js';
 import { NewRecipe } from '../components/recipes/new-recipe.js';
 import { RecipeList } from '../components/recipes/recipe-list.js';
+import { RecipeTab } from '../components/recipes/recipe-tab.js';
 import { TAB_NAME, tabList } from '../components/tab-list.js';
-import { Recipe } from '../pages/recipe.js';
+import { RecipePage } from '../pages/recipe.js';
 import { fetchIngredients } from '../repository/ingredient.js';
 import * as recipeRepository from '../repository/recipe.js';
 
@@ -20,23 +20,36 @@ type DeleteRecipeIngredientRequest = UpdateRecipeIngredientRequest;
 type UpdateRecipeAmountRequest = FastifyRequest<{ Params: { recipeId: string }; Body: { amount: string; query: string } }>;
 type CreateRecipeRequest = FastifyRequest<{ Body: { name: string; ingredient: string; amount: string } }>;
 
-
 export const displayRecipesTab = async (_: FastifyRequest, reply: FastifyReply) => {
-  const template = `
+  try {
+    const template = `
     ${tabList(TAB_NAME.recipes, true)}
-    ${await new Recipes().render()}
+    ${await new RecipeTab().render()}
   `;
 
-  return reply.type('text/html').send(template);
+    return reply.type('text/html').send(template);
+  } catch (e) {
+    console.log(e);
+    throw new Error('Error in displayRecipesTab');
+  }
 };
 
 export const getRecipes = async (request: GetRecipesRequest, reply: FastifyReply) => {
-  const template = await layout(new RecipeList(request.query.query));
+  const query = request.query.query || '';
+  const recipes = await recipeRepository.fetchRecipes(query);
+  const ingredients = await fetchIngredients();
+
+  const template = await new RecipeList(recipes, ingredients).render();
   return reply.type('text/html').send(template);
 };
 
 export const editRecipe = async (request: GetRecipeRequest, reply: FastifyReply) => {
-  const template = await layout(new Recipe(request.params.recipeId));
+  const { recipeId } = request.params;
+
+  const recipe = await recipeRepository.fetchRecipe(recipeId);
+  if (!recipe) throw new Error('Recipe not found');
+
+  const template = await new RecipePage(recipe).render();
   return reply.type('text/html').send(template);
 };
 
@@ -51,8 +64,9 @@ export const addRecipeIngredient = async (request: PostRecipeRequest, reply: Fas
 
   await recipeRepository.addRecipeIngredient(recipeId, newIngredient[0], Number(newIngredient[1]));
 
-  const template = await layout(new Recipe(recipeId));
-  return reply.type('text/html').send(template);
+  // const template = await layout(new RecipePage(recipeId));
+  // return reply.type('text/html').send(template);
+  throw new Error('Not implemented');
 };
 
 export const updateRecipeIngredientAmount = async (request: UpdateRecipeIngredientRequest, reply: FastifyReply) => {
@@ -66,8 +80,9 @@ export const updateRecipeIngredientAmount = async (request: UpdateRecipeIngredie
 
   await recipeRepository.updateRecipeIngredientAmount(recipeId, ingredientId, Number(request.body[ingredientId]));
 
-  const template = await layout(new Recipe(recipeId));
-  return reply.type('text/html').send(template);
+  // const template = await layout(new RecipePage(recipeId));
+  // return reply.type('text/html').send(template);
+  throw new Error('Not implemented');
 };
 
 export const deleteRecipeIngredient = async (request: DeleteRecipeIngredientRequest, reply: FastifyReply) => {
@@ -81,12 +96,13 @@ export const deleteRecipeIngredient = async (request: DeleteRecipeIngredientRequ
 
   await recipeRepository.deleteRecipeIngredient(recipeId, ingredientId);
 
-  const template = await layout(new Recipe(recipeId));
-  return reply.type('text/html').send(template);
+  // const template = await layout(new RecipePage(recipeId));
+  // return reply.type('text/html').send(template);
+  throw new Error('Not implemented');
 };
 
 export const updateRecipeAmount = (bodyType: 'list' | 'detail') => {
-  const bodyTypeMap = { list: RecipeList, detail: Recipe };
+  const bodyTypeMap = { list: RecipeList, detail: RecipePage };
   return async (request: UpdateRecipeAmountRequest, reply: FastifyReply) => {
     const recipeId = request.params.recipeId;
     const recipe = await recipeRepository.fetchRecipe(recipeId);
@@ -94,8 +110,9 @@ export const updateRecipeAmount = (bodyType: 'list' | 'detail') => {
 
     await recipeRepository.updateRecipeAmount(recipeId, Number(request.body.amount));
 
-    const template = await layout(new bodyTypeMap[bodyType](request.body.query));
-    return reply.type('text/html').send(template);
+    // const template = await layout(new bodyTypeMap[bodyType](request.body.query));
+    // return reply.type('text/html').send(template);
+    throw new Error('Not implemented');
   };
 };
 
@@ -109,8 +126,9 @@ export const newRecipe = async (_: FastifyRequest, reply: FastifyReply) => {
 export const createRecipe = async (request: CreateRecipeRequest, reply: FastifyReply) => {
   const { name, ingredient, amount } = request.body;
 
-  const recipeId = await recipeRepository.addRecipe(name, { id: ingredient, amount: Number(amount) });
+  // const recipeId = await recipeRepository.addRecipe(name, { id: ingredient, amount: Number(amount) });
 
-  const template = await layout(new Recipe(recipeId));
-  return reply.type('text/html').header('HX-Push-Url', `/recipe/${recipeId}`).send(template);
+  // const template = await layout(new RecipePage(recipeId));
+  // return reply.type('text/html').header('HX-Push-Url', `/recipe/${recipeId}`).send(template);
+  throw new Error('Not implemented');
 };

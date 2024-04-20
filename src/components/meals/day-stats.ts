@@ -1,5 +1,6 @@
 import { Day } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
+import { stats } from '../stats.js';
 
 enum SPAN {
   NONE = '',
@@ -30,29 +31,15 @@ export class DayStats implements BaseComponent {
       { dayCals: 0, dayCarbs: 0, dayFat: 0 },
     );
 
-    return `
-      <div
-        id="day-${dateToParam(this.day.date)}-stats" 
-        class="flex text-lg ${this.span}" 
-        ${this.swap ? 'hx-swap-oob="true"' : ''}
-      >
-        <div class="flex justify-center items-center">
-          <div class="flex flex-col justify-center items-center">
-            <div class="text text-center text-primary text-sm italic">Kal</div>
-            <div class="text text-center text-primary">${Math.floor(dayCals)}</div>
-          </div>
-          <div class="divider divider-horizontal" ></div> 
-          <div class="flex flex-col justify-center items-center">
-            <div class="text text-center text-primary text-sm italic">CH</div>
-            <div class="text text-center text-primary">${Math.floor(dayCarbs)}</div>
-          </div>
-          <div class="divider divider-horizontal" ></div> 
-          <div class="flex flex-col justify-center items-center">
-            <div class="text text-center text-primary text-sm italic">Zsír</div>
-            <div class="text text-center text-primary">${Math.floor(dayFat)}</div>
-          </div>
-        </div>
-      </div>
-  `;
+    return stats(
+      { cal: dayCals, carbs: dayCarbs, fat: dayFat },
+      {
+        id: `day-${dateToParam(this.day.date)}-stats`,
+        orientation: 'vertical',
+        size: 'sm',
+        span: this.span,
+        swap: this.swap,
+      },
+    );
   }
 }

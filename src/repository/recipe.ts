@@ -1,147 +1,44 @@
+import { v4 as uuid } from 'uuid';
+
 import { ingredients } from './ingredient.js';
 
 export type RecipeIngredient = { id: string; amount: number };
 
 export type RecipeIngredientWithName = RecipeIngredient & { name: string };
 
-export type RecipeType = {
+export type Recipe = {
   id: string;
   name: string;
   ingredients: RecipeIngredient[];
   amount?: number;
 };
-export type RecipeWithIngredientName = Omit<RecipeType, 'ingredients'> & {
+export type RecipeWithIngredientName = Omit<Recipe, 'ingredients'> & {
   ingredients: RecipeIngredientWithName[];
 };
 
-const recipes: RecipeType[] = [
-  {
-    id: '1',
-    name: 'Banana smoothie',
-    ingredients: [
-      { id: '1', amount: 1 },
-      { id: '3', amount: 1 },
-    ],
-    amount: 12,
-  },
-  {
-    id: '2',
-    name: 'Chicken with rice',
-    ingredients: [
-      { id: '5', amount: 1 },
-      { id: '6', amount: 1 },
-      { id: '7', amount: 1 },
-    ],
-  },
-  {
-    id: '3',
-    name: 'Salmon with potato',
-    ingredients: [
-      { id: '9', amount: 1 },
-      { id: '10', amount: 1 },
-      { id: '11', amount: 1 },
-    ],
-  },
-  {
-    id: '4',
-    name: 'Cottage cheese with kale',
-    ingredients: [
-      { id: '12', amount: 1 },
-      { id: '13', amount: 1 },
-    ],
-    amount: 1,
-  },
-  {
-    id: '5',
-    name: 'Oatmeal with apple',
-    ingredients: [
-      { id: '2', amount: 1 },
-      { id: '4', amount: 1 },
-    ],
-    amount: 1,
-  },
-  {
-    id: '6',
-    name: 'Yogurt with banana',
-    ingredients: [
-      { id: '1', amount: 1 },
-      { id: '8', amount: 1 },
-    ],
-    amount: 1,
-  },
-  {
-    id: '7',
-    name: 'Chicken with broccoli',
-    ingredients: [
-      { id: '5', amount: 1 },
-      { id: '7', amount: 1 },
-    ],
-    amount: 1,
-  },
-  {
-    id: '8',
-    name: 'Salmon with asparagus',
-    ingredients: [
-      { id: '9', amount: 1 },
-      { id: '11', amount: 1 },
-    ],
-    amount: 1,
-  },
-  {
-    id: '9',
-    name: 'Oatmeal with milk',
-    ingredients: [
-      { id: '2', amount: 1 },
-      { id: '3', amount: 1 },
-    ],
-    amount: 1,
-  },
-  {
-    id: '10',
-    name: 'Chicken with potato',
-    ingredients: [
-      { id: '5', amount: 1 },
-      { id: '10', amount: 1 },
-    ],
-    amount: 1,
-  },
-  {
-    id: '11',
-    name: 'Salmon with rice',
-    ingredients: [
-      { id: '9', amount: 1 },
-      { id: '6', amount: 1 },
-    ],
-    amount: 1,
-  },
-  {
-    id: '12',
-    name: 'Cottage cheese with apple',
-    ingredients: [
-      { id: '12', amount: 1 },
-      { id: '4', amount: 1 },
-    ],
-    amount: 1,
-  },
-  {
-    id: '13',
-    name: 'Yogurt with oatmeal',
-    ingredients: [
-      { id: '8', amount: 1 },
-      { id: '2', amount: 1 },
-    ],
-    amount: 1,
-  },
-];
+const recipes: Recipe[] = ((count: number) => {
+  const result: Recipe[] = [];
+  for (let i = 1; i <= count; i++) {
+    const ingredientCount = Math.floor(Math.random() * 3);
+    const recipeIngredients: Set<RecipeIngredient> = new Set();
+    for (let j = 0; j < ingredientCount; j++) {
+      const ingredient = ingredients[Math.floor(Math.random() * ingredients.length)]!;
+      recipeIngredients.add({
+        id: ingredient.id,
+        amount: Math.floor(Math.random() * 99) + 1,
+      });
+    }
 
-export async function fetchRecipes(query: string): Promise<RecipeType[]> {
-  return recipes.filter((recipe) => recipe.name.toLowerCase().includes(query.toLowerCase()));
-}
+    result.push({
+      id: uuid(),
+      name: `Recipe ${i}`,
+      ingredients: Array.from(recipeIngredients),
+    });
+  }
+  return result;
+})(30);
 
-export async function fetchRecipe(id: string): Promise<RecipeWithIngredientName | undefined> {
-  const recipe = recipes.find((recipe) => recipe.id === id);
-  if (!recipe) return;
-
+function extendRecipeWithIngredientName(recipe: Recipe): RecipeWithIngredientName {
   return {
     ...recipe,
     ingredients: recipe.ingredients.map(
@@ -152,6 +49,19 @@ export async function fetchRecipe(id: string): Promise<RecipeWithIngredientName 
         } as RecipeIngredientWithName),
     ),
   };
+}
+
+export async function fetchRecipes(query: string): Promise<RecipeWithIngredientName[]> {
+  return recipes
+    .filter((recipe) => recipe.name.toLowerCase().includes(query.toLowerCase()))
+    .map((recipe) => extendRecipeWithIngredientName(recipe));
+}
+
+export async function fetchRecipe(id: string): Promise<RecipeWithIngredientName | undefined> {
+  const recipe = recipes.find((recipe) => recipe.id === id);
+  if (!recipe) throw new Error('Recipe not found');
+
+  return extendRecipeWithIngredientName(recipe);
 }
 
 export async function addRecipe(name: string, ingredient: RecipeIngredient) {
