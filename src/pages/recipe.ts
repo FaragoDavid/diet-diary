@@ -1,12 +1,12 @@
-import { stats } from '../components/stats.js';
 import { BackLink } from '../components/back-link.js';
 import { RecipeIngredientList } from '../components/recipes/recipe-ingredient-list.js';
-import { selectIngredients } from '../repository/ingredient.js';
-import { Recipe } from '../repository/recipe.js';
+import { stats } from '../components/stats.js';
+import { Ingredient } from '../repository/ingredient.js';
+import { RecipeWithIngredientName } from '../repository/recipe.js';
 
 export class RecipePage implements BaseComponent {
   recipeAmount: number;
-  constructor(private recipe: Recipe) {
+  constructor(private recipe: RecipeWithIngredientName, private ingredients: Ingredient[]) {
     this.recipeAmount = this.recipe.amount || this.recipe.ingredients.reduce((acc, ingredient) => acc + ingredient.amount, 0);
   }
 
@@ -32,13 +32,11 @@ export class RecipePage implements BaseComponent {
   `;
 
   recipeStats = async () => {
-    const ingredients = await selectIngredients();
-
     const { recipeCalories, recipeCH, recipeFat } = this.recipe.ingredients.reduce(
       (acc, ingredient) => {
-        const fullIngredient = ingredients.find(({ id }) => id === ingredient.id);
-
+        const fullIngredient = this.ingredients.find(({ id }) => id === ingredient.id);
         if (!fullIngredient) return acc;
+
         return {
           recipeCalories: acc.recipeCalories + fullIngredient.calories * ingredient.amount,
           recipeCH: acc.recipeCH + fullIngredient.carbs * ingredient.amount,
@@ -50,11 +48,7 @@ export class RecipePage implements BaseComponent {
 
     return stats(
       { cal: recipeCalories, carbs: recipeCH, fat: recipeFat },
-      {
-        id: `recipe-${this.recipe.id}-stats`,
-        orientation: 'vertical',
-        size: 'lg',
-      },
+      { id: `recipe-${this.recipe.id}-stats`, orientation: 'vertical', size: 'lg' },
     );
   };
 
@@ -73,7 +67,7 @@ export class RecipePage implements BaseComponent {
             <div class="text text-center">
               Alapanyagok
             </div>
-            ${await new RecipeIngredientList(this.recipe.id).render()}
+            ${await new RecipeIngredientList(this.recipe, this.ingredients).render()}
           </div>
         </div>
       </div>

@@ -43,13 +43,14 @@ export const getRecipes = async (request: GetRecipesRequest, reply: FastifyReply
   return reply.type('text/html').send(template);
 };
 
-export const editRecipe = async (request: GetRecipeRequest, reply: FastifyReply) => {
+export const getRecipe = async (request: GetRecipeRequest, reply: FastifyReply) => {
   const { recipeId } = request.params;
 
   const recipe = await recipeRepository.selectRecipe(recipeId);
-  if (!recipe) throw new Error('Recipe not found');
+  const ingredients = await selectIngredients();
 
-  const template = await new RecipePage(recipe).render();
+  const template = await layout(new RecipePage(recipe, ingredients));
+
   return reply.type('text/html').send(template);
 };
 

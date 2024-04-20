@@ -57,7 +57,7 @@ export async function selectRecipes(query: string): Promise<RecipeWithIngredient
     .map((recipe) => extendRecipeWithIngredientName(recipe));
 }
 
-export async function selectRecipe(id: string): Promise<RecipeWithIngredientName | undefined> {
+export async function selectRecipe(id: string): Promise<RecipeWithIngredientName> {
   const recipe = recipes.find((recipe) => recipe.id === id);
   if (!recipe) throw new Error('Recipe not found');
 
