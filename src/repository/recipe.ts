@@ -51,20 +51,20 @@ function extendRecipeWithIngredientName(recipe: Recipe): RecipeWithIngredientNam
   };
 }
 
-export async function fetchRecipes(query: string): Promise<RecipeWithIngredientName[]> {
+export async function selectRecipes(query: string): Promise<RecipeWithIngredientName[]> {
   return recipes
     .filter((recipe) => recipe.name.toLowerCase().includes(query.toLowerCase()))
     .map((recipe) => extendRecipeWithIngredientName(recipe));
 }
 
-export async function fetchRecipe(id: string): Promise<RecipeWithIngredientName | undefined> {
+export async function selectRecipe(id: string): Promise<RecipeWithIngredientName | undefined> {
   const recipe = recipes.find((recipe) => recipe.id === id);
   if (!recipe) throw new Error('Recipe not found');
 
   return extendRecipeWithIngredientName(recipe);
 }
 
-export async function addRecipe(name: string, ingredient: RecipeIngredient) {
+export async function insertRecipe(name: string, ingredient: RecipeIngredient) {
   const id = String(Math.max(...recipes.map((recipe) => Number(recipe.id))) + 1);
   recipes.push({ id, name, ingredients: [ingredient] });
   return id;
@@ -76,7 +76,7 @@ export async function updateRecipe(id: string, ingredients: RecipeIngredient[]) 
   recipe.ingredients = ingredients;
 }
 
-export async function addRecipeIngredient(recipeId: string, ingredientId: string, amount: number) {
+export async function insertRecipeIngredient(recipeId: string, ingredientId: string, amount: number) {
   const recipe = recipes.find((recipe) => recipe.id === recipeId);
   if (!recipe) return;
 

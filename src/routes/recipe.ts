@@ -6,7 +6,7 @@ import { RecipeList } from '../components/recipes/recipe-list.js';
 import { RecipeTab } from '../components/recipes/recipe-tab.js';
 import { TAB_NAME, tabList } from '../components/tab-list.js';
 import { RecipePage } from '../pages/recipe.js';
-import { fetchIngredients } from '../repository/ingredient.js';
+import { selectIngredients } from '../repository/ingredient.js';
 import * as recipeRepository from '../repository/recipe.js';
 
 type GetRecipesRequest = FastifyRequest<{ Querystring: { query: string } }>;
@@ -36,8 +36,8 @@ export const displayRecipesTab = async (_: FastifyRequest, reply: FastifyReply) 
 
 export const getRecipes = async (request: GetRecipesRequest, reply: FastifyReply) => {
   const query = request.query.query || '';
-  const recipes = await recipeRepository.fetchRecipes(query);
-  const ingredients = await fetchIngredients();
+  const recipes = await recipeRepository.selectRecipes(query);
+  const ingredients = await selectIngredients();
 
   const template = await new RecipeList(recipes, ingredients).render();
   return reply.type('text/html').send(template);
@@ -46,7 +46,7 @@ export const getRecipes = async (request: GetRecipesRequest, reply: FastifyReply
 export const editRecipe = async (request: GetRecipeRequest, reply: FastifyReply) => {
   const { recipeId } = request.params;
 
-  const recipe = await recipeRepository.fetchRecipe(recipeId);
+  const recipe = await recipeRepository.selectRecipe(recipeId);
   if (!recipe) throw new Error('Recipe not found');
 
   const template = await new RecipePage(recipe).render();
@@ -56,13 +56,13 @@ export const editRecipe = async (request: GetRecipeRequest, reply: FastifyReply)
 export const addRecipeIngredient = async (request: PostRecipeRequest, reply: FastifyReply) => {
   const recipeId = request.params.recipeId;
 
-  const recipe = await recipeRepository.fetchRecipe(recipeId);
+  const recipe = await recipeRepository.selectRecipe(recipeId);
   if (!recipe) throw new Error('Recipe not found');
 
   const { newIngredient } = request.body;
   if (!newIngredient[0] || !newIngredient[1]) throw new Error('New ingredient not found');
 
-  await recipeRepository.addRecipeIngredient(recipeId, newIngredient[0], Number(newIngredient[1]));
+  await recipeRepository.insertRecipeIngredient(recipeId, newIngredient[0], Number(newIngredient[1]));
 
   // const template = await layout(new RecipePage(recipeId));
   // return reply.type('text/html').send(template);
@@ -72,7 +72,7 @@ export const addRecipeIngredient = async (request: PostRecipeRequest, reply: Fas
 export const updateRecipeIngredientAmount = async (request: UpdateRecipeIngredientRequest, reply: FastifyReply) => {
   const { recipeId, ingredientId } = request.params;
 
-  const recipe = await recipeRepository.fetchRecipe(recipeId);
+  const recipe = await recipeRepository.selectRecipe(recipeId);
   if (!recipe) throw new Error('Recipe not found');
 
   const ingredient = recipe.ingredients.find((ingredient) => ingredient.id === ingredientId);
@@ -88,7 +88,7 @@ export const updateRecipeIngredientAmount = async (request: UpdateRecipeIngredie
 export const deleteRecipeIngredient = async (request: DeleteRecipeIngredientRequest, reply: FastifyReply) => {
   const { recipeId, ingredientId } = request.params;
 
-  const recipe = await recipeRepository.fetchRecipe(recipeId);
+  const recipe = await recipeRepository.selectRecipe(recipeId);
   if (!recipe) throw new Error('Recipe not found');
 
   const ingredient = recipe.ingredients.find((ingredient) => ingredient.id === ingredientId);
@@ -105,7 +105,7 @@ export const updateRecipeAmount = (bodyType: 'list' | 'detail') => {
   const bodyTypeMap = { list: RecipeList, detail: RecipePage };
   return async (request: UpdateRecipeAmountRequest, reply: FastifyReply) => {
     const recipeId = request.params.recipeId;
-    const recipe = await recipeRepository.fetchRecipe(recipeId);
+    const recipe = await recipeRepository.selectRecipe(recipeId);
     if (!recipe) throw new Error('Recipe not found');
 
     await recipeRepository.updateRecipeAmount(recipeId, Number(request.body.amount));
@@ -117,7 +117,7 @@ export const updateRecipeAmount = (bodyType: 'list' | 'detail') => {
 };
 
 export const newRecipe = async (_: FastifyRequest, reply: FastifyReply) => {
-  const ingredients = await fetchIngredients();
+  const ingredients = await selectIngredients();
 
   const template = await layout(new NewRecipe(ingredients));
   return reply.type('text/html').send(template);

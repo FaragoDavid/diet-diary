@@ -3,7 +3,7 @@ import { subDays } from 'date-fns';
 import { dateToInput } from '../../utils/converters.js';
 import config from '../../config.js';
 import { Ingredient } from '../../repository/ingredient.js';
-import { fetchDayMeals } from '../../repository/meal.js';
+import { selectDays } from '../../repository/meal.js';
 import icons from '../../utils/icons.js';
 import { DayList } from './day-list.js';
 
@@ -28,7 +28,7 @@ export class DaySearch implements BaseComponent {
   async render() {
     const fromDate = subDays(new Date(), 7);
     const toDate = new Date();
-    const days = await fetchDayMeals(fromDate, toDate);
+    const days = await selectDays(fromDate, toDate);
 
     return `
       <div class="flex justify-center items-center max-w-96">

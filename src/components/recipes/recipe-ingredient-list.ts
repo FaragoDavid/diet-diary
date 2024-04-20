@@ -1,6 +1,6 @@
 import icons from '../../utils/icons.js';
-import { Ingredient, fetchIngredients } from '../../repository/ingredient.js';
-import { RecipeIngredientWithName, fetchRecipe } from '../../repository/recipe.js';
+import { Ingredient, selectIngredients } from '../../repository/ingredient.js';
+import { RecipeIngredientWithName, selectRecipe } from '../../repository/recipe.js';
 import { stats } from '../stats.js';
 
 export class RecipeIngredientList implements BaseComponent {
@@ -101,10 +101,10 @@ export class RecipeIngredientList implements BaseComponent {
   }
 
   async render() {
-    const recipe = await fetchRecipe(this.id);
+    const recipe = await selectRecipe(this.id);
     if (!recipe) return 'Error: Recipe not found';
 
-    this.ingredients = await fetchIngredients();
+    this.ingredients = await selectIngredients();
 
     return `
       <form id="recipe-ingredient-list" class="grid grid-cols-max-3 grid-row-flex gap-2">

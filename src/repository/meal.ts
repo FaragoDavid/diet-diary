@@ -24,7 +24,6 @@ export type Meal = {
 
 export type Day = { date: Date; meals: Omit<Meal, 'date'>[] };
 
-
 const meals = (() => {
   const days = Array.from({ length: 7 }, (_, i) => subDays(new Date(), i));
   let result: Meal[] = [];
@@ -35,22 +34,18 @@ const meals = (() => {
     while (meals.length < count) {
       const missingMeals = config.mealTypes.filter(({ key }) => !meals.some((meal) => meal.type === key));
       const type = missingMeals[Math.floor(Math.random() * missingMeals.length)]!.key;
-      const dishes = Array.from(
-        { length: Math.floor(Math.random() * 3) },
-        () =>
-          {
-            const ingredient = ingredients[randomInt(ingredients.length - 1)];
-            const amount = Math.floor(Math.random() * 399) + 1;
-            return ({
-              id: ingredient!.id,
-              name: ingredient!.name,
-              amount,
-              calories: nutrientFromDish(ingredient!.id, amount, 'calories', ingredients),
-              carbs: nutrientFromDish(ingredient!.id, amount, 'carbs', ingredients),
-              fat: nutrientFromDish(ingredient!.id, amount, 'fat', ingredients),
-            } as Dish);
-          },
-      );
+      const dishes = Array.from({ length: Math.floor(Math.random() * 3) }, () => {
+        const ingredient = ingredients[randomInt(ingredients.length - 1)];
+        const amount = Math.floor(Math.random() * 399) + 1;
+        return {
+          id: ingredient!.id,
+          name: ingredient!.name,
+          amount,
+          calories: nutrientFromDish(ingredient!.id, amount, 'calories', ingredients),
+          carbs: nutrientFromDish(ingredient!.id, amount, 'carbs', ingredients),
+          fat: nutrientFromDish(ingredient!.id, amount, 'fat', ingredients),
+        } as Dish;
+      });
       meals.push({ id: uuid(), type, date: day, dishes });
     }
     result = result.concat(meals);
@@ -62,10 +57,9 @@ const meals = (() => {
     const bIndex = config.mealTypes.findIndex(({ key }) => key === b.type);
     return aIndex - bIndex;
   });
-  
+
   return result;
 })();
-
 
 const days = ((meals: Meal[]): Day[] =>
   meals.reduce((days, { date: nextMealDate, ...nextMeal }) => {
@@ -75,7 +69,7 @@ const days = ((meals: Meal[]): Day[] =>
     return days;
   }, [] as Day[]))(meals);
 
-export async function fetchDayMeals(start: Date, end: Date) {
+export async function selectDays(start: Date, end: Date) {
   end = endOfDay(end);
   return meals
     .reduce((days, { date: nextMealDate, ...nextMeal }) => {
@@ -99,7 +93,7 @@ export async function fetchDayMeals(start: Date, end: Date) {
     .sort((a, b) => b.date.getTime() - a.date.getTime());
 }
 
-export async function fetchDay(date: Date): Promise<Day> {
+export async function selectDay(date: Date): Promise<Day> {
   const day = days.find((day) => isSameDay(day.date, date));
   if (!day) throw new Error('Day not found');
   return {
@@ -116,13 +110,13 @@ export async function fetchDay(date: Date): Promise<Day> {
   };
 }
 
-export async function fetchMeal(date: Date, mealType: MealType): Promise<Meal> {
+export async function selectMeal(date: Date, mealType: MealType): Promise<Meal> {
   const meal = meals.find((meal) => isSameDay(meal.date, date) && meal.type === mealType);
   if (!meal) throw new Error('Meal not found');
   return meal;
 }
 
-export async function createDay(date: Date): Promise<Day> {
+export async function insertDay(date: Date): Promise<Day> {
   if (meals.find((meal) => isSameDay(meal.date, date))) throw new Error('Day already exists');
 
   const newDay = { date, meals: [] };
@@ -131,7 +125,7 @@ export async function createDay(date: Date): Promise<Day> {
   return newDay;
 }
 
-export async function addMeal(date: Date, type: MealType): Promise<Meal> {
+export async function insertMeal(date: Date, type: MealType): Promise<Meal> {
   const newMeal = { id: uuid(), type, date, dishes: [] };
   meals.push(newMeal);
   days.find((day) => isSameDay(day.date, date))!.meals.push(newMeal);
@@ -139,7 +133,7 @@ export async function addMeal(date: Date, type: MealType): Promise<Meal> {
   return newMeal;
 }
 
-export async function addDish(date: Date, mealType: MealType, dishId: string, amount: number): Promise<Dish> {
+export async function insertDish(date: Date, mealType: MealType, dishId: string, amount: number): Promise<Dish> {
   const meal = meals.find((meal) => isSameDay(meal.date, date) && meal.type === mealType);
   if (!meal) throw new Error('Meal not found');
   const ingredient = ingredients.find(({ id }) => id === dishId);

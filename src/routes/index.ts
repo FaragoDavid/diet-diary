@@ -2,7 +2,7 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
 import { layout } from '../components/layout.js';
 import { Dashboard } from '../pages/dashboard.js';
-import { fetchIngredients } from '../repository/ingredient.js';
+import { selectIngredients } from '../repository/ingredient.js';
 import { addIngr, displayIngredientsTab, getIngredient } from './ingredient.js';
 import { getLogin, postLogin } from './login.js';
 import { addDish, addMeal, createDay, displayMealsTab, getDay, getDays, newDay } from './meal.js';
@@ -45,7 +45,7 @@ const registerRoutes = (fastify: FastifyInstance) => {
   fastify.get(
     '/dashboard',
     createHandler(async (_, reply: FastifyReply) => {
-      const ingredients = await fetchIngredients();
+      const ingredients = await selectIngredients();
 
       const template = await layout(new Dashboard(ingredients));
       return reply.type('text/html').send(template);

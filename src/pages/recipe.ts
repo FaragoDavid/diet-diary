@@ -1,7 +1,7 @@
 import { stats } from '../components/stats.js';
 import { BackLink } from '../components/back-link.js';
 import { RecipeIngredientList } from '../components/recipes/recipe-ingredient-list.js';
-import { fetchIngredients } from '../repository/ingredient.js';
+import { selectIngredients } from '../repository/ingredient.js';
 import { Recipe } from '../repository/recipe.js';
 
 export class RecipePage implements BaseComponent {
@@ -32,7 +32,7 @@ export class RecipePage implements BaseComponent {
   `;
 
   recipeStats = async () => {
-    const ingredients = await fetchIngredients();
+    const ingredients = await selectIngredients();
 
     const { recipeCalories, recipeCH, recipeFat } = this.recipe.ingredients.reduce(
       (acc, ingredient) => {
@@ -55,7 +55,7 @@ export class RecipePage implements BaseComponent {
         orientation: 'vertical',
         size: 'lg',
       },
-    )
+    );
   };
 
   async render() {
