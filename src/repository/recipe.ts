@@ -64,10 +64,10 @@ export async function selectRecipe(id: string): Promise<RecipeWithIngredientName
   return extendRecipeWithIngredientName(recipe);
 }
 
-export async function insertRecipe(name: string, ingredient: RecipeIngredient) {
-  const id = String(Math.max(...recipes.map((recipe) => Number(recipe.id))) + 1);
-  recipes.push({ id, name, ingredients: [ingredient] });
-  return id;
+export async function insertRecipe(name: string) {
+  const newRecipe: RecipeWithIngredientName = { id: uuid(), name, ingredients: [] };
+  recipes.push(newRecipe);
+  return newRecipe;
 }
 
 export async function updateRecipe(id: string, ingredients: RecipeIngredient[]) {

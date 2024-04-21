@@ -49,7 +49,7 @@ export class RecipeList implements BaseComponent {
       ${this.recipeName(recipe.name)}
       ${this.recipeAmount(recipe)}
       ${this.editRecipeButton(recipe)}
-        ${await new RecipeStats(recipe, this.ingredients).render()}
+      ${await new RecipeStats(recipe, this.ingredients, { id: `recipe-${recipe.id}-stats`, swap: false }).render()}
     `;
   }
 

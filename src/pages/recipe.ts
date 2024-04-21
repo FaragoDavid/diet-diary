@@ -1,8 +1,24 @@
 import { BackLink } from '../components/back-link.js';
+import { newRecipeHeader } from '../components/recipes/recipe-header.js';
 import { RecipeIngredientList } from '../components/recipes/recipe-ingredient-list.js';
 import { stats } from '../components/stats.js';
 import { Ingredient } from '../repository/ingredient.js';
 import { RecipeWithIngredientName } from '../repository/recipe.js';
+
+export class NewRecipePage implements BaseComponent {
+  async render() {
+    return `
+      <div id="recipe">
+        ${await new BackLink().render()}
+        <div class="container py-6">
+          <div id="recipe-container" class="flex flex-col justify-center items-center gap-4">
+            ${newRecipeHeader()}        
+          </div>
+        </div>
+      </div>
+    `;
+  }
+}
 
 export class RecipePage implements BaseComponent {
   recipeAmount: number;
@@ -54,9 +70,8 @@ export class RecipePage implements BaseComponent {
 
   async render() {
     return `
-      <div id="recipe">
         ${await new BackLink().render()}
-        <div class="container py-10 px-2 mx-auto ">
+        <div id="recipe" >
           <div class="flex flex-col place-items-center gap-y-4">
             ${this.header()}
             <div class="flex justify-center items-center">
@@ -70,7 +85,6 @@ export class RecipePage implements BaseComponent {
             ${await new RecipeIngredientList(this.recipe, this.ingredients).render()}
           </div>
         </div>
-      </div>
     `;
   }
 }

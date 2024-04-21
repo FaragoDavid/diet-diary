@@ -2253,6 +2253,11 @@ input.tab:checked + .tab-content,
   border-width: 1px;
 }
 
+.bg-lime-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(77 124 15 / var(--tw-bg-opacity));
+}
+
 .p-1 {
   padding: 0.25rem;
 }
@@ -2269,11 +2274,6 @@ input.tab:checked + .tab-content,
 .py-1 {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
-}
-
-.py-10 {
-  padding-top: 2.5rem;
-  padding-bottom: 2.5rem;
 }
 
 .py-2 {
@@ -2346,11 +2346,6 @@ input.tab:checked + .tab-content,
 
 .italic {
   font-style: italic;
-}
-
-.text-neutral {
-  --tw-text-opacity: 1;
-  color: var(--fallback-n,oklch(var(--n)/var(--tw-text-opacity)));
 }
 
 .text-primary {

@@ -1,11 +1,12 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { layout } from '../components/layout.js';
-import { NewRecipe } from '../components/recipes/new-recipe.js';
+import { recipeHeader } from '../components/recipes/recipe-header.js';
 import { RecipeList } from '../components/recipes/recipe-list.js';
+import { RecipeStats } from '../components/recipes/recipe-stats.js';
 import { RecipeTab } from '../components/recipes/recipe-tab.js';
 import { TAB_NAME, tabList } from '../components/tab-list.js';
-import { RecipePage } from '../pages/recipe.js';
+import { NewRecipePage, RecipePage } from '../pages/recipe.js';
 import { selectIngredients } from '../repository/ingredient.js';
 import * as recipeRepository from '../repository/recipe.js';
 
@@ -18,7 +19,7 @@ type UpdateRecipeIngredientRequest = FastifyRequest<{
 }>;
 type DeleteRecipeIngredientRequest = UpdateRecipeIngredientRequest;
 type UpdateRecipeAmountRequest = FastifyRequest<{ Params: { recipeId: string }; Body: { amount: string; query: string } }>;
-type CreateRecipeRequest = FastifyRequest<{ Body: { name: string; ingredient: string; amount: string } }>;
+type CreateRecipeRequest = FastifyRequest<{ Body: { recipeName: string } }>;
 
 export const displayRecipesTab = async (_: FastifyRequest, reply: FastifyReply) => {
   try {
@@ -118,18 +119,20 @@ export const updateRecipeAmount = (bodyType: 'list' | 'detail') => {
 };
 
 export const newRecipe = async (_: FastifyRequest, reply: FastifyReply) => {
-  const ingredients = await selectIngredients();
+  const template = await layout(new NewRecipePage());
 
-  const template = await layout(new NewRecipe(ingredients));
   return reply.type('text/html').send(template);
 };
 
 export const createRecipe = async (request: CreateRecipeRequest, reply: FastifyReply) => {
-  const { name, ingredient, amount } = request.body;
+  const { recipeName } = request.body;
 
-  // const recipeId = await recipeRepository.addRecipe(name, { id: ingredient, amount: Number(amount) });
+  const recipe = await recipeRepository.insertRecipe(recipeName);
+  const ingredients = await selectIngredients();
 
-  // const template = await layout(new RecipePage(recipeId));
-  // return reply.type('text/html').header('HX-Push-Url', `/recipe/${recipeId}`).send(template);
-  throw new Error('Not implemented');
+  const template = `
+    ${recipeHeader(recipe)}
+    ${await new RecipeStats(recipe, ingredients, {id: `recipe-stats`, swap: false}).render()}
+  `;
+  return reply.type('text/html').header('HX-Push-Url', `/recipe/${recipe.id}`).send(template);
 };
