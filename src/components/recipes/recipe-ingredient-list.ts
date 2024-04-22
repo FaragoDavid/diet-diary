@@ -2,6 +2,10 @@ import { Ingredient } from '../../repository/ingredient.js';
 import { RecipeWithIngredientName } from '../../repository/recipe.js';
 import { RecipeIngredient } from './recipe-ingredient.js';
 
+
+const texts = {
+  ingredientsHeader: 'Alapanyagok',
+};
 export class RecipeIngredientList implements BaseComponent {
   constructor(private recipe: RecipeWithIngredientName, private ingredients: Ingredient[]) {}
 
@@ -44,11 +48,9 @@ export class RecipeIngredientList implements BaseComponent {
     }
 
     return `
+      <div class="divider px-4" ></div>
       <div id="recipe-ingredient-list-container">
-        <div class="text text-center">
-          Alapanyagok
-        </div>
-        <div class="divider" ></div>
+        <div class="text-lg text-center pb-4">${texts.ingredientsHeader}</div>
         <div id="recipe-ingredient-list" class="grid grid-cols-max-3 grid-row-flex gap-2">
           ${recipeIngredientComponents.join('<div class="divider col-span-3 my-0" ></div>')}
           <div class="divider col-span-3 my-0" ></div>

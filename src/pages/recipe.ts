@@ -10,7 +10,7 @@ export class NewRecipePage implements BaseComponent {
   async render() {
     return `
       ${await new BackLink().render()}
-      <div id="${RECIPE_PAGE_ID}" class="flex flex-col place-items-center gap-y-6 w-full pt-6">
+      <div id="${RECIPE_PAGE_ID}" class="flex flex-col place-items-center w-full pt-6">
         ${newRecipeHeader()}
       </div>
     `;
@@ -23,7 +23,7 @@ export class RecipePage implements BaseComponent {
   async render() {
     return `
         ${await new BackLink().render()}
-        <div id="${RECIPE_PAGE_ID}" class="flex flex-col place-items-center gap-y-6 w-full pt-6">
+        <div id="${RECIPE_PAGE_ID}" class="flex flex-col place-items-center w-full pt-6">
           ${recipeHeader(this.recipe)}
           ${await new RecipeDetails(this.recipe, this.ingredients).render()}
           ${await new RecipeIngredientList(this.recipe, this.ingredients).render()}
