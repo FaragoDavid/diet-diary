@@ -1,3 +1,5 @@
+import { RECIPE_PAGE_ID } from "../../pages/recipe.js";
+
 const texts = {
   placeholder: 'Recept neve',
 };
@@ -12,8 +14,7 @@ export function newRecipeHeader() {
         class="input input-bordered"
         placeholder="${texts.placeholder}"
         hx-post="/new-recipe"
-        hx-target="#recipe-container"
-        hx-swap="outerHTML"
+        hx-target="#${RECIPE_PAGE_ID}"
       />
   `;
 }

@@ -9,6 +9,8 @@ import { TAB_NAME, tabList } from '../components/tab-list.js';
 import { NewRecipePage, RecipePage } from '../pages/recipe.js';
 import { selectIngredients } from '../repository/ingredient.js';
 import * as recipeRepository from '../repository/recipe.js';
+import { RecipeIngredientList } from '../components/recipes/recipe-ingredient-list.js';
+import { RecipeDetails } from '../components/recipes/recipe-details.js';
 
 type GetRecipesRequest = FastifyRequest<{ Querystring: { query: string } }>;
 type GetRecipeRequest = FastifyRequest<{ Params: { recipeId: string } }>;
@@ -132,7 +134,10 @@ export const createRecipe = async (request: CreateRecipeRequest, reply: FastifyR
 
   const template = `
     ${recipeHeader(recipe)}
-    ${await new RecipeStats(recipe, ingredients, {id: `recipe-stats`, swap: false}).render()}
+    ${await new RecipeDetails(recipe, ingredients).render()}
+    ${await new RecipeIngredientList(recipe, ingredients).render()}
   `;
   return reply.type('text/html').header('HX-Push-Url', `/recipe/${recipe.id}`).send(template);
 };
+
+    // ${await new RecipeStats(recipe, ingredients, {id: `recipe-stats`, swap: false}).render()}

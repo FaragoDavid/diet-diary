@@ -21,7 +21,7 @@ const layout = async (body: BaseComponent) => {
       </head>
 
       <body hx-boost="true">
-          <div class="flex flex-col items-center h-full">${await body.render()}</div>
+        <div id="layout" class="flex flex-col items-center h-full">${await body.render()}</div>
       </body>
     </html>`;
 };

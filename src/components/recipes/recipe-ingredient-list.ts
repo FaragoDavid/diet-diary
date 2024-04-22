@@ -38,17 +38,23 @@ export class RecipeIngredientList implements BaseComponent {
   }
 
   async render() {
-    const ingredientComponents: string[] = [];
+    const recipeIngredientComponents: string[] = [];
     for (const ingredient of this.recipe.ingredients) {
-      ingredientComponents.push(await new RecipeIngredient(ingredient, this.recipe.id, this.ingredients).render());
+      recipeIngredientComponents.push(await new RecipeIngredient(ingredient, this.recipe.id, this.ingredients).render());
     }
 
     return `
-      <form id="recipe-ingredient-list" class="grid grid-cols-max-3 grid-row-flex gap-2">
-        ${ingredientComponents.join('<div class="divider col-span-3 my-0" ></div>')}
-        <div class="divider col-span-3 my-0" ></div>
-        ${this.addIngredient()}
-      </form>
+      <div id="recipe-ingredient-list-container">
+        <div class="text text-center">
+          Alapanyagok
+        </div>
+        <div class="divider" ></div>
+        <div id="recipe-ingredient-list" class="grid grid-cols-max-3 grid-row-flex gap-2">
+          ${recipeIngredientComponents.join('<div class="divider col-span-3 my-0" ></div>')}
+          <div class="divider col-span-3 my-0" ></div>
+          ${this.addIngredient()}
+        </div>
+      </div>
     `;
   }
 }

@@ -19,7 +19,7 @@ export type RecipeWithIngredientName = Omit<Recipe, 'ingredients'> & {
 const recipes: Recipe[] = ((count: number) => {
   const result: Recipe[] = [];
   for (let i = 1; i <= count; i++) {
-    const ingredientCount = Math.floor(Math.random() * 3);
+    const ingredientCount = Math.floor(Math.random() * 3) + 1;
     const recipeIngredients: Set<RecipeIngredient> = new Set();
     for (let j = 0; j < ingredientCount; j++) {
       const ingredient = ingredients[Math.floor(Math.random() * ingredients.length)]!;

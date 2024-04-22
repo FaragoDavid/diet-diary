@@ -1,89 +1,32 @@
 import { BackLink } from '../components/back-link.js';
-import { newRecipeHeader } from '../components/recipes/recipe-header.js';
+import { RecipeDetails } from '../components/recipes/recipe-details.js';
+import { newRecipeHeader, recipeHeader } from '../components/recipes/recipe-header.js';
 import { RecipeIngredientList } from '../components/recipes/recipe-ingredient-list.js';
-import { stats } from '../components/stats.js';
 import { Ingredient } from '../repository/ingredient.js';
 import { RecipeWithIngredientName } from '../repository/recipe.js';
 
+export const RECIPE_PAGE_ID = 'recipe-page';
 export class NewRecipePage implements BaseComponent {
   async render() {
     return `
-      <div id="recipe">
-        ${await new BackLink().render()}
-        <div class="container py-6">
-          <div id="recipe-container" class="flex flex-col justify-center items-center gap-4">
-            ${newRecipeHeader()}        
-          </div>
-        </div>
+      ${await new BackLink().render()}
+      <div id="${RECIPE_PAGE_ID}" class="flex flex-col place-items-center gap-y-6 w-full pt-6">
+        ${newRecipeHeader()}
       </div>
     `;
   }
 }
 
 export class RecipePage implements BaseComponent {
-  recipeAmount: number;
-  constructor(private recipe: RecipeWithIngredientName, private ingredients: Ingredient[]) {
-    this.recipeAmount = this.recipe.amount || this.recipe.ingredients.reduce((acc, ingredient) => acc + ingredient.amount, 0);
-  }
-
-  header = () => `<div class="text-center text-3xl font-medium">${this.recipe.name}</div>`;
-
-  amount = () => `
-    <div class="flex flex-col justify-center items-center gap-y-1">
-      <div class="text text-center text-sm italic">Menny.</div>
-      <div class="flex justify-center items-center">
-        <input 
-          type="number"
-          name="amount"
-          class="input input-sm input-bordered w-16 pr-5 text-right" 
-          value="${this.recipeAmount}"
-          hx-post="/recipe/${this.recipe.id}/amount"
-          hx-target="#recipe"
-          hx-swap="outerHTML"
-        >
-          <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>
-        </input>
-      </div>
-    </div>
-  `;
-
-  recipeStats = async () => {
-    const { recipeCalories, recipeCH, recipeFat } = this.recipe.ingredients.reduce(
-      (acc, ingredient) => {
-        const fullIngredient = this.ingredients.find(({ id }) => id === ingredient.id);
-        if (!fullIngredient) return acc;
-
-        return {
-          recipeCalories: acc.recipeCalories + fullIngredient.calories * ingredient.amount,
-          recipeCH: acc.recipeCH + fullIngredient.carbs * ingredient.amount,
-          recipeFat: acc.recipeFat + fullIngredient.fat * ingredient.amount,
-        };
-      },
-      { recipeCalories: 0, recipeCH: 0, recipeFat: 0 },
-    );
-
-    return stats(
-      { cal: recipeCalories, carbs: recipeCH, fat: recipeFat },
-      { id: `recipe-${this.recipe.id}-stats`, orientation: 'vertical', size: 'lg' },
-    );
-  };
+  constructor(private recipe: RecipeWithIngredientName, private ingredients: Ingredient[]) {}
 
   async render() {
     return `
         ${await new BackLink().render()}
-        <div id="recipe" >
-          <div class="flex flex-col place-items-center gap-y-4">
-            ${this.header()}
-            <div class="flex justify-center items-center">
-              ${this.amount()}
-              <div class="divider divider-horizontal" ></div> 
-              ${await this.recipeStats()}
-            </div>
-            <div class="text text-center">
-              Alapanyagok
-            </div>
-            ${await new RecipeIngredientList(this.recipe, this.ingredients).render()}
-          </div>
+        <div id="${RECIPE_PAGE_ID}" class="flex flex-col place-items-center gap-y-6 w-full pt-6">
+          ${recipeHeader(this.recipe)}
+          ${await new RecipeDetails(this.recipe, this.ingredients).render()}
+          ${await new RecipeIngredientList(this.recipe, this.ingredients).render()}
         </div>
     `;
   }
