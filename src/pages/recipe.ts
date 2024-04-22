@@ -25,7 +25,7 @@ export class RecipePage implements BaseComponent {
         ${await new BackLink().render()}
         <div id="${RECIPE_PAGE_ID}" class="flex flex-col place-items-center w-full pt-6">
           ${recipeHeader(this.recipe)}
-          ${await new RecipeDetails(this.recipe, this.ingredients).render()}
+          ${await new RecipeDetails(this.recipe, this.ingredients, { swap: false}).render()}
           ${await new RecipeIngredientList(this.recipe, this.ingredients).render()}
         </div>
     `;

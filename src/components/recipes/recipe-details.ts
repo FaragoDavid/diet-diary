@@ -4,8 +4,10 @@ import { stats } from '../stats.js';
 
 export class RecipeDetails implements BaseComponent {
   recipeAmount: number;
-  constructor(private recipe: RecipeWithIngredientName, private ingredients: Ingredient[]) {
+  swap: boolean;
+  constructor(private recipe: RecipeWithIngredientName, private ingredients: Ingredient[], options: { swap: boolean }) {
     this.recipeAmount = this.recipe.amount || this.recipe.ingredients.reduce((acc, ingredient) => acc + ingredient.amount, 0);
+    this.swap = options.swap;
   }
 
   amount = () => `
@@ -50,7 +52,11 @@ export class RecipeDetails implements BaseComponent {
 
   async render() {
     return `
-      <div id="recipe-details" class="grid grid-rows-max-1 grid-flow-col gap-3">
+      <div 
+        id="recipe-details" 
+        class="grid grid-rows-max-1 grid-flow-col gap-3"
+        ${this.swap ? 'hx-swap-oob="true"' : ''}
+      >
         ${this.amount()}
         <div class="divider divider-horizontal" ></div> 
         ${await this.recipeStats()}

@@ -8,7 +8,7 @@ export function amount(options: {
   amount?: number;
   name?: string;
   showText?: boolean;
-  hx?: { verb: 'get' | 'post'; url: string; target?: string; swap?: HxSwap };
+  hx?: { verb: 'get' | 'post'; url: string; target?: string; swap?: HxSwap, include?: string };
 }) {
   const { amount, name, showText, hx } = options;
   return `
@@ -23,6 +23,7 @@ export function amount(options: {
           ${!amount ? 'placeholder="0"' : ''}
           ${hx ? `hx-${hx.verb}="${hx.url}"` : ''}
           ${hx?.target ? `hx-target="${hx.target}"` : ''}
+          ${hx?.include ? `hx-include="${hx.include}"` : ''}
           ${hx?.swap ? `hx-swap="${hx.swap}"` : ''}
         >
           <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>

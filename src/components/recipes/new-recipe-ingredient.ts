@@ -5,51 +5,49 @@ import { RECIPE_INGREDIENT_LIST_ID } from './recipe-ingredient-list.js';
 
 const texts = {
   newIngredient: 'Új hozzávaló hozzáadása',
+  ingredientSelectorEmptyOption: 'Válassz',
 };
 
 export class NewRecipeIngredient implements BaseComponent {
-  constructor(private recipe: RecipeWithIngredientName, private ingredients: Ingredient[]) {}
+  swap: boolean;
+  constructor(private recipe: RecipeWithIngredientName, private ingredients: Ingredient[], options: { swap: boolean }) {
+    this.swap = options.swap;
+  }
 
   ingredientSelector() {
     const unusedIngredients = this.ingredients.filter(({ id }) => !this.recipe.ingredients.some((ingredient) => ingredient.id === id));
 
     return `
       <div class="flex justify-center">
-        <select name="newIngredient" class="select select-bordered select-sm">
+        <select name="ingredientId" class="select select-bordered select-sm">
+          <option disabled selected>${texts.ingredientSelectorEmptyOption}</option>
           ${unusedIngredients.map(({ id, name }) => `<option value="${id}" >${name}</option>`).join('')}
         </select>
-      </div>
-    `;
-  }
-   
-  newIngredientAmount() {
-    return `
-      <div class="flex justify-center items-center">
-        <input 
-          type="number"
-          name="newIngredient"
-          class="input input-sm input-bordered w-16 pr-5 text-right placeholder:text-neutral peer" 
-          placeholder="0"
-          hx-post="/recipe/${this.recipe.id}/ingredient"
-          hx-target="#recipe"
-          hx-swap="outerHTML"
-        >
-          <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>
-        </input>
       </div>
     `;
   }
 
   async render() {
     return `
-      <div class="flex flex-col items-center justify-center gap-4">
-      <div class="text">${texts.newIngredient}</div>
-      <div class="flex items-center justify-center gap-4">
-        ${this.ingredientSelector()}
-        ${amount({
-          name: 'newIngredient',
-          hx: { verb: 'post', url: `/recipe/${this.recipe.id}/ingredient`, target: `#${RECIPE_INGREDIENT_LIST_ID}`, swap: 'outerHTML' },
-        })}
+      <div 
+        id="new-recipe-ingredient" 
+        class="flex flex-col items-center justify-center gap-4"
+        ${this.swap ? 'hx-swap-oob="true"' : ''}
+      >
+        <div class="text">${texts.newIngredient}</div>
+        <div id="hm" class="flex items-center justify-center gap-4">
+          ${this.ingredientSelector()}
+          ${amount({
+            name: 'amount',
+            hx: {
+              verb: 'post',
+              url: `/recipe/${this.recipe.id}/ingredient`,
+              target: `#${RECIPE_INGREDIENT_LIST_ID}`,
+              swap: 'beforeend',
+              include: '[name=ingredientId]',
+            },
+          })}
+        </div>
       </div>
     `;
   }
