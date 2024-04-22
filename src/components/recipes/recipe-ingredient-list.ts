@@ -21,7 +21,7 @@ export class RecipeIngredientList implements BaseComponent {
       <div class="divider px-4" ></div>
       <div id="recipe-ingredient-list-container">
         <div class="text-lg text-center pb-4">${texts.ingredientsHeader}</div>
-        <div id="${RECIPE_INGREDIENT_LIST_ID}" class="grid grid-cols-max-3 grid-row-flex gap-2">
+        <div id="${RECIPE_INGREDIENT_LIST_ID}" class="grid grid-cols-max-3 grid-row-flex gap-2 pb-4">
           ${recipeIngredientComponents.join('<div class="divider col-span-3 my-0" ></div>')}
         </div>
         ${await new NewRecipeIngredient(this.recipe, this.ingredients, { swap: false}).render()}
