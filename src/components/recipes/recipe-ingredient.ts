@@ -2,6 +2,7 @@ import { Ingredient } from '../../repository/ingredient.js';
 import { RecipeIngredientWithName } from '../../repository/recipe.js';
 import { stats } from '../stats.js';
 import icons from '../../utils/icons.js';
+import { amount } from '../amount.js';
 
 export class RecipeIngredient implements BaseComponent {
   ingredientCals: number;
@@ -29,23 +30,6 @@ export class RecipeIngredient implements BaseComponent {
       </div>`;
   }
 
-  ingredientAmount() {
-    return `
-    <div class="flex justify-center items-center">
-      <input 
-        type="number"
-        name="${this.ingredient.id}" 
-        class="input input-sm input-bordered w-16 pr-5 text-right" 
-        value="${this.ingredient.amount}"
-        hx-post="/recipe/${this.recipeId}/ingredient/${this.ingredient.id}"
-        hx-target="#recipe"
-        hx-swap="outerHTML"
-      >
-        <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>
-      </input>
-    </div>`;
-  }
-
   deleteIngredient() {
     return `
     <div class="flex justify-center items-center row-span-2">
@@ -63,7 +47,14 @@ export class RecipeIngredient implements BaseComponent {
   async render() {
     return `
       ${this.ingredientName()}
-      ${this.ingredientAmount()}
+      ${amount({
+        amount: this.ingredient.amount,
+        name: 'amount',
+        hx: {
+          verb: 'post',
+          url: `/recipe/${this.recipeId}/ingredient/${this.ingredient.id}`,
+        },
+      })}
       ${this.deleteIngredient()}
       ${stats(
         { cal: this.ingredientCals, carbs: this.ingredientCarbs, fat: this.ingredientFat },

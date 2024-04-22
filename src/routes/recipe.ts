@@ -19,11 +19,8 @@ type PostRecipeRequest = FastifyRequest<{
   Params: { recipeId: string };
   Body: { amount: string; ingredientId: string } & Record<string, string>;
 }>;
-type UpdateRecipeIngredientRequest = FastifyRequest<{
-  Params: { recipeId: string; ingredientId: string };
-  Body: { newIngredient: string[] } & Record<string, string>;
-}>;
-type DeleteRecipeIngredientRequest = UpdateRecipeIngredientRequest;
+type UpdateRecipeIngredientRequest = FastifyRequest<{ Params: { recipeId: string; ingredientId: string }; Body: { amount: string } }>;
+type DeleteRecipeIngredientRequest = FastifyRequest<{ Params: { recipeId: string; ingredientId: string } }>;
 type UpdateRecipeAmountRequest = FastifyRequest<{ Params: { recipeId: string }; Body: { amount: string; query: string } }>;
 type CreateRecipeRequest = FastifyRequest<{ Body: { recipeName: string } }>;
 
@@ -81,18 +78,14 @@ export const addRecipeIngredient = async (request: PostRecipeRequest, reply: Fas
 
 export const updateRecipeIngredientAmount = async (request: UpdateRecipeIngredientRequest, reply: FastifyReply) => {
   const { recipeId, ingredientId } = request.params;
+  const { amount } = request.body;
 
-  const recipe = await recipeRepository.selectRecipe(recipeId);
-  if (!recipe) throw new Error('Recipe not found');
+  const recipe = await recipeRepository.updateRecipeIngredientAmount(recipeId, ingredientId, Number(amount));
+  const ingredients = await selectIngredients();
 
-  const ingredient = recipe.ingredients.find((ingredient) => ingredient.id === ingredientId);
-  if (!ingredient) throw new Error('Ingredient not found in recipe');
+  const template = await new RecipeDetails(recipe, ingredients, { swap: true }).render();
 
-  await recipeRepository.updateRecipeIngredientAmount(recipeId, ingredientId, Number(request.body[ingredientId]));
-
-  // const template = await layout(new RecipePage(recipeId));
-  // return reply.type('text/html').send(template);
-  throw new Error('Not implemented');
+  return reply.type('text/html').send(template);
 };
 
 export const deleteRecipeIngredient = async (request: DeleteRecipeIngredientRequest, reply: FastifyReply) => {

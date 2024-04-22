@@ -91,15 +91,20 @@ export async function insertRecipeIngredient(recipeId: string, id: string, amoun
   };
 }
 
-export async function updateRecipeIngredientAmount(recipeId: string, ingredientId: string, amount: number) {
+export async function updateRecipeIngredientAmount(recipeId: string, ingredientId: string, amount: number): Promise<RecipeWithIngredientName> {
   const recipe = recipes.find((recipe) => recipe.id === recipeId);
-  if (!recipe) return;
+  if (!recipe) throw new Error('Recipe not found');
+
+  const ingredient = recipe.ingredients.find((ingredient) => ingredient.id === ingredientId);
+  if (!ingredient) throw new Error('Ingredient not found in recipe');
 
   recipe.ingredients.forEach((ingredient) => {
     if (ingredient.id === ingredientId) {
       ingredient.amount = amount;
     }
   });
+  
+  return extendRecipeWithIngredientName(recipe);
 }
 
 export async function deleteRecipeIngredient(recipeId: string, ingredientId: string) {
