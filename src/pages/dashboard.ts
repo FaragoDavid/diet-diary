@@ -1,7 +1,7 @@
+import { IngredientTab } from '../components/ingredients/ingredient-tab.js';
 import { TAB_NAME, tabList } from '../components/tab-list.js';
 import config from '../config.js';
 import { Ingredient } from '../repository/ingredient.js';
-import { RecipeTab } from '../components/recipes/recipe-tab.js';
 import { RecipeWithIngredientName } from '../repository/recipe.js';
 
 export class Dashboard implements BaseComponent {
@@ -14,13 +14,12 @@ export class Dashboard implements BaseComponent {
           <div class="text-center text-3xl font-medium py-2">
             ${config.texts.titles.page}
           </div>
-          ${tabList(TAB_NAME.recipes, false)}
+          ${tabList(TAB_NAME.ingredients, false)}
           <div id="tab-container">
-            ${await new RecipeTab(this.recipes, this.ingredients).render()}
+            ${await new IngredientTab(this.ingredients).render()}
           </div>
         </div>
       </div>
     `;
   }
 }
-// ${await new DaySearch(this.ingredients).render()}

@@ -1,35 +1,78 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { Ingredients } from '../components/ingredients/index.js';
-import { IngredientList } from '../components/ingredients/list.js';
+import { IngredientList } from '../components/ingredients/ingredient-list.js';
+import { IngredientTab } from '../components/ingredients/ingredient-tab.js';
 import { layout } from '../components/layout.js';
 import { TAB_NAME, tabList } from '../components/tab-list.js';
-import { insertIngredient } from '../repository/ingredient.js';
+import { IngredientPage, NewIngredientPage } from '../pages/ingredient.js';
+import * as ingredientRepository from '../repository/ingredient.js';
+import { ingredientHeader } from '../components/ingredients/ingredient-header.js';
 
 type GetIngredientsRequest = FastifyRequest<{ Querystring: { query: string } }>;
-type PostIngredientsRequest = FastifyRequest<{ Body: { name: string; calories: string; carbs: string } }>;
+type CreateIngredientRequest = FastifyRequest<{ Body: { ingredientName: string } }>;
+type GetIngredientRequest = FastifyRequest<{ Params: { ingredientId: string } }>;
+type DeleteIngredientRequest = FastifyRequest<{ Params: { ingredientId: string }; Body: { query: string } }>;
 
 export const displayIngredientsTab = async (_: FastifyRequest, reply: FastifyReply) => {
+  const ingredients = await ingredientRepository.selectIngredients();
+
   const template = `
     ${tabList(TAB_NAME.ingredients, true)}
-    ${await new Ingredients().render()}
+    ${await new IngredientTab(ingredients).render()}
   `;
 
   return reply.type('text/html').send(template);
 };
 
-export const getIngredient = async (request: GetIngredientsRequest, reply: FastifyReply) => {
-  const query = request.query.query;
+export const getIngredients = async (request: GetIngredientsRequest, reply: FastifyReply) => {
+  const { query } = request.query;
 
-  const template = await new IngredientList(query).render();
+  const ingredients = await ingredientRepository.selectIngredients(query);
+
+  const template = await new IngredientList(ingredients, { swap: false }).render();
+
   return reply.type('text/html').send(template);
 };
 
-export const addIngr = async (request: PostIngredientsRequest, reply: FastifyReply) => {
-  const { name, calories, carbs } = request.body;
+export const newIngredient = async (_: FastifyRequest, reply: FastifyReply) => {
+  const template = await layout(new NewIngredientPage());
 
-  if (name) await insertIngredient(name, calories, carbs);
+  return reply.type('text/html').send(template);
+};
 
-  const template = await new IngredientList(name).render();
+export const createIngredient = async (request: CreateIngredientRequest, reply: FastifyReply) => {
+  const { ingredientName } = request.body;
+
+  const ingredient = await ingredientRepository.insertIngredient(ingredientName);
+
+  const template = `
+    ${ingredientHeader(ingredient)}
+  `;
+
+  return reply.type('text/html').header('HX-Push-Url', `/recipe/${ingredient.id}`).send(template);
+};
+
+export const getIngredient = async (request: GetIngredientRequest, reply: FastifyReply) => {
+  const { ingredientId } = request.params;
+
+  const ingredient = await ingredientRepository.selectIngredient(ingredientId);
+
+  const template = await layout(new IngredientPage(ingredient));
+
+  return reply.type('text/html').send(template);
+};
+
+export const deleteIngredient = async (request: DeleteIngredientRequest, reply: FastifyReply) => {
+  const { ingredientId } = request.params;
+  const { query } = request.body;
+
+  await ingredientRepository.deleteIngredient(ingredientId);
+  let ingredients = await ingredientRepository.selectIngredients(query);
+  if (ingredients.length === 0) {
+    ingredients = await ingredientRepository.selectIngredients('');
+  }
+
+  const template = await new IngredientList(ingredients, { swap: true }).render();
+
   return reply.type('text/html').send(template);
 };

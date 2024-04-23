@@ -1,3 +1,4 @@
+import { RecipeWithIngredientName } from "../../repository/recipe.js";
 import { RECIPE_PAGE_ID } from "../../pages/recipe.js";
 
 const texts = {
@@ -21,7 +22,7 @@ export function newRecipeHeader() {
   `;
 }
 
-export function recipeHeader(recipe) {
+export function recipeHeader(recipe: RecipeWithIngredientName) {
   return `
 		<div 
 			id="${ID}"

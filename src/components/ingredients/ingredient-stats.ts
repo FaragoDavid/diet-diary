@@ -2,7 +2,7 @@ import { Ingredient } from '../../repository/ingredient.js';
 import { Recipe } from '../../repository/recipe.js';
 import { stats } from '../stats.js';
 
-export class RecipeStats implements BaseComponent {
+export class IngredientStats implements BaseComponent {
   constructor(
     private recipe: Recipe,
     private ingredients: Ingredient[],
@@ -27,7 +27,7 @@ export class RecipeStats implements BaseComponent {
 
     return stats(
       { cal: recipeCalories, carbs: recipeCH, fat: recipeFat },
-      { id: `recipe${this.recipe.id}-stats`, layout: 'horizontal', size: 'sm', span: 'col-span-2', swap: this.options.swap },
+      { id: `recipe${this.recipe.id}-stats`, layout: 'cells', size: 'sm', span: 'col-span-2', swap: this.options.swap },
     );
   }
 }

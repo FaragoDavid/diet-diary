@@ -35,7 +35,7 @@ export class DayStats implements BaseComponent {
       { cal: dayCals, carbs: dayCarbs, fat: dayFat },
       {
         id: `day-${dateToParam(this.day.date)}-stats`,
-        orientation: 'vertical',
+        layout: 'vertical',
         size: 'sm',
         span: this.span,
         swap: this.swap,

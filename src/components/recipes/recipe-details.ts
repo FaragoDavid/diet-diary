@@ -28,7 +28,7 @@ export class RecipeDetails implements BaseComponent {
 
     return stats(
       { cal: recipeCalories, carbs: recipeCH, fat: recipeFat },
-      { id: `recipe-${this.recipe.id}-stats`, orientation: 'vertical', size: 'lg' },
+      { id: `recipe-${this.recipe.id}-stats`, layout: 'vertical', size: 'lg' },
     );
   };
 

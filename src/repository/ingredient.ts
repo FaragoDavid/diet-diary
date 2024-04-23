@@ -35,7 +35,24 @@ export async function selectIngredients(query: string = ''): Promise<Ingredient[
     }));
 }
 
-export async function insertIngredient(name: string, calories: string, carbs: string) {
-  const id = String(Math.max(...ingredients.map((ingr) => Number(ingr.id))) + 1);
-  ingredients.push({ id, name, calories: parseInt(calories), carbs: parseInt(carbs), fat: 0 });
+export async function selectIngredient(id: string): Promise<Ingredient> {
+  const ingredient =  ingredients.find((ingredient) => ingredient.id === id);
+  if(!ingredient) throw new Error('Ingredient not found');
+
+  return ingredient;
 }
+
+export async function insertIngredient(name: string): Promise<Ingredient> {
+  const newIngredient = { id: uuid(), name, calories: 0, carbs: 0, fat: 0 };
+  ingredients.push(newIngredient);
+
+  return newIngredient;
+}
+
+export async function deleteIngredient(id: string): Promise<void> {
+  const index = ingredients.findIndex((ingredient) => ingredient.id === id);
+  if(index === -1) throw new Error('Ingredient not found');
+  
+  ingredients.splice(index, 1);
+}
+

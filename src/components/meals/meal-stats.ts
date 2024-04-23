@@ -25,7 +25,7 @@ export class MealStats implements BaseComponent {
       { cal: mealCals, carbs: mealCH, fat: mealFat },
       {
         id: `${this.meal.type}-stats`,
-        orientation: 'horizontal',
+        layout: 'horizontal',
         size: 'sm',
         span: this.span,
         swap: this.swap,

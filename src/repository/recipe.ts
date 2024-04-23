@@ -68,6 +68,7 @@ export async function selectRecipe(id: string): Promise<RecipeWithIngredientName
 export async function insertRecipe(name: string) {
   const newRecipe: RecipeWithIngredientName = { id: uuid(), name, ingredients: [] };
   recipes.push(newRecipe);
+  
   return newRecipe;
 }
 
