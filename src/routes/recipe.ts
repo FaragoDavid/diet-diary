@@ -26,17 +26,12 @@ type UpdateRecipeAmountRequest = FastifyRequest<{ Params: { recipeId: string }; 
 type CreateRecipeRequest = FastifyRequest<{ Body: { recipeName: string } }>;
 
 export const displayRecipesTab = async (_: FastifyRequest, reply: FastifyReply) => {
-  try {
-    const template = `
+  const template = `
     ${tabList(TAB_NAME.recipes, true)}
     ${await new RecipeTab().render()}
   `;
 
-    return reply.type('text/html').send(template);
-  } catch (e) {
-    console.log(e);
-    throw new Error('Error in displayRecipesTab');
-  }
+  return reply.type('text/html').send(template);
 };
 
 export const getRecipes = async (request: GetRecipesRequest, reply: FastifyReply) => {

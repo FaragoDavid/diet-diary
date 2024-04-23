@@ -2,6 +2,7 @@ import config from '../../config.js';
 import { Ingredient } from '../../repository/ingredient.js';
 import { Meal } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
+import { amount } from '../amount.js';
 import { DishComponent } from './dish.js';
 import { MealStats } from './meal-stats.js';
 
@@ -26,25 +27,6 @@ export class MealComponent implements BaseComponent {
     this.showDishes = options.showDishes;
   }
 
-  newDishAmount() {
-    return `
-    <div class="flex justify-center items-center">
-      <input 
-        type="number"
-				name="amount"
-        class="input input-sm input-bordered w-[4.5rem] pr-5 text-right placeholder:text-neutral peer" 
-        placeholder="0"
-				hx-post="/day/${dateToParam(this.meal.date)}/meal/${this.meal.type}/dish"
-				hx-trigger="change delay:100ms"
-				hx-include="[name=${this.meal.type}-dishId]"
-				hx-target="[name=${this.meal.type}-dishId]"
-				hx-swap="beforebegin"
-      >
-        <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>
-      </input>
-    </div>`;
-  }
-
   newDish() {
     return `
       <select 
@@ -57,7 +39,17 @@ export class MealComponent implements BaseComponent {
           .map(({ id, name }) => `<option value="${id}" >${name}</option>`)
           .join('')}
       </select>
-      ${this.newDishAmount()} 
+      ${amount({
+        name: `amount`,
+        hx: {
+          verb: 'post',
+          url: `/day/${dateToParam(this.meal.date)}/meal/${this.meal.type}/dish`,
+          include: `[name=${this.meal.type}-dishId]`,
+          target: `[name=${this.meal.type}-dishId]`,
+          swap: 'beforebegin',
+          trigger: 'change delay:100ms',
+        },
+      })}
       <div class="col-span-3"></div>
     `;
   }
@@ -65,8 +57,6 @@ export class MealComponent implements BaseComponent {
   async dishes() {
     const dishComponents: string[] = [];
     for (const dish of this.meal.dishes) {
-      console.log({ meal: this.meal.type, dish });
-      
       dishComponents.push(await new DishComponent(dish).render());
     }
 
