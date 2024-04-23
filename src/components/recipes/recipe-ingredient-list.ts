@@ -1,7 +1,7 @@
 import { Ingredient } from '../../repository/ingredient.js';
 import { RecipeWithIngredientName } from '../../repository/recipe.js';
 import { NewRecipeIngredient } from './new-recipe-ingredient.js';
-import { RecipeIngredient } from './recipe-ingredient.js';
+import { RecipeIngredientListItem } from './recipe-ingredient-list-item.js';
 
 export const RECIPE_INGREDIENT_LIST_ID = 'recipe-ingredient-list';
 export const recipeIngredientDivider = '<div class="divider col-span-3 my-0 divider-secondary" ></div>';
@@ -23,7 +23,7 @@ export class RecipeIngredientList implements BaseComponent {
     for (let ingrIndex = 0; ingrIndex < this.recipe.ingredients.length; ingrIndex++) {
       const ingredient = this.recipe.ingredients[ingrIndex]!;
       recipeIngredientComponents.push(
-        await new RecipeIngredient(ingredient, this.recipe.id, this.ingredients, { isFirst: ingrIndex === 0 }).render(),
+        await new RecipeIngredientListItem(ingredient, this.recipe.id, this.ingredients, { isFirst: ingrIndex === 0 }).render(),
       );
     }
 

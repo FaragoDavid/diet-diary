@@ -6,7 +6,7 @@ import { NewRecipeIngredient } from '../components/recipes/new-recipe-ingredient
 import { RecipeDetails } from '../components/recipes/recipe-details.js';
 import { recipeHeader } from '../components/recipes/recipe-header.js';
 import { RecipeIngredientList } from '../components/recipes/recipe-ingredient-list.js';
-import { RecipeIngredient } from '../components/recipes/recipe-ingredient.js';
+import { RecipeIngredientListItem } from '../components/recipes/recipe-ingredient-list-item.js';
 import { RecipeList } from '../components/recipes/recipe-list.js';
 import { RecipeTab } from '../components/recipes/recipe-tab.js';
 import { TAB_NAME, tabList } from '../components/tab-list.js';
@@ -63,7 +63,7 @@ export const addRecipeIngredient = async (request: PostRecipeRequest, reply: Fas
   const recipe = await recipeRepository.selectRecipe(recipeId);
 
   const template = `
-    ${await new RecipeIngredient(ingredient, recipeId, ingredients, {isFirst: recipe.ingredients.length === 1}).render()}
+    ${await new RecipeIngredientListItem(ingredient, recipeId, ingredients, { isFirst: recipe.ingredients.length === 1 }).render()}
     ${await new RecipeDetails(recipe, ingredients, { swap: true }).render()}
     ${await new NewRecipeIngredient(recipe, ingredients, { swap: true }).render()}
   `;
@@ -98,19 +98,13 @@ export const deleteRecipeIngredient = async (request: DeleteRecipeIngredientRequ
   return reply.type('text/html').send(template);
 };
 
-export const updateRecipeAmount = (bodyType: 'list' | 'detail') => {
-  const bodyTypeMap = { list: RecipeList, detail: RecipePage };
-  return async (request: UpdateRecipeAmountRequest, reply: FastifyReply) => {
-    const recipeId = request.params.recipeId;
-    const recipe = await recipeRepository.selectRecipe(recipeId);
-    if (!recipe) throw new Error('Recipe not found');
+export const updateRecipeAmount = async (request: UpdateRecipeAmountRequest, reply: FastifyReply) => {
+  const { recipeId } = request.params;
+  const { amount } = request.body;
 
-    await recipeRepository.updateRecipeAmount(recipeId, Number(request.body.amount));
+  await recipeRepository.updateRecipeAmount(recipeId, Number(amount));
 
-    // const template = await layout(new bodyTypeMap[bodyType](request.body.query));
-    // return reply.type('text/html').send(template);
-    throw new Error('Not implemented');
-  };
+  return reply.type('text/html');
 };
 
 export const newRecipe = async (_: FastifyRequest, reply: FastifyReply) => {

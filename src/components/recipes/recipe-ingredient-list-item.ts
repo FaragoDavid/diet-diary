@@ -5,12 +5,17 @@ import { amount } from '../amount.js';
 import { stats } from '../stats.js';
 import { recipeIngredientDivider } from './recipe-ingredient-list.js';
 
-export class RecipeIngredient implements BaseComponent {
+export class RecipeIngredientListItem implements BaseComponent {
   ingredientCals: number;
   ingredientCarbs: number;
   ingredientFat: number;
   isFirst: boolean;
-  constructor(private ingredient: RecipeIngredientWithName, private recipeId: string, private ingredients: Ingredient[], options: {isFirst: boolean}) {
+  constructor(
+    private ingredient: RecipeIngredientWithName,
+    private recipeId: string,
+    private ingredients: Ingredient[],
+    options: { isFirst: boolean },
+  ) {
     const ingredientWithMacros = this.ingredients.find(({ id }) => id === this.ingredient.id);
     if (!ingredientWithMacros) throw new Error('Ingredient not found');
     this.ingredientCals = ingredientWithMacros.calories * this.ingredient.amount;

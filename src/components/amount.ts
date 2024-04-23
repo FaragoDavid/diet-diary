@@ -13,7 +13,7 @@ export function amount(options: {
   const { amount, name, showText, hx } = options;
   return `
     <div class="flex flex-col justify-center items-center gap-y-1">
-      ${showText ? '<div class="text text-center text-sm italic">${texts.amount}</div>' : ''}
+      ${showText ? `<div class="text text-center text-sm italic">${texts.amount}</div>` : ''}
       <div class="flex justify-center items-center">
         <input 
           type="number"

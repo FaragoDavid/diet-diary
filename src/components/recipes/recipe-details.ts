@@ -1,5 +1,6 @@
 import { Ingredient } from '../../repository/ingredient.js';
 import { RecipeWithIngredientName } from '../../repository/recipe.js';
+import { amount } from '../amount.js';
 import { stats } from '../stats.js';
 
 export class RecipeDetails implements BaseComponent {
@@ -9,25 +10,6 @@ export class RecipeDetails implements BaseComponent {
     this.recipeAmount = this.recipe.amount || this.recipe.ingredients.reduce((acc, ingredient) => acc + ingredient.amount, 0);
     this.swap = options.swap;
   }
-
-  amount = () => `
-    <div class="flex flex-col justify-center items-center gap-y-1">
-      <div class="text text-center text-sm italic">Menny.</div>
-      <div class="flex justify-center items-center">
-        <input 
-          type="number"
-          name="amount"
-          class="input input-sm input-bordered w-16 pr-5 text-right" 
-          value="${this.recipeAmount}"
-          hx-post="/recipe/${this.recipe.id}/amount"
-          hx-target="#recipe"
-          hx-swap="outerHTML"
-        >
-          <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>
-        </input>
-      </div>
-    </div>
-  `;
 
   recipeStats = async () => {
     const { recipeCalories, recipeCH, recipeFat } = this.recipe.ingredients.reduce(
@@ -57,7 +39,15 @@ export class RecipeDetails implements BaseComponent {
         class="grid grid-rows-max-1 grid-flow-col gap-3"
         ${this.swap ? 'hx-swap-oob="true"' : ''}
       >
-        ${this.amount()}
+        ${amount({
+          amount: this.recipeAmount,
+          name: 'amount',
+          showText: true,
+          hx: {
+            verb: 'post',
+            url: `/recipe/${this.recipe.id}/amount`,
+          },
+        })}
         <div class="divider divider-horizontal" ></div> 
         ${await this.recipeStats()}
       </div>
