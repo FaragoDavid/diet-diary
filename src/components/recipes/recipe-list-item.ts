@@ -3,6 +3,7 @@ import { Recipe } from '../../repository/recipe.js';
 import icons from '../../utils/icons.js';
 import { amount as amountInput } from '../amount.js';
 import { RecipeStats } from './recipe-stats.js';
+import { RECIPE_SEARCH_ID } from './recipe-tab.js';
 
 export class RecipeListItem implements BaseComponent {
   constructor(private recipe: Recipe, private ingredients: Ingredient[]) {}
@@ -39,6 +40,7 @@ export class RecipeListItem implements BaseComponent {
           hx-delete="/recipe/${this.recipe.id}" 
           hx-target="this"
           hx-swap="outerHTML"
+          hx-vals="js:{query: document.getElementById('${RECIPE_SEARCH_ID}').value}"
         >${icons.delete}</div>
       </div>
     `;

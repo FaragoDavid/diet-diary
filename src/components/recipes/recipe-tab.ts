@@ -1,8 +1,10 @@
-import { RecipeWithIngredientName } from '../../repository/recipe.js';
 import config from '../../config.js';
+import { Ingredient } from '../../repository/ingredient.js';
+import { RecipeWithIngredientName } from '../../repository/recipe.js';
 import icons from '../../utils/icons.js';
 import { RecipeList } from './recipe-list.js';
-import { Ingredient } from '../../repository/ingredient.js';
+
+export const RECIPE_SEARCH_ID = 'search-recipe';
 
 const addRecipe = () => {
   return `
@@ -20,12 +22,12 @@ const searchRecipes = () => `
     ${icons.search}
     <input 
       type="text" 
-      id="search-recipe"
+      id="${RECIPE_SEARCH_ID}"
       placeholder="${config.texts.search}"
       hx-get="/recipes"
       hx-target="#recipe-list"
       hx-trigger="input"
-      hx-vals="js:{query: document.getElementById('search-recipe').value}"
+      hx-vals="js:{query: document.getElementById('${RECIPE_SEARCH_ID}').value}"
       hx-swap="outerHTML"
     ></input>
   </label>

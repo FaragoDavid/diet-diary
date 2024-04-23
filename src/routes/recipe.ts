@@ -16,6 +16,7 @@ import * as recipeRepository from '../repository/recipe.js';
 
 type GetRecipesRequest = FastifyRequest<{ Querystring: { query: string } }>;
 type GetRecipeRequest = FastifyRequest<{ Params: { recipeId: string } }>;
+type DeleteRecipeRequest = FastifyRequest<{ Params: { recipeId: string }; Body: { query: string } }>;
 type PostRecipeRequest = FastifyRequest<{
   Params: { recipeId: string };
   Body: { amount: string; ingredientId: string } & Record<string, string>;
@@ -57,11 +58,15 @@ export const getRecipe = async (request: GetRecipeRequest, reply: FastifyReply) 
   return reply.type('text/html').send(template);
 };
 
-export const deleteRecipe = async (request: GetRecipeRequest, reply: FastifyReply) => {
+export const deleteRecipe = async (request: DeleteRecipeRequest, reply: FastifyReply) => {
   const { recipeId } = request.params;
+  const { query } = request.body;
 
   await recipeRepository.deleteRecipe(recipeId);
-  const recipes = await recipeRepository.selectRecipes('');
+  let recipes = await recipeRepository.selectRecipes(query);
+  if(recipes.length === 0) {
+    recipes = await recipeRepository.selectRecipes('');
+  }
   const ingredients = await selectIngredients();
 
   const template = await new RecipeList(recipes, ingredients, { swap: true }).render();
