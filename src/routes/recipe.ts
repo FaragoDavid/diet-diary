@@ -1,17 +1,18 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { layout } from '../components/layout.js';
+import { IngredientSelector } from '../components/recipes/ingredient-selector.js';
+import { NewRecipeIngredient } from '../components/recipes/new-recipe-ingredient.js';
+import { RecipeDetails } from '../components/recipes/recipe-details.js';
 import { recipeHeader } from '../components/recipes/recipe-header.js';
+import { RecipeIngredientList } from '../components/recipes/recipe-ingredient-list.js';
+import { RecipeIngredient } from '../components/recipes/recipe-ingredient.js';
 import { RecipeList } from '../components/recipes/recipe-list.js';
 import { RecipeTab } from '../components/recipes/recipe-tab.js';
 import { TAB_NAME, tabList } from '../components/tab-list.js';
 import { NewRecipePage, RecipePage } from '../pages/recipe.js';
 import { selectIngredients } from '../repository/ingredient.js';
 import * as recipeRepository from '../repository/recipe.js';
-import { RecipeIngredientList } from '../components/recipes/recipe-ingredient-list.js';
-import { RecipeDetails } from '../components/recipes/recipe-details.js';
-import { RecipeIngredient } from '../components/recipes/recipe-ingredient.js';
-import { NewRecipeIngredient } from '../components/recipes/new-recipe-ingredient.js';
 
 type GetRecipesRequest = FastifyRequest<{ Querystring: { query: string } }>;
 type GetRecipeRequest = FastifyRequest<{ Params: { recipeId: string } }>;
@@ -67,8 +68,7 @@ export const addRecipeIngredient = async (request: PostRecipeRequest, reply: Fas
   const recipe = await recipeRepository.selectRecipe(recipeId);
 
   const template = `
-    <div class="divider col-span-3 my-0" ></div>
-    ${await new RecipeIngredient(ingredient, recipeId, ingredients).render()}
+    ${await new RecipeIngredient(ingredient, recipeId, ingredients, {isFirst: recipe.ingredients.length === 1}).render()}
     ${await new RecipeDetails(recipe, ingredients, { swap: true }).render()}
     ${await new NewRecipeIngredient(recipe, ingredients, { swap: true }).render()}
   `;
@@ -91,17 +91,16 @@ export const updateRecipeIngredientAmount = async (request: UpdateRecipeIngredie
 export const deleteRecipeIngredient = async (request: DeleteRecipeIngredientRequest, reply: FastifyReply) => {
   const { recipeId, ingredientId } = request.params;
 
-  const recipe = await recipeRepository.selectRecipe(recipeId);
-  if (!recipe) throw new Error('Recipe not found');
+  const recipe = await recipeRepository.deleteRecipeIngredient(recipeId, ingredientId);
+  const ingredients = await selectIngredients();
 
-  const ingredient = recipe.ingredients.find((ingredient) => ingredient.id === ingredientId);
-  if (!ingredient) throw new Error('Ingredient not found in recipe');
+  const template = `
+    ${await new RecipeIngredientList(recipe, ingredients, { layout: 'list', swap: true }).render()}
+    ${await new RecipeDetails(recipe, ingredients, { swap: true }).render()}
+    ${await new IngredientSelector(recipe.ingredients, ingredients, { swap: true }).render()}
+  `;
 
-  await recipeRepository.deleteRecipeIngredient(recipeId, ingredientId);
-
-  // const template = await layout(new RecipePage(recipeId));
-  // return reply.type('text/html').send(template);
-  throw new Error('Not implemented');
+  return reply.type('text/html').send(template);
 };
 
 export const updateRecipeAmount = (bodyType: 'list' | 'detail') => {
@@ -134,7 +133,7 @@ export const createRecipe = async (request: CreateRecipeRequest, reply: FastifyR
   const template = `
     ${recipeHeader(recipe)}
     ${await new RecipeDetails(recipe, ingredients, { swap: false }).render()}
-    ${await new RecipeIngredientList(recipe, ingredients).render()}
+    ${await new RecipeIngredientList(recipe, ingredients, { layout: 'container', swap: false }).render()}
   `;
   return reply.type('text/html').header('HX-Push-Url', `/recipe/${recipe.id}`).send(template);
 };

@@ -107,11 +107,16 @@ export async function updateRecipeIngredientAmount(recipeId: string, ingredientI
   return extendRecipeWithIngredientName(recipe);
 }
 
-export async function deleteRecipeIngredient(recipeId: string, ingredientId: string) {
+export async function deleteRecipeIngredient(recipeId: string, ingredientId: string): Promise<RecipeWithIngredientName> {
   const recipe = recipes.find((recipe) => recipe.id === recipeId);
   if (!recipe) throw new Error('Recipe not found');
 
+  const recipeIngredient = recipe.ingredients.find((ingredient) => ingredient.id === ingredientId);
+  if (!recipeIngredient) throw new Error('Ingredient not found in recipe');
+
   recipe.ingredients = recipe.ingredients.filter((ingredient) => ingredient.id !== ingredientId);
+
+  return extendRecipeWithIngredientName(recipe);
 }
 
 export async function updateRecipeAmount(recipeId: string, amount: number) {

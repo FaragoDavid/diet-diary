@@ -51,7 +51,7 @@ export class Ingredients implements BaseComponent {
     return `  
       <div class="flex flex-col justify-center items-center space-y-4">
         ${newIngredient()}
-        <div class="divider divider-base-200"></div>
+        <div class="divider"></div>
         ${searchIngredients()}
         <div id="ingredient-list"></div>
       </div>
