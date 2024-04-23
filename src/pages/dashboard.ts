@@ -1,11 +1,11 @@
 import { TAB_NAME, tabList } from '../components/tab-list.js';
-import { DaySearch } from '../components/meals/day-search.js';
 import config from '../config.js';
 import { Ingredient } from '../repository/ingredient.js';
 import { RecipeTab } from '../components/recipes/recipe-tab.js';
+import { RecipeWithIngredientName } from '../repository/recipe.js';
 
 export class Dashboard implements BaseComponent {
-  constructor(private ingredients: Ingredient[]) {}
+  constructor(private recipes: RecipeWithIngredientName[], private ingredients: Ingredient[]) {}
 
   async render() {
     return `
@@ -16,7 +16,7 @@ export class Dashboard implements BaseComponent {
           </div>
           ${tabList(TAB_NAME.recipes, false)}
           <div id="tab-container">
-            ${await new RecipeTab().render()}
+            ${await new RecipeTab(this.recipes, this.ingredients).render()}
           </div>
         </div>
       </div>

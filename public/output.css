@@ -2158,6 +2158,10 @@ input.tab:checked + .tab-content,
   grid-template-columns: max-content max-content max-content max-content max-content;
 }
 
+.grid-cols-max-4 {
+  grid-template-columns: max-content max-content max-content max-content;
+}
+
 .grid-rows-1 {
   grid-template-rows: repeat(1, minmax(0, 1fr));
 }

@@ -25,8 +25,21 @@ export class RecipeListItem implements BaseComponent {
       <div class="flex justify-center items-center row-span-2">
         <a 
           href="/recipe/${this.recipe.id}" 
-          class="btn btn-sm btn-primary"
+          class="btn btn-sm btn-secondary"
         >${icons.edit}</a>
+      </div>
+    `;
+  }
+
+  deleteButton() {
+    return `
+      <div class="flex justify-center items-center row-span-2">
+        <div 
+          class="btn btn-sm"
+          hx-delete="/recipe/${this.recipe.id}" 
+          hx-target="this"
+          hx-swap="outerHTML"
+        >${icons.delete}</div>
       </div>
     `;
   }
@@ -36,6 +49,7 @@ export class RecipeListItem implements BaseComponent {
       ${this.name()}
       ${this.amount()}
       ${this.editButton()}
+      ${this.deleteButton()}
       ${await new RecipeStats(this.recipe, this.ingredients, { id: `recipe-${this.recipe.id}-stats`, swap: false }).render()}
     `;
   }

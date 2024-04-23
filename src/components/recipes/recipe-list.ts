@@ -2,8 +2,13 @@ import { Ingredient } from '../../repository/ingredient.js';
 import { Recipe } from '../../repository/recipe.js';
 import { RecipeListItem } from './recipe-list-item.js';
 
+export const RECIPE_LIST_ID = 'recipe-list';
+
 export class RecipeList implements BaseComponent {
-  constructor(private recipes: Recipe[], private ingredients: Ingredient[]) {}
+  swap: boolean;
+  constructor(private recipes: Recipe[], private ingredients: Ingredient[], options: { swap: boolean}) {
+    this.swap = options.swap;
+  }
 
   async render() {
     let recipeComponents: string[] = [];
@@ -12,7 +17,11 @@ export class RecipeList implements BaseComponent {
     }
 
     return `
-      <div id="recipe-list" class="grid grid-cols-max-3 grid-row-flex gap-2">
+      <div 
+        id="${RECIPE_LIST_ID}" 
+        class="grid grid-cols-max-4 grid-row-flex gap-2"
+        ${this.swap ? 'hx-swap-oob="true"' : ''}
+      >
         ${recipeComponents.join('')}
       </div>
     `;

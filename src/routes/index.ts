@@ -9,6 +9,7 @@ import { addDish, addMeal, createDay, displayMealsTab, getDay, getDays, newDay }
 import {
   addRecipeIngredient,
   createRecipe,
+  deleteRecipe,
   deleteRecipeIngredient,
   displayRecipesTab,
   getRecipe,
@@ -17,6 +18,7 @@ import {
   updateRecipeAmount,
   updateRecipeIngredientAmount,
 } from './recipe.js';
+import { selectRecipes } from '../repository/recipe.js';
 
 const createHandler = (handler: (request: FastifyRequest<any>, reply: FastifyReply) => Promise<void>) => {
   return {
@@ -45,9 +47,10 @@ const registerRoutes = (fastify: FastifyInstance) => {
   fastify.get(
     '/dashboard',
     createHandler(async (_, reply: FastifyReply) => {
+      const recipes = await selectRecipes('');
       const ingredients = await selectIngredients();
 
-      const template = await layout(new Dashboard(ingredients));
+      const template = await layout(new Dashboard(recipes, ingredients));
       return reply.type('text/html').send(template);
     }),
   );
@@ -63,6 +66,7 @@ const registerRoutes = (fastify: FastifyInstance) => {
   fastify.post('/new-recipe', createHandler(createRecipe));
   fastify.get('/recipes', createHandler(getRecipes));
   fastify.get('/recipe/:recipeId', createHandler(getRecipe));
+  fastify.delete('/recipe/:recipeId', createHandler(deleteRecipe));
   fastify.post('/recipe/:recipeId/amount', createHandler(updateRecipeAmount));
   fastify.post('/recipe/:recipeId/ingredient', createHandler(addRecipeIngredient));
   fastify.post('/recipe/:recipeId/ingredient/:ingredientId', createHandler(updateRecipeIngredientAmount));

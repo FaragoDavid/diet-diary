@@ -26,9 +26,12 @@ type UpdateRecipeAmountRequest = FastifyRequest<{ Params: { recipeId: string }; 
 type CreateRecipeRequest = FastifyRequest<{ Body: { recipeName: string } }>;
 
 export const displayRecipesTab = async (_: FastifyRequest, reply: FastifyReply) => {
+  const recipes = await recipeRepository.selectRecipes('');
+  const ingredients = await selectIngredients();
+
   const template = `
     ${tabList(TAB_NAME.recipes, true)}
-    ${await new RecipeTab().render()}
+    ${await new RecipeTab(recipes, ingredients).render()}
   `;
 
   return reply.type('text/html').send(template);
@@ -39,7 +42,7 @@ export const getRecipes = async (request: GetRecipesRequest, reply: FastifyReply
   const recipes = await recipeRepository.selectRecipes(query);
   const ingredients = await selectIngredients();
 
-  const template = await new RecipeList(recipes, ingredients).render();
+  const template = await new RecipeList(recipes, ingredients, { swap: false }).render();
   return reply.type('text/html').send(template);
 };
 
@@ -50,6 +53,18 @@ export const getRecipe = async (request: GetRecipeRequest, reply: FastifyReply) 
   const ingredients = await selectIngredients();
 
   const template = await layout(new RecipePage(recipe, ingredients));
+
+  return reply.type('text/html').send(template);
+};
+
+export const deleteRecipe = async (request: GetRecipeRequest, reply: FastifyReply) => {
+  const { recipeId } = request.params;
+
+  await recipeRepository.deleteRecipe(recipeId);
+  const recipes = await recipeRepository.selectRecipes('');
+  const ingredients = await selectIngredients();
+
+  const template = await new RecipeList(recipes, ingredients, { swap: true }).render();
 
   return reply.type('text/html').send(template);
 };

@@ -33,6 +33,7 @@ const recipes: Recipe[] = ((count: number) => {
       id: uuid(),
       name: `Recipe ${i}`,
       ingredients: Array.from(recipeIngredients),
+      amount: Math.random() > 0.6 ? Math.floor(Math.random() * 99) + 1 : undefined,
     });
   }
   return result;
@@ -72,8 +73,14 @@ export async function insertRecipe(name: string) {
 
 export async function updateRecipe(id: string, ingredients: RecipeIngredient[]) {
   const recipe = recipes.find((recipe) => recipe.id === id);
-  if (!recipe) return;
+  if (!recipe) throw new Error('Recipe not found');
   recipe.ingredients = ingredients;
+}
+
+export async function deleteRecipe(id: string) {
+  const index = recipes.findIndex((recipe) => recipe.id === id);
+  if (index === -1) throw new Error('Recipe not found');
+  recipes.splice(index, 1);
 }
 
 export async function insertRecipeIngredient(recipeId: string, id: string, amount: number): Promise<RecipeIngredientWithName> {

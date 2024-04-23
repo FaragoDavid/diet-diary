@@ -1,5 +1,8 @@
+import { RecipeWithIngredientName } from '../../repository/recipe.js';
 import config from '../../config.js';
 import icons from '../../utils/icons.js';
+import { RecipeList } from './recipe-list.js';
+import { Ingredient } from '../../repository/ingredient.js';
 
 const addRecipe = () => {
   return `
@@ -29,7 +32,7 @@ const searchRecipes = () => `
 `;
 
 export class RecipeTab implements BaseComponent {
-  public title = config.recipes.title;
+  constructor(private recipes: RecipeWithIngredientName[], private ingredients: Ingredient[]) {}
 
   async render() {
     return `
@@ -39,7 +42,7 @@ export class RecipeTab implements BaseComponent {
           <div class="divider divider-horizontal" ></div> 
           ${addRecipe()}
         </div>
-        <div id="recipe-list"></div>
+        ${await new RecipeList(this.recipes, this.ingredients, { swap: false }).render()}
       </div>
     `;
   }
