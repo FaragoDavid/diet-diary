@@ -50,11 +50,12 @@ const registerRoutes = (fastify: FastifyInstance) => {
   fastify.post('/new-ingredient', createHandler(ingredientRoutes.createIngredient));
   fastify.get('/ingredient/:ingredientId', createHandler(ingredientRoutes.getIngredient));
   fastify.delete('/ingredient/:ingredientId', createHandler(ingredientRoutes.deleteIngredient));
+  fastify.post('/ingredient/:ingredientId', createHandler(ingredientRoutes.updateIngredient));
 
   fastify.get('/recipesTab', createHandler(recipeRoutes.displayRecipesTab));
+  fastify.get('/recipes', createHandler(recipeRoutes.getRecipes));
   fastify.get('/new-recipe', createHandler(recipeRoutes.newRecipe));
   fastify.post('/new-recipe', createHandler(recipeRoutes.createRecipe));
-  fastify.get('/recipes', createHandler(recipeRoutes.getRecipes));
   fastify.get('/recipe/:recipeId', createHandler(recipeRoutes.getRecipe));
   fastify.delete('/recipe/:recipeId', createHandler(recipeRoutes.deleteRecipe));
   fastify.post('/recipe/:recipeId/amount', createHandler(recipeRoutes.updateRecipeAmount));

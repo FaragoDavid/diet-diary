@@ -7,11 +7,13 @@ import { TAB_NAME, tabList } from '../components/tab-list.js';
 import { IngredientPage, NewIngredientPage } from '../pages/ingredient.js';
 import * as ingredientRepository from '../repository/ingredient.js';
 import { ingredientHeader } from '../components/ingredients/ingredient-header.js';
+import { IngredientDetails } from '../components/ingredients/ingredient-details.js';
 
 type GetIngredientsRequest = FastifyRequest<{ Querystring: { query: string } }>;
 type CreateIngredientRequest = FastifyRequest<{ Body: { ingredientName: string } }>;
 type GetIngredientRequest = FastifyRequest<{ Params: { ingredientId: string } }>;
 type DeleteIngredientRequest = FastifyRequest<{ Params: { ingredientId: string }; Body: { query: string } }>;
+type UpdateIngredientRequest = FastifyRequest<{ Params: { ingredientId: string }; Body: { calories: string; carbs: string; fat: string } }>;
 
 export const displayIngredientsTab = async (_: FastifyRequest, reply: FastifyReply) => {
   const ingredients = await ingredientRepository.selectIngredients();
@@ -47,6 +49,7 @@ export const createIngredient = async (request: CreateIngredientRequest, reply: 
 
   const template = `
     ${ingredientHeader(ingredient)}
+    ${await new IngredientDetails(ingredient).render()}
   `;
 
   return reply.type('text/html').header('HX-Push-Url', `/recipe/${ingredient.id}`).send(template);
@@ -75,4 +78,17 @@ export const deleteIngredient = async (request: DeleteIngredientRequest, reply: 
   const template = await new IngredientList(ingredients, { swap: true }).render();
 
   return reply.type('text/html').send(template);
+};
+
+export const updateIngredient = async (request: UpdateIngredientRequest, reply: FastifyReply) => {
+  const { ingredientId } = request.params;
+  const { calories, carbs, fat } = request.body;
+
+  await ingredientRepository.updateIngredient(ingredientId, {
+    calories: Number(calories),
+    carbs: Number(carbs),
+    fat: Number(fat),
+  });
+
+  return reply.type('text/html');
 };

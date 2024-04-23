@@ -2148,6 +2148,18 @@ input.tab:checked + .tab-content,
   max-width: 24rem;
 }
 
+.max-w-10 {
+  max-width: 2.5rem;
+}
+
+.max-w-16 {
+  max-width: 4rem;
+}
+
+.max-w-24 {
+  max-width: 6rem;
+}
+
 .flex-1 {
   flex: 1 1 0%;
 }
@@ -2269,6 +2281,10 @@ input.tab:checked + .tab-content,
 
 .overflow-x-auto {
   overflow-x: auto;
+}
+
+.text-wrap {
+  text-wrap: wrap;
 }
 
 .rounded {

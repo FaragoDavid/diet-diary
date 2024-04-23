@@ -52,7 +52,15 @@ export async function insertIngredient(name: string): Promise<Ingredient> {
 export async function deleteIngredient(id: string): Promise<void> {
   const index = ingredients.findIndex((ingredient) => ingredient.id === id);
   if(index === -1) throw new Error('Ingredient not found');
-  
+
   ingredients.splice(index, 1);
 }
 
+export async function updateIngredient(id: string, values: { calories?: number; carbs?: number; fat?: number }): Promise<void> {
+  const ingredient = ingredients.find((ingredient) => ingredient.id === id);
+  if(!ingredient) throw new Error('Ingredient not found');
+
+  if(values.calories) ingredient.calories = values.calories;
+  if(values.carbs) ingredient.carbs = values.carbs;
+  if(values.fat) ingredient.fat = values.fat;
+}

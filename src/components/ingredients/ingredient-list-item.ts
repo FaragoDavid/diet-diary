@@ -7,7 +7,7 @@ export class IngredientListItem {
   constructor(private ingredient: Ingredient) {}
 
   name() {
-    return `<div class="text">${this.ingredient.name}</div>`;
+    return `<div class="text-sm text-wrap max-w-24">${this.ingredient.name}</div>`;
   }
 
   editButton() {
@@ -40,9 +40,9 @@ export class IngredientListItem {
       ${this.name()}
       ${stats(
         {
-          cal: this.ingredient.calories,
-          carbs: this.ingredient.carbs,
-          fat: this.ingredient.fat,
+          cal: this.ingredient.calories * 100,
+          carbs: this.ingredient.carbs * 100,
+          fat: this.ingredient.fat * 100,
         },
         { layout: 'cells', size: 'sm', swap: false },
       )}

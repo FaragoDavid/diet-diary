@@ -1,6 +1,7 @@
 import { Ingredient } from '../repository/ingredient.js';
 import { BackLink } from '../components/back-link.js';
 import { ingredientHeader, newIngredientHeader } from '../components/ingredients/ingredient-header.js';
+import { IngredientDetails } from '../components/ingredients/ingredient-details.js';
 
 export const INGREDIENT_PAGE_ID = 'ingredient-page';
 const texts = {
@@ -27,6 +28,7 @@ export class IngredientPage implements BaseComponent {
         ${await new BackLink().render()}
         <div id="${INGREDIENT_PAGE_ID}" class="flex flex-col place-items-center w-full pt-6">
           ${ingredientHeader(this.ingredient)}
+          ${await new IngredientDetails(this.ingredient).render()}
         </div>
     `;
   }
