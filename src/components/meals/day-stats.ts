@@ -1,6 +1,6 @@
 import { Day } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
-import { stats } from '../stats.js';
+import { StatLayout, stats } from '../stats.js';
 
 enum SPAN {
   NONE = '',
@@ -10,10 +10,12 @@ enum SPAN {
 
 export class DayStats implements BaseComponent {
   static SPAN = SPAN;
-  span: string;
+  layout: StatLayout;
+  span?: string;
   swap: boolean;
 
-  constructor(private day: Day, options: { span: `${SPAN}`; swap: boolean }) {
+  constructor(private day: Day, options: { layout: StatLayout, span?: `${SPAN}`; swap: boolean }) {
+    this.layout = options.layout;
     this.span = options.span;
     this.swap = options.swap;
   }
@@ -36,7 +38,7 @@ export class DayStats implements BaseComponent {
       { cal: dayCals, carbs: dayCarbs, fat: dayFat },
       {
         id: `day-${dateToParam(this.day.date)}-stats`,
-        layout: 'vertical',
+        layout: this.layout,
         size: 'sm',
         span: this.span,
         swap: this.swap,

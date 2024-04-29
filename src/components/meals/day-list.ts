@@ -19,10 +19,10 @@ export class DayList implements BaseComponent {
     return `
       <div 
         id="${DAY_LIST_ID}" 
-        class="grid grid-cols-max-4 grid-row-flex gap-2"
+        class="grid grid-cols-max-3 grid-row-flex gap-2"
         ${this.swap ? 'hx-swap-oob="true"' : ''}
       >
-        ${dayComponents.join('<div class="divider divider-primary col-span-4"></div>')}
+        ${dayComponents.join('')}
       </div>`;
   }
 }

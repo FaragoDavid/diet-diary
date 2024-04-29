@@ -2,7 +2,7 @@ import config, { MealType } from '../../config.js';
 import { Day } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
 
-const ID = 'add-meals';
+const ID = 'missing-meals';
 
 export class MissingMeals implements BaseComponent {
   constructor(private day: Day, private swap = false) {}
@@ -15,7 +15,7 @@ export class MissingMeals implements BaseComponent {
 				value="${value}"
 				class="btn btn-sm btn-secondary"
 				hx-post="/day/${dateToParam(this.day.date)}/meal"
-				hx-target="${this.day.meals.length === 0 ? `#day-container` : '#meals'}"
+				hx-target="${this.day.meals.length === 0 ? `#day-container` : `#day-${dateToParam(this.day.date)}-meal-list`}"
 				hx-swap="beforeend"
 			>
 				${name}

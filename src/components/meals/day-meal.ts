@@ -3,7 +3,8 @@ import { Ingredient } from '../../repository/ingredient.js';
 import { Meal } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
 import { amount } from '../amount.js';
-import { DishComponent } from './dish.js';
+import { StatLayout } from '../stats.js';
+import { DayMealDish } from './day-meal-dish.js';
 import { MealStats } from './meal-stats.js';
 
 enum STATS_SPAN {
@@ -13,25 +14,33 @@ enum STATS_SPAN {
 
 export class DayMeal implements BaseComponent {
   static STATS_SPAN = STATS_SPAN;
-  statsSpan: `${STATS_SPAN}`;
+  mealStatLayout: StatLayout;
+  statsSpan?: `${STATS_SPAN}`;
   isFirst: boolean;
   showDishes: boolean;
 
   constructor(
     private meal: Meal,
     private ingredients: Ingredient[],
-    options: { statsSpan: `${STATS_SPAN}`; isFirst: boolean; showDishes: boolean },
+    options: { mealStatLayout: StatLayout; statsSpan?: `${STATS_SPAN}`; isFirst: boolean; showDishes: boolean },
   ) {
+    this.mealStatLayout = options.mealStatLayout;
     this.statsSpan = options.statsSpan;
     this.isFirst = options.isFirst;
     this.showDishes = options.showDishes;
+  }
+
+  mealName() {
+    return `
+      <div class="text text-secondary">${config.mealTypes.find(({ key }) => key === this.meal.type)!.name}</div>
+    `;
   }
 
   newDish() {
     return `
       <select 
         name="${this.meal.type}-dishId" 
-        class="select select-bordered select-sm w-28"
+        class="select select-bordered select-sm max-w-30"
       >
         <option disabled selected>Válassz</option>
         ${this.ingredients
@@ -57,26 +66,28 @@ export class DayMeal implements BaseComponent {
   async dishes() {
     const dishComponents: string[] = [];
     for (const dish of this.meal.dishes) {
-      dishComponents.push(await new DishComponent(dish).render());
+      dishComponents.push(await new DayMealDish(dish).render());
     }
 
     return `
-      ${this.meal.dishes.length > 0 ? `<div class="text col-span-2"></div>` : ''}
-      ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">cal</div>` : ''}
-      ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">CH</div>` : ''}
-      ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">zsír</div>` : ''}
-      ${dishComponents.join('')}
-      ${this.newDish()}
+      <div class="col-span-2 grid grid-cols-max-5 gap-2 pl-2">
+        ${this.meal.dishes.length > 0 ? `<div class="text col-span-2"></div>` : ''}
+        ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">cal</div>` : ''}
+        ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">CH</div>` : ''}
+        ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">zsír</div>` : ''}
+        ${dishComponents.join('')}
+        ${this.newDish()}
+      </div>
     `;
   }
+  
 
   async render() {
     return `
-      ${this.isFirst ? `<div id="meals" class="grid grid-cols-max-5 gap-x-2 gap-y-4">` : ''}
-        <div class="text text-secondary col-span-1">${config.mealTypes.find(({ key }) => key === this.meal.type)!.name}</div>
-				${await new MealStats(this.meal, {swap: false}).render()}
-				${this.showDishes ? await this.dishes() : ''}
-      ${this.isFirst ? `</div>` : ''}
+      ${this.mealName()}
+      ${await new MealStats(this.meal, { layout: this.mealStatLayout, swap: false }).render()}
+      ${this.showDishes ? await this.dishes() : ''}
     `;
   }
 }
+  

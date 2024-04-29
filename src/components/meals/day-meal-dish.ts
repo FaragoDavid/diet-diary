@@ -1,7 +1,7 @@
 import { Dish } from "../../repository/meal.js";
 import { amount as dishAmount } from '../amount.js';
 
-export class DishComponent implements BaseComponent {
+export class DayMealDish implements BaseComponent {
   constructor(private dish: Dish) {}
 
   async render() {

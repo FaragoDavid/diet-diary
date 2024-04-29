@@ -7,11 +7,11 @@ const textSizes = {
   sm: 'text-sm',
   lg: 'text-lg',
 };
-type Layout = 'horizontal' | 'vertical' | 'cells';
+export type StatLayout = 'horizontal' | 'vertical' | 'cells';
 type Macro = 'cal' | 'carbs' | 'fat';
 type Size = 'sm' | 'lg';
 
-function stat(macro: Macro, amount: number, layout: Layout, options?: { size?: Size }) {
+function stat(macro: Macro, amount: number, layout: StatLayout, options?: { size?: Size }) {
   const macroText = macroTexts[macro];
   const amountText = Math.floor(amount);
 
@@ -28,7 +28,7 @@ function stat(macro: Macro, amount: number, layout: Layout, options?: { size?: S
 
 export function stats(
   macroAmounts: { cal: number; carbs: number; fat: number },
-  options: { id?: string; layout: Layout; size?: Size; span?: string; swap?: boolean },
+  options: { id?: string; layout: StatLayout; size?: Size; span?: string; swap?: boolean },
 ) {
   const { cal, carbs, fat } = macroAmounts;
   let { id, layout, size, span, swap } = options;

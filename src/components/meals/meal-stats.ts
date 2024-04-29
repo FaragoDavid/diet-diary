@@ -1,9 +1,13 @@
 import { Meal } from "../../repository/meal.js";
-import { stats } from '../stats.js';
+import { StatLayout, stats } from '../stats.js';
 
 export class MealStats implements BaseComponent {
+  layout: StatLayout;
+  span?: string;
   swap: boolean;
-  constructor(private meal: Omit<Meal, 'date'>, options: { swap: boolean }) {
+  constructor(private meal: Omit<Meal, 'date'>, options: { layout: StatLayout, span?: string, swap: boolean }) {
+    this.layout = options.layout;
+    this.span = options.span;
     this.swap = options.swap;
   }
 
@@ -21,7 +25,8 @@ export class MealStats implements BaseComponent {
       { cal: mealCals, carbs: mealCH, fat: mealFat },
       {
         id: `${this.meal.type}-stats`,
-        layout: 'cells',
+        layout: this.layout,
+        span: this.span,
         size: 'sm',
         swap: this.swap,
       },
