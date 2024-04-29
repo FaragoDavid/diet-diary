@@ -2,20 +2,21 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { layout } from '../components/layout.js';
 import { dayHeader } from '../components/meals/day-header.js';
-import { DaySearch } from '../components/meals/day-search.js';
+import { MealTab } from '../components/meals/meal-tab.js';
 import { DayStats } from '../components/meals/day-stats.js';
 import { DayList } from '../components/meals/day-list.js';
 import { DishComponent } from '../components/meals/dish.js';
 import { MealStats } from '../components/meals/meal-stats.js';
-import { MealComponent } from '../components/meals/meal.js';
+import { DayMeal } from '../components/meals/day-meal.js';
 import { MissingMeals } from '../components/meals/missing-meals.js';
 import { MealType } from '../config.js';
 import { DayPage, NewDayPage } from '../pages/day.js';
 import { selectIngredients } from '../repository/ingredient.js';
 import * as mealRepository from '../repository/meal.js';
-import { selectDays } from '../repository/meal.js';
+import { fetchDays } from '../repository/meal.js';
 import { paramToDate } from '../utils/converters.js';
 import { TAB_NAME, tabList } from '../components/tab-list.js';
+import { subDays } from 'date-fns';
 
 type DashDate = `${string}-${string}-${string}`;
 
@@ -31,9 +32,14 @@ type AddDishRequest = FastifyRequest<{
 
 export const displayMealsTab = async (_: FastifyRequest, reply: FastifyReply) => {
   const ingredients = await selectIngredients();
+
+  const fromDate = subDays(new Date(), 7);
+  const toDate = new Date();
+  const days = await fetchDays(fromDate, toDate);
+
   const template = `
     ${tabList(TAB_NAME.meals, true)}
-    ${await new DaySearch(ingredients).render()}
+    ${await new MealTab(days, ingredients).render()}
   `;
 
   return reply.type('text/html').send(template);
@@ -43,10 +49,10 @@ export const getDays = async (request: GetMealsRequest, reply: FastifyReply) => 
   const fromDate = new Date(request.query.fromDate);
   const toDate = new Date(request.query.toDate);
 
-  const days = await selectDays(fromDate, toDate);
+  const days = await fetchDays(fromDate, toDate);
   const ingredients = await selectIngredients();
 
-  const template = await new DayList(days, ingredients).render();
+  const template = await new DayList(days, ingredients, { swap: false }).render();
   return reply.type('text/html').send(template);
 };
 
@@ -97,8 +103,8 @@ export const addMeal = async (request: AddMealRequest, reply: FastifyReply) => {
 
   const template = `
     ${await new MissingMeals(day, true).render()}
-    ${await new MealComponent({ ...meal, date }, ingredients, {
-      statsSpan: MealComponent.STATS_SPAN.FOUR,
+    ${await new DayMeal({ ...meal, date }, ingredients, {
+      statsSpan: DayMeal.STATS_SPAN.FOUR,
       isFirst: day.meals.length === 1,
       showDishes: true,
     }).render()}
@@ -120,7 +126,7 @@ export const addDish = async (request: AddDishRequest, reply: FastifyReply) => {
   const meal = await mealRepository.selectMeal(paramToDate(date), mealType);
   const template = `
     ${await new DishComponent(dish).render()}
-    ${await new MealStats(meal, MealStats.SPAN.FOUR, true).render()}
+    ${await new MealStats(meal, { swap: true }).render()}
     ${await new DayStats(day, { span: DayStats.SPAN.FIVE, swap: true }).render()}
   `;
 

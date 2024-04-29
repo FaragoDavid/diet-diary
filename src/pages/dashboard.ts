@@ -1,11 +1,11 @@
-import { IngredientTab } from '../components/ingredients/ingredient-tab.js';
+import { MealTab } from '../components/meals/meal-tab.js';
 import { TAB_NAME, tabList } from '../components/tab-list.js';
 import config from '../config.js';
 import { Ingredient } from '../repository/ingredient.js';
-import { RecipeWithIngredientName } from '../repository/recipe.js';
+import { Day } from '../repository/meal.js';
 
 export class Dashboard implements BaseComponent {
-  constructor(private recipes: RecipeWithIngredientName[], private ingredients: Ingredient[]) {}
+  constructor(private days: Day[], private ingredients: Ingredient[]) {}
 
   async render() {
     return `
@@ -14,9 +14,9 @@ export class Dashboard implements BaseComponent {
           <div class="text-center text-3xl font-medium py-2">
             ${config.texts.titles.page}
           </div>
-          ${tabList(TAB_NAME.ingredients, false)}
+          ${tabList(TAB_NAME.meals, false)}
           <div id="tab-container">
-            ${await new IngredientTab(this.ingredients).render()}
+            ${await new MealTab(this.days, this.ingredients).render()}
           </div>
         </div>
       </div>

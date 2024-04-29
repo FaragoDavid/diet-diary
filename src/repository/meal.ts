@@ -69,7 +69,7 @@ const days = ((meals: Meal[]): Day[] =>
     return days;
   }, [] as Day[]))(meals);
 
-export async function selectDays(start: Date, end: Date) {
+export async function fetchDays(start: Date, end: Date) {
   end = endOfDay(end);
   return meals
     .reduce((days, { date: nextMealDate, ...nextMeal }) => {

@@ -11,7 +11,7 @@ export class RecipeList implements BaseComponent {
   }
 
   async render() {
-    let recipeComponents: string[] = [];
+    const recipeComponents: string[] = [];
     for (const recipe of this.recipes) {
       recipeComponents.push(await new RecipeListItem(recipe, this.ingredients).render());
     }

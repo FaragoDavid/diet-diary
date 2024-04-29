@@ -4,6 +4,7 @@ import { stats } from '../stats.js';
 
 enum SPAN {
   NONE = '',
+  TWO= 'col-span-2',
   FIVE = 'col-span-5',
 }
 

@@ -2,7 +2,7 @@
 import { BackLink } from '../components/back-link.js';
 import { dayHeader, newDayHeader } from '../components/meals/day-header.js';
 import { DayStats } from '../components/meals/day-stats.js';
-import { MealComponent } from '../components/meals/meal.js';
+import { DayMeal } from '../components/meals/day-meal.js';
 import { MissingMeals } from '../components/meals/missing-meals.js';
 import { Ingredient } from '../repository/ingredient.js';
 import { Day } from '../repository/meal.js';
@@ -28,8 +28,8 @@ export class DayPage implements BaseComponent {
     const meals: string[] = [];
     for (const meal of this.day.meals) {
       meals.push(
-        await new MealComponent({ ...meal, date: this.day.date }, this.ingredients, {
-          statsSpan: MealComponent.STATS_SPAN.FOUR,
+        await new DayMeal({ ...meal, date: this.day.date }, this.ingredients, {
+          statsSpan: DayMeal.STATS_SPAN.FOUR,
           isFirst: false,
           showDishes: true,
         }).render(),

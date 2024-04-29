@@ -1,48 +1,28 @@
-import { format } from 'date-fns';
-
 import { Ingredient } from '../../repository/ingredient.js';
 import { Day } from '../../repository/meal.js';
-import { dateToParam } from '../../utils/converters.js';
-import icons from '../../utils/icons.js';
-import { DayStats } from './day-stats.js';
-import { MealComponent } from './meal.js';
+import { DayListItem } from './day-list-item.js';
+
+const DAY_LIST_ID = 'day-list';
 
 export class DayList implements BaseComponent {
-  constructor(private days: Day[], private ingredients: Ingredient[]) {}
-
-  async day(day: Day) {
-    const mealComponents: string[] = [];
-    for (const meal of day.meals) {
-      mealComponents.push(
-        await new MealComponent({ ...meal, date: day.date }, this.ingredients, {
-          statsSpan: MealComponent.STATS_SPAN.TWO,
-          isFirst: false,
-          showDishes: false,
-        }).render(),
-      );
-    }
-
-    return `
-      <div class="flex items-center text-lg text-primary">${format(day.date, 'MMM. d. (EEE)')}</div>
-      ${await new DayStats(day, { span: DayStats.SPAN.NONE, swap: false }).render()}
-      <a href="/day/${dateToParam(day.date)}">
-        <button 
-          class="btn btn-primary btn-sm"
-        >${icons.edit}</button>
-      </a>
-      ${mealComponents.join('<div class="divider divider-secondary col-span-3 m-0 pl-2"></div>')}
-    `;
+  swap: boolean;
+  constructor(private days: Day[], private ingredients: Ingredient[], options: { swap: boolean }) {
+    this.swap = options.swap;
   }
 
   async render() {
     const dayComponents: string[] = [];
     for (const day of this.days) {
-      dayComponents.push(await this.day(day));
+      dayComponents.push(await new DayListItem(day, this.ingredients).render());
     }
 
     return `
-      <div id="meal-list" class="grid grid-cols-max-3 grid-row-flex gap-1 py-4">
-        ${dayComponents.join('<div class="divider divider-primary col-span-3"></div>')}
+      <div 
+        id="${DAY_LIST_ID}" 
+        class="grid grid-cols-max-4 grid-row-flex gap-2"
+        ${this.swap ? 'hx-swap-oob="true"' : ''}
+      >
+        ${dayComponents.join('<div class="divider divider-primary col-span-4"></div>')}
       </div>`;
   }
 }

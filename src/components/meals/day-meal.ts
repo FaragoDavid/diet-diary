@@ -11,7 +11,7 @@ enum STATS_SPAN {
   FOUR = 'col-span-4',
 }
 
-export class MealComponent implements BaseComponent {
+export class DayMeal implements BaseComponent {
   static STATS_SPAN = STATS_SPAN;
   statsSpan: `${STATS_SPAN}`;
   isFirst: boolean;
@@ -61,12 +61,12 @@ export class MealComponent implements BaseComponent {
     }
 
     return `
-    ${this.meal.dishes.length > 0 ? `<div class="text col-span-2"></div>` : ''}
-    ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">cal</div>` : ''}
-    ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">CH</div>` : ''}
-    ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">zsír</div>` : ''}
-    ${dishComponents.join('')}
-    ${this.newDish()}
+      ${this.meal.dishes.length > 0 ? `<div class="text col-span-2"></div>` : ''}
+      ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">cal</div>` : ''}
+      ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">CH</div>` : ''}
+      ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">zsír</div>` : ''}
+      ${dishComponents.join('')}
+      ${this.newDish()}
     `;
   }
 
@@ -74,7 +74,7 @@ export class MealComponent implements BaseComponent {
     return `
       ${this.isFirst ? `<div id="meals" class="grid grid-cols-max-5 gap-x-2 gap-y-4">` : ''}
         <div class="text text-secondary col-span-1">${config.mealTypes.find(({ key }) => key === this.meal.type)!.name}</div>
-				${await new MealStats(this.meal, this.statsSpan).render()}
+				${await new MealStats(this.meal, {swap: false}).render()}
 				${this.showDishes ? await this.dishes() : ''}
       ${this.isFirst ? `</div>` : ''}
     `;
