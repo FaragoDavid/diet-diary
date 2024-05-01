@@ -93,7 +93,7 @@ export async function fetchDays(start: Date, end: Date) {
     .sort((a, b) => b.date.getTime() - a.date.getTime());
 }
 
-export async function selectDay(date: Date): Promise<Day> {
+export async function fetchDay(date: Date): Promise<Day> {
   const day = days.find((day) => isSameDay(day.date, date));
   if (!day) throw new Error('Day not found');
   return {
@@ -106,11 +106,15 @@ export async function selectDay(date: Date): Promise<Day> {
         carbs: nutrientFromDish(dish.id, dish.amount, 'carbs', ingredients),
         fat: nutrientFromDish(dish.id, dish.amount, 'fat', ingredients),
       })),
-    })),
+    })).sort((a, b) => {
+      const aIndex = config.mealTypes.findIndex(({ key }) => key === a.type);
+      const bIndex = config.mealTypes.findIndex(({ key }) => key === b.type);
+      return aIndex - bIndex;
+    })
   };
 }
 
-export async function selectMeal(date: Date, mealType: MealType): Promise<Meal> {
+export async function fetchMeal(date: Date, mealType: MealType): Promise<Meal> {
   const meal = meals.find((meal) => isSameDay(meal.date, date) && meal.type === mealType);
   if (!meal) throw new Error('Meal not found');
   return meal;
@@ -165,4 +169,15 @@ export async function deleteMeal(date: Date, mealType: MealType): Promise<Day> {
   day.meals.splice(meal, 1);
 
   return day;
+}
+
+export async function deleteDish(date: Date, mealType: MealType, dishId: string): Promise<Meal> {
+  const meal = meals.find((meal) => isSameDay(meal.date, date) && meal.type === mealType);
+  if (!meal) throw new Error('Meal not found');
+  const dish = meal.dishes.findIndex((dish) => dish.id === dishId);
+  if (dish === -1) throw new Error('Dish not found');
+
+  meal.dishes.splice(dish, 1);
+
+  return meal;
 }

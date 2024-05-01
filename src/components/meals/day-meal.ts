@@ -1,8 +1,8 @@
-import icons from '../../utils/icons.js';
 import config from '../../config.js';
 import { Ingredient } from '../../repository/ingredient.js';
 import { Meal } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
+import icons from '../../utils/icons.js';
 import { amount } from '../amount.js';
 import { StatLayout } from '../stats.js';
 import { DayMealDish } from './day-meal-dish.js';
@@ -17,18 +17,18 @@ export class DayMeal implements BaseComponent {
   static STATS_SPAN = STATS_SPAN;
   mealStatLayout: StatLayout;
   statsSpan?: `${STATS_SPAN}`;
-  isFirst: boolean;
   showDishes: boolean;
+  swap: boolean;
 
   constructor(
     private meal: Meal,
     private ingredients: Ingredient[],
-    options: { mealStatLayout: StatLayout; statsSpan?: `${STATS_SPAN}`; isFirst: boolean; showDishes: boolean },
+    options: { mealStatLayout: StatLayout; statsSpan?: `${STATS_SPAN}`; showDishes: boolean, swap: boolean },
   ) {
     this.mealStatLayout = options.mealStatLayout;
     this.statsSpan = options.statsSpan;
-    this.isFirst = options.isFirst;
     this.showDishes = options.showDishes;
+    this.swap = options.swap;
   }
 
   mealName() {
@@ -41,7 +41,7 @@ export class DayMeal implements BaseComponent {
     return `
       <select 
         name="${this.meal.type}-dishId" 
-        class="select select-bordered select-sm max-w-30"
+        class="select select-bordered select-sm w-30"
       >
         <option disabled selected>Válassz</option>
         ${this.ingredients
@@ -60,22 +60,27 @@ export class DayMeal implements BaseComponent {
           trigger: 'change delay:100ms',
         },
       })}
-      <div class="col-span-3"></div>
+      <div class="col-span-5"></div>
     `;
   }
 
   async dishes() {
     const dishComponents: string[] = [];
     for (const dish of this.meal.dishes) {
-      dishComponents.push(await new DayMealDish(dish).render());
+      dishComponents.push(await new DayMealDish(dish, this.meal.date, this.meal.type).render());
     }
 
     return `
-      <div class="col-span-3 grid grid-cols-max-5 gap-2 px-2">
+      <div
+       id="day-${dateToParam(this.meal.date)}-${this.meal.type}-dishes"
+       class="col-span-3 grid grid-cols-max-6 gap-2 items-center px-2"
+       ${this.swap ? 'hx-swap-oob="true"' : ''}
+      >
         ${this.meal.dishes.length > 0 ? `<div class="text col-span-2"></div>` : ''}
         ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">cal</div>` : ''}
         ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">CH</div>` : ''}
         ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">zsír</div>` : ''}
+        <div class="text"></div>
         ${dishComponents.join('')}
         ${this.newDish()}
       </div>
@@ -85,7 +90,7 @@ export class DayMeal implements BaseComponent {
   deleteMeal() {
     return `
       <button 
-        class="btn btn-sm"
+        class="btn btn-sm btn-secondary p-0"
         hx-delete="/day/${dateToParam(this.meal.date)}/meal/${this.meal.type}"
       >
         ${icons.delete}

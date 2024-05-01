@@ -27,8 +27,8 @@ export class DayMealList implements BaseComponent {
       dayMeals.push(
         await new DayMeal({ ...meal, date: this.date }, this.ingredients, {
           mealStatLayout: this.mealStatLayout,
-          isFirst: false,
           showDishes: this.showDishes,
+          swap: false,
         }).render(),
       );
     }

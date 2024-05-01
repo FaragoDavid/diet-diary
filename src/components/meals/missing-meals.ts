@@ -16,7 +16,7 @@ export class MissingMeals implements BaseComponent {
 				type="button"
 				name="mealType"
 				value="${value}"
-				class="btn btn-sm btn-secondary"
+				class="btn btn-sm btn-primary"
 				hx-post="/day/${dateToParam(this.day.date)}/meal"
 				hx-target="${this.day.meals.length === 0 ? `#day-container` : `#day-${dateToParam(this.day.date)}-meal-list`}"
 				hx-swap="beforeend"

@@ -31,8 +31,8 @@ export class DayPage implements BaseComponent {
       meals.push(
         await new DayMeal({ ...meal, date: this.day.date }, this.ingredients, {
           mealStatLayout: 'horizontal',
-          isFirst: false,
           showDishes: true,
+          swap: false,
         }).render(),
       );
     }
