@@ -4,6 +4,11 @@ import { Ingredient } from '../../repository/ingredient.js';
 import { dateToParam } from '../../utils/converters.js';
 import { StatLayout } from '../stats.js';
 
+
+export function getDayMealListId(date: Date) {
+  return `day-${dateToParam(date)}-meal-list`;
+}
+
 export class DayMealList implements BaseComponent {
   showDishes: boolean;
   mealStatLayout: StatLayout;
@@ -35,8 +40,8 @@ export class DayMealList implements BaseComponent {
 
     return `
       <div 
-        id="day-${dateToParam(this.date)}-meal-list" 
-        class="col-span-3 grid ${this.gridCols} gap-2 px-2 items-center"
+        id="${getDayMealListId(this.date)}" 
+        class="grid ${this.gridCols} gap-2 px-2 items-center ${this.showDishes ? '' : 'col-span-3'}"
         ${this.swap ? 'hx-swap-oob="true"' : ''}
       >
         ${dayMeals.join('')}

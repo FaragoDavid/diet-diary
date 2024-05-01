@@ -5,13 +5,17 @@ import { dateToParam } from '../../utils/converters.js';
 import icons from '../../utils/icons.js';
 import { amount } from '../amount.js';
 import { StatLayout } from '../stats.js';
-import { DayMealDish } from './day-meal-dish.js';
+import { DayMealDish, dayMealDishHeader } from './day-meal-dish.js';
 import { MealStats } from './meal-stats.js';
 
 enum STATS_SPAN {
   TWO = 'col-span-2',
   FOUR = 'col-span-4',
 }
+
+const texts = {
+  ingredientSelectorPlaceholder: 'Válassz',
+};
 
 export class DayMeal implements BaseComponent {
   static STATS_SPAN = STATS_SPAN;
@@ -43,7 +47,7 @@ export class DayMeal implements BaseComponent {
         name="${this.meal.type}-dishId" 
         class="select select-bordered select-sm w-30"
       >
-        <option disabled selected>Válassz</option>
+        <option disabled selected>${texts.ingredientSelectorPlaceholder}</option>
         ${this.ingredients
           .filter(({ id }) => !this.meal.dishes.map(({ id }) => id).includes(id))
           .map(({ id, name }) => `<option value="${id}" >${name}</option>`)
@@ -76,11 +80,7 @@ export class DayMeal implements BaseComponent {
        class="col-span-3 grid grid-cols-max-6 gap-2 items-center px-2"
        ${this.swap ? 'hx-swap-oob="true"' : ''}
       >
-        ${this.meal.dishes.length > 0 ? `<div class="text col-span-2"></div>` : ''}
-        ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">cal</div>` : ''}
-        ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">CH</div>` : ''}
-        ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">zsír</div>` : ''}
-        <div class="text"></div>
+        ${this.meal.dishes.length > 0 ? dayMealDishHeader : ''}
         ${dishComponents.join('')}
         ${this.newDish()}
       </div>

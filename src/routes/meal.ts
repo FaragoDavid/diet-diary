@@ -5,7 +5,7 @@ import { dayHeader } from '../components/meals/day-header.js';
 import { MealTab } from '../components/meals/meal-tab.js';
 import { DayStats } from '../components/meals/day-stats.js';
 import { DayList } from '../components/meals/day-list.js';
-import { DayMealDish } from '../components/meals/day-meal-dish.js';
+import { DayMealDish, dayMealDishHeader } from '../components/meals/day-meal-dish.js';
 import { MealStats } from '../components/meals/meal-stats.js';
 import { DayMeal } from '../components/meals/day-meal.js';
 import { MissingMeals } from '../components/meals/missing-meals.js';
@@ -130,9 +130,10 @@ export const addDish = async (request: AddDishRequest, reply: FastifyReply) => {
   const day = await mealRepository.fetchDay(paramToDate(date));
   const meal = await mealRepository.fetchMeal(paramToDate(date), mealType);
   const template = `
+    ${meal.dishes.length === 1 ? dayMealDishHeader : ''}
     ${await new DayMealDish(dish, meal.date, mealType).render()}
-    ${await new MealStats(meal, { layout: 'horizontal', swap: true }).render()}
     ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swap: true }).render()}
+    ${await new MealStats(meal, { layout: 'horizontal', swap: true }).render()}
   `;
 
   return reply.type('text/html').send(template);

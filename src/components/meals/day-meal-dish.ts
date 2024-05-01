@@ -4,6 +4,20 @@ import { dateToParam } from "../../utils/converters.js";
 import icons from "../../utils/icons.js";
 import { amount as dishAmount } from '../amount.js';
 
+const texts = {
+  calories: 'Kal',
+  carbs: 'CH',
+  fat: 'Zsír',
+};
+
+export const dayMealDishHeader = `
+  <div class="text col-span-2"></div>
+  <div class="text-sm text-center italic">${texts.calories}</div>
+  <div class="text-sm text-center italic">${texts.carbs}</div>
+  <div class="text-sm text-center italic">${texts.fat}</div>
+  <div class="text"></div>
+`;
+
 export class DayMealDish implements BaseComponent {
   constructor(private dish: Dish, private date: Date, private mealType: MealType) {}
 
