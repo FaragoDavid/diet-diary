@@ -78,9 +78,11 @@ export const createDay = async (request: CreateDayRequest, reply: FastifyReply) 
   const bodyDate = new Date(request.body.date);
   const day = await mealRepository.insertDay(bodyDate);
 
-  const template = `${dayHeader(day)}
-      ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swap: false }).render()}
-      ${await new MissingMeals(day, { swap: false }).render()}`;
+  const template = `
+    ${dayHeader(day)}
+    ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swap: false }).render()}
+    ${await new MissingMeals(day, { swap: false }).render()}
+  `;
 
   const dateParam = request.body.date.split('-').join('');
   return reply.type('text/html').header('HX-Push-Url', `/day/${dateParam}`).send(template);
@@ -105,11 +107,11 @@ export const addMeal = async (request: AddMealRequest, reply: FastifyReply) => {
 
   const template = `
     ${await new MissingMeals(day, { swap: true }).render()}
-    ${await new DayMeal({ ...meal, date }, ingredients, {
-      mealStatLayout: 'horizontal',
-      statsSpan: DayMeal.STATS_SPAN.FOUR,
-      swap: false,
+    ${await new DayMealList(day.meals, date, ingredients, {
       showDishes: true,
+      mealStatLayout: 'horizontal',
+      cols: 3,
+      swap: meal.dishes.length !== 0,
     }).render()}
   `;
 

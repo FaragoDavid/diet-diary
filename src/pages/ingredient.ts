@@ -12,8 +12,8 @@ export class NewIngredientPage implements BaseComponent {
   async render() {
     return `
       ${await new BackLink().render()}
-      <div id="${INGREDIENT_PAGE_ID}" class="flex flex-col place-items-center w-full pt-6">
-        <div class="text-2xl text-primary pb-6">${texts.newIngredient}</div>
+      <div id="${INGREDIENT_PAGE_ID}" class="flex flex-col place-items-center w-full gap-4 pt-6">
+        <div class="text-2xl text-primary">${texts.newIngredient}</div>
         ${newIngredientHeader()}
       </div>
     `;
@@ -25,11 +25,11 @@ export class IngredientPage implements BaseComponent {
 
   async render() {
     return `
-        ${await new BackLink().render()}
-        <div id="${INGREDIENT_PAGE_ID}" class="flex flex-col place-items-center w-full pt-6">
-          ${ingredientHeader(this.ingredient)}
-          ${await new IngredientDetails(this.ingredient).render()}
-        </div>
+      ${await new BackLink().render()}
+      <div id="${INGREDIENT_PAGE_ID}" class="flex flex-col place-items-center w-full gap-4 pt-6">
+        ${ingredientHeader(this.ingredient)}
+        ${await new IngredientDetails(this.ingredient).render()}
+      </div>
     `;
   }
 }

@@ -1,3 +1,4 @@
+import { DAY_PAGE_ID } from '../../pages/day.js';
 import config, { MealType } from '../../config.js';
 import { Day } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
@@ -18,8 +19,8 @@ export class MissingMeals implements BaseComponent {
 				value="${value}"
 				class="btn btn-sm btn-primary"
 				hx-post="/day/${dateToParam(this.day.date)}/meal"
-				hx-target="${this.day.meals.length === 0 ? `#day-container` : `#day-${dateToParam(this.day.date)}-meal-list`}"
-				hx-swap="beforeend"
+				hx-target="${this.swap ? `#day-${dateToParam(this.day.date)}-meal-list` : `#${DAY_PAGE_ID}`}"
+				hx-swap="${this.swap ? 'outerHTML' : 'beforeend'}"
 			>
 				${name}
 			</button>`;

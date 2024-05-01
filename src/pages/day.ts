@@ -8,16 +8,18 @@ import { Ingredient } from '../repository/ingredient.js';
 import { Day } from '../repository/meal.js';
 import { DayMealList } from '../components/meals/day-meal-list.js';
 
+export const DAY_PAGE_ID = 'day-page';
+const texts = {
+  newDay: 'Új Nap',
+};
+
 export class NewDayPage implements BaseComponent {
   async render() {
     return `
-      <div id="day">
-        ${await new BackLink().render()}
-        <div class="container py-6">
-          <div id="day-container" class="flex flex-col justify-center items-center gap-4">
-            ${newDayHeader()}
-          </div>
-        </div>
+      ${await new BackLink().render()}
+      <div id="${DAY_PAGE_ID}" class="flex flex-col place-items-center w-full gap-4 pt-6">
+        <div class="text-2xl text-primary">${texts.newDay}</div>
+        ${newDayHeader()}
       </div>`;
   }
 }
@@ -38,21 +40,17 @@ export class DayPage implements BaseComponent {
     }
 
     return `
-      <div id="day">
-        ${await new BackLink().render()}
-        <div class="container py-6">
-          <div id="day-container" class="flex flex-col justify-center items-center gap-4">
-            ${dayHeader(this.day)}
-            ${await new DayStats(this.day, { layout: 'vertical', span: DayStats.SPAN.NONE, swap: false }).render()}
-            ${await new MissingMeals(this.day, { swap: false }).render()}
-            ${await new DayMealList(this.day.meals, this.day.date, this.ingredients, {
-              showDishes: true,
-              mealStatLayout: 'horizontal',
-              cols: 3,
-              swap: false,
-            }).render()}
-          </div>
-        </div>
+      ${await new BackLink().render()}
+      <div id="${DAY_PAGE_ID}" class="flex flex-col justify-center items-center gap-4 pt-6">
+        ${dayHeader(this.day)}
+        ${await new DayStats(this.day, { layout: 'vertical', span: DayStats.SPAN.NONE, swap: false }).render()}
+        ${await new MissingMeals(this.day, { swap: false }).render()}
+        ${await new DayMealList(this.day.meals, this.day.date, this.ingredients, {
+          showDishes: true,
+          mealStatLayout: 'horizontal',
+          cols: 3,
+          swap: false,
+        }).render()}
       </div>`;
   }
 }
