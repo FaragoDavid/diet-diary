@@ -17,6 +17,7 @@ import { fetchDays } from '../repository/meal.js';
 import { paramToDate } from '../utils/converters.js';
 import { TAB_NAME, tabList } from '../components/tab-list.js';
 import { subDays } from 'date-fns';
+import { DayMealList } from '../components/meals/day-meal-list.js';
 
 type DashDate = `${string}-${string}-${string}`;
 
@@ -29,6 +30,7 @@ type AddDishRequest = FastifyRequest<{
   Params: { date: string; mealType: MealType };
   Body: { dishId: string; amount: number };
 }>;
+type DeleteMealRequest = FastifyRequest<{ Params: { date: string; mealType: MealType } }>;
 
 export const displayMealsTab = async (_: FastifyRequest, reply: FastifyReply) => {
   const ingredients = await selectIngredients();
@@ -78,7 +80,7 @@ export const createDay = async (request: CreateDayRequest, reply: FastifyReply) 
 
   const template = `${dayHeader(day)}
       ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swap: false }).render()}
-      ${await new MissingMeals(day).render()}`;
+      ${await new MissingMeals(day, {swap: false}).render()}`;
 
   const dateParam = request.body.date.split('-').join('');
   return reply.type('text/html').header('HX-Push-Url', `/day/${dateParam}`).send(template);
@@ -102,7 +104,7 @@ export const addMeal = async (request: AddMealRequest, reply: FastifyReply) => {
   const ingredients = await selectIngredients();
 
   const template = `
-    ${await new MissingMeals(day, true).render()}
+    ${await new MissingMeals(day, {swap: true}).render()}
     ${await new DayMeal({ ...meal, date }, ingredients, {
       mealStatLayout: 'horizontal',
       statsSpan: DayMeal.STATS_SPAN.FOUR,
@@ -131,5 +133,20 @@ export const addDish = async (request: AddDishRequest, reply: FastifyReply) => {
     ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swap: true }).render()}
   `;
 
+  return reply.type('text/html').send(template);
+};
+
+export const deleteMeal = async (request: DeleteMealRequest, reply: FastifyReply) => {
+  const date = paramToDate(request.params.date);
+  const mealType = request.params.mealType;
+
+  await mealRepository.deleteMeal(date, mealType);
+  const day = await mealRepository.selectDay(date);
+  console.log({ day });
+  const template = `
+    ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swap: true }).render()}
+    ${await new MissingMeals(day, { swap: true }).render()}
+    ${await new DayMealList(day.meals, date, [], { showDishes: true, mealStatLayout: 'horizontal', cols: 3, swap: true }).render()}
+  `;
   return reply.type('text/html').send(template);
 };

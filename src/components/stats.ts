@@ -39,9 +39,9 @@ export function stats(
     return `
       <div id="${id}" class="flex ${size ? textSizes[size] : ''} ${span || ''}" ${swap ? `hx-swap-oob="true"` : ''}>
         ${stat('cal', cal, layout)}
-        <div class="divider divider-horizontal"></div> 
+        <div class="divider divider-horizontal m-1"></div> 
         ${stat('carbs', carbs, layout)}
-        <div class="divider divider-horizontal"></div> 
+        <div class="divider divider-horizontal m-1"></div> 
         ${stat('fat', fat, layout)}
       </div>
     `;

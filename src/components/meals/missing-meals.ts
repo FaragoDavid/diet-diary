@@ -5,7 +5,10 @@ import { dateToParam } from '../../utils/converters.js';
 const ID = 'missing-meals';
 
 export class MissingMeals implements BaseComponent {
-  constructor(private day: Day, private swap = false) {}
+	swap: boolean;
+  constructor(private day: Day, options: { swap: boolean }) {
+		this.swap = options.swap;
+	}
 
   missingMealButton(value: MealType, name: string) {
     return `

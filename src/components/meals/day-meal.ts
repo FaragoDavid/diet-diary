@@ -1,3 +1,4 @@
+import icons from '../../utils/icons.js';
 import config from '../../config.js';
 import { Ingredient } from '../../repository/ingredient.js';
 import { Meal } from '../../repository/meal.js';
@@ -70,7 +71,7 @@ export class DayMeal implements BaseComponent {
     }
 
     return `
-      <div class="col-span-2 grid grid-cols-max-5 gap-2 pl-2">
+      <div class="col-span-3 grid grid-cols-max-5 gap-2 px-2">
         ${this.meal.dishes.length > 0 ? `<div class="text col-span-2"></div>` : ''}
         ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">cal</div>` : ''}
         ${this.meal.dishes.length > 0 ? `<div class="text-sm text-center italic">CH</div>` : ''}
@@ -80,12 +81,23 @@ export class DayMeal implements BaseComponent {
       </div>
     `;
   }
-  
+
+  deleteMeal() {
+    return `
+      <button 
+        class="btn btn-sm"
+        hx-delete="/day/${dateToParam(this.meal.date)}/meal/${this.meal.type}"
+      >
+        ${icons.delete}
+      </button>
+    `;
+  }
 
   async render() {
     return `
       ${this.mealName()}
       ${await new MealStats(this.meal, { layout: this.mealStatLayout, swap: false }).render()}
+      ${this.showDishes ? this.deleteMeal() : ''}
       ${this.showDishes ? await this.dishes() : ''}
     `;
   }

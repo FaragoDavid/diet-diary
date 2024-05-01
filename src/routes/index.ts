@@ -73,6 +73,7 @@ const registerRoutes = (fastify: FastifyInstance) => {
   fastify.post('/new-day', createHandler(mealRoutes.createDay));
   fastify.get('/day/:date', createHandler(mealRoutes.getDay));
   fastify.post('/day/:date/meal', createHandler(mealRoutes.addMeal));
+  fastify.delete('/day/:date/meal/:mealType', createHandler(mealRoutes.deleteMeal));
   fastify.post('/day/:date/meal/:mealType/dish', createHandler(mealRoutes.addDish));
 };
 

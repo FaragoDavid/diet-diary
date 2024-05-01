@@ -151,3 +151,18 @@ export async function insertDish(date: Date, mealType: MealType, dishId: string,
 
   return newDish;
 }
+
+export async function deleteMeal(date: Date, mealType: MealType): Promise<Day> {
+  const day = days.find((day) => isSameDay(day.date, date));
+  if (!day) throw new Error(`Day ${date} not found`);
+  const meal = day.meals.findIndex((meal) => meal.type === mealType);
+  if (meal === -1) throw new Error(`Meal ${mealType} not found for ${date}`);
+
+  const mealIndex = meals.findIndex((meal) => isSameDay(meal.date, date) && meal.type === mealType);
+  if (mealIndex === -1) throw new Error(`Meal ${mealType} not found`);
+  meals.splice(mealIndex, 1);
+
+  day.meals.splice(meal, 1);
+
+  return day;
+}

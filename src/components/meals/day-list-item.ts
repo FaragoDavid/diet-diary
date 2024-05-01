@@ -30,7 +30,7 @@ export class DayListItem implements BaseComponent {
       ${this.dayDate()}
       ${await new DayStats(this.day, { layout: 'vertical', swap: false }).render()}
       ${this.editDay()}
-      ${await new DayMealList(this.day.meals, this.day.date, this.ingredients, {showDishes: false, mealStatLayout: 'cells', cols: 4}).render()}
+      ${await new DayMealList(this.day.meals, this.day.date, this.ingredients, {showDishes: false, mealStatLayout: 'cells', cols: 4, swap: false}).render()}
     `;
   }
 }
