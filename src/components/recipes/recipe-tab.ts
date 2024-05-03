@@ -2,6 +2,7 @@ import config from '../../config.js';
 import { Ingredient } from '../../repository/ingredient.js';
 import { RecipeWithIngredientName } from '../../repository/recipe.js';
 import icons from '../../utils/icons.js';
+import { TAB_CONTAINER_ID } from '../tab-list.js';
 import { RECIPE_LIST_ID, RecipeList } from './recipe-list.js';
 
 export const RECIPE_SEARCH_ID = 'search-recipe';
@@ -38,7 +39,7 @@ export class RecipeTab implements BaseComponent {
 
   async render() {
     return `
-      <div class="flex flex-col justify-center items-center space-y-4">
+      <div id="${TAB_CONTAINER_ID}" class="flex flex-col justify-center items-center space-y-4">
         <div class="flex justify-center items-center space-x-2">
           ${searchRecipes()}
           <div class="divider divider-horizontal" ></div> 

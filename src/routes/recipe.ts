@@ -5,14 +5,15 @@ import { IngredientSelector } from '../components/recipes/ingredient-selector.js
 import { NewRecipeIngredient } from '../components/recipes/new-recipe-ingredient.js';
 import { RecipeDetails } from '../components/recipes/recipe-details.js';
 import { recipeHeader } from '../components/recipes/recipe-header.js';
-import { RecipeIngredientList } from '../components/recipes/recipe-ingredient-list.js';
 import { RecipeIngredientListItem } from '../components/recipes/recipe-ingredient-list-item.js';
+import { RecipeIngredientList } from '../components/recipes/recipe-ingredient-list.js';
 import { RecipeList } from '../components/recipes/recipe-list.js';
 import { RecipeTab } from '../components/recipes/recipe-tab.js';
 import { TAB_NAME, tabList } from '../components/tab-list.js';
 import { NewRecipePage, RecipePage } from '../pages/recipe.js';
 import { selectIngredients } from '../repository/ingredient.js';
 import * as recipeRepository from '../repository/recipe.js';
+import { HTMX_SWAP } from '../utils/htmx.js';
 
 type GetRecipesRequest = FastifyRequest<{ Querystring: { query: string } }>;
 type GetRecipeRequest = FastifyRequest<{ Params: { recipeId: string } }>;
@@ -31,7 +32,7 @@ export const displayRecipesTab = async (_: FastifyRequest, reply: FastifyReply) 
   const ingredients = await selectIngredients();
 
   const template = `
-    ${tabList(TAB_NAME.recipes, true)}
+    ${tabList(TAB_NAME.recipes, { swapOob: HTMX_SWAP.ReplaceElement })}
     ${await new RecipeTab(recipes, ingredients).render()}
   `;
 

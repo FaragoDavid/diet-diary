@@ -1,13 +1,14 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
+import { IngredientDetails } from '../components/ingredients/ingredient-details.js';
+import { ingredientHeader } from '../components/ingredients/ingredient-header.js';
 import { IngredientList } from '../components/ingredients/ingredient-list.js';
 import { IngredientTab } from '../components/ingredients/ingredient-tab.js';
 import { layout } from '../components/layout.js';
 import { TAB_NAME, tabList } from '../components/tab-list.js';
 import { IngredientPage, NewIngredientPage } from '../pages/ingredient.js';
 import * as ingredientRepository from '../repository/ingredient.js';
-import { ingredientHeader } from '../components/ingredients/ingredient-header.js';
-import { IngredientDetails } from '../components/ingredients/ingredient-details.js';
+import { HTMX_SWAP } from '../utils/htmx.js';
 
 type GetIngredientsRequest = FastifyRequest<{ Querystring: { query: string } }>;
 type CreateIngredientRequest = FastifyRequest<{ Body: { ingredientName: string } }>;
@@ -19,7 +20,7 @@ export const displayIngredientsTab = async (_: FastifyRequest, reply: FastifyRep
   const ingredients = await ingredientRepository.selectIngredients();
 
   const template = `
-    ${tabList(TAB_NAME.ingredients, true)}
+    ${tabList(TAB_NAME.ingredients, { swapOob: HTMX_SWAP.ReplaceElement })}
     ${await new IngredientTab(ingredients).render()}
   `;
 

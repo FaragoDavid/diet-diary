@@ -42,7 +42,7 @@ export const displayMealsTab = async (_: FastifyRequest, reply: FastifyReply) =>
   const days = await fetchDays(fromDate, toDate);
 
   const template = `
-    ${tabList(TAB_NAME.meals, true)}
+    ${tabList(TAB_NAME.meals, { swapOob: HTMX_SWAP.ReplaceElement })}
     ${await new MealTab(days, ingredients).render()}
   `;
 

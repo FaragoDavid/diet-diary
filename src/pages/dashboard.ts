@@ -14,10 +14,8 @@ export class Dashboard implements BaseComponent {
           <div class="text-center text-3xl font-medium py-2">
             ${config.texts.titles.page}
           </div>
-          ${tabList(TAB_NAME.meals, false)}
-          <div id="tab-container">
-            ${await new MealTab(this.days, this.ingredients).render()}
-          </div>
+          ${tabList(TAB_NAME.meals, { swapOob: false })}
+          ${await new MealTab(this.days, this.ingredients).render()}
         </div>
       </div>
     `;

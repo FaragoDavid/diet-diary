@@ -6,6 +6,7 @@ import { Ingredient } from '../../repository/ingredient.js';
 import { Day, fetchDays } from '../../repository/meal.js';
 import icons from '../../utils/icons.js';
 import { DayList } from './day-list.js';
+import { TAB_CONTAINER_ID } from '../tab-list.js';
 
 export class MealTab implements BaseComponent {
   public title = config.texts.titles.overview;
@@ -50,7 +51,7 @@ export class MealTab implements BaseComponent {
 
   async render() {
     return `
-      <div class="flex flex-col justify-center items-center space-y-4">
+      <div id="${TAB_CONTAINER_ID}" class="flex flex-col justify-center items-center space-y-4">
         <div class="flex justify-center items-center space-x-2">
           ${this.mealSearch()}
           <div class="divider divider-horizontal"></div>
