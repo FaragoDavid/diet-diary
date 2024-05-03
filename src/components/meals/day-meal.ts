@@ -23,19 +23,16 @@ export function getMealDishesId(date: Date, mealType: string) {
 export class DayMeal implements BaseComponent {
   static STATS_SPAN = STATS_SPAN;
   mealStatLayout: StatLayout;
-  statsSpan?: `${STATS_SPAN}`;
   showDishes: boolean;
-  swap: boolean;
-
+  swapOob: HtmxSwapOobOption;
   constructor(
     private meal: Meal,
     private ingredients: Ingredient[],
-    options: { mealStatLayout: StatLayout; statsSpan?: `${STATS_SPAN}`; showDishes: boolean; swap: boolean },
+    options: { layout: 'dayList' | 'page'; swapOob: HtmxSwapOobOption },
   ) {
-    this.mealStatLayout = options.mealStatLayout;
-    this.statsSpan = options.statsSpan;
-    this.showDishes = options.showDishes;
-    this.swap = options.swap;
+    this.mealStatLayout = options.layout === 'page' ? 'horizontal' : 'cells';
+    this.showDishes = options.layout === 'page';
+    this.swapOob = options.swapOob;
   }
 
   mealName() {
@@ -54,7 +51,7 @@ export class DayMeal implements BaseComponent {
       <div
        id="${getMealDishesId(this.meal.date, this.meal.type)}"
        class="col-span-3 grid grid-cols-max-6 gap-2 items-center px-2"
-       ${this.swap ? 'hx-swap-oob="true"' : ''}
+       ${this.swapOob ? 'hx-swap-oob="true"' : ''}
       >
         ${this.meal.dishes.length > 0 ? await new DayMealDishHeader(this.meal.date, this.meal.type, { swapOob: false }).render() : ''}
         ${dishComponents.join('')}

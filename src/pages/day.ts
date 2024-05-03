@@ -30,13 +30,7 @@ export class DayPage implements BaseComponent {
   async render() {
     const meals: string[] = [];
     for (const meal of this.day.meals) {
-      meals.push(
-        await new DayMeal({ ...meal, date: this.day.date }, this.ingredients, {
-          mealStatLayout: 'horizontal',
-          showDishes: true,
-          swap: false,
-        }).render(),
-      );
+      meals.push(await new DayMeal({ ...meal, date: this.day.date }, this.ingredients, { layout: 'page', swapOob: false }).render());
     }
 
     return `

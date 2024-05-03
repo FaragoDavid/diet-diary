@@ -168,9 +168,8 @@ export const deleteDish = async (request: DeleteDishRequest, reply: FastifyReply
   const template = `
     ${await new DayStats(day, { layout: 'vertical', swapOob: HTMX_SWAP.ReplaceElement }).render()}
     ${await new DayMeal(meal, ingredients, {
-      mealStatLayout: 'horizontal',
-      showDishes: true,
-      swap: true,
+      layout: 'page',
+      swapOob: HTMX_SWAP.ReplaceElement,
     }).render()}
   `;
 
