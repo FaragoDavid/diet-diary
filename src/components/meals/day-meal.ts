@@ -3,19 +3,15 @@ import { Ingredient } from '../../repository/ingredient.js';
 import { Meal } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
 import icons from '../../utils/icons.js';
-import { amount } from '../amount.js';
 import { StatLayout } from '../stats.js';
 import { DayMealDish, dayMealDishHeader } from './day-meal-dish.js';
 import { MealStats } from './meal-stats.js';
+import { NewDish } from './new-dish.js';
 
 enum STATS_SPAN {
   TWO = 'col-span-2',
   FOUR = 'col-span-4',
 }
-
-const texts = {
-  ingredientSelectorPlaceholder: 'Válassz',
-};
 
 export class DayMeal implements BaseComponent {
   static STATS_SPAN = STATS_SPAN;
@@ -27,7 +23,7 @@ export class DayMeal implements BaseComponent {
   constructor(
     private meal: Meal,
     private ingredients: Ingredient[],
-    options: { mealStatLayout: StatLayout; statsSpan?: `${STATS_SPAN}`; showDishes: boolean, swap: boolean },
+    options: { mealStatLayout: StatLayout; statsSpan?: `${STATS_SPAN}`; showDishes: boolean; swap: boolean },
   ) {
     this.mealStatLayout = options.mealStatLayout;
     this.statsSpan = options.statsSpan;
@@ -41,37 +37,10 @@ export class DayMeal implements BaseComponent {
     `;
   }
 
-  newDish() {
-    return `
-      <select 
-        name="${this.meal.type}-dishId" 
-        class="select select-bordered select-sm w-30"
-      >
-        <option disabled selected>${texts.ingredientSelectorPlaceholder}</option>
-        ${this.ingredients
-          .filter(({ id }) => !this.meal.dishes.map(({ id }) => id).includes(id))
-          .map(({ id, name }) => `<option value="${id}" >${name}</option>`)
-          .join('')}
-      </select>
-      ${amount({
-        name: `amount`,
-        hx: {
-          verb: 'post',
-          url: `/day/${dateToParam(this.meal.date)}/meal/${this.meal.type}/dish`,
-          include: `[name=${this.meal.type}-dishId]`,
-          target: `[name=${this.meal.type}-dishId]`,
-          swap: 'beforebegin',
-          trigger: 'change delay:100ms',
-        },
-      })}
-      <div class="col-span-5"></div>
-    `;
-  }
-
   async dishes() {
     const dishComponents: string[] = [];
     for (const dish of this.meal.dishes) {
-      dishComponents.push(await new DayMealDish(dish, this.meal.date, this.meal.type).render());
+      dishComponents.push(await new DayMealDish(dish, this.meal.date, this.meal.type, { swapOob: false }).render());
     }
 
     return `
@@ -82,7 +51,7 @@ export class DayMeal implements BaseComponent {
       >
         ${this.meal.dishes.length > 0 ? dayMealDishHeader : ''}
         ${dishComponents.join('')}
-        ${this.newDish()}
+        ${await new NewDish(this.meal, this.ingredients, { swapOob: false }).render()}
       </div>
     `;
   }

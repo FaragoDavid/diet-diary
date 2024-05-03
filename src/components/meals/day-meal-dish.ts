@@ -2,7 +2,9 @@ import { MealType } from "../../config.js";
 import { Dish } from "../../repository/meal.js";
 import { dateToParam } from "../../utils/converters.js";
 import icons from "../../utils/icons.js";
+import { swapOobWrapper } from "../../utils/swap-oob-wrapper.js";
 import { amount as dishAmount } from '../amount.js';
+import { getMealNewDishSelectId } from "./new-dish.js";
 
 const texts = {
   calories: 'Kal',
@@ -19,7 +21,10 @@ export const dayMealDishHeader = `
 `;
 
 export class DayMealDish implements BaseComponent {
-  constructor(private dish: Dish, private date: Date, private mealType: MealType) {}
+  swapOob: HtmxSwapOobOption;
+  constructor(private dish: Dish, private date: Date, private mealType: MealType, options: { swapOob: HtmxSwapOobOption }) {
+    this.swapOob = options.swapOob;
+  }
 
   deleteDish() {
     return `
@@ -35,7 +40,7 @@ export class DayMealDish implements BaseComponent {
   async render() {
     const { name, amount, calories, carbs, fat } = this.dish;
 
-    return `
+    const template = `
       <div class="text">${name}</div>
       ${dishAmount({ name, amount })}
       <div class="text text-right">${Math.floor(calories)}</div>
@@ -43,5 +48,10 @@ export class DayMealDish implements BaseComponent {
       <div class="text text-right">${Math.floor(fat)}</div>
       ${this.deleteDish()}
     `;
+
+    if (this.swapOob) {
+      return swapOobWrapper(getMealNewDishSelectId(this.date, this.mealType), this.swapOob, template);
+    }
+    return template;
   }
 }

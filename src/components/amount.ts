@@ -5,14 +5,16 @@ const texts = {
 type HxSwap = 'outerHTML' | 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend' | 'delete' | 'none';
 
 export function amount(options: {
+  id?: string;
   amount?: number;
   name?: string;
   showText?: boolean;
   hx?: { verb: 'get' | 'post'; url: string; target?: string; swap?: HxSwap, include?: string, trigger?: string };
 }) {
-  const { amount, name, showText, hx } = options;
+  const { amount, name, showText, hx, id } = options;
   return `
-    <div class="flex flex-col justify-center items-center gap-y-1">
+    <div ${id ? `id="${id}"` : ''}
+      class="flex flex-col justify-center items-center gap-y-1">
       ${showText ? `<div class="text text-center text-sm italic">${texts.amount}</div>` : ''}
       <div class="flex justify-center items-center">
         <input 

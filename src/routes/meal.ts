@@ -18,6 +18,8 @@ import { paramToDate } from '../utils/converters.js';
 import { TAB_NAME, tabList } from '../components/tab-list.js';
 import { subDays } from 'date-fns';
 import { DayMealList } from '../components/meals/day-meal-list.js';
+import { HTMX_SWAP } from '../utils/htmx.js';
+import { NewDish } from '../components/meals/new-dish.js';
 
 type DashDate = `${string}-${string}-${string}`;
 
@@ -129,12 +131,15 @@ export const addDish = async (request: AddDishRequest, reply: FastifyReply) => {
   );
   const day = await mealRepository.fetchDay(paramToDate(date));
   const meal = await mealRepository.fetchMeal(paramToDate(date), mealType);
+  const ingredients = await selectIngredients();
+
   const template = `
-    ${meal.dishes.length === 1 ? dayMealDishHeader : ''}
-    ${await new DayMealDish(dish, meal.date, mealType).render()}
-    ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swap: true }).render()}
-    ${await new MealStats(meal, { layout: 'horizontal', swap: true }).render()}
+    ${await new NewDish(meal, ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
+    ${await new DayMealDish(dish, meal.date, mealType, { swapOob: HTMX_SWAP.BeforeElement}).render()}
   `;
+  // ${meal.dishes.length === 1 ? dayMealDishHeader : ''}
+  // ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swap: true }).render()}
+  // ${await new MealStats(meal, { layout: 'horizontal', swap: true }).render()}
 
   return reply.type('text/html').send(template);
 };
