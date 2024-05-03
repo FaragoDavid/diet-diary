@@ -125,7 +125,7 @@ export const updateRecipeAmount = async (request: UpdateRecipeAmountRequest, rep
 
   await recipeRepository.updateRecipeAmount(recipeId, Number(amount));
 
-  return reply.type('text/html');
+  return reply.type('text/html').send();
 };
 
 export const newRecipe = async (_: FastifyRequest, reply: FastifyReply) => {

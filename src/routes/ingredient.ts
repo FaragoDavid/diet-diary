@@ -32,7 +32,7 @@ export const getIngredients = async (request: GetIngredientsRequest, reply: Fast
 
   const ingredients = await ingredientRepository.selectIngredients(query);
 
-  const template = await new IngredientList(ingredients, { swap: false }).render();
+  const template = await new IngredientList(ingredients, { swapOob: false }).render();
 
   return reply.type('text/html').send(template);
 };
@@ -76,7 +76,7 @@ export const deleteIngredient = async (request: DeleteIngredientRequest, reply: 
     ingredients = await ingredientRepository.selectIngredients('');
   }
 
-  const template = await new IngredientList(ingredients, { swap: true }).render();
+  const template = await new IngredientList(ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render();
 
   return reply.type('text/html').send(template);
 };
@@ -91,5 +91,5 @@ export const updateIngredient = async (request: UpdateIngredientRequest, reply: 
     fat: Number(fat),
   });
 
-  return reply.type('text/html');
+  return reply.type('text/html').send();
 };
