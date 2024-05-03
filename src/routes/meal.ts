@@ -8,6 +8,7 @@ import { DayMealDish, DayMealDishHeader } from '../components/meals/day-meal-dis
 import { DayMealList } from '../components/meals/day-meal-list.js';
 import { DayMeal } from '../components/meals/day-meal.js';
 import { DayStats } from '../components/meals/day-stats.js';
+import { MealStats } from '../components/meals/meal-stats.js';
 import { MealTab } from '../components/meals/meal-tab.js';
 import { MissingMeals } from '../components/meals/missing-meals.js';
 import { NewDish } from '../components/meals/new-dish.js';
@@ -137,8 +138,8 @@ export const addDish = async (request: AddDishRequest, reply: FastifyReply) => {
     ${await new NewDish(meal, ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
     ${await new DayMealDish(dish, meal.date, mealType, { swapOob: HTMX_SWAP.BeforeElement }).render()}
     ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swapOob: HTMX_SWAP.ReplaceElement }).render()}
+    ${await new MealStats(meal, { layout: 'horizontal', swapOob: HTMX_SWAP.ReplaceElement }).render()}
   `;
-  // ${await new MealStats(meal, { layout: 'horizontal', swap: true }).render()}
 
   return reply.type('text/html').send(template);
 };
