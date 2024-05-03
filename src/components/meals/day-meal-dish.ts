@@ -1,11 +1,11 @@
-import { HTMX_SWAP } from 'src/utils/htmx.js';
 import { MealType } from '../../config.js';
 import { Dish } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
+import { HTMX_SWAP } from '../../utils/htmx.js';
 import icons from '../../utils/icons.js';
 import { swapOobWrapper } from '../../utils/swap-oob-wrapper.js';
 import { amount as dishAmount } from '../amount.js';
-import { getDeleteMealId, getMealDishesId } from './day-meal.js';
+import { getMealDishesId } from './day-meal.js';
 import { getMealNewDishSelectId } from './new-dish.js';
 
 const texts = {

@@ -44,13 +44,8 @@ export class DayPage implements BaseComponent {
       <div id="${DAY_PAGE_ID}" class="flex flex-col justify-center items-center gap-4 pt-6">
         ${dayHeader(this.day)}
         ${await new DayStats(this.day, { layout: 'vertical', span: DayStats.SPAN.NONE, swapOob: false }).render()}
-        ${await new MissingMeals(this.day, { swap: false }).render()}
-        ${await new DayMealList(this.day.meals, this.day.date, this.ingredients, {
-          showDishes: true,
-          mealStatLayout: 'horizontal',
-          cols: 3,
-          swap: false,
-        }).render()}
+        ${await new MissingMeals(this.day, { swapOob: false }).render()}
+        ${await new DayMealList(this.day.meals, this.day.date, this.ingredients, { layout: 'page', swapOob: false }).render()}
       </div>`;
   }
 }

@@ -3,7 +3,7 @@ import { DayMeal } from './day-meal.js';
 import { Ingredient } from '../../repository/ingredient.js';
 import { dateToParam } from '../../utils/converters.js';
 import { StatLayout } from '../stats.js';
-
+import { swapOobTag } from '../../utils/swap-oob-wrapper.js';
 
 export function getDayMealListId(date: Date) {
   return `day-${dateToParam(date)}-meal-list`;
@@ -13,17 +13,17 @@ export class DayMealList implements BaseComponent {
   showDishes: boolean;
   mealStatLayout: StatLayout;
   gridCols: string;
-  swap: boolean;
+  swapOob: HtmxSwapOobOption;
   constructor(
     private meals: Omit<Meal, 'date'>[],
     private date: Date,
     private ingredients: Ingredient[],
-    options: { showDishes: boolean; mealStatLayout: StatLayout; cols: 3 | 4; swap: boolean },
+    options: { layout: 'dayList' | 'page'; swapOob: HtmxSwapOobOption },
   ) {
-    this.showDishes = options.showDishes;
-    this.mealStatLayout = options.mealStatLayout;
-    this.gridCols = `grid-cols-${options.cols === 3 ? 'max-3' : '4'}`;
-    this.swap = options.swap;
+    this.showDishes = options.layout === 'page';
+    this.mealStatLayout = options.layout === 'page' ? 'horizontal' : 'cells';
+    this.gridCols = options.layout === 'page' ? 'grid-cols-max-3' : 'grid-cols-max-4';
+    this.swapOob = options.swapOob;
   }
 
   async render() {
@@ -42,7 +42,7 @@ export class DayMealList implements BaseComponent {
       <div 
         id="${getDayMealListId(this.date)}" 
         class="grid ${this.gridCols} gap-2 px-2 items-center ${this.showDishes ? '' : 'col-span-3'}"
-        ${this.swap ? 'hx-swap-oob="true"' : ''}
+        ${swapOobTag(this.swapOob)}
       >
         ${dayMeals.join('')}
       </div>

@@ -83,7 +83,7 @@ export const createDay = async (request: CreateDayRequest, reply: FastifyReply) 
   const template = `
     ${dayHeader(day)}
     ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swapOob: HTMX_SWAP.ReplaceElement }).render()}
-    ${await new MissingMeals(day, { swap: false }).render()}
+    ${await new MissingMeals(day, { swapOob: false }).render()}
   `;
 
   const dateParam = request.body.date.split('-').join('');
@@ -108,12 +108,10 @@ export const addMeal = async (request: AddMealRequest, reply: FastifyReply) => {
   const ingredients = await selectIngredients();
 
   const template = `
-    ${await new MissingMeals(day, { swap: true }).render()}
+    ${await new MissingMeals(day, { swapOob: false }).render()}
     ${await new DayMealList(day.meals, date, ingredients, {
-      showDishes: true,
-      mealStatLayout: 'horizontal',
-      cols: 3,
-      swap: meal.dishes.length !== 0,
+      layout: 'page',
+      swapOob:HTMX_SWAP.ReplaceElement,
     }).render()}
   `;
 
@@ -153,8 +151,8 @@ export const deleteMeal = async (request: DeleteMealRequest, reply: FastifyReply
 
   const template = `
     ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swapOob: HTMX_SWAP.ReplaceElement }).render()}
-    ${await new MissingMeals(day, { swap: true }).render()}
-    ${await new DayMealList(day.meals, date, [], { showDishes: true, mealStatLayout: 'horizontal', cols: 3, swap: true }).render()}
+    ${await new MissingMeals(day, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
+    ${await new DayMealList(day.meals, date, [], { layout: 'page', swapOob: HTMX_SWAP.ReplaceElement }).render()}
   `;
   return reply.type('text/html').send(template);
 };

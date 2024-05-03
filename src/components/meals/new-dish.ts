@@ -2,7 +2,7 @@ import { HTMX_SWAP } from '../../utils/htmx.js';
 import { Ingredient } from '../../repository/ingredient.js';
 import { Meal } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
-import { swapOobWrapper } from '../../utils/swap-oob-wrapper.js';
+import { swapOobTag, swapOobWrapper } from '../../utils/swap-oob-wrapper.js';
 import { amount as amountInput } from '../amount.js';
 
 const texts = {
@@ -42,7 +42,7 @@ export class NewDish implements BaseComponent {
         id="${this.newDishSelectId}"
         name="${this.meal.type}-dishId" 
         class="select select-bordered select-sm w-30"
-        ${this.swapOob === HTMX_SWAP.ReplaceElement ? 'hx-swap-oob="outerHTML"' : ''}
+        ${swapOobTag(this.swapOob)}
       >
         ${this.options()}
       </select>
