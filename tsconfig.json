@@ -14,6 +14,7 @@
     "noImplicitAny": false,
     "module": "NodeNext",
   },
-  "include": ["src", "test", "src/repository/meal.ts"],
+  "files": ["src/types.d.ts"],
+  "include": ["src", "test", "src/**/*.ts"],
   "exclude": ["dist", "bundle", "node_modules"]
 }

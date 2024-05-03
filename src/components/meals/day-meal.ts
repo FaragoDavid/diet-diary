@@ -4,13 +4,20 @@ import { Meal } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
 import icons from '../../utils/icons.js';
 import { StatLayout } from '../stats.js';
-import { DayMealDish, dayMealDishHeader } from './day-meal-dish.js';
+import { DayMealDish, DayMealDishHeader } from './day-meal-dish.js';
 import { MealStats } from './meal-stats.js';
 import { NewDish } from './new-dish.js';
 
 enum STATS_SPAN {
   TWO = 'col-span-2',
   FOUR = 'col-span-4',
+}
+
+export function getDeleteMealId(date: Date, mealType: string) {
+  return `day-${dateToParam(date)}-${mealType}-delete`;
+}
+export function getMealDishesId(date: Date, mealType: string) {
+  return `day-${dateToParam(date)}-${mealType}-dishes`;
 }
 
 export class DayMeal implements BaseComponent {
@@ -45,11 +52,11 @@ export class DayMeal implements BaseComponent {
 
     return `
       <div
-       id="day-${dateToParam(this.meal.date)}-${this.meal.type}-dishes"
+       id="${getMealDishesId(this.meal.date, this.meal.type)}"
        class="col-span-3 grid grid-cols-max-6 gap-2 items-center px-2"
        ${this.swap ? 'hx-swap-oob="true"' : ''}
       >
-        ${this.meal.dishes.length > 0 ? dayMealDishHeader : ''}
+        ${this.meal.dishes.length > 0 ? await new DayMealDishHeader(this.meal.date, this.meal.type, { swapOob: false }).render() : ''}
         ${dishComponents.join('')}
         ${await new NewDish(this.meal, this.ingredients, { swapOob: false }).render()}
       </div>
@@ -59,6 +66,7 @@ export class DayMeal implements BaseComponent {
   deleteMeal() {
     return `
       <button 
+        id="${getDeleteMealId(this.meal.date, this.meal.type)}"
         class="btn btn-sm btn-secondary p-0"
         hx-delete="/day/${dateToParam(this.meal.date)}/meal/${this.meal.type}"
       >

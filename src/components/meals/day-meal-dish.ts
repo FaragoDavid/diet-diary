@@ -1,10 +1,12 @@
-import { MealType } from "../../config.js";
-import { Dish } from "../../repository/meal.js";
-import { dateToParam } from "../../utils/converters.js";
-import icons from "../../utils/icons.js";
-import { swapOobWrapper } from "../../utils/swap-oob-wrapper.js";
+import { HTMX_SWAP } from 'src/utils/htmx.js';
+import { MealType } from '../../config.js';
+import { Dish } from '../../repository/meal.js';
+import { dateToParam } from '../../utils/converters.js';
+import icons from '../../utils/icons.js';
+import { swapOobWrapper } from '../../utils/swap-oob-wrapper.js';
 import { amount as dishAmount } from '../amount.js';
-import { getMealNewDishSelectId } from "./new-dish.js";
+import { getDeleteMealId, getMealDishesId } from './day-meal.js';
+import { getMealNewDishSelectId } from './new-dish.js';
 
 const texts = {
   calories: 'Kal',
@@ -12,13 +14,27 @@ const texts = {
   fat: 'Zsír',
 };
 
-export const dayMealDishHeader = `
-  <div class="text col-span-2"></div>
-  <div class="text-sm text-center italic">${texts.calories}</div>
-  <div class="text-sm text-center italic">${texts.carbs}</div>
-  <div class="text-sm text-center italic">${texts.fat}</div>
-  <div class="text"></div>
-`;
+export class DayMealDishHeader implements BaseComponent {
+  swapOob: HtmxSwapOobOption;
+  constructor(private date: Date, private mealType: MealType, options: { swapOob: HtmxSwapOobOption }) {
+    this.swapOob = options.swapOob;
+  }
+
+  async render() {
+    const template = `
+      <div class="text"></div>
+      <div class="text"></div>
+      <div class="text text-right">${texts.calories}</div>
+      <div class="text text-right">${texts.carbs}</div>
+      <div class="text text-right">${texts.fat}</div>
+      <div class="text"></div>
+    `;
+
+    if (this.swapOob && this.swapOob !== HTMX_SWAP.ReplaceElement)
+      return swapOobWrapper(getMealDishesId(this.date, this.mealType), this.swapOob, template);
+    return template;
+  }
+}
 
 export class DayMealDish implements BaseComponent {
   swapOob: HtmxSwapOobOption;

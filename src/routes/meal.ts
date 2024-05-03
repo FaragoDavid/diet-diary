@@ -1,25 +1,24 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
+import { subDays } from 'date-fns';
 import { layout } from '../components/layout.js';
 import { dayHeader } from '../components/meals/day-header.js';
-import { MealTab } from '../components/meals/meal-tab.js';
-import { DayStats } from '../components/meals/day-stats.js';
 import { DayList } from '../components/meals/day-list.js';
-import { DayMealDish, dayMealDishHeader } from '../components/meals/day-meal-dish.js';
-import { MealStats } from '../components/meals/meal-stats.js';
+import { DayMealDish, DayMealDishHeader } from '../components/meals/day-meal-dish.js';
+import { DayMealList } from '../components/meals/day-meal-list.js';
 import { DayMeal } from '../components/meals/day-meal.js';
+import { DayStats } from '../components/meals/day-stats.js';
+import { MealTab } from '../components/meals/meal-tab.js';
 import { MissingMeals } from '../components/meals/missing-meals.js';
+import { NewDish } from '../components/meals/new-dish.js';
+import { TAB_NAME, tabList } from '../components/tab-list.js';
 import { MealType } from '../config.js';
 import { DayPage, NewDayPage } from '../pages/day.js';
 import { selectIngredients } from '../repository/ingredient.js';
 import * as mealRepository from '../repository/meal.js';
 import { fetchDays } from '../repository/meal.js';
 import { paramToDate } from '../utils/converters.js';
-import { TAB_NAME, tabList } from '../components/tab-list.js';
-import { subDays } from 'date-fns';
-import { DayMealList } from '../components/meals/day-meal-list.js';
 import { HTMX_SWAP } from '../utils/htmx.js';
-import { NewDish } from '../components/meals/new-dish.js';
 
 type DashDate = `${string}-${string}-${string}`;
 
@@ -134,10 +133,10 @@ export const addDish = async (request: AddDishRequest, reply: FastifyReply) => {
   const ingredients = await selectIngredients();
 
   const template = `
+    ${meal.dishes.length === 1 ? await new DayMealDishHeader(meal.date, meal.type, { swapOob: HTMX_SWAP.BeforeFirstChild}).render() : ''}
     ${await new NewDish(meal, ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
     ${await new DayMealDish(dish, meal.date, mealType, { swapOob: HTMX_SWAP.BeforeElement}).render()}
   `;
-  // ${meal.dishes.length === 1 ? dayMealDishHeader : ''}
   // ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swap: true }).render()}
   // ${await new MealStats(meal, { layout: 'horizontal', swap: true }).render()}
 

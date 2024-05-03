@@ -76,6 +76,47 @@ const registerRoutes = (fastify: FastifyInstance) => {
   fastify.delete('/day/:date/meal/:mealType', createHandler(mealRoutes.deleteMeal));
   fastify.post('/day/:date/meal/:mealType/dish', createHandler(mealRoutes.addDish));
   fastify.delete('/day/:date/meal/:mealType/dish/:dishId', createHandler(mealRoutes.deleteDish));
+
+
+
+    fastify.get('/test', async (_, reply: FastifyReply) => {
+      return reply.type('text/html').send(
+        await layout({
+          render: async () => `
+          <div class="flex flex-col gap-4">
+            <div id="target" class="bg-pink-300">
+              Target parent
+              <button class="btn bg-red-100" hx-post="/test" hx-swap="outerHTML" hx-target="#target">Content</button>
+            </div>
+            <div id="oob-after" class="bg-red-200">Place stuff after this</div>
+            <div id="oob-before" class="bg-red-500">Place stuff before this</div>
+            <div id="oob-replace" class="bg-red-600">
+              Also replace this
+              <div class="bg-red-700 p-2">Nested</div>
+            </div>
+          </div>
+        `,
+        }),
+      );
+    });
+
+    fastify.post('/test', async (_, reply: FastifyReply) => {
+      return reply.type('text/html').send(`
+      <div id="target" class="bg-pink-600">
+        Replaced parent
+        <button class="btn bg-blue-100" hx-post="/test" hx-swap="outerHTML" hx-target="#target">R. Content</button>
+      </div>
+      <div id="oob-before" hx-swap-oob="beforebegin" class="bg-green-500">
+        <div class="bg-blue-300">Inserted 1</div>
+        <div class="bg-blue-400">Inserted 2</div>
+      </div>
+      </div>
+      <div class="bg-blue-600" id="oob-replace" hx-swap-oob="true">
+        Replaced 1
+        <div class="bg-blue-700 p-2">Nested</div>
+      </div>
+    `);
+    });
 };
 
 export { registerLoginRoutes, registerRoutes };
