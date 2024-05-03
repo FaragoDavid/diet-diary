@@ -52,7 +52,7 @@ export class RecipeListItem implements BaseComponent {
       ${this.amount()}
       ${this.editButton()}
       ${this.deleteButton()}
-      ${await new RecipeStats(this.recipe, this.ingredients, { id: `recipe-${this.recipe.id}-stats`, swap: false }).render()}
+      ${await new RecipeStats(this.recipe, this.ingredients, { id: `recipe-${this.recipe.id}-stats`, swapOob: false }).render()}
     `;
   }
 }

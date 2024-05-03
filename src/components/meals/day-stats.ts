@@ -12,12 +12,12 @@ export class DayStats implements BaseComponent {
   static SPAN = SPAN;
   layout: StatLayout;
   span?: string;
-  swap: boolean;
+  swapOob: HtmxSwapOobOption;
 
-  constructor(private day: Day, options: { layout: StatLayout, span?: `${SPAN}`; swap: boolean }) {
+  constructor(private day: Day, options: { layout: StatLayout, span?: `${SPAN}`; swapOob: HtmxSwapOobOption }) {
     this.layout = options.layout;
     this.span = options.span;
-    this.swap = options.swap;
+    this.swapOob = options.swapOob;
   }
 
   async render() {
@@ -41,7 +41,7 @@ export class DayStats implements BaseComponent {
         layout: this.layout,
         size: 'sm',
         span: this.span,
-        swap: this.swap,
+        swapOob: this.swapOob,
       },
     );
   }

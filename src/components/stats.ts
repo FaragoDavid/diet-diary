@@ -1,3 +1,6 @@
+import { HTMX_SWAP } from '../utils/htmx.js';
+import { swapOobWrapper } from '../utils/swap-oob-wrapper.js';
+
 const macroTexts = {
   cal: 'Kal',
   carbs: 'CH',
@@ -28,16 +31,18 @@ function stat(macro: Macro, amount: number, layout: StatLayout, options?: { size
 
 export function stats(
   macroAmounts: { cal: number; carbs: number; fat: number },
-  options: { id?: string; layout: StatLayout; size?: Size; span?: string; swap?: boolean },
+  options: { id?: string; layout: StatLayout; size?: Size; span?: string; swapOob?: HtmxSwapOobOption },
 ) {
   const { cal, carbs, fat } = macroAmounts;
-  let { id, layout, size, span, swap } = options;
+  let { id, layout, size, span, swapOob } = options;
   if (span == undefined) span = '';
-  if (swap == undefined) swap = false;
 
+  let template = '';
   if (layout === 'vertical' || layout === 'horizontal')
-    return `
-      <div id="${id}" class="flex ${size ? textSizes[size] : ''} ${span || ''}" ${swap ? `hx-swap-oob="true"` : ''}>
+    template = `
+      <div id="${id}" class="flex ${size ? textSizes[size] : ''} ${span || ''}" ${
+      swapOob === HTMX_SWAP.ReplaceElement ? `hx-swap-oob="${swapOob}"` : ''
+    }>
         ${stat('cal', cal, layout)}
         <div class="divider divider-horizontal m-1"></div> 
         ${stat('carbs', carbs, layout)}
@@ -45,6 +50,16 @@ export function stats(
         ${stat('fat', fat, layout)}
       </div>
     `;
-  if (layout === 'cells') return [stat('cal', cal, layout, { size }), stat('carbs', carbs, layout, { size }), stat('fat', fat, layout, { size })].join('');
-  return ``;
+  if (layout === 'cells')
+    template = `
+      ${stat('cal', cal, layout, { size })}
+      ${stat('carbs', carbs, layout, { size })}
+      ${stat('fat', fat, layout, { size })}
+    `;
+
+  if (swapOob && swapOob !== HTMX_SWAP.ReplaceElement) {
+    if (!id) throw new Error('id is required for hx-swap-oob');
+    return swapOobWrapper(id, swapOob, template);
+  }
+  return template;
 }

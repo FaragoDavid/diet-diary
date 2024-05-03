@@ -4,11 +4,11 @@ import { StatLayout, stats } from '../stats.js';
 export class MealStats implements BaseComponent {
   layout: StatLayout;
   span?: string;
-  swap: boolean;
-  constructor(private meal: Omit<Meal, 'date'>, options: { layout: StatLayout, span?: string, swap: boolean }) {
+  swapOob: HtmxSwapOobOption;
+  constructor(private meal: Omit<Meal, 'date'>, options: { layout: StatLayout; span?: string; swapOob: HtmxSwapOobOption }) {
     this.layout = options.layout;
     this.span = options.span;
-    this.swap = options.swap;
+    this.swapOob = options.swapOob;
   }
 
   async render() {
@@ -28,7 +28,7 @@ export class MealStats implements BaseComponent {
         layout: this.layout,
         span: this.span,
         size: 'sm',
-        swap: this.swap,
+        swapOob: this.swapOob,
       },
     );
   }

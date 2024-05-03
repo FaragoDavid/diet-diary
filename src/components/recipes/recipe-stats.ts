@@ -3,14 +3,12 @@ import { Recipe } from '../../repository/recipe.js';
 import { stats } from '../stats.js';
 
 export class RecipeStats implements BaseComponent {
-  constructor(
-    private recipe: Recipe,
-    private ingredients: Ingredient[],
-    private options: {
-      id: string;
-      swap: boolean;
-    },
-  ) {}
+  id: string;
+  swapOob: HtmxSwapOobOption;
+  constructor(private recipe: Recipe, private ingredients: Ingredient[], options: { id: string; swapOob: HtmxSwapOobOption }) {
+    this.id = options.id;
+    this.swapOob = options.swapOob;
+  }
 
   async render() {
     const { recipeCalories, recipeCH, recipeFat } = this.recipe.ingredients.reduce(
@@ -27,7 +25,7 @@ export class RecipeStats implements BaseComponent {
 
     return stats(
       { cal: recipeCalories, carbs: recipeCH, fat: recipeFat },
-      { id: `recipe${this.recipe.id}-stats`, layout: 'horizontal', size: 'sm', span: 'col-span-2', swap: this.options.swap },
+      { id: `recipe${this.recipe.id}-stats`, layout: 'horizontal', size: 'sm', span: 'col-span-2', swapOob: this.swapOob },
     );
   }
 }

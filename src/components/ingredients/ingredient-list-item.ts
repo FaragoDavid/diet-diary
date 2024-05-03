@@ -44,7 +44,7 @@ export class IngredientListItem {
           carbs: this.ingredient.carbs * 100,
           fat: this.ingredient.fat * 100,
         },
-        { layout: 'cells', size: 'sm', swap: false },
+        { layout: 'cells', size: 'sm', swapOob: false },
       )}
       ${this.editButton()}
       ${this.deleteButton()}

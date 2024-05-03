@@ -78,7 +78,7 @@ export class DayMeal implements BaseComponent {
   async render() {
     return `
       ${this.mealName()}
-      ${await new MealStats(this.meal, { layout: this.mealStatLayout, swap: false }).render()}
+      ${await new MealStats(this.meal, { layout: this.mealStatLayout, swapOob: false }).render()}
       ${this.showDishes ? this.deleteMeal() : ''}
       ${this.showDishes ? await this.dishes() : ''}
     `;

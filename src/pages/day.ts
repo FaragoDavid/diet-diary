@@ -43,7 +43,7 @@ export class DayPage implements BaseComponent {
       ${await new BackLink().render()}
       <div id="${DAY_PAGE_ID}" class="flex flex-col justify-center items-center gap-4 pt-6">
         ${dayHeader(this.day)}
-        ${await new DayStats(this.day, { layout: 'vertical', span: DayStats.SPAN.NONE, swap: false }).render()}
+        ${await new DayStats(this.day, { layout: 'vertical', span: DayStats.SPAN.NONE, swapOob: false }).render()}
         ${await new MissingMeals(this.day, { swap: false }).render()}
         ${await new DayMealList(this.day.meals, this.day.date, this.ingredients, {
           showDishes: true,

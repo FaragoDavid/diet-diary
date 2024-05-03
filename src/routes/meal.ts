@@ -81,7 +81,7 @@ export const createDay = async (request: CreateDayRequest, reply: FastifyReply) 
 
   const template = `
     ${dayHeader(day)}
-    ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swap: false }).render()}
+    ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swapOob: HTMX_SWAP.ReplaceElement }).render()}
     ${await new MissingMeals(day, { swap: false }).render()}
   `;
 
@@ -133,11 +133,11 @@ export const addDish = async (request: AddDishRequest, reply: FastifyReply) => {
   const ingredients = await selectIngredients();
 
   const template = `
-    ${meal.dishes.length === 1 ? await new DayMealDishHeader(meal.date, meal.type, { swapOob: HTMX_SWAP.BeforeFirstChild}).render() : ''}
+    ${meal.dishes.length === 1 ? await new DayMealDishHeader(meal.date, meal.type, { swapOob: HTMX_SWAP.BeforeFirstChild }).render() : ''}
     ${await new NewDish(meal, ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
-    ${await new DayMealDish(dish, meal.date, mealType, { swapOob: HTMX_SWAP.BeforeElement}).render()}
+    ${await new DayMealDish(dish, meal.date, mealType, { swapOob: HTMX_SWAP.BeforeElement }).render()}
+    ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swapOob: HTMX_SWAP.ReplaceElement }).render()}
   `;
-  // ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swap: true }).render()}
   // ${await new MealStats(meal, { layout: 'horizontal', swap: true }).render()}
 
   return reply.type('text/html').send(template);
@@ -151,7 +151,7 @@ export const deleteMeal = async (request: DeleteMealRequest, reply: FastifyReply
   const day = await mealRepository.fetchDay(date);
 
   const template = `
-    ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swap: true }).render()}
+    ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swapOob: HTMX_SWAP.ReplaceElement }).render()}
     ${await new MissingMeals(day, { swap: true }).render()}
     ${await new DayMealList(day.meals, date, [], { showDishes: true, mealStatLayout: 'horizontal', cols: 3, swap: true }).render()}
   `;
@@ -167,7 +167,7 @@ export const deleteDish = async (request: DeleteDishRequest, reply: FastifyReply
   const ingredients = await selectIngredients();
 
   const template = `
-    ${await new DayStats(day, { layout: 'vertical', swap: true }).render()}
+    ${await new DayStats(day, { layout: 'vertical', swapOob: HTMX_SWAP.ReplaceElement }).render()}
     ${await new DayMeal(meal, ingredients, {
       mealStatLayout: 'horizontal',
       showDishes: true,
