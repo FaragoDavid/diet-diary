@@ -1,14 +1,15 @@
-import { Ingredient } from "../../repository/ingredient.js";
-import { RecipeIngredient } from "../../repository/recipe.js";
+import { Ingredient } from '../../repository/ingredient.js';
+import { RecipeIngredient } from '../../repository/recipe.js';
+import { swapOobTag } from '../../utils/swap-oob-wrapper.js';
 
 const texts = {
   emptyOption: 'Válassz',
 };
 
 export class IngredientSelector implements BaseComponent {
-  swap: boolean;
-  constructor(private recipeIngredients: RecipeIngredient[], private ingredients: Ingredient[], options: {swap: boolean}) {
-    this.swap = options.swap;
+  swapOob: HtmxSwapOobOption;
+  constructor(private recipeIngredients: RecipeIngredient[], private ingredients: Ingredient[], options: { swapOob: HtmxSwapOobOption }) {
+    this.swapOob = options.swapOob;
   }
 
   async render() {
@@ -18,7 +19,7 @@ export class IngredientSelector implements BaseComponent {
       <div 
         id="ingredient-selector"
         class="flex justify-center"
-        ${this.swap ? 'hx-swap-oob="true"' : ''}
+        ${swapOobTag(this.swapOob)}
       >
         <select name="ingredientId" class="select select-bordered select-sm">
           <option disabled selected>${texts.emptyOption}</option>

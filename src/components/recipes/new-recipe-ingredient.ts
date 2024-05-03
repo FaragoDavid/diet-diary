@@ -23,7 +23,7 @@ export class NewRecipeIngredient implements BaseComponent {
       >
         <div class="text">${texts.newIngredient}</div>
         <div id="hm" class="flex items-center justify-center gap-4">
-          ${await new IngredientSelector(this.recipe.ingredients, this.ingredients, { swap: false }).render()}
+          ${await new IngredientSelector(this.recipe.ingredients, this.ingredients, { swapOob: false }).render()}
           ${amount({
             name: 'amount',
             hx: {

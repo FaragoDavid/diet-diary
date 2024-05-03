@@ -113,7 +113,7 @@ export const deleteRecipeIngredient = async (request: DeleteRecipeIngredientRequ
   const template = `
     ${await new RecipeIngredientList(recipe, ingredients, { layout: 'list', swap: true }).render()}
     ${await new RecipeDetails(recipe, ingredients, { swap: true }).render()}
-    ${await new IngredientSelector(recipe.ingredients, ingredients, { swap: true }).render()}
+    ${await new IngredientSelector(recipe.ingredients, ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
   `;
 
   return reply.type('text/html').send(template);

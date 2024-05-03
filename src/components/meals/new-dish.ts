@@ -39,10 +39,10 @@ export class NewDish implements BaseComponent {
   dishSelector() {
     const template = `
       <select 
-        id="${this.newDishSelectId}"
+        id="${this.newDishSelectId}" 
         name="${this.meal.type}-dishId" 
-        class="select select-bordered select-sm w-30"
-        ${swapOobTag(this.swapOob)}
+        class="select select-bordered select-sm w-30" 
+        ${swapOobTag(this.swapOob)} 
       >
         ${this.options()}
       </select>
