@@ -1,4 +1,6 @@
 import { v4 as uuid } from 'uuid';
+import { Prisma } from '@prisma/client';
+
 import prisma from '../utils/prisma-client.js';
 
 export type Ingredient = {
@@ -44,13 +46,6 @@ export async function selectIngredients(query: string = ''): Promise<Ingredient[
     }));
 }
 
-export async function selectIngredient(id: string): Promise<Ingredient> {
-  const ingredient =  ingredients.find((ingredient) => ingredient.id === id);
-  if(!ingredient) throw new Error('Ingredient not found');
-
-  return ingredient;
-}
-
 export async function insertIngredient(name: string) {
   return await prisma.ingredient.create({ data: { name } });
 }
@@ -59,11 +54,6 @@ export async function deleteIngredient(id: string): Promise<void> {
   await prisma.ingredient.delete({ where: { id } });
 }
 
-export async function updateIngredient(id: string, values: { calories?: number; carbs?: number; fat?: number }): Promise<void> {
-  const ingredient = ingredients.find((ingredient) => ingredient.id === id);
-  if(!ingredient) throw new Error('Ingredient not found');
-
-  if(values.calories) ingredient.calories = values.calories;
-  if(values.carbs) ingredient.carbs = values.carbs;
-  if(values.fat) ingredient.fat = values.fat;
+export async function updateIngredient(id: string, data: Prisma.IngredientUpdateInput): Promise<void> {
+  await prisma.ingredient.update({ where: { id }, data });
 }

@@ -89,9 +89,9 @@ export const updateIngredient = async (request: UpdateIngredientRequest, reply: 
   const { calories, carbs, fat } = request.body;
 
   await ingredientRepository.updateIngredient(ingredientId, {
-    calories: Number(calories),
-    carbs: Number(carbs),
-    fat: Number(fat),
+    ...(calories && { caloriesPer100: parseFloat(calories) }),
+    ...(carbs && { carbsPer100: parseFloat(carbs) }),
+    ...(fat && { fatPer100: parseFloat(fat) }),
   });
 
   return reply.type('text/html').send();

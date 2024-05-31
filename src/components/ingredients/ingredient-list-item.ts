@@ -41,9 +41,9 @@ export class IngredientListItem {
       ${this.name()}
       ${stats(
         {
-          cal: (this.ingredient.caloriesPer100 || 0) * 100,
-          carbs: (this.ingredient.carbsPer100 || 0) * 100,
-          fat: (this.ingredient.fatPer100 || 0) * 100,
+          cal: this.ingredient.caloriesPer100 || 0,
+          carbs: this.ingredient.carbsPer100 || 0,
+          fat: this.ingredient.fatPer100 || 0,
         },
         { layout: 'cells', size: 'sm', swapOob: false },
       )}
