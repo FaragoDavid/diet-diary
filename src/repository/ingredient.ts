@@ -29,6 +29,10 @@ export async function fetchIngredients(query: string = '') {
   return prisma.ingredient.findMany({ where: { name: { contains: query } } });
 }
 
+export async function fetchIngredient(id: string) {
+  return prisma.ingredient.findUnique({ where: { id } });
+}
+
 export async function selectIngredients(query: string = ''): Promise<Ingredient[]> {
   return ingredients
     .filter((ingredient) => ingredient.name.toLowerCase().includes(query.toLowerCase()))
@@ -47,18 +51,12 @@ export async function selectIngredient(id: string): Promise<Ingredient> {
   return ingredient;
 }
 
-export async function insertIngredient(name: string): Promise<Ingredient> {
-  const newIngredient = { id: uuid(), name, calories: 0, carbs: 0, fat: 0 };
-  ingredients.push(newIngredient);
-
-  return newIngredient;
+export async function insertIngredient(name: string) {
+  return await prisma.ingredient.create({ data: { name } });
 }
 
 export async function deleteIngredient(id: string): Promise<void> {
-  const index = ingredients.findIndex((ingredient) => ingredient.id === id);
-  if(index === -1) throw new Error('Ingredient not found');
-
-  ingredients.splice(index, 1);
+  await prisma.ingredient.delete({ where: { id } });
 }
 
 export async function updateIngredient(id: string, values: { calories?: number; carbs?: number; fat?: number }): Promise<void> {

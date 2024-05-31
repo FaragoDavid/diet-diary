@@ -59,7 +59,10 @@ export const createIngredient = async (request: CreateIngredientRequest, reply: 
 export const getIngredient = async (request: GetIngredientRequest, reply: FastifyReply) => {
   const { ingredientId } = request.params;
 
-  const ingredient = await ingredientRepository.selectIngredient(ingredientId);
+  const ingredient = await ingredientRepository.fetchIngredient(ingredientId);
+  if (!ingredient) {
+    return reply.status(404).send('Ingredient not found');
+  }
 
   const template = await layout(new IngredientPage(ingredient));
 
@@ -67,18 +70,18 @@ export const getIngredient = async (request: GetIngredientRequest, reply: Fastif
 };
 
 export const deleteIngredient = async (request: DeleteIngredientRequest, reply: FastifyReply) => {
-  // const { ingredientId } = request.params;
-  // const { query } = request.body;
+  const { ingredientId } = request.params;
+  const { query } = request.body;
 
-  // await ingredientRepository.deleteIngredient(ingredientId);
-  // let ingredients = await ingredientRepository.selectIngredients(query);
-  // if (ingredients.length === 0) {
-  //   ingredients = await ingredientRepository.selectIngredients('');
-  // }
+  await ingredientRepository.deleteIngredient(ingredientId);
+  let ingredients = await ingredientRepository.fetchIngredients(query);
+  if (ingredients.length === 0) {
+    ingredients = await ingredientRepository.fetchIngredients();
+  }
 
-  // const template = await new IngredientList(ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render();
+  const template = await new IngredientList(ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render();
 
-  // return reply.type('text/html').send(template);
+  return reply.type('text/html').send(template);
 };
 
 export const updateIngredient = async (request: UpdateIngredientRequest, reply: FastifyReply) => {

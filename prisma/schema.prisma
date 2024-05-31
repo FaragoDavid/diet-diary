@@ -10,9 +10,9 @@ generator client {
 model Ingredient {
   id             String  @id @default(uuid())
   name           String
-  caloriesPer100 Int     @map("calories_per_100")
-  carbsPer100    Int     @map("carbs_per_100")
-  fatPer100      Int     @map("fat_per_100")
+  caloriesPer100 Int?    @map("calories_per_100")
+  carbsPer100    Int?    @map("carbs_per_100")
+  fatPer100      Int?    @map("fat_per_100")
   isVegetable    Boolean @default(false) @map("is_vegetable")
   isCarbCounted  Boolean @default(false) @map("is_carb_counted")
 

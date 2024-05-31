@@ -1,4 +1,4 @@
-import { Ingredient } from '../../repository/ingredient.js';
+import { Ingredient } from '@prisma/client';
 
 const texts = {
   calories: 'Kalória',
@@ -16,7 +16,7 @@ export class IngredientDetails implements BaseComponent {
         type="number"
         name="calories"
         class="input input-sm input-bordered w-16 text-right placeholder:text-neutral"
-        value="${this.ingredient.calories}"
+        value="${this.ingredient.caloriesPer100}"
         hx-post="/ingredient/${this.ingredient.id}"
       />
     `;
@@ -29,7 +29,7 @@ export class IngredientDetails implements BaseComponent {
         type="number"
         name="carbs"
         class="input input-sm input-bordered w-16 text-right placeholder:text-neutral"
-        value="${this.ingredient.carbs}"
+        value="${this.ingredient.carbsPer100}"
         hx-post="/ingredient/${this.ingredient.id}"
       />
     `;
@@ -42,7 +42,7 @@ export class IngredientDetails implements BaseComponent {
         type="number"
         name="fat"
         class="input input-sm input-bordered w-16 text-right placeholder:text-neutral"
-        value="${this.ingredient.fat}"
+        value="${this.ingredient.fatPer100}"
         hx-post="/ingredient/${this.ingredient.id}"
       />
     `;

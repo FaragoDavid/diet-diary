@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "ingredients" ALTER COLUMN "calories_per_100" DROP NOT NULL,
+ALTER COLUMN "carbs_per_100" DROP NOT NULL,
+ALTER COLUMN "fat_per_100" DROP NOT NULL;

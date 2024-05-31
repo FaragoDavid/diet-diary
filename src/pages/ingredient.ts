@@ -1,4 +1,5 @@
-import { Ingredient } from '../repository/ingredient.js';
+import { Ingredient } from '@prisma/client';
+
 import { BackLink } from '../components/back-link.js';
 import { ingredientHeader, newIngredientHeader } from '../components/ingredients/ingredient-header.js';
 import { IngredientDetails } from '../components/ingredients/ingredient-details.js';
