@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 import type { FastifyCookieOptions } from '@fastify/cookie';
 import cookie from '@fastify/cookie';
@@ -31,7 +33,7 @@ app.register(cookie, {
 registerLoginRoutes(app);
 registerRoutes(app);
 
-app.listen({ port: config.port, host: config.host}, (err) => {
+app.listen({ port: config.port, host: config.host }, (err) => {
   if (err) {
     app.log.error(err);
     process.exit(1);

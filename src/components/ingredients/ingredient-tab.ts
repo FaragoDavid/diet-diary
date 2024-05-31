@@ -1,8 +1,9 @@
-import { Ingredient } from '../../repository/ingredient.js';
+import { Ingredient } from '@prisma/client';
+
 import config from '../../config.js';
 import icons from '../../utils/icons.js';
-import { INGREDIENT_LIST_ID, IngredientList } from './ingredient-list.js';
 import { TAB_CONTAINER_ID } from '../tab-list.js';
+import { INGREDIENT_LIST_ID, IngredientList } from './ingredient-list.js';
 
 export const INGREDIENT_SEARCH_ID = 'ingredient-search';
 

@@ -1,4 +1,4 @@
-import { Ingredient } from '../../repository/ingredient.js';
+import { Ingredient } from '@prisma/client';
 import { swapOobTag } from '../../utils/swap-oob-wrapper.js';
 import { IngredientListItem } from './ingredient-list-item.js';
 

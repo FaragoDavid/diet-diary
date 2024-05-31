@@ -1,7 +1,8 @@
-import { MealTab } from '../components/meals/meal-tab.js';
+import { Ingredient } from '@prisma/client';
+
+import { IngredientTab } from '../components/ingredients/ingredient-tab.js';
 import { TAB_NAME, tabList } from '../components/tab-list.js';
 import config from '../config.js';
-import { Ingredient } from '../repository/ingredient.js';
 import { Day } from '../repository/meal.js';
 
 export class Dashboard implements BaseComponent {
@@ -14,8 +15,8 @@ export class Dashboard implements BaseComponent {
           <div class="text-center text-3xl font-medium py-2">
             ${config.texts.titles.page}
           </div>
-          ${tabList(TAB_NAME.meals, { swapOob: false })}
-          ${await new MealTab(this.days, this.ingredients).render()}
+          ${tabList(TAB_NAME.ingredients, { swapOob: false })}
+          ${await new IngredientTab(this.ingredients).render()}
         </div>
       </div>
     `;

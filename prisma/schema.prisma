@@ -1,0 +1,90 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_CONN_STRING")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Ingredient {
+  id             String  @id @default(uuid())
+  name           String
+  caloriesPer100 Int     @map("calories_per_100")
+  carbsPer100    Int     @map("carbs_per_100")
+  fatPer100      Int     @map("fat_per_100")
+  isVegetable    Boolean @default(false) @map("is_vegetable")
+  isCarbCounted  Boolean @default(false) @map("is_carb_counted")
+
+  recipeIngredients RecipeIngredient[]
+  dishes            Dish[]
+
+  @@map("ingredients")
+}
+
+model Recipe {
+  id       String @id @default(uuid())
+  name     String
+  amount   Int
+  servings Int
+
+  recipeIngredients RecipeIngredient[]
+  dishes            Dish[]
+
+  @@map("recipes")
+}
+
+model RecipeIngredient {
+  id     String @id @default(uuid())
+  amount Int
+
+  recipce       Recipe     @relation(fields: [recipe_id], references: [id])
+  ingredient    Ingredient @relation(fields: [ingredient_id], references: [id])
+  recipe_id     String
+  ingredient_id String
+
+  @@map("recipe_ingredients")
+}
+
+model Dish {
+  id       String @id @default(uuid())
+  name     String
+  amount   Int
+  calories Int
+  carbs    Int
+  fat      Int
+
+  meal          Meal        @relation(fields: [mealDate, mealType], references: [date, type])
+  mealDate      DateTime
+  mealType      String
+  recipe        Recipe?     @relation(fields: [recipe_id], references: [id])
+  recipe_id     String?
+  ingredient    Ingredient? @relation(fields: [ingredient_id], references: [id])
+  ingredient_id String?
+
+  @@map("dishes")
+}
+
+model Meal {
+  date     DateTime
+  type     String
+  calories Int
+  carbs    Int
+  fat      Int
+
+  dishes  Dish[]
+  Day     Day?      @relation(fields: [dayDate], references: [date])
+  dayDate DateTime?
+
+  @@unique([date, type])
+  @@map("meals")
+}
+
+model Day {
+  date DateTime
+
+  meals Meal[]
+
+  @@unique([date])
+  @@map("days")
+}

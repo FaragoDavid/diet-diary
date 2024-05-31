@@ -1,4 +1,5 @@
 import { v4 as uuid } from 'uuid';
+import prisma from '../utils/prisma-client.js';
 
 export type Ingredient = {
   id: string;
@@ -23,6 +24,10 @@ export const ingredients: Ingredient[] = [
   { id: uuid(), name: 'Cottage cheese', calories: 98, carbs: 3, fat: 4.3 },
   { id: uuid(), name: 'kale', calories: 49, carbs: 10, fat: 0.4 },
 ];
+
+export async function fetchIngredients(query: string = '') {
+  return prisma.ingredient.findMany({ where: { name: { contains: query } } });
+}
 
 export async function selectIngredients(query: string = ''): Promise<Ingredient[]> {
   return ingredients

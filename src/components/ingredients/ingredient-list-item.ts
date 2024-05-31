@@ -1,5 +1,5 @@
+import { Ingredient } from '@prisma/client';
 import icons from '../../utils/icons.js';
-import { Ingredient } from '../../repository/ingredient.js';
 import { stats } from '../stats.js';
 import { INGREDIENT_SEARCH_ID } from './ingredient-tab.js';
 
@@ -40,9 +40,9 @@ export class IngredientListItem {
       ${this.name()}
       ${stats(
         {
-          cal: this.ingredient.calories * 100,
-          carbs: this.ingredient.carbs * 100,
-          fat: this.ingredient.fat * 100,
+          cal: this.ingredient.caloriesPer100 * 100,
+          carbs: this.ingredient.carbsPer100 * 100,
+          fat: this.ingredient.fatPer100 * 100,
         },
         { layout: 'cells', size: 'sm', swapOob: false },
       )}

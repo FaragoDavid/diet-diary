@@ -3,7 +3,7 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { subDays } from 'date-fns';
 import { layout } from '../components/layout.js';
 import { Dashboard } from '../pages/dashboard.js';
-import { selectIngredients } from '../repository/ingredient.js';
+import { fetchIngredients } from '../repository/ingredient.js';
 import { fetchDays } from '../repository/meal.js';
 import * as ingredientRoutes from './ingredient.js';
 import { getLogin, postLogin } from './login.js';
@@ -41,7 +41,7 @@ const registerRoutes = (fastify: FastifyInstance) => {
       const fromDate = subDays(new Date(), 7);
       const toDate = new Date();
       const days = await fetchDays(fromDate, toDate);
-      const ingredients = await selectIngredients();
+      const ingredients = await fetchIngredients();
 
       const template = await layout(new Dashboard(days, ingredients));
       return reply.type('text/html').send(template);
