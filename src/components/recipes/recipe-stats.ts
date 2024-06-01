@@ -1,23 +1,21 @@
-import { Ingredient } from '../../repository/ingredient.js';
-import { Recipe } from '../../repository/recipe.js';
+import { RecipeWithIngredients } from '../../repository/recipe.js';
 import { stats } from '../stats.js';
 
 export class RecipeStats implements BaseComponent {
   id: string;
   swapOob: HtmxSwapOobOption;
-  constructor(private recipe: Recipe, private ingredients: Ingredient[], options: { id: string; swapOob: HtmxSwapOobOption }) {
+  constructor(private recipe: RecipeWithIngredients, options: { id: string; swapOob: HtmxSwapOobOption }) {
     this.id = options.id;
     this.swapOob = options.swapOob;
   }
 
   async render() {
     const { recipeCalories, recipeCH, recipeFat } = this.recipe.ingredients.reduce(
-      (acc, recipeIngredient) => {
-        const { calories, carbs, fat } = this.ingredients.find(({ id }) => id === recipeIngredient.id) || { calories: 0, carbs: 0, fat: 0 };
+      (acc, { amount, ingredient }) => {
         return {
-          recipeCalories: acc.recipeCalories + calories * recipeIngredient.amount,
-          recipeCH: acc.recipeCH + carbs * recipeIngredient.amount,
-          recipeFat: acc.recipeFat + fat * recipeIngredient.amount,
+          recipeCalories: acc.recipeCalories + (ingredient.caloriesPer100 || 0) * amount,
+          recipeCH: acc.recipeCH + (ingredient.carbsPer100 || 0) * amount,
+          recipeFat: acc.recipeFat + (ingredient.fatPer100 || 0) * amount,
         };
       },
       { recipeCalories: 0, recipeCH: 0, recipeFat: 0 },

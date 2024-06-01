@@ -1,6 +1,7 @@
 import { v4 as uuid } from 'uuid';
 
 import { ingredients } from './ingredient.js';
+import prisma from '../utils/prisma-client.js';
 
 export type RecipeIngredient = { id: string; amount: number };
 
@@ -50,6 +51,37 @@ function extendRecipeWithIngredientName(recipe: Recipe): RecipeWithIngredientNam
         } as RecipeIngredientWithName),
     ),
   };
+}
+
+export async function fetchRecipes(query: string = '') {
+  return await prisma.recipe.findMany({
+    where: { name: { contains: query } },
+    select: {
+      id: true,
+      name: true,
+      amount: true,
+      servings: true,
+      ingredients: {
+        select: { amount: true, ingredient: true },
+      },
+    },
+  });
+}
+
+export type RecipeWithIngredients = NonNullable<Awaited<ReturnType<typeof fetchRecipe>>>;
+export async function fetchRecipe(id: string) {
+  return await prisma.recipe.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      name: true,
+      amount: true,
+      servings: true,
+      ingredients: {
+        select: { amount: true, ingredient: true },
+      },
+    },
+  });
 }
 
 export async function selectRecipes(query: string): Promise<RecipeWithIngredientName[]> {

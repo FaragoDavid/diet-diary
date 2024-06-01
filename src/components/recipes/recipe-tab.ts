@@ -1,6 +1,7 @@
+import { Ingredient } from '@prisma/client';
+
 import config from '../../config.js';
-import { Ingredient } from '../../repository/ingredient.js';
-import { RecipeWithIngredientName } from '../../repository/recipe.js';
+import { RecipeWithIngredients } from '../../repository/recipe.js';
 import icons from '../../utils/icons.js';
 import { TAB_CONTAINER_ID } from '../tab-list.js';
 import { RECIPE_LIST_ID, RecipeList } from './recipe-list.js';
@@ -35,7 +36,7 @@ const searchRecipes = () => `
 `;
 
 export class RecipeTab implements BaseComponent {
-  constructor(private recipes: RecipeWithIngredientName[], private ingredients: Ingredient[]) {}
+  constructor(private recipes: RecipeWithIngredients[], private ingredients: Ingredient[]) {}
 
   async render() {
     return `

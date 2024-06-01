@@ -25,11 +25,11 @@ model Ingredient {
 model Recipe {
   id       String @id @default(uuid())
   name     String
-  amount   Int
-  servings Int
+  amount   Int?
+  servings Int?
 
-  recipeIngredients RecipeIngredient[]
-  dishes            Dish[]
+  ingredients RecipeIngredient[]
+  dishes      Dish[]
 
   @@map("recipes")
 }

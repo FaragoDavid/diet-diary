@@ -1,12 +1,13 @@
-import { Ingredient } from '../../repository/ingredient.js';
-import { Recipe } from '../../repository/recipe.js';
+import { Ingredient } from '@prisma/client';
+
+import { RecipeWithIngredients } from '../../repository/recipe.js';
 import { RecipeListItem } from './recipe-list-item.js';
 
 export const RECIPE_LIST_ID = 'recipe-list';
 
 export class RecipeList implements BaseComponent {
   swap: boolean;
-  constructor(private recipes: Recipe[], private ingredients: Ingredient[], options: { swap: boolean}) {
+  constructor(private recipes: RecipeWithIngredients[], private ingredients: Ingredient[], options: { swap: boolean }) {
     this.swap = options.swap;
   }
 

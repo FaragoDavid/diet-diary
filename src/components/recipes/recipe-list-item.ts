@@ -1,12 +1,13 @@
-import { Ingredient } from '../../repository/ingredient.js';
-import { Recipe } from '../../repository/recipe.js';
+import { Ingredient } from '@prisma/client';
+
+import { RecipeWithIngredients } from '../../repository/recipe.js';
 import icons from '../../utils/icons.js';
 import { amount as amountInput } from '../amount.js';
 import { RecipeStats } from './recipe-stats.js';
 import { RECIPE_SEARCH_ID } from './recipe-tab.js';
 
 export class RecipeListItem implements BaseComponent {
-  constructor(private recipe: Recipe, private ingredients: Ingredient[]) {}
+  constructor(private recipe: RecipeWithIngredients, private ingredients: Ingredient[]) {}
 
   name() {
     return `<div class="text">${this.recipe.name}</div>`;
@@ -14,7 +15,7 @@ export class RecipeListItem implements BaseComponent {
 
   amount() {
     return amountInput({
-      amount: this.recipe.amount,
+      amount: this.recipe.amount || 0,
       name: 'amount',
       showText: false,
       hx: { verb: 'post', url: `/recipe/${this.recipe.id}/amount` },
@@ -52,7 +53,7 @@ export class RecipeListItem implements BaseComponent {
       ${this.amount()}
       ${this.editButton()}
       ${this.deleteButton()}
-      ${await new RecipeStats(this.recipe, this.ingredients, { id: `recipe-${this.recipe.id}-stats`, swapOob: false }).render()}
+      ${await new RecipeStats(this.recipe, { id: `recipe-${this.recipe.id}-stats`, swapOob: false }).render()}
     `;
   }
 }

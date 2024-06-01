@@ -13,6 +13,7 @@ import { TAB_NAME, tabList } from '../components/tab-list.js';
 import { NewRecipePage, RecipePage } from '../pages/recipe.js';
 import { selectIngredients } from '../repository/ingredient.js';
 import * as recipeRepository from '../repository/recipe.js';
+import * as ingredientRepository from '../repository/ingredient.js';
 import { HTMX_SWAP } from '../utils/htmx.js';
 
 type GetRecipesRequest = FastifyRequest<{ Querystring: { query: string } }>;
@@ -28,8 +29,8 @@ type UpdateRecipeAmountRequest = FastifyRequest<{ Params: { recipeId: string }; 
 type CreateRecipeRequest = FastifyRequest<{ Body: { recipeName: string } }>;
 
 export const displayRecipesTab = async (_: FastifyRequest, reply: FastifyReply) => {
-  const recipes = await recipeRepository.selectRecipes('');
-  const ingredients = await selectIngredients();
+  const recipes = await recipeRepository.fetchRecipes('');
+  const ingredients = await ingredientRepository.fetchIngredients();
 
   const template = `
     ${tabList(TAB_NAME.recipes, { swapOob: HTMX_SWAP.ReplaceElement })}
@@ -41,8 +42,8 @@ export const displayRecipesTab = async (_: FastifyRequest, reply: FastifyReply) 
 
 export const getRecipes = async (request: GetRecipesRequest, reply: FastifyReply) => {
   const query = request.query.query || '';
-  const recipes = await recipeRepository.selectRecipes(query);
-  const ingredients = await selectIngredients();
+  const recipes = await recipeRepository.fetchRecipes(query);
+  const ingredients = await ingredientRepository.fetchIngredients();
 
   const template = await new RecipeList(recipes, ingredients, { swap: false }).render();
   return reply.type('text/html').send(template);
@@ -60,19 +61,19 @@ export const getRecipe = async (request: GetRecipeRequest, reply: FastifyReply) 
 };
 
 export const deleteRecipe = async (request: DeleteRecipeRequest, reply: FastifyReply) => {
-  const { recipeId } = request.params;
-  const { query } = request.body;
+  // const { recipeId } = request.params;
+  // const { query } = request.body;
 
-  await recipeRepository.deleteRecipe(recipeId);
-  let recipes = await recipeRepository.selectRecipes(query);
-  if(recipes.length === 0) {
-    recipes = await recipeRepository.selectRecipes('');
-  }
-  const ingredients = await selectIngredients();
+  // await recipeRepository.deleteRecipe(recipeId);
+  // let recipes = await recipeRepository.selectRecipes(query);
+  // if(recipes.length === 0) {
+  //   recipes = await recipeRepository.selectRecipes('');
+  // }
+  // const ingredients = await selectIngredients();
 
-  const template = await new RecipeList(recipes, ingredients, { swap: true }).render();
+  // const template = await new RecipeList(recipes, ingredients, { swap: true }).render();
 
-  return reply.type('text/html').send(template);
+  // return reply.type('text/html').send(template);
 };
 
 export const addRecipeIngredient = async (request: PostRecipeRequest, reply: FastifyReply) => {
