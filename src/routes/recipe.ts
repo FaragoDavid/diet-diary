@@ -80,20 +80,23 @@ export const deleteRecipe = async (request: DeleteRecipeRequest, reply: FastifyR
 };
 
 export const addRecipeIngredient = async (request: PostRecipeRequest, reply: FastifyReply) => {
-  // const recipeId = request.params.recipeId;
-  // const { ingredientId, amount } = request.body;
+  const recipeId = request.params.recipeId;
+  const { ingredientId, amount } = request.body;
 
-  // const ingredient = await recipeRepository.insertRecipeIngredient(recipeId, ingredientId, Number(amount));
-  // const ingredients = await selectIngredients();
-  // const recipe = await recipeRepository.selectRecipe(recipeId);
+  const recipe = await recipeRepository.fetchRecipe(recipeId);
+  if (!recipe) {
+    return reply.status(404).send('Recipe not found');
+  }
+  const { amount: ingredientAmount, ingredient } = await recipeRepository.insertRecipeIngredient(recipeId, ingredientId, Number(amount));
+  const ingredients = await ingredientRepository.fetchIngredients();
 
-  // const template = `
-  //   ${await new RecipeIngredientListItem(ingredient, recipeId, ingredients, { isFirst: recipe.ingredients.length === 1 }).render()}
-  //   ${await new RecipeDetails(recipe, ingredients, { swap: true }).render()}
-  //   ${await new NewRecipeIngredient(recipe, ingredients, { swap: true }).render()}
-  // `;
+  const template = `
+    ${await new RecipeIngredientListItem(ingredientAmount, ingredient, recipeId, { isFirst: recipe.ingredients.length === 1 }).render()}
+    ${await new RecipeDetails(recipe, { swap: true }).render()}
+    ${await new NewRecipeIngredient(recipe, ingredients, { swap: true }).render()}
+  `;
 
-  // return reply.type('text/html').send(template);
+  return reply.type('text/html').send(template);
 };
 
 export const updateRecipeIngredientAmount = async (request: UpdateRecipeIngredientRequest, reply: FastifyReply) => {

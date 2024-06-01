@@ -35,14 +35,14 @@ model Recipe {
 }
 
 model RecipeIngredient {
-  id     String @id @default(uuid())
   amount Int
 
-  recipce      Recipe     @relation(fields: [recipeId], references: [id])
+  recipe       Recipe     @relation(fields: [recipeId], references: [id])
   ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
   recipeId     String     @map("recipe_id")
   ingredientId String     @map("ingredient_id")
 
+  @@unique([recipeId, ingredientId])
   @@map("recipe_ingredients")
 }
 

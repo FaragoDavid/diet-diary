@@ -122,19 +122,11 @@ export async function deleteRecipe(id: string) {
   await prisma.recipe.delete({ where: { id } });
 }
 
-export async function insertRecipeIngredient(recipeId: string, id: string, amount: number): Promise<RecipeIngredientWithName> {
-  const recipe = recipes.find((recipe) => recipe.id === recipeId);
-  if (!recipe) throw new Error('Recipe not found');
-  const ingredient = ingredients.find((ingredient) => ingredient.id === id);
-  if (!ingredient) throw new Error('Ingredient not found');
-
-  const newIngredient = { id, amount };
-  recipe.ingredients.push(newIngredient);
-
-  return {
-    ...newIngredient,
-    name: ingredient.name,
-  };
+export async function insertRecipeIngredient(recipeId: string, ingredientId: string, amount: number) {
+  return await prisma.recipeIngredient.create({
+    data: { recipeId, ingredientId, amount },
+    select: { amount: true, ingredient: true },
+  });
 }
 
 export async function updateRecipeIngredientAmount(recipeId: string, ingredientId: string, amount: number): Promise<RecipeWithIngredientName> {
