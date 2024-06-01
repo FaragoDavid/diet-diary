@@ -166,8 +166,5 @@ export async function deleteRecipeIngredient(recipeId: string, ingredientId: str
 }
 
 export async function updateRecipeAmount(recipeId: string, amount: number) {
-  const recipe = recipes.find((recipe) => recipe.id === recipeId);
-  if (!recipe) throw new Error('Recipe not found');
-
-  recipe.amount = amount;
+  await prisma.recipe.update({ where: { id: recipeId }, data: { amount } });
 }
