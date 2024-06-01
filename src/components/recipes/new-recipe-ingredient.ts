@@ -1,5 +1,6 @@
-import { Ingredient } from '../../repository/ingredient.js';
-import { RecipeWithIngredientName } from '../../repository/recipe.js';
+import { Ingredient } from '@prisma/client';
+
+import { RecipeWithIngredients } from '../../repository/recipe.js';
 import { amount } from '../amount.js';
 import { IngredientSelector } from './ingredient-selector.js';
 import { RECIPE_INGREDIENT_LIST_ID } from './recipe-ingredient-list.js';
@@ -10,11 +11,13 @@ const texts = {
 
 export class NewRecipeIngredient implements BaseComponent {
   swap: boolean;
-  constructor(private recipe: RecipeWithIngredientName, private ingredients: Ingredient[], options: { swap: boolean }) {
+  constructor(private recipe: RecipeWithIngredients, private ingredients: Ingredient[], options: { swap: boolean }) {
     this.swap = options.swap;
   }
 
   async render() {
+    const recipeIngredientIds = this.recipe.ingredients.map(({ ingredient }) => ingredient.id);
+
     return `
       <div 
         id="new-recipe-ingredient" 
@@ -23,7 +26,7 @@ export class NewRecipeIngredient implements BaseComponent {
       >
         <div class="text">${texts.newIngredient}</div>
         <div id="hm" class="flex items-center justify-center gap-4">
-          ${await new IngredientSelector(this.recipe.ingredients, this.ingredients, { swapOob: false }).render()}
+          ${await new IngredientSelector(recipeIngredientIds, this.ingredients, { swapOob: false }).render()}
           ${amount({
             name: 'amount',
             hx: {

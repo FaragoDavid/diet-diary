@@ -1,5 +1,5 @@
-import { Ingredient } from '../../repository/ingredient.js';
-import { RecipeIngredientWithName } from '../../repository/recipe.js';
+import { Ingredient } from '@prisma/client';
+
 import icons from '../../utils/icons.js';
 import { amount } from '../amount.js';
 import { stats } from '../stats.js';
@@ -11,16 +11,14 @@ export class RecipeIngredientListItem implements BaseComponent {
   ingredientFat: number;
   isFirst: boolean;
   constructor(
-    private ingredient: RecipeIngredientWithName,
+    private amount: number,
+    private ingredient: Ingredient,
     private recipeId: string,
-    private ingredients: Ingredient[],
     options: { isFirst: boolean },
   ) {
-    const ingredientWithMacros = this.ingredients.find(({ id }) => id === this.ingredient.id);
-    if (!ingredientWithMacros) throw new Error('Ingredient not found');
-    this.ingredientCals = ingredientWithMacros.calories * this.ingredient.amount;
-    this.ingredientCarbs = ingredientWithMacros.carbs * this.ingredient.amount;
-    this.ingredientFat = ingredientWithMacros.fat * this.ingredient.amount;
+    this.ingredientCals = (ingredient.caloriesPer100 || 0) * this.amount;
+    this.ingredientCarbs = (ingredient.carbsPer100 || 0) * this.amount;
+    this.ingredientFat = (ingredient.fatPer100 || 0) * this.amount;
     this.isFirst = options.isFirst;
   }
 
@@ -57,7 +55,7 @@ export class RecipeIngredientListItem implements BaseComponent {
       ${!this.isFirst ? recipeIngredientDivider : ''}
       ${this.ingredientName()}
       ${amount({
-        amount: this.ingredient.amount,
+        amount: this.amount,
         name: 'amount',
         hx: { verb: 'post', url: `/recipe/${this.recipeId}/ingredient/${this.ingredient.id}` },
       })}

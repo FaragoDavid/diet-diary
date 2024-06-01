@@ -1,26 +1,22 @@
-import { Ingredient } from '../../repository/ingredient.js';
-import { RecipeWithIngredientName } from '../../repository/recipe.js';
+import { RecipeWithIngredients } from '../../repository/recipe.js';
 import { amount } from '../amount.js';
 import { stats } from '../stats.js';
 
 export class RecipeDetails implements BaseComponent {
   recipeAmount: number;
   swap: boolean;
-  constructor(private recipe: RecipeWithIngredientName, private ingredients: Ingredient[], options: { swap: boolean }) {
+  constructor(private recipe: RecipeWithIngredients, options: { swap: boolean }) {
     this.recipeAmount = this.recipe.amount || this.recipe.ingredients.reduce((acc, ingredient) => acc + ingredient.amount, 0);
     this.swap = options.swap;
   }
 
   recipeStats = async () => {
     const { recipeCalories, recipeCH, recipeFat } = this.recipe.ingredients.reduce(
-      (acc, ingredient) => {
-        const fullIngredient = this.ingredients.find(({ id }) => id === ingredient.id);
-        if (!fullIngredient) return acc;
-
+      (acc, {amount, ingredient}) => {
         return {
-          recipeCalories: acc.recipeCalories + fullIngredient.calories * ingredient.amount,
-          recipeCH: acc.recipeCH + fullIngredient.carbs * ingredient.amount,
-          recipeFat: acc.recipeFat + fullIngredient.fat * ingredient.amount,
+          recipeCalories: acc.recipeCalories + (ingredient.caloriesPer100 || 0) * amount,
+          recipeCH: acc.recipeCH + (ingredient.carbsPer100 || 0) * amount,
+          recipeFat: acc.recipeFat + (ingredient.fatPer100 || 0) * amount,
         };
       },
       { recipeCalories: 0, recipeCH: 0, recipeFat: 0 },

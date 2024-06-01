@@ -1,5 +1,5 @@
-import { Ingredient } from '../../repository/ingredient.js';
-import { RecipeIngredient } from '../../repository/recipe.js';
+import { Ingredient } from '@prisma/client';
+
 import { swapOobTag } from '../../utils/swap-oob-wrapper.js';
 
 const texts = {
@@ -8,12 +8,14 @@ const texts = {
 
 export class IngredientSelector implements BaseComponent {
   swapOob: HtmxSwapOobOption;
-  constructor(private recipeIngredients: RecipeIngredient[], private ingredients: Ingredient[], options: { swapOob: HtmxSwapOobOption }) {
+  constructor(private recipeIngredientIds: string[], private ingredients: Ingredient[], options: { swapOob: HtmxSwapOobOption }) {
     this.swapOob = options.swapOob;
   }
 
   async render() {
-    const unusedIngredients = this.ingredients.filter(({ id }) => !this.recipeIngredients.some((ingredient) => ingredient.id === id));
+    const unusedIngredients = this.ingredients.filter(
+      (ingredient) => !this.recipeIngredientIds.some((recipeIngredientId) => recipeIngredientId === ingredient.id),
+    );
 
     return `
       <div 

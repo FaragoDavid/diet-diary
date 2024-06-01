@@ -1,5 +1,6 @@
-import { Ingredient } from '../../repository/ingredient.js';
-import { RecipeWithIngredientName } from '../../repository/recipe.js';
+import { Ingredient } from '@prisma/client';
+
+import { RecipeWithIngredients } from '../../repository/recipe.js';
 import { NewRecipeIngredient } from './new-recipe-ingredient.js';
 import { RecipeIngredientListItem } from './recipe-ingredient-list-item.js';
 
@@ -13,7 +14,7 @@ type Layout = 'list' | 'container';
 export class RecipeIngredientList implements BaseComponent {
   layout: Layout;
   swap: boolean;
-  constructor(private recipe: RecipeWithIngredientName, private ingredients: Ingredient[], options: { layout: Layout; swap: boolean }) {
+  constructor(private recipe: RecipeWithIngredients, private ingredients: Ingredient[], options: { layout: Layout; swap: boolean }) {
     this.layout = options.layout;
     this.swap = options.swap;
   }
@@ -21,9 +22,9 @@ export class RecipeIngredientList implements BaseComponent {
   async renderList() {
     const recipeIngredientComponents: string[] = [];
     for (let ingrIndex = 0; ingrIndex < this.recipe.ingredients.length; ingrIndex++) {
-      const ingredient = this.recipe.ingredients[ingrIndex]!;
+      const {amount, ingredient} = this.recipe.ingredients[ingrIndex]!;
       recipeIngredientComponents.push(
-        await new RecipeIngredientListItem(ingredient, this.recipe.id, this.ingredients, { isFirst: ingrIndex === 0 }).render(),
+        await new RecipeIngredientListItem(amount, ingredient, this.recipe.id, { isFirst: ingrIndex === 0 }).render(),
       );
     }
 

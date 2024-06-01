@@ -1,5 +1,5 @@
-import { RecipeWithIngredientName } from "../../repository/recipe.js";
 import { RECIPE_PAGE_ID } from "../../pages/recipe.js";
+import { RecipeWithIngredients } from "../../repository/recipe.js";
 
 const texts = {
   placeholder: 'Recept neve',
@@ -22,7 +22,7 @@ export function newRecipeHeader() {
   `;
 }
 
-export function recipeHeader(recipe: RecipeWithIngredientName) {
+export function recipeHeader(recipe: RecipeWithIngredients) {
   return `
 		<div 
 			id="${ID}"

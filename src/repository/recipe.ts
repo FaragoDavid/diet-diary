@@ -98,10 +98,18 @@ export async function selectRecipe(id: string): Promise<RecipeWithIngredientName
 }
 
 export async function insertRecipe(name: string) {
-  const newRecipe: RecipeWithIngredientName = { id: uuid(), name, ingredients: [] };
-  recipes.push(newRecipe);
-  
-  return newRecipe;
+  return await prisma.recipe.create({ 
+    data: { name },
+    select: {
+      id: true,
+      name: true,
+      amount: true,
+      servings: true,
+      ingredients: {
+        select: { amount: true, ingredient: true },
+      },
+    },
+  });
 }
 
 export async function updateRecipe(id: string, ingredients: RecipeIngredient[]) {
