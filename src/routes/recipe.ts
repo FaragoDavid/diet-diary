@@ -64,19 +64,19 @@ export const getRecipe = async (request: GetRecipeRequest, reply: FastifyReply) 
 };
 
 export const deleteRecipe = async (request: DeleteRecipeRequest, reply: FastifyReply) => {
-  // const { recipeId } = request.params;
-  // const { query } = request.body;
+  const { recipeId } = request.params;
+  const { query } = request.body;
 
-  // await recipeRepository.deleteRecipe(recipeId);
-  // let recipes = await recipeRepository.selectRecipes(query);
-  // if(recipes.length === 0) {
-  //   recipes = await recipeRepository.selectRecipes('');
-  // }
-  // const ingredients = await selectIngredients();
+  await recipeRepository.deleteRecipe(recipeId);
+  let recipes = await recipeRepository.fetchRecipes(query);
+  if(recipes.length === 0) {
+    recipes = await recipeRepository.fetchRecipes('');
+  }
+  const ingredients = await ingredientRepository.fetchIngredients();
 
-  // const template = await new RecipeList(recipes, ingredients, { swap: true }).render();
+  const template = await new RecipeList(recipes, ingredients, { swap: true }).render();
 
-  // return reply.type('text/html').send(template);
+  return reply.type('text/html').send(template);
 };
 
 export const addRecipeIngredient = async (request: PostRecipeRequest, reply: FastifyReply) => {

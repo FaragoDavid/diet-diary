@@ -119,9 +119,7 @@ export async function updateRecipe(id: string, ingredients: RecipeIngredient[]) 
 }
 
 export async function deleteRecipe(id: string) {
-  const index = recipes.findIndex((recipe) => recipe.id === id);
-  if (index === -1) throw new Error('Recipe not found');
-  recipes.splice(index, 1);
+  await prisma.recipe.delete({ where: { id } });
 }
 
 export async function insertRecipeIngredient(recipeId: string, id: string, amount: number): Promise<RecipeIngredientWithName> {
