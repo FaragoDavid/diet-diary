@@ -114,18 +114,22 @@ export const updateRecipeIngredientAmount = async (request: UpdateRecipeIngredie
 };
 
 export const deleteRecipeIngredient = async (request: DeleteRecipeIngredientRequest, reply: FastifyReply) => {
-  // const { recipeId, ingredientId } = request.params;
+  const { recipeId, ingredientId } = request.params;
 
-  // const recipe = await recipeRepository.deleteRecipeIngredient(recipeId, ingredientId);
-  // const ingredients = await selectIngredients();
+  const recipe = await recipeRepository.deleteRecipeIngredient(recipeId, ingredientId);
+  if (!recipe) {
+    return reply.status(404).send('Recipe not found');
+  }
+  const recipeIngredientIds = recipe.ingredients.map(({ ingredient }) => ingredient.id);
+  const ingredients = await ingredientRepository.fetchIngredients();
 
-  // const template = `
-  //   ${await new RecipeIngredientList(recipe, ingredients, { layout: 'list', swap: true }).render()}
-  //   ${await new RecipeDetails(recipe, { swap: true }).render()}
-  //   ${await new IngredientSelector(recipe.ingredients, ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
-  // `;
+  const template = `
+    ${await new RecipeIngredientList(recipe, ingredients, { layout: 'list', swap: true }).render()}
+    ${await new RecipeDetails(recipe, { swap: true }).render()}
+    ${await new IngredientSelector(recipeIngredientIds, ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
+  `;
 
-  // return reply.type('text/html').send(template);
+  return reply.type('text/html').send(template);
 };
 
 export const updateRecipeAmount = async (request: UpdateRecipeAmountRequest, reply: FastifyReply) => {
