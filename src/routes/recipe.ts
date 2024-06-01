@@ -100,14 +100,17 @@ export const addRecipeIngredient = async (request: PostRecipeRequest, reply: Fas
 };
 
 export const updateRecipeIngredientAmount = async (request: UpdateRecipeIngredientRequest, reply: FastifyReply) => {
-  // const { recipeId, ingredientId } = request.params;
-  // const { amount } = request.body;
+  const { recipeId, ingredientId } = request.params;
+  const { amount } = request.body;
 
-  // const recipe = await recipeRepository.updateRecipeIngredientAmount(recipeId, ingredientId, Number(amount));
+  const recipe = await recipeRepository.updateRecipeIngredientAmount(recipeId, ingredientId, Number(amount));
+  if (!recipe) {
+    return reply.status(404).send('Recipe not found');
+  }
 
-  // const template = await new RecipeDetails(recipe, { swap: true }).render();
+  const template = await new RecipeDetails(recipe, { swap: true }).render();
 
-  // return reply.type('text/html').send(template);
+  return reply.type('text/html').send(template);
 };
 
 export const deleteRecipeIngredient = async (request: DeleteRecipeIngredientRequest, reply: FastifyReply) => {

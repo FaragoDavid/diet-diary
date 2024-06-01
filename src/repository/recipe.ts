@@ -129,20 +129,10 @@ export async function insertRecipeIngredient(recipeId: string, ingredientId: str
   });
 }
 
-export async function updateRecipeIngredientAmount(recipeId: string, ingredientId: string, amount: number): Promise<RecipeWithIngredientName> {
-  const recipe = recipes.find((recipe) => recipe.id === recipeId);
-  if (!recipe) throw new Error('Recipe not found');
+export async function updateRecipeIngredientAmount(recipeId: string, ingredientId: string, amount: number) {
+  await prisma.recipeIngredient.update({ where: { recipeId_ingredientId: { recipeId, ingredientId } }, data: { amount } });
 
-  const ingredient = recipe.ingredients.find((ingredient) => ingredient.id === ingredientId);
-  if (!ingredient) throw new Error('Ingredient not found in recipe');
-
-  recipe.ingredients.forEach((ingredient) => {
-    if (ingredient.id === ingredientId) {
-      ingredient.amount = amount;
-    }
-  });
-  
-  return extendRecipeWithIngredientName(recipe);
+  return await fetchRecipe(recipeId);
 }
 
 export async function deleteRecipeIngredient(recipeId: string, ingredientId: string): Promise<RecipeWithIngredientName> {
