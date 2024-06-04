@@ -54,13 +54,13 @@ model Dish {
   carbs    Int
   fat      Int
 
-  meal          Meal        @relation(fields: [mealDate, mealType], references: [date, type])
-  mealDate      DateTime
-  mealType      String
-  recipe        Recipe?     @relation(fields: [recipe_id], references: [id])
-  recipe_id     String?
-  ingredient    Ingredient? @relation(fields: [ingredient_id], references: [id])
-  ingredient_id String?
+  meal         Meal        @relation(fields: [mealDate, mealType], references: [date, type])
+  mealDate     DateTime    @map("meal_date")
+  mealType     String      @map("meal_type")
+  recipe       Recipe?     @relation(fields: [recipeId], references: [id])
+  recipeId     String?     @map("recipe_id")
+  ingredient   Ingredient? @relation(fields: [ingredientId], references: [id])
+  ingredientId String?     @map("ingredient_id")
 
   @@map("dishes")
 }
@@ -68,13 +68,13 @@ model Dish {
 model Meal {
   date     DateTime
   type     String
-  calories Int
-  carbs    Int
-  fat      Int
+  calories Int?
+  carbs    Int?
+  fat      Int?
 
   dishes  Dish[]
-  Day     Day?      @relation(fields: [dayDate], references: [date])
-  dayDate DateTime?
+  Day     Day      @relation(fields: [dayDate], references: [date])
+  dayDate DateTime @map("day_date")
 
   @@unique([date, type])
   @@map("meals")

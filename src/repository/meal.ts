@@ -1,9 +1,10 @@
 import { randomInt } from 'crypto';
-import { endOfDay, isSameDay, isWithinInterval, subDays } from 'date-fns';
+import { endOfDay, isSameDay, subDays } from 'date-fns';
 import { v4 as uuid } from 'uuid';
 
 import config, { MealType } from '../config.js';
 import { nutrientFromDish } from '../utils/nutrient-from-dish.js';
+import prisma from '../utils/prisma-client.js';
 import { ingredients } from './ingredient.js';
 
 export type Dish = {
@@ -71,70 +72,99 @@ const days = ((meals: Meal[]): Day[] =>
 
 export async function fetchDays(start: Date, end: Date) {
   end = endOfDay(end);
-  return meals
-    .reduce((days, { date: nextMealDate, ...nextMeal }) => {
-      if (isWithinInterval(nextMealDate, { start, end })) {
-        const mealWithMacros = {
-          ...nextMeal,
-          dishes: nextMeal.dishes.map((dish) => ({
-            ...dish,
-            calories: nutrientFromDish(dish.id, dish.amount, 'calories', ingredients),
-            carbs: nutrientFromDish(dish.id, dish.amount, 'carbs', ingredients),
-            fat: nutrientFromDish(dish.id, dish.amount, 'fat', ingredients),
-          })),
-        };
-
-        const day = days.find(({ date }) => isSameDay(date, nextMealDate));
-        if (!day) days.push({ date: nextMealDate, meals: [mealWithMacros] });
-        else day.meals.push(mealWithMacros);
-      }
-      return days;
-    }, [] as Day[])
-    .sort((a, b) => b.date.getTime() - a.date.getTime());
+  return await prisma.day.findMany({
+    where: { date: { gte: start, lte: end } },
+    orderBy: { date: 'desc' },
+    select: {
+      date: true,
+      meals: {
+        select: {
+          type: true,
+          calories: true,
+          carbs: true,
+          fat: true,
+          dishes: {
+            select: { id: true, name: true, amount: true, calories: true, carbs: true, fat: true },
+          },
+        },
+      },
+    },
+  });
 }
 
-export async function fetchDay(date: Date): Promise<Day> {
-  const day = days.find((day) => isSameDay(day.date, date));
-  if (!day) throw new Error('Day not found');
-  return {
-    ...day,
-    meals: day.meals.map((meal) => ({
-      ...meal,
-      dishes: meal.dishes.map((dish) => ({
-        ...dish,
-        calories: nutrientFromDish(dish.id, dish.amount, 'calories', ingredients),
-        carbs: nutrientFromDish(dish.id, dish.amount, 'carbs', ingredients),
-        fat: nutrientFromDish(dish.id, dish.amount, 'fat', ingredients),
-      })),
-    })).sort((a, b) => {
-      const aIndex = config.mealTypes.findIndex(({ key }) => key === a.type);
-      const bIndex = config.mealTypes.findIndex(({ key }) => key === b.type);
-      return aIndex - bIndex;
-    })
-  };
+export type DayMealsWithDishes = NonNullable<Awaited<ReturnType<typeof fetchDay>>>;
+export async function fetchDay(date: Date) {
+  return await prisma.day.findUnique({
+    where: { date },
+    select: {
+      date: true,
+      meals: {
+        select: {
+          type: true,
+          calories: true,
+          carbs: true,
+          fat: true,
+          dishes: {
+            select: { id: true, name: true, amount: true, calories: true, carbs: true, fat: true },
+          },
+        },
+      },
+    },
+  });
 }
 
-export async function fetchMeal(date: Date, mealType: MealType): Promise<Meal> {
-  const meal = meals.find((meal) => isSameDay(meal.date, date) && meal.type === mealType);
-  if (!meal) throw new Error('Meal not found');
-  return meal;
+export async function fetchMeal(date: Date, mealType: MealType) {
+  return await prisma.meal.findUnique({
+    where: { date_type: { date, type: mealType } },
+    select: {
+      type: true,
+      calories: true,
+      carbs: true,
+      fat: true,
+      dishes: {
+        select: { id: true, name: true, amount: true, calories: true, carbs: true, fat: true },
+      },
+    },
+  });
 }
 
-export async function insertDay(date: Date): Promise<Day> {
-  if (meals.find((meal) => isSameDay(meal.date, date))) throw new Error('Day already exists');
-
-  const newDay = { date, meals: [] };
-  days.push(newDay);
-
-  return newDay;
+export async function createDay(date: Date) {
+  return await prisma.day.create({
+    data: { date },
+    select: {
+      date: true,
+      meals: {
+        select: {
+          type: true,
+          calories: true,
+          carbs: true,
+          fat: true,
+          dishes: {
+            select: { id: true, name: true, amount: true, calories: true, carbs: true, fat: true },
+          },
+        },
+      },
+    },
+  });
 }
 
-export async function insertMeal(date: Date, type: MealType): Promise<Meal> {
-  const newMeal = { id: uuid(), type, date, dishes: [] };
-  meals.push(newMeal);
-  days.find((day) => isSameDay(day.date, date))!.meals.push(newMeal);
-
-  return newMeal;
+export async function addMeal(date: Date, type: MealType) {
+  return await prisma.meal.create({
+    data: {
+      date,
+      type: type as string,
+      Day: { connect: { date } },
+    },
+    select: {
+      type: true,
+      calories: true,
+      carbs: true,
+      fat: true,
+      dishes: {
+        select: { id: true, name: true, amount: true, calories: true, carbs: true, fat: true },
+      },
+    },
+  });
 }
 
 export async function insertDish(date: Date, mealType: MealType, dishId: string, amount: number): Promise<Dish> {

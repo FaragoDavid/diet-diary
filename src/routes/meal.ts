@@ -15,7 +15,7 @@ import { NewDish } from '../components/meals/new-dish.js';
 import { TAB_NAME, tabList } from '../components/tab-list.js';
 import { MealType } from '../config.js';
 import { DayPage, NewDayPage } from '../pages/day.js';
-import { selectIngredients } from '../repository/ingredient.js';
+import { fetchIngredients } from '../repository/ingredient.js';
 import * as mealRepository from '../repository/meal.js';
 import { fetchDays } from '../repository/meal.js';
 import { paramToDate } from '../utils/converters.js';
@@ -35,7 +35,7 @@ type AddDishRequest = FastifyRequest<{ Params: { date: string; mealType: MealTyp
 type DeleteDishRequest = FastifyRequest<{ Params: { date: string; mealType: MealType; dishId: string } }>;
 
 export const displayMealsTab = async (_: FastifyRequest, reply: FastifyReply) => {
-  const ingredients = await selectIngredients();
+  const ingredients = await fetchIngredients();
 
   const fromDate = subDays(new Date(), 7);
   const toDate = new Date();
@@ -54,7 +54,7 @@ export const getDays = async (request: GetMealsRequest, reply: FastifyReply) => 
   const toDate = new Date(request.query.toDate);
 
   const days = await fetchDays(fromDate, toDate);
-  const ingredients = await selectIngredients();
+  const ingredients = await fetchIngredients();
 
   const template = await new DayList(days, ingredients, { swap: false }).render();
   return reply.type('text/html').send(template);
@@ -63,7 +63,9 @@ export const getDays = async (request: GetMealsRequest, reply: FastifyReply) => 
 export const getDay = async (request: GetDayRequest, reply: FastifyReply) => {
   const { date } = request.params;
   const day = await mealRepository.fetchDay(paramToDate(date));
-  const ingredients = await selectIngredients();
+  if (!day) return reply.status(404).send('Day not found');
+
+  const ingredients = await fetchIngredients();
 
   const template = await layout(new DayPage(day, ingredients));
 
@@ -76,9 +78,9 @@ export const newDay = async (_: FastifyRequest, reply: FastifyReply) => {
   return reply.type('text/html').send(template);
 };
 
-export const createDay = async (request: CreateDayRequest, reply: FastifyReply) => {
+export const addDay = async (request: CreateDayRequest, reply: FastifyReply) => {
   const bodyDate = new Date(request.body.date);
-  const day = await mealRepository.insertDay(bodyDate);
+  const day = await mealRepository.createDay(bodyDate);
 
   const template = `
     ${dayHeader(day)}
@@ -93,7 +95,9 @@ export const createDay = async (request: CreateDayRequest, reply: FastifyReply) 
 export const editDay = async (request: EditDayRequest, reply: FastifyReply) => {
   const { date } = request.params;
   const day = await mealRepository.fetchDay(paramToDate(date));
-  const ingredients = await selectIngredients();
+  if (!day) return reply.status(404).send('Day not found');
+
+  const ingredients = await fetchIngredients();
 
   const template = await new DayPage(day, ingredients).render();
 
@@ -103,16 +107,15 @@ export const editDay = async (request: EditDayRequest, reply: FastifyReply) => {
 export const addMeal = async (request: AddMealRequest, reply: FastifyReply) => {
   const date = paramToDate(request.params.date);
 
-  const meal = await mealRepository.insertMeal(date, request.body.mealType);
+  const meal = await mealRepository.addMeal(date, request.body.mealType);
   const day = await mealRepository.fetchDay(date);
-  const ingredients = await selectIngredients();
+  if (!day) return reply.status(404).send('Day not found');
+
+  const ingredients = await fetchIngredients();
 
   const template = `
     ${await new MissingMeals(day, { swapOob: false }).render()}
-    ${await new DayMealList(day.meals, date, ingredients, {
-      layout: 'page',
-      swapOob:HTMX_SWAP.ReplaceElement,
-    }).render()}
+    ${await new DayMealList(day, ingredients, { layout: 'page', swapOob: HTMX_SWAP.ReplaceElement }).render()}
   `;
 
   return reply.type('text/html').send(template);
@@ -128,13 +131,21 @@ export const addDish = async (request: AddDishRequest, reply: FastifyReply) => {
     Number(request.body.amount),
   );
   const day = await mealRepository.fetchDay(paramToDate(date));
+  if (!day) return reply.status(404).send('Day not found');
+
   const meal = await mealRepository.fetchMeal(paramToDate(date), mealType);
-  const ingredients = await selectIngredients();
+  if (!meal) return reply.status(404).send('Meal not found');
+
+  const ingredients = await fetchIngredients();
 
   const template = `
-    ${meal.dishes.length === 1 ? await new DayMealDishHeader(meal.date, meal.type, { swapOob: HTMX_SWAP.BeforeFirstChild }).render() : ''}
-    ${await new NewDish(meal, ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
-    ${await new DayMealDish(dish, meal.date, mealType, { swapOob: HTMX_SWAP.BeforeElement }).render()}
+    ${
+      meal.dishes.length === 1
+        ? await new DayMealDishHeader(day.date, meal.type as MealType, { swapOob: HTMX_SWAP.BeforeFirstChild }).render()
+        : ''
+    }
+    ${await new NewDish(meal, day.date, ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
+    ${await new DayMealDish(dish, day.date, mealType, { swapOob: HTMX_SWAP.BeforeElement }).render()}
     ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swapOob: HTMX_SWAP.ReplaceElement }).render()}
     ${await new MealStats(meal, { layout: 'horizontal', swapOob: HTMX_SWAP.ReplaceElement }).render()}
   `;
@@ -148,11 +159,12 @@ export const deleteMeal = async (request: DeleteMealRequest, reply: FastifyReply
 
   await mealRepository.deleteMeal(date, mealType);
   const day = await mealRepository.fetchDay(date);
+  if (!day) return reply.status(404).send('Day not found');
 
   const template = `
     ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swapOob: HTMX_SWAP.ReplaceElement }).render()}
     ${await new MissingMeals(day, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
-    ${await new DayMealList(day.meals, date, [], { layout: 'page', swapOob: HTMX_SWAP.ReplaceElement }).render()}
+    ${await new DayMealList(day, [], { layout: 'page', swapOob: HTMX_SWAP.ReplaceElement }).render()}
   `;
   return reply.type('text/html').send(template);
 };
@@ -162,12 +174,16 @@ export const deleteDish = async (request: DeleteDishRequest, reply: FastifyReply
 
   await mealRepository.deleteDish(paramToDate(date), mealType, dishId);
   const meal = await mealRepository.fetchMeal(paramToDate(date), mealType);
+  if (!meal) return reply.status(404).send('Meal not found');
+
   const day = await mealRepository.fetchDay(paramToDate(date));
-  const ingredients = await selectIngredients();
+  if (!day) return reply.status(404).send('Day not found');
+
+  const ingredients = await fetchIngredients();
 
   const template = `
     ${await new DayStats(day, { layout: 'vertical', swapOob: HTMX_SWAP.ReplaceElement }).render()}
-    ${await new DayMeal(meal, ingredients, {
+    ${await new DayMeal(meal, day.date, ingredients, {
       layout: 'page',
       swapOob: HTMX_SWAP.ReplaceElement,
     }).render()}

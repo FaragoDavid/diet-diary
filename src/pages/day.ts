@@ -1,12 +1,12 @@
+import { Ingredient } from '@prisma/client';
 
 import { BackLink } from '../components/back-link.js';
 import { dayHeader, newDayHeader } from '../components/meals/day-header.js';
-import { DayStats } from '../components/meals/day-stats.js';
-import { DayMeal } from '../components/meals/day-meal.js';
-import { MissingMeals } from '../components/meals/missing-meals.js';
-import { Ingredient } from '../repository/ingredient.js';
-import { Day } from '../repository/meal.js';
 import { DayMealList } from '../components/meals/day-meal-list.js';
+import { DayMeal } from '../components/meals/day-meal.js';
+import { DayStats } from '../components/meals/day-stats.js';
+import { MissingMeals } from '../components/meals/missing-meals.js';
+import { DayMealsWithDishes } from '../repository/meal.js';
 
 export const DAY_PAGE_ID = 'day-page';
 const texts = {
@@ -25,12 +25,12 @@ export class NewDayPage implements BaseComponent {
 }
 
 export class DayPage implements BaseComponent {
-  constructor(private day: Day, private ingredients: Ingredient[]) {}
+  constructor(private day: DayMealsWithDishes, private ingredients: Ingredient[]) {}
 
   async render() {
     const meals: string[] = [];
     for (const meal of this.day.meals) {
-      meals.push(await new DayMeal({ ...meal, date: this.day.date }, this.ingredients, { layout: 'page', swapOob: false }).render());
+      meals.push(await new DayMeal(meal, this.day.date, this.ingredients, { layout: 'page', swapOob: false }).render());
     }
 
     return `
@@ -39,7 +39,7 @@ export class DayPage implements BaseComponent {
         ${dayHeader(this.day)}
         ${await new DayStats(this.day, { layout: 'vertical', span: DayStats.SPAN.NONE, swapOob: false }).render()}
         ${await new MissingMeals(this.day, { swapOob: false }).render()}
-        ${await new DayMealList(this.day.meals, this.day.date, this.ingredients, { layout: 'page', swapOob: false }).render()}
+        ${await new DayMealList(this.day, this.ingredients, { layout: 'page', swapOob: false }).render()}
       </div>`;
   }
 }

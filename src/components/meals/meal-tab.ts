@@ -1,17 +1,16 @@
-import { subDays } from 'date-fns';
+import { Ingredient } from '@prisma/client';
 
-import { dateToInput } from '../../utils/converters.js';
 import config from '../../config.js';
-import { Ingredient } from '../../repository/ingredient.js';
-import { Day, fetchDays } from '../../repository/meal.js';
+import { DayMealsWithDishes } from '../../repository/meal.js';
+import { dateToInput } from '../../utils/converters.js';
 import icons from '../../utils/icons.js';
-import { DayList } from './day-list.js';
 import { TAB_CONTAINER_ID } from '../tab-list.js';
+import { DayList } from './day-list.js';
 
 export class MealTab implements BaseComponent {
   public title = config.texts.titles.overview;
 
-  constructor(private days: Day[], private ingredients: Ingredient[]) {}
+  constructor(private days: DayMealsWithDishes[], private ingredients: Ingredient[]) {}
 
   dateInput(id: string, defaultValue: Date) {
     return `
@@ -57,7 +56,7 @@ export class MealTab implements BaseComponent {
           <div class="divider divider-horizontal"></div>
           ${this.addDay()}
         </div>
-        ${await new DayList(this.days, this.ingredients, {swap: false}).render()}
+        ${await new DayList(this.days, this.ingredients, { swap: false }).render()}
       </div>
     `;
   }

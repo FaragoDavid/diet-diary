@@ -1,7 +1,8 @@
-import { HTMX_SWAP } from '../../utils/htmx.js';
-import { Ingredient } from '../../repository/ingredient.js';
-import { Meal } from '../../repository/meal.js';
+import { Ingredient } from '@prisma/client';
+
+import { DayMealsWithDishes } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
+import { HTMX_SWAP } from '../../utils/htmx.js';
 import { swapOobTag, swapOobWrapper } from '../../utils/swap-oob-wrapper.js';
 import { amount as amountInput } from '../amount.js';
 
@@ -20,10 +21,10 @@ export class NewDish implements BaseComponent {
   swapOob: HtmxSwapOobOption;
   newDishSelectId: string;
   newDishAmountId: string;
-  constructor(private meal: Meal, private ingredients: Ingredient[], options: { swapOob: HtmxSwapOobOption }) {
+  constructor(private meal: DayMealsWithDishes['meals'][0], private date: Date, private ingredients: Ingredient[], options: { swapOob: HtmxSwapOobOption }) {
     this.swapOob = options.swapOob;
-    this.newDishSelectId = getMealNewDishSelectId(this.meal.date, this.meal.type);
-    this.newDishAmountId = getMealNewDishAmountId(this.meal.date, this.meal.type);
+    this.newDishSelectId = getMealNewDishSelectId(this.date, this.meal.type);
+    this.newDishAmountId = getMealNewDishAmountId(this.date, this.meal.type);
   }
 
   options() {
@@ -58,7 +59,7 @@ export class NewDish implements BaseComponent {
       name: `amount`,
       hx: {
         verb: 'post',
-        url: `/day/${dateToParam(this.meal.date)}/meal/${this.meal.type}/dish`,
+        url: `/day/${dateToParam(this.date)}/meal/${this.meal.type}/dish`,
         include: `[name=${this.meal.type}-dishId]`,
         target: `#${this.newDishAmountId}`,
         swap: HTMX_SWAP.ReplaceElement,

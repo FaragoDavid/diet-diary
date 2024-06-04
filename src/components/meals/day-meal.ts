@@ -1,6 +1,7 @@
-import config from '../../config.js';
-import { Ingredient } from '../../repository/ingredient.js';
-import { Meal } from '../../repository/meal.js';
+import { Ingredient } from '@prisma/client';
+
+import config, { MealType } from '../../config.js';
+import { DayMealsWithDishes } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
 import icons from '../../utils/icons.js';
 import { StatLayout } from '../stats.js';
@@ -26,7 +27,8 @@ export class DayMeal implements BaseComponent {
   showDishes: boolean;
   swapOob: HtmxSwapOobOption;
   constructor(
-    private meal: Meal,
+    private meal: DayMealsWithDishes['meals'][0],
+    private date: Date,
     private ingredients: Ingredient[],
     options: { layout: 'dayList' | 'page'; swapOob: HtmxSwapOobOption },
   ) {
@@ -44,18 +46,18 @@ export class DayMeal implements BaseComponent {
   async dishes() {
     const dishComponents: string[] = [];
     for (const dish of this.meal.dishes) {
-      dishComponents.push(await new DayMealDish(dish, this.meal.date, this.meal.type, { swapOob: false }).render());
+      dishComponents.push(await new DayMealDish(dish, this.date, this.meal.type as MealType, { swapOob: false }).render());
     }
 
     return `
       <div
-       id="${getMealDishesId(this.meal.date, this.meal.type)}"
+       id="${getMealDishesId(this.date, this.meal.type)}"
        class="col-span-3 grid grid-cols-max-6 gap-2 items-center px-2"
        ${this.swapOob ? 'hx-swap-oob="true"' : ''}
       >
-        ${this.meal.dishes.length > 0 ? await new DayMealDishHeader(this.meal.date, this.meal.type, { swapOob: false }).render() : ''}
+        ${this.meal.dishes.length > 0 ? await new DayMealDishHeader(this.date, this.meal.type as MealType, { swapOob: false }).render() : ''}
         ${dishComponents.join('')}
-        ${await new NewDish(this.meal, this.ingredients, { swapOob: false }).render()}
+        ${await new NewDish(this.meal, this.date, this.ingredients, { swapOob: false }).render()}
       </div>
     `;
   }
@@ -63,9 +65,9 @@ export class DayMeal implements BaseComponent {
   deleteMeal() {
     return `
       <button 
-        id="${getDeleteMealId(this.meal.date, this.meal.type)}"
+        id="${getDeleteMealId(this.date, this.meal.type)}"
         class="btn btn-sm btn-secondary p-0"
-        hx-delete="/day/${dateToParam(this.meal.date)}/meal/${this.meal.type}"
+        hx-delete="/day/${dateToParam(this.date)}/meal/${this.meal.type}"
       >
         ${icons.delete}
       </button>

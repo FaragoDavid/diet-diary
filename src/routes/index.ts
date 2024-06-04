@@ -1,11 +1,11 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-
 import { subDays } from 'date-fns';
+
 import { layout } from '../components/layout.js';
 import { Dashboard } from '../pages/dashboard.js';
 import { fetchIngredients } from '../repository/ingredient.js';
-import { fetchRecipes } from '../repository/recipe.js';
 import { fetchDays } from '../repository/meal.js';
+import { fetchRecipes } from '../repository/recipe.js';
 import * as ingredientRoutes from './ingredient.js';
 import { getLogin, postLogin } from './login.js';
 import * as mealRoutes from './meal.js';
@@ -38,14 +38,13 @@ const registerRoutes = (fastify: FastifyInstance) => {
   fastify.get(
     '/dashboard',
     createHandler(async (_, reply: FastifyReply) => {
-
       const fromDate = subDays(new Date(), 7);
       const toDate = new Date();
       const ingredients = await fetchIngredients();
-      const recipes = await fetchRecipes()
+      const recipes = await fetchRecipes();
       const days = await fetchDays(fromDate, toDate);
 
-      const template = await layout(new Dashboard(recipes, ingredients));
+      const template = await layout(new Dashboard(ingredients, days));
       return reply.type('text/html').send(template);
     }),
   );
@@ -72,7 +71,7 @@ const registerRoutes = (fastify: FastifyInstance) => {
   fastify.get('/mealsTab', createHandler(mealRoutes.displayMealsTab));
   fastify.get('/days', createHandler(mealRoutes.getDays));
   fastify.get('/new-day', createHandler(mealRoutes.newDay));
-  fastify.post('/new-day', createHandler(mealRoutes.createDay));
+  fastify.post('/new-day', createHandler(mealRoutes.addDay));
   fastify.get('/day/:date', createHandler(mealRoutes.getDay));
   fastify.post('/day/:date/meal', createHandler(mealRoutes.addMeal));
   fastify.delete('/day/:date/meal/:mealType', createHandler(mealRoutes.deleteMeal));

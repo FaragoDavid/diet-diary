@@ -1,12 +1,12 @@
 import { Ingredient } from '@prisma/client';
 
-import { RecipeTab } from '../components/recipes/recipe-tab.js';
-import { RecipeWithIngredients } from '../repository/recipe.js';
+import { MealTab } from '../components/meals/meal-tab.js';
 import { TAB_NAME, tabList } from '../components/tab-list.js';
 import config from '../config.js';
+import { DayMealsWithDishes } from '../repository/meal.js';
 
 export class Dashboard implements BaseComponent {
-  constructor(private recipes: RecipeWithIngredients[], private ingredients: Ingredient[]) {}
+  constructor(private ingredients: Ingredient[], private days: DayMealsWithDishes[]) {}
 
   async render() {
     return `
@@ -15,8 +15,8 @@ export class Dashboard implements BaseComponent {
           <div class="text-center text-3xl font-medium py-2">
             ${config.texts.titles.page}
           </div>
-          ${tabList(TAB_NAME.recipes, { swapOob: false })}
-          ${await new RecipeTab(this.recipes, this.ingredients).render()}
+          ${tabList(TAB_NAME.meals, { swapOob: false })}
+          ${await new MealTab(this.days, this.ingredients).render()}
         </div>
       </div>
     `;

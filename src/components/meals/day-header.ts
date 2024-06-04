@@ -1,8 +1,8 @@
 import { addDays, format } from 'date-fns';
 
-import { Day } from '../../repository/meal.js';
-import { dateToInput } from '../../utils/converters.js';
 import { DAY_PAGE_ID } from '../../pages/day.js';
+import { DayMealsWithDishes } from '../../repository/meal.js';
+import { dateToInput } from '../../utils/converters.js';
 
 const ID = 'day-header';
 
@@ -21,7 +21,7 @@ export function newDayHeader() {
     </div>`;
 }
 
-export function dayHeader(day: Day) {
+export function dayHeader(day: DayMealsWithDishes) {
   return `
 		<div 
 			id="${ID}"

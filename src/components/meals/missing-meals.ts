@@ -1,5 +1,5 @@
 import config, { MealType } from '../../config.js';
-import { Day } from '../../repository/meal.js';
+import { DayMealsWithDishes } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
 import { swapOobTag } from '../../utils/swap-oob-wrapper.js';
 
@@ -7,7 +7,7 @@ const MISSING_MEALS_ID = 'missing-meals';
 
 export class MissingMeals implements BaseComponent {
   swapOob: HtmxSwapOobOption;
-  constructor(private day: Day, options: { swapOob: HtmxSwapOobOption }) {
+  constructor(private day: DayMealsWithDishes, options: { swapOob: HtmxSwapOobOption }) {
     this.swapOob = options.swapOob;
   }
 

@@ -1,4 +1,4 @@
-import { Day } from '../../repository/meal.js';
+import { DayMealsWithDishes } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
 import { StatLayout, stats } from '../stats.js';
 
@@ -14,7 +14,7 @@ export class DayStats implements BaseComponent {
   span?: string;
   swapOob: HtmxSwapOobOption;
 
-  constructor(private day: Day, options: { layout: StatLayout, span?: `${SPAN}`; swapOob: HtmxSwapOobOption }) {
+  constructor(private day: DayMealsWithDishes, options: { layout: StatLayout, span?: `${SPAN}`; swapOob: HtmxSwapOobOption }) {
     this.layout = options.layout;
     this.span = options.span;
     this.swapOob = options.swapOob;
