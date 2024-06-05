@@ -5,7 +5,7 @@ import { DayMealsWithDishes } from '../../repository/meal.js';
 import { dateToInput } from '../../utils/converters.js';
 import icons from '../../utils/icons.js';
 import { TAB_CONTAINER_ID } from '../tab-list.js';
-import { DayList } from './day-list.js';
+import { DAY_LIST_ID, DayList } from './day-list.js';
 
 export class MealTab implements BaseComponent {
   public title = config.texts.titles.overview;
@@ -20,7 +20,7 @@ export class MealTab implements BaseComponent {
         class="input input-sm input-bordered"
         value="${dateToInput(defaultValue)}"
         hx-get="/days"
-        hx-target="#days"
+        hx-target="#${DAY_LIST_ID}"
         hx-trigger="change"
         hx-vals="js:{fromDate: document.getElementById('fromDate').value, toDate: document.getElementById('toDate').value}"
       />

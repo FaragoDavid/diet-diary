@@ -3,7 +3,7 @@ import { Ingredient } from '@prisma/client';
 import { DayMealsWithDishes } from '../../repository/meal.js';
 import { DayListItem } from './day-list-item.js';
 
-const DAY_LIST_ID = 'day-list';
+export const DAY_LIST_ID = 'day-list';
 
 export class DayList implements BaseComponent {
   swap: boolean;
