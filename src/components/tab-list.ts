@@ -9,6 +9,7 @@ export const enum TAB_NAME {
 }
 
 export const TAB_CONTAINER_ID = 'tab-container';
+const TAB_LIST_ID = 'tab-list';
 
 function tab(label: string, isActive: boolean, href: string) {
   return `
@@ -25,6 +26,7 @@ function tab(label: string, isActive: boolean, href: string) {
 export function tabList(activeTab: `${TAB_NAME}`, options: {swapOob: HtmxSwapOobOption}) {
   return `
     <div 
+      id="${TAB_LIST_ID}"
       role="tablist" 
       class="tabs tabs-lifted" 
       ${swapOobTag(options.swapOob)}
