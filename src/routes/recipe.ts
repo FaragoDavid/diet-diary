@@ -36,7 +36,7 @@ export const displayRecipesTab = async (_: FastifyRequest, reply: FastifyReply) 
     ${await new RecipeTab(recipes, ingredients).render()}
   `;
 
-  return reply.type('text/html').send(template);
+  return reply.type('text/html').header('HX-Push-Url', `/dashboard/${TAB_NAME.recipes}`).send(template);
 };
 
 export const getRecipes = async (request: GetRecipesRequest, reply: FastifyReply) => {

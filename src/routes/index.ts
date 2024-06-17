@@ -1,7 +1,8 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { subDays } from 'date-fns';
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
 import { layout } from '../components/layout.js';
+import { TAB_NAME } from '../components/tab-list.js';
 import { Dashboard } from '../pages/dashboard.js';
 import { fetchIngredients } from '../repository/ingredient.js';
 import { fetchDays } from '../repository/meal.js';
@@ -10,6 +11,8 @@ import * as ingredientRoutes from './ingredient.js';
 import { getLogin, postLogin } from './login.js';
 import * as mealRoutes from './meal.js';
 import * as recipeRoutes from './recipe.js';
+
+type GetDashboardRequest = FastifyRequest<{ Params: { target: `${TAB_NAME}` } }>;
 
 const createHandler = (handler: (request: FastifyRequest<any>, reply: FastifyReply) => Promise<void>) => {
   return {
@@ -38,13 +41,20 @@ const registerRoutes = (fastify: FastifyInstance) => {
   fastify.get(
     '/dashboard',
     createHandler(async (_, reply: FastifyReply) => {
+      return reply.redirect(301, '/dashboard/meals');
+    }),
+  );
+  fastify.get(
+    '/dashboard/:target',
+    createHandler(async (request: GetDashboardRequest, reply: FastifyReply) => {
+      const { target } = request.params;
       const fromDate = subDays(new Date(), 7);
       const toDate = new Date();
       const ingredients = await fetchIngredients();
       const recipes = await fetchRecipes();
       const days = await fetchDays(fromDate, toDate);
 
-      const template = await layout(new Dashboard(ingredients, days));
+      const template = await layout(new Dashboard(target, ingredients, recipes, days));
       return reply.type('text/html').send(template);
     }),
   );

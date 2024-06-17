@@ -46,7 +46,7 @@ export const displayMealsTab = async (_: FastifyRequest, reply: FastifyReply) =>
     ${await new MealTab(days, ingredients).render()}
   `;
 
-  return reply.type('text/html').send(template);
+  return reply.type('text/html').header('HX-Push-Url', `/dashboard/${TAB_NAME.meals}`).send(template);
 };
 
 export const getDays = async (request: GetMealsRequest, reply: FastifyReply) => {
