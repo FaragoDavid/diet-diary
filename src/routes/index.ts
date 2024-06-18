@@ -34,7 +34,7 @@ const registerLoginRoutes = (fastify: FastifyInstance) => {
 };
 
 const cookieValidator = async (request: FastifyRequest, reply: FastifyReply) => {
-  if (!request.cookies.loggedIn) return reply.status(401).send('Unauthorized');
+  if (!request.cookies.loggedIn) return reply.redirect(301, '/login');
 };
 
 const registerRoutes = (fastify: FastifyInstance) => {
