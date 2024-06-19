@@ -45,7 +45,7 @@ export class RecipeIngredientList implements BaseComponent {
       <div id="recipe-ingredient-list-container">
         <div class="text-lg text-center pb-4">${texts.ingredientsHeader}</div>
         ${await this.renderList()}
-        ${await new NewRecipeIngredient(this.recipe, this.ingredients, { swap: false }).render()}
+        ${await new NewRecipeIngredient(this.recipe, this.ingredients, { swapOob: false }).render()}
       </div>
     `;
   }

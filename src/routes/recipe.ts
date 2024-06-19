@@ -92,7 +92,7 @@ export const addRecipeIngredient = async (request: PostRecipeRequest, reply: Fas
   const template = `
     ${await new RecipeIngredientListItem(ingredientAmount, ingredient, recipeId, { isFirst: recipe.ingredients.length === 1 }).render()}
     ${await new RecipeDetails(recipe, { swap: true }).render()}
-    ${await new NewRecipeIngredient(recipe, ingredients, { swap: true }).render()}
+    ${await new NewRecipeIngredient(recipe, ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
   `;
 
   return reply.type('text/html').send(template);

@@ -62,8 +62,8 @@ export class RecipeIngredientListItem implements BaseComponent {
       ${this.deleteIngredient()}
       ${stats(
         { cal: this.ingredientCals, carbs: this.ingredientCarbs, fat: this.ingredientFat },
-        { id: `ingredient-${this.ingredient.id}-stats`, layout: 'horizontal', size: 'sm' },
+        { id: `ingredient-${this.ingredient.id}-stats`, layout: 'horizontal', size: 'sm', span: 'col-span-2'},
       )}
-      `;
+    `;
   }
 }
