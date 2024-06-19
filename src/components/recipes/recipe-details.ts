@@ -14,9 +14,9 @@ export class RecipeDetails implements BaseComponent {
     const { recipeCalories, recipeCH, recipeFat } = this.recipe.ingredients.reduce(
       (acc, {amount, ingredient}) => {
         return {
-          recipeCalories: acc.recipeCalories + (ingredient.caloriesPer100 || 0) * amount,
-          recipeCH: acc.recipeCH + (ingredient.carbsPer100 || 0) * amount,
-          recipeFat: acc.recipeFat + (ingredient.fatPer100 || 0) * amount,
+          recipeCalories: acc.recipeCalories + (ingredient.caloriesPer100 || 0) / 100 * amount,
+          recipeCH: acc.recipeCH + (ingredient.carbsPer100 || 0) / 100 * amount,
+          recipeFat: acc.recipeFat + (ingredient.fatPer100 || 0) / 100 * amount,
         };
       },
       { recipeCalories: 0, recipeCH: 0, recipeFat: 0 },

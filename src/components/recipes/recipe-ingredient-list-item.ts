@@ -16,9 +16,9 @@ export class RecipeIngredientListItem implements BaseComponent {
     private recipeId: string,
     options: { isFirst: boolean },
   ) {
-    this.ingredientCals = (ingredient.caloriesPer100 || 0) * this.amount;
-    this.ingredientCarbs = (ingredient.carbsPer100 || 0) * this.amount;
-    this.ingredientFat = (ingredient.fatPer100 || 0) * this.amount;
+    this.ingredientCals = (ingredient.caloriesPer100 || 0) / 100 * this.amount;
+    this.ingredientCarbs = (ingredient.carbsPer100 || 0) / 100 * this.amount;
+    this.ingredientFat = (ingredient.fatPer100 || 0) / 100 * this.amount;
     this.isFirst = options.isFirst;
   }
 
