@@ -82,13 +82,13 @@ export const addRecipeIngredient = async (request: PostRecipeRequest, reply: Fas
   const recipeId = request.params.recipeId;
   const { ingredientId, amount } = request.body;
 
+  const { amount: ingredientAmount, ingredient } = await recipeRepository.addIngredient(recipeId, ingredientId, Number(amount));
+  const ingredients = await ingredientRepository.fetchIngredients();
   const recipe = await recipeRepository.fetchRecipe(recipeId);
   if (!recipe) {
     return reply.status(404).send('Recipe not found');
   }
-  const { amount: ingredientAmount, ingredient } = await recipeRepository.addIngredient(recipeId, ingredientId, Number(amount));
-  const ingredients = await ingredientRepository.fetchIngredients();
-
+  
   const template = `
     ${await new RecipeIngredientListItem(ingredientAmount, ingredient, recipeId, { isFirst: recipe.ingredients.length === 1 }).render()}
     ${await new RecipeDetails(recipe, { swap: true }).render()}
