@@ -44,7 +44,7 @@ export const getRecipes = async (request: GetRecipesRequest, reply: FastifyReply
   const recipes = await recipeRepository.fetchRecipes(query);
   const ingredients = await ingredientRepository.fetchIngredients();
 
-  const template = await new RecipeList(recipes, ingredients, { swap: false }).render();
+  const template = await new RecipeList(recipes, ingredients, { swapOob: false }).render();
   return reply.type('text/html').send(template);
 };
 
@@ -73,7 +73,7 @@ export const deleteRecipe = async (request: DeleteRecipeRequest, reply: FastifyR
   }
   const ingredients = await ingredientRepository.fetchIngredients();
 
-  const template = await new RecipeList(recipes, ingredients, { swap: true }).render();
+  const template = await new RecipeList(recipes, ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render();
 
   return reply.type('text/html').send(template);
 };
@@ -88,10 +88,10 @@ export const addRecipeIngredient = async (request: PostRecipeRequest, reply: Fas
   if (!recipe) {
     return reply.status(404).send('Recipe not found');
   }
-  
+
   const template = `
     ${await new RecipeIngredientListItem(ingredientAmount, ingredient, recipeId, { isFirst: recipe.ingredients.length === 1 }).render()}
-    ${await new RecipeDetails(recipe, { swap: true }).render()}
+    ${await new RecipeDetails(recipe, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
     ${await new NewRecipeIngredient(recipe, ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
   `;
 
@@ -107,7 +107,7 @@ export const updateRecipeIngredientAmount = async (request: UpdateRecipeIngredie
     return reply.status(404).send('Recipe not found');
   }
 
-  const template = await new RecipeDetails(recipe, { swap: true }).render();
+  const template = await new RecipeDetails(recipe, { swapOob: HTMX_SWAP.ReplaceElement }).render();
 
   return reply.type('text/html').send(template);
 };
@@ -123,8 +123,8 @@ export const deleteRecipeIngredient = async (request: DeleteRecipeIngredientRequ
   const ingredients = await ingredientRepository.fetchIngredients();
 
   const template = `
-    ${await new RecipeIngredientList(recipe, ingredients, { layout: 'list', swap: true }).render()}
-    ${await new RecipeDetails(recipe, { swap: true }).render()}
+    ${await new RecipeIngredientList(recipe, ingredients, { layout: 'list', swapOob: HTMX_SWAP.ReplaceElement }).render()}
+    ${await new RecipeDetails(recipe, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
     ${await new IngredientSelector(recipeIngredientIds, ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
   `;
 
@@ -154,8 +154,8 @@ export const createRecipe = async (request: CreateRecipeRequest, reply: FastifyR
 
   const template = `
     ${recipeHeader(recipe)}
-    ${await new RecipeDetails(recipe, { swap: false }).render()}
-    ${await new RecipeIngredientList(recipe, ingredients, { layout: 'container', swap: false }).render()}
+    ${await new RecipeDetails(recipe, { swapOob: false }).render()}
+    ${await new RecipeIngredientList(recipe, ingredients, { layout: 'container', swapOob: false }).render()}
   `;
   return reply.type('text/html').header('HX-Push-Url', `/recipe/${recipe.id}`).send(template);
 };

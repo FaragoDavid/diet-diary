@@ -27,8 +27,8 @@ export class RecipePage implements BaseComponent {
         ${await new BackLink(TAB_NAME.recipes).render()}
         <div id="${RECIPE_PAGE_ID}" class="flex flex-col place-items-center w-full pt-6">
           ${recipeHeader(this.recipe)}
-          ${await new RecipeDetails(this.recipe, { swap: false }).render()}
-          ${await new RecipeIngredientList(this.recipe, this.ingredients, { layout: 'container', swap: false }).render()}
+          ${await new RecipeDetails(this.recipe, { swapOob: false }).render()}
+          ${await new RecipeIngredientList(this.recipe, this.ingredients, { layout: 'container', swapOob: false }).render()}
         </div>
     `;
   }

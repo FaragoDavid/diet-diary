@@ -6,9 +6,9 @@ import { RecipeListItem } from './recipe-list-item.js';
 export const RECIPE_LIST_ID = 'recipe-list';
 
 export class RecipeList implements BaseComponent {
-  swap: boolean;
-  constructor(private recipes: RecipeWithIngredients[], private ingredients: Ingredient[], options: { swap: boolean }) {
-    this.swap = options.swap;
+  swapOob: HtmxSwapOobOption;
+  constructor(private recipes: RecipeWithIngredients[], private ingredients: Ingredient[], options: { swapOob: HtmxSwapOobOption }) {
+    this.swapOob = options.swapOob;
   }
 
   async render() {
@@ -21,7 +21,7 @@ export class RecipeList implements BaseComponent {
       <div 
         id="${RECIPE_LIST_ID}" 
         class="grid grid-cols-max-4 grid-row-flex gap-2"
-        ${this.swap ? 'hx-swap-oob="true"' : ''}
+        ${this.swapOob ? 'hx-swap-oob="true"' : ''}
       >
         ${recipeComponents.join('')}
       </div>

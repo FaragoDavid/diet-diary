@@ -13,16 +13,16 @@ const texts = {
 type Layout = 'list' | 'container';
 export class RecipeIngredientList implements BaseComponent {
   layout: Layout;
-  swap: boolean;
-  constructor(private recipe: RecipeWithIngredients, private ingredients: Ingredient[], options: { layout: Layout; swap: boolean }) {
+  swapOob: HtmxSwapOobOption;
+  constructor(private recipe: RecipeWithIngredients, private ingredients: Ingredient[], options: { layout: Layout; swapOob: HtmxSwapOobOption }) {
     this.layout = options.layout;
-    this.swap = options.swap;
+    this.swapOob = options.swapOob;
   }
 
   async renderList() {
     const recipeIngredientComponents: string[] = [];
     for (let ingrIndex = 0; ingrIndex < this.recipe.ingredients.length; ingrIndex++) {
-      const {amount, ingredient} = this.recipe.ingredients[ingrIndex]!;
+      const { amount, ingredient } = this.recipe.ingredients[ingrIndex]!;
       recipeIngredientComponents.push(
         await new RecipeIngredientListItem(amount, ingredient, this.recipe.id, { isFirst: ingrIndex === 0 }).render(),
       );
@@ -32,7 +32,7 @@ export class RecipeIngredientList implements BaseComponent {
       <div 
         id="${RECIPE_INGREDIENT_LIST_ID}" 
         class="grid grid-cols-max-3 grid-row-flex gap-2 pb-4"
-        ${this.swap ? 'hx-swap-oob="true"' : ''}
+        ${this.swapOob ? 'hx-swap-oob="true"' : ''}
       >
         ${recipeIngredientComponents.join('')}
       </div>

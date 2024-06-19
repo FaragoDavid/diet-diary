@@ -46,7 +46,7 @@ export class RecipeTab implements BaseComponent {
           <div class="divider divider-horizontal" ></div> 
           ${addRecipe()}
         </div>
-        ${await new RecipeList(this.recipes, this.ingredients, { swap: false }).render()}
+        ${await new RecipeList(this.recipes, this.ingredients, { swapOob: false }).render()}
       </div>
     `;
   }

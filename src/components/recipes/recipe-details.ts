@@ -4,19 +4,19 @@ import { stats } from '../stats.js';
 
 export class RecipeDetails implements BaseComponent {
   recipeAmount: number;
-  swap: boolean;
-  constructor(private recipe: RecipeWithIngredients, options: { swap: boolean }) {
+  swapOob: HtmxSwapOobOption;
+  constructor(private recipe: RecipeWithIngredients, options: { swapOob: HtmxSwapOobOption }) {
     this.recipeAmount = this.recipe.amount || this.recipe.ingredients.reduce((acc, ingredient) => acc + ingredient.amount, 0);
-    this.swap = options.swap;
+    this.swapOob = options.swapOob;
   }
 
   recipeStats = async () => {
     const { recipeCalories, recipeCH, recipeFat } = this.recipe.ingredients.reduce(
-      (acc, {amount, ingredient}) => {
+      (acc, { amount, ingredient }) => {
         return {
-          recipeCalories: acc.recipeCalories + (ingredient.caloriesPer100 || 0) / 100 * amount,
-          recipeCH: acc.recipeCH + (ingredient.carbsPer100 || 0) / 100 * amount,
-          recipeFat: acc.recipeFat + (ingredient.fatPer100 || 0) / 100 * amount,
+          recipeCalories: acc.recipeCalories + ((ingredient.caloriesPer100 || 0) / 100) * amount,
+          recipeCH: acc.recipeCH + ((ingredient.carbsPer100 || 0) / 100) * amount,
+          recipeFat: acc.recipeFat + ((ingredient.fatPer100 || 0) / 100) * amount,
         };
       },
       { recipeCalories: 0, recipeCH: 0, recipeFat: 0 },
@@ -33,7 +33,7 @@ export class RecipeDetails implements BaseComponent {
       <div 
         id="recipe-details" 
         class="grid grid-rows-max-1 grid-flow-col gap-3"
-        ${this.swap ? 'hx-swap-oob="true"' : ''}
+        ${this.swapOob ? 'hx-swap-oob="true"' : ''}
       >
         ${amount({
           amount: this.recipeAmount,
