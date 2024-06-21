@@ -28,11 +28,8 @@ function stat(macro: Macro, amount: number, layout: StatLayout, options?: { size
   if (layout === 'cells')
     return `<div class="text text-secondary ${options?.size ? textSizes[options.size] : ''}">${macroText}: ${amountText}</div>`;
 }
-
-export function stats(
-  macroAmounts: { cal: number; carbs: number; fat: number },
-  options: { id?: string; layout: StatLayout; size?: Size; span?: string; swapOob?: HtmxSwapOobOption },
-) {
+export type StatsOptions = { id?: string; layout: StatLayout; size?: Size; span?: string; swapOob?: HtmxSwapOobOption };
+export function stats(macroAmounts: { cal: number; carbs: number; fat: number }, options: StatsOptions) {
   const { cal, carbs, fat } = macroAmounts;
   let { id, layout, size, span, swapOob } = options;
   if (span == undefined) span = '';

@@ -53,7 +53,13 @@ export class RecipeListItem implements BaseComponent {
       ${this.amount()}
       ${this.editButton()}
       ${this.deleteButton()}
-      ${await new RecipeStats(this.recipe, { id: `recipe-${this.recipe.id}-stats`, swapOob: false }).render()}
+      ${await new RecipeStats(this.recipe, {
+        id: `recipe-${this.recipe.id}-stats`,
+        layout: 'horizontal',
+        size: 'sm',
+        span: 'col-span-2',
+        swapOob: false,
+      }).render()}
     `;
   }
 }
