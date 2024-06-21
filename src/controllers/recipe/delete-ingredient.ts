@@ -1,11 +1,11 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { IngredientSelector } from '../../../components/recipes/ingredient-selector.js';
-import { RecipeDetails } from '../../../components/recipes/recipe-details.js';
-import { RecipeIngredientList } from '../../../components/recipes/recipe-ingredient-list.js';
-import * as ingredientRepository from '../../../repository/ingredient.js';
-import * as recipeRepository from '../../../repository/recipe.js';
-import { HTMX_SWAP } from '../../../utils/htmx.js';
+import { IngredientSelector } from '../../components/recipes/ingredient-selector.js';
+import { RecipeDetails } from '../../components/recipes/recipe-details.js';
+import { RecipeIngredientList } from '../../components/recipes/recipe-ingredient-list.js';
+import * as ingredientRepository from '../../repository/ingredient.js';
+import * as recipeRepository from '../../repository/recipe.js';
+import { HTMX_SWAP } from '../../utils/htmx.js';
 
 type DeleteRecipeIngredientRequest = FastifyRequest<{ Params: { recipeId: string; ingredientId: string } }>;
 

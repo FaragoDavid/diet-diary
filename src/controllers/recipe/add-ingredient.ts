@@ -1,11 +1,11 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { NewRecipeIngredient } from '../../../components/recipes/new-recipe-ingredient.js';
-import { RecipeDetails } from '../../../components/recipes/recipe-details.js';
-import { RecipeIngredientListItem } from '../../../components/recipes/recipe-ingredient-list-item.js';
-import * as ingredientRepository from '../../../repository/ingredient.js';
-import * as recipeRepository from '../../../repository/recipe.js';
-import { HTMX_SWAP } from '../../../utils/htmx.js';
+import { NewRecipeIngredient } from '../../components/recipes/new-recipe-ingredient.js';
+import { RecipeDetails } from '../../components/recipes/recipe-details.js';
+import { RecipeIngredientListItem } from '../../components/recipes/recipe-ingredient-list-item.js';
+import * as ingredientRepository from '../../repository/ingredient.js';
+import * as recipeRepository from '../../repository/recipe.js';
+import { HTMX_SWAP } from '../../utils/htmx.js';
 
 type AddRecipeIngredientRequest = FastifyRequest<{
   Params: { recipeId: string };

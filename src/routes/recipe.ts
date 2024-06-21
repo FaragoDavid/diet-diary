@@ -7,9 +7,9 @@ import getRecipeList from '../controllers/recipe/get-list.js';
 import newRecipePage from '../controllers/recipe/get-new-page.js';
 import getRecipePage from '../controllers/recipe/get-page.js';
 import getRecipeTab from '../controllers/recipe/get-tab.js';
-import addRecipeIngredient from '../controllers/recipe/ingredient/add.js';
-import deleteRecipeIngredient from '../controllers/recipe/ingredient/delete.js';
-import updateRecipeIngredientAmount from '../controllers/recipe/ingredient/update-amount.js';
+import addRecipeIngredient from '../controllers/recipe/add-ingredient.js';
+import deleteRecipeIngredient from '../controllers/recipe/delete-ingredient.js';
+import updateRecipeIngredientAmount from '../controllers/recipe/update-ingredient-amount.js';
 import updateRecipeAmount from '../controllers/recipe/update-amount.js';
 
 export default async (fastify: FastifyInstance) => {
