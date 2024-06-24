@@ -4,6 +4,8 @@ const texts = {
   calories: 'Kalória',
   carbs: 'Szénhidrát',
   fat: 'Zsír',
+  vegetable: 'Zöldség',
+  carbCounted: 'számolandó',
 };
 
 export class IngredientDetails implements BaseComponent {
@@ -48,15 +50,45 @@ export class IngredientDetails implements BaseComponent {
     `;
   }
 
+  vegetableCheckbox() {
+    return `
+      <div class="text">${texts.vegetable}:</div>
+      <input
+        type="checkbox"
+        name="isVegetable"
+        class="checkbox checkbox-sm"
+        ${this.ingredient.isVegetable ? 'checked' : ''}
+        hx-post="/ingredient/${this.ingredient.id}"
+      />
+    `;
+  }
+
+  carbCountedCheckbox() {
+    return `
+      <div class="text-sm pl-4">${texts.carbCounted}:</div>
+      <input
+        type="checkbox"
+        name="isCarbCounted"
+        class="checkbox checkbox-xs"
+        ${this.ingredient.isCarbCounted ? 'checked' : ''}
+        hx-post="/ingredient/${this.ingredient.id}"
+      />
+    `;
+  }
+
   async render() {
+    console.log(this.ingredient);
+    
     return `
       <div 
         id="ingredient-details"
-        class="grid grid-cols-max-2 grid-row-flex gap-2 pb-4"
+        class="grid grid-cols-max-2 grid-row-flex gap-2 pb-4 items-center"
       >
         ${this.calories()}
         ${this.carbs()}
+        ${this.carbCountedCheckbox()}
         ${this.fat()}
+        ${this.vegetableCheckbox()}
       </div>
     `;
   }
