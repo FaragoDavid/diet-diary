@@ -1,4 +1,4 @@
-import { Ingredient } from '@prisma/client';
+import { Ingredient, Recipe } from '@prisma/client';
 
 import config from '../../config.js';
 import { DayWithMealsWithDishes } from '../../repository/meal.js';
@@ -10,7 +10,7 @@ import { DAY_LIST_ID, DayList } from './day-list.js';
 export class MealTab implements BaseComponent {
   public title = config.texts.titles.overview;
 
-  constructor(private days: DayWithMealsWithDishes[], private ingredients: Ingredient[]) {}
+  constructor(private days: DayWithMealsWithDishes[], private ingredients: Ingredient[], private recipes: Recipe[]) {}
 
   dateInput(id: string, defaultValue: Date) {
     return `
@@ -55,7 +55,7 @@ export class MealTab implements BaseComponent {
           <div class="divider divider-horizontal"></div>
           ${this.addDay()}
         </div>
-        ${await new DayList(this.days, this.ingredients, { swap: false }).render()}
+        ${await new DayList(this.days, this.ingredients, this.recipes, { swap: false }).render()}
       </div>
     `;
   }

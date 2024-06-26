@@ -1,4 +1,4 @@
-import { Ingredient } from '@prisma/client';
+import { Ingredient, Recipe } from '@prisma/client';
 
 import config, { MealType } from '../../config.js';
 import { MealWithDishes } from '../../repository/meal.js';
@@ -30,6 +30,7 @@ export class DayMeal implements BaseComponent {
     private meal: MealWithDishes,
     private date: Date,
     private ingredients: Ingredient[],
+    private recipes: Recipe[],
     options: { layout: 'dayList' | 'page'; swapOob: HtmxSwapOobOption },
   ) {
     this.mealStatLayout = options.layout === 'page' ? 'horizontal' : 'cells';
@@ -57,7 +58,7 @@ export class DayMeal implements BaseComponent {
       >
         ${this.meal.dishes.length > 0 ? await new DayMealDishHeader(this.date, this.meal.type as MealType, { swapOob: false }).render() : ''}
         ${dishComponents.join('')}
-        ${await new NewDish(this.meal, this.date, this.ingredients, { swapOob: false }).render()}
+        ${await new NewDish(this.meal, this.date, this.ingredients, this.recipes, { swapOob: false }).render()}
       </div>
     `;
   }

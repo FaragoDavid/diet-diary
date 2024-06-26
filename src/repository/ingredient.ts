@@ -28,7 +28,7 @@ export const ingredients: Ingredient[] = [
 ];
 
 export async function fetchIngredients(query: string = '') {
-  return prisma.ingredient.findMany({ where: { name: { contains: query } } });
+  return prisma.ingredient.findMany({ where: { name: { contains: query } }, orderBy: { name: 'asc' }});
 }
 
 export async function fetchIngredient(id: string) {

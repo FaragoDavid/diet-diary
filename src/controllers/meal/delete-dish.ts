@@ -7,6 +7,7 @@ import { fetchIngredients } from '../../repository/ingredient.js';
 import { deleteDish, fetchDay, fetchMeal } from '../../repository/meal.js';
 import { paramToDate } from '../../utils/converters.js';
 import { HTMX_SWAP } from '../../utils/htmx.js';
+import { fetchRecipes } from '../../repository/recipe.js';
 
 type DeleteDishRequest = FastifyRequest<{ Params: { date: string; mealType: MealType; dishId: string } }>;
 
@@ -21,10 +22,11 @@ export default async (request: DeleteDishRequest, reply: FastifyReply) => {
   if (!day) return reply.status(404).send('Day not found');
 
   const ingredients = await fetchIngredients();
+  const recipes = await fetchRecipes();
 
   const template = `
     ${await new DayStats(day, { layout: 'vertical', swapOob: HTMX_SWAP.ReplaceElement }).render()}
-    ${await new DayMeal(meal, day.date, ingredients, {
+    ${await new DayMeal(meal, day.date, ingredients, recipes, {
       layout: 'page',
       swapOob: HTMX_SWAP.ReplaceElement,
     }).render()}

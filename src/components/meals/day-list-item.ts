@@ -1,4 +1,4 @@
-import { Ingredient } from '@prisma/client';
+import { Ingredient, Recipe } from '@prisma/client';
 import { format } from 'date-fns';
 
 import { DayWithMealsWithDishes } from '../../repository/meal.js';
@@ -8,7 +8,7 @@ import { DayMealList } from './day-meal-list.js';
 import { DayStats } from './day-stats.js';
 
 export class DayListItem implements BaseComponent {
-  constructor(private day: DayWithMealsWithDishes, private ingredients: Ingredient[]) {}
+  constructor(private day: DayWithMealsWithDishes, private ingredients: Ingredient[], private recipes: Recipe[]) {}
 
   dayDate() {
     return `
@@ -31,7 +31,7 @@ export class DayListItem implements BaseComponent {
       ${this.dayDate()}
       ${await new DayStats(this.day, { layout: 'vertical', swapOob: false }).render()}
       ${this.editDay()}
-      ${await new DayMealList(this.day, this.ingredients, {
+      ${await new DayMealList(this.day, this.ingredients, this.recipes, {
         layout: 'dayList',
         swapOob: false,
       }).render()}

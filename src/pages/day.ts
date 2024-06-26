@@ -1,4 +1,4 @@
-import { Ingredient } from '@prisma/client';
+import { Ingredient, Recipe } from '@prisma/client';
 
 import { BackLink } from '../components/back-link.js';
 import { dayHeader, newDayHeader } from '../components/meals/day-header.js';
@@ -26,12 +26,12 @@ export class NewDayPage implements BaseComponent {
 }
 
 export class DayPage implements BaseComponent {
-  constructor(private day: DayWithMealsWithDishes, private ingredients: Ingredient[]) {}
+  constructor(private day: DayWithMealsWithDishes, private ingredients: Ingredient[], private recipes: Recipe[]) {}
 
   async render() {
     const meals: string[] = [];
     for (const meal of this.day.meals) {
-      meals.push(await new DayMeal(meal, this.day.date, this.ingredients, { layout: 'page', swapOob: false }).render());
+      meals.push(await new DayMeal(meal, this.day.date, this.ingredients, this.recipes, { layout: 'page', swapOob: false }).render());
     }
 
     return `
@@ -40,7 +40,7 @@ export class DayPage implements BaseComponent {
         ${dayHeader(this.day)}
         ${await new DayStats(this.day, { layout: 'vertical', span: DayStats.SPAN.NONE, swapOob: false }).render()}
         ${await new MissingMeals(this.day, { swapOob: false }).render()}
-        ${await new DayMealList(this.day, this.ingredients, { layout: 'page', swapOob: false }).render()}
+        ${await new DayMealList(this.day, this.ingredients, this.recipes, { layout: 'page', swapOob: false }).render()}
       </div>`;
   }
 }

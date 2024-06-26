@@ -5,7 +5,7 @@ import { MealType } from '../config.js';
 import prisma from '../utils/prisma-client.js';
 import { RecipeWithIngredients, fetchRecipe } from './recipe.js';
 
-const dishSelect: Prisma.DishSelect = { id: true, name: true, amount: true, calories: true, carbs: true, fat: true };
+const dishSelect: Prisma.DishSelect = { id: true, name: true, amount: true, calories: true, carbs: true, fat: true, ingredientId: true, recipeId: true };
 
 const mealWithDishesSelect: Prisma.MealSelect = {
   type: true,

@@ -9,6 +9,7 @@ import { fetchIngredients } from '../../repository/ingredient.js';
 import { fetchDay, fetchMeal, addDish } from '../../repository/meal.js';
 import { paramToDate } from '../../utils/converters.js';
 import { HTMX_SWAP } from '../../utils/htmx.js';
+import { fetchRecipes } from '../../repository/recipe.js';
 
 type AddDishRequest = FastifyRequest<{ Params: { date: string; mealType: MealType }; Body: { dishId: string; amount: number } }>;
 
@@ -23,6 +24,7 @@ export default async (request: AddDishRequest, reply: FastifyReply) => {
   if (!meal) return reply.status(404).send('Meal not found');
 
   const ingredients = await fetchIngredients();
+  const recipes = await fetchRecipes();
 
   const template = `
     ${
@@ -30,7 +32,7 @@ export default async (request: AddDishRequest, reply: FastifyReply) => {
         ? await new DayMealDishHeader(day.date, meal.type as MealType, { swapOob: HTMX_SWAP.BeforeFirstChild }).render()
         : ''
     }
-    ${await new NewDish(meal, day.date, ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
+    ${await new NewDish(meal, day.date, ingredients, recipes, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
     ${await new DayMealDish(dish, day.date, mealType, { swapOob: HTMX_SWAP.BeforeElement }).render()}
     ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swapOob: HTMX_SWAP.ReplaceElement }).render()}
     ${await new MealStats(meal, { layout: 'horizontal', swapOob: HTMX_SWAP.ReplaceElement }).render()}

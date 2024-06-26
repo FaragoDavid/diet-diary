@@ -1,4 +1,4 @@
-import { Ingredient } from '@prisma/client';
+import { Ingredient, Recipe } from '@prisma/client';
 
 import { DayWithMealsWithDishes } from '../../repository/meal.js';
 import { DayListItem } from './day-list-item.js';
@@ -7,14 +7,14 @@ export const DAY_LIST_ID = 'day-list';
 
 export class DayList implements BaseComponent {
   swap: boolean;
-  constructor(private days: DayWithMealsWithDishes[], private ingredients: Ingredient[], options: { swap: boolean }) {
+  constructor(private days: DayWithMealsWithDishes[], private ingredients: Ingredient[], private recipes: Recipe[], options: { swap: boolean }) {
     this.swap = options.swap;
   }
 
   async render() {
     const dayComponents: string[] = [];
     for (const day of this.days) {
-      dayComponents.push(await new DayListItem(day, this.ingredients).render());
+      dayComponents.push(await new DayListItem(day, this.ingredients, this.recipes).render());
     }
 
     return `

@@ -1,4 +1,4 @@
-import { Ingredient } from '@prisma/client';
+import { Ingredient, Recipe } from '@prisma/client';
 
 import { MealWithDishes } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
@@ -25,6 +25,7 @@ export class NewDish implements BaseComponent {
     private meal: MealWithDishes,
     private date: Date,
     private ingredients: Ingredient[],
+    private recipes: Recipe[],
     options: { swapOob: HtmxSwapOobOption },
   ) {
     this.swapOob = options.swapOob;
@@ -33,12 +34,17 @@ export class NewDish implements BaseComponent {
   }
 
   options() {
+    console.log('this.ingredients', this.ingredients.map(i => ({name: i.name, id: i.id})));
+    console.log('this.recipes', this.recipes.map(r => ({name: r.name, id: r.id})));
+    console.log('this.meal.dishes', this.meal.dishes);
+    
+    const unusedIngredients = this.ingredients.filter(({ id }) => !this.meal.dishes.map(({ ingredientId }) => ingredientId).includes(id));
+    const unusedRecipes = this.recipes.filter(({ id }) => !this.meal.dishes.map(({ recipeId }) => recipeId).includes(id));
+    const options = [...unusedIngredients, ...unusedRecipes].sort((a, b) => a.name.localeCompare(b.name, ['hu']));
+
     return `
       <option disabled selected>${texts.ingredientSelectorPlaceholder}</option>
-      ${this.ingredients
-        .filter(({ id }) => !this.meal.dishes.map(({ id }) => id).includes(id))
-        .map(({ id, name }) => `<option value="${id}" >${name}</option>`)
-        .join('')}
+      ${options.map(({ id, name }) => `<option value="${id}" >${name}</option>`).join('')}
     `;
   }
 

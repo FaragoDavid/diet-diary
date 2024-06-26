@@ -23,7 +23,7 @@ export class Dashboard implements BaseComponent {
       case TAB_NAME.recipes:
         return await new RecipeTab(this.recipes, this.ingredients).render();
       default:
-        return await new MealTab(this.days, this.ingredients).render();
+        return await new MealTab(this.days, this.ingredients, this.recipes).render();
     }
   }
 
