@@ -34,10 +34,6 @@ export class NewDish implements BaseComponent {
   }
 
   options() {
-    console.log('this.ingredients', this.ingredients.map(i => ({name: i.name, id: i.id})));
-    console.log('this.recipes', this.recipes.map(r => ({name: r.name, id: r.id})));
-    console.log('this.meal.dishes', this.meal.dishes);
-    
     const unusedIngredients = this.ingredients.filter(({ id }) => !this.meal.dishes.map(({ ingredientId }) => ingredientId).includes(id));
     const unusedRecipes = this.recipes.filter(({ id }) => !this.meal.dishes.map(({ recipeId }) => recipeId).includes(id));
     const options = [...unusedIngredients, ...unusedRecipes].sort((a, b) => a.name.localeCompare(b.name, ['hu']));

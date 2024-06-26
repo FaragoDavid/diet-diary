@@ -77,8 +77,6 @@ export class IngredientDetails implements BaseComponent {
   }
 
   async render() {
-    console.log(this.ingredient);
-    
     return `
       <div 
         id="ingredient-details"
