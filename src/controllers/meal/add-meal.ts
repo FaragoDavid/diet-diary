@@ -13,7 +13,7 @@ type AddMealRequest = FastifyRequest<{ Params: { date: string }; Body: { mealTyp
 export default async (request: AddMealRequest, reply: FastifyReply) => {
   const date = paramToDate(request.params.date);
 
-  const meal = await addMeal(date, request.body.mealType);
+  await addMeal(date, request.body.mealType);
   const day = await fetchDay(date);
   if (!day) return reply.status(404).send('Day not found');
 
