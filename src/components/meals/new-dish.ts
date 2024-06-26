@@ -1,6 +1,6 @@
 import { Ingredient } from '@prisma/client';
 
-import { DayMealsWithDishes } from '../../repository/meal.js';
+import { MealWithDishes } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
 import { HTMX_SWAP } from '../../utils/htmx.js';
 import { swapOobTag, swapOobWrapper } from '../../utils/swap-oob-wrapper.js';
@@ -21,7 +21,12 @@ export class NewDish implements BaseComponent {
   swapOob: HtmxSwapOobOption;
   newDishSelectId: string;
   newDishAmountId: string;
-  constructor(private meal: DayMealsWithDishes['meals'][0], private date: Date, private ingredients: Ingredient[], options: { swapOob: HtmxSwapOobOption }) {
+  constructor(
+    private meal: MealWithDishes,
+    private date: Date,
+    private ingredients: Ingredient[],
+    options: { swapOob: HtmxSwapOobOption },
+  ) {
     this.swapOob = options.swapOob;
     this.newDishSelectId = getMealNewDishSelectId(this.date, this.meal.type);
     this.newDishAmountId = getMealNewDishAmountId(this.date, this.meal.type);

@@ -6,7 +6,7 @@ import { MealStats } from '../../components/meals/meal-stats.js';
 import { NewDish } from '../../components/meals/new-dish.js';
 import { MealType } from '../../config.js';
 import { fetchIngredients } from '../../repository/ingredient.js';
-import { fetchDay, fetchMeal, insertDish } from '../../repository/meal.js';
+import { fetchDay, fetchMeal, addDish } from '../../repository/meal.js';
 import { paramToDate } from '../../utils/converters.js';
 import { HTMX_SWAP } from '../../utils/htmx.js';
 
@@ -15,12 +15,7 @@ type AddDishRequest = FastifyRequest<{ Params: { date: string; mealType: MealTyp
 export default async (request: AddDishRequest, reply: FastifyReply) => {
   const { date, mealType } = request.params;
 
-  const dish = await insertDish(
-    paramToDate(date),
-    mealType,
-    request.body[`${mealType}-dishId`],
-    Number(request.body.amount),
-  );
+  const dish = await addDish(paramToDate(date), mealType, request.body[`${mealType}-dishId`], Number(request.body.amount));
   const day = await fetchDay(paramToDate(date));
   if (!day) return reply.status(404).send('Day not found');
 

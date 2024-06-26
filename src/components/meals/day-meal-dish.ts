@@ -1,5 +1,6 @@
+import { Dish } from '@prisma/client';
+
 import { MealType } from '../../config.js';
-import { Dish } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
 import { HTMX_SWAP } from '../../utils/htmx.js';
 import icons from '../../utils/icons.js';

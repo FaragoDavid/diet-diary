@@ -1,13 +1,13 @@
 import { Ingredient } from '@prisma/client';
 
-import { DayMealsWithDishes } from '../../repository/meal.js';
+import { DayWithMealsWithDishes } from '../../repository/meal.js';
 import { DayListItem } from './day-list-item.js';
 
 export const DAY_LIST_ID = 'day-list';
 
 export class DayList implements BaseComponent {
   swap: boolean;
-  constructor(private days: DayMealsWithDishes[], private ingredients: Ingredient[], options: { swap: boolean }) {
+  constructor(private days: DayWithMealsWithDishes[], private ingredients: Ingredient[], options: { swap: boolean }) {
     this.swap = options.swap;
   }
 

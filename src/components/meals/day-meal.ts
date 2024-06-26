@@ -1,7 +1,7 @@
 import { Ingredient } from '@prisma/client';
 
 import config, { MealType } from '../../config.js';
-import { DayMealsWithDishes } from '../../repository/meal.js';
+import { MealWithDishes } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
 import icons from '../../utils/icons.js';
 import { StatLayout } from '../stats.js';
@@ -27,7 +27,7 @@ export class DayMeal implements BaseComponent {
   showDishes: boolean;
   swapOob: HtmxSwapOobOption;
   constructor(
-    private meal: DayMealsWithDishes['meals'][0],
+    private meal: MealWithDishes,
     private date: Date,
     private ingredients: Ingredient[],
     options: { layout: 'dayList' | 'page'; swapOob: HtmxSwapOobOption },

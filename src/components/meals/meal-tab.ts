@@ -1,7 +1,7 @@
 import { Ingredient } from '@prisma/client';
 
 import config from '../../config.js';
-import { DayMealsWithDishes } from '../../repository/meal.js';
+import { DayWithMealsWithDishes } from '../../repository/meal.js';
 import { dateToInput } from '../../utils/converters.js';
 import icons from '../../utils/icons.js';
 import { TAB_CONTAINER_ID } from '../tab-list.js';
@@ -10,7 +10,7 @@ import { DAY_LIST_ID, DayList } from './day-list.js';
 export class MealTab implements BaseComponent {
   public title = config.texts.titles.overview;
 
-  constructor(private days: DayMealsWithDishes[], private ingredients: Ingredient[]) {}
+  constructor(private days: DayWithMealsWithDishes[], private ingredients: Ingredient[]) {}
 
   dateInput(id: string, defaultValue: Date) {
     return `

@@ -2103,10 +2103,6 @@ input.tab:checked + .tab-content,
   width: 100%;
 }
 
-.w-32 {
-  width: 8rem;
-}
-
 .max-w-24 {
   max-width: 6rem;
 }
@@ -2253,16 +2249,16 @@ input.tab:checked + .tab-content,
   padding-left: 0.5rem;
 }
 
+.pl-4 {
+  padding-left: 1rem;
+}
+
 .pr-5 {
   padding-right: 1.25rem;
 }
 
 .pt-6 {
   padding-top: 1.5rem;
-}
-
-.pl-4 {
-  padding-left: 1rem;
 }
 
 .text-center {
@@ -2291,11 +2287,6 @@ input.tab:checked + .tab-content,
 .text-sm {
   font-size: 0.875rem;
   line-height: 1.25rem;
-}
-
-.text-xs {
-  font-size: 0.75rem;
-  line-height: 1rem;
 }
 
 .font-medium {

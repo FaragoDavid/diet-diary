@@ -1,11 +1,11 @@
-import { DayMealsWithDishes } from "../../repository/meal.js";
+import { MealWithDishes } from '../../repository/meal.js';
 import { StatLayout, stats } from '../stats.js';
 
 export class MealStats implements BaseComponent {
   layout: StatLayout;
   span?: string;
   swapOob: HtmxSwapOobOption;
-  constructor(private meal: DayMealsWithDishes['meals'][0], options: { layout: StatLayout; span?: string; swapOob: HtmxSwapOobOption }) {
+  constructor(private meal: MealWithDishes, options: { layout: StatLayout; span?: string; swapOob: HtmxSwapOobOption }) {
     this.layout = options.layout;
     this.span = options.span;
     this.swapOob = options.swapOob;

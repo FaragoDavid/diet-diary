@@ -1,10 +1,10 @@
-import { DayMealsWithDishes } from '../../repository/meal.js';
+import { DayWithMealsWithDishes } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
 import { StatLayout, stats } from '../stats.js';
 
 enum SPAN {
   NONE = '',
-  TWO= 'col-span-2',
+  TWO = 'col-span-2',
   FIVE = 'col-span-5',
 }
 
@@ -14,7 +14,7 @@ export class DayStats implements BaseComponent {
   span?: string;
   swapOob: HtmxSwapOobOption;
 
-  constructor(private day: DayMealsWithDishes, options: { layout: StatLayout, span?: `${SPAN}`; swapOob: HtmxSwapOobOption }) {
+  constructor(private day: DayWithMealsWithDishes, options: { layout: StatLayout; span?: `${SPAN}`; swapOob: HtmxSwapOobOption }) {
     this.layout = options.layout;
     this.span = options.span;
     this.swapOob = options.swapOob;

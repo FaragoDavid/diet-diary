@@ -54,7 +54,7 @@ model Dish {
   carbs    Int
   fat      Int
 
-  meal         Meal        @relation(fields: [mealDate, mealType], references: [date, type])
+  meal         Meal        @relation(fields: [mealDate, mealType], references: [date, type], onDelete: Cascade)
   mealDate     DateTime    @map("meal_date")
   mealType     String      @map("meal_type")
   recipe       Recipe?     @relation(fields: [recipeId], references: [id])
@@ -73,7 +73,7 @@ model Meal {
   fat      Int?
 
   dishes  Dish[]
-  Day     Day      @relation(fields: [dayDate], references: [date])
+  Day     Day      @relation(fields: [dayDate], references: [date], onDelete: Cascade)
   dayDate DateTime @map("day_date")
 
   @@unique([date, type])

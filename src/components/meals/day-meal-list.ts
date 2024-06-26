@@ -1,6 +1,6 @@
 import { Ingredient } from '@prisma/client';
 
-import { DayMealsWithDishes } from '../../repository/meal.js';
+import { DayWithMealsWithDishes } from '../../repository/meal.js';
 import { dateToParam } from '../../utils/converters.js';
 import { swapOobTag } from '../../utils/swap-oob-wrapper.js';
 import { DayMeal } from './day-meal.js';
@@ -14,7 +14,7 @@ export class DayMealList implements BaseComponent {
   swapOob: HtmxSwapOobOption;
   layout: 'dayList' | 'page';
   constructor(
-    private day: DayMealsWithDishes,
+    private day: DayWithMealsWithDishes,
     private ingredients: Ingredient[],
     options: { layout: 'dayList' | 'page'; swapOob: HtmxSwapOobOption },
   ) {

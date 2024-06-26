@@ -5,7 +5,7 @@ import { MealTab } from '../components/meals/meal-tab.js';
 import { RecipeTab } from '../components/recipes/recipe-tab.js';
 import { TAB_NAME, tabList } from '../components/tab-list.js';
 import config from '../config.js';
-import { DayMealsWithDishes } from '../repository/meal.js';
+import { DayWithMealsWithDishes } from '../repository/meal.js';
 import { RecipeWithIngredients } from '../repository/recipe.js';
 
 export class Dashboard implements BaseComponent {
@@ -13,7 +13,7 @@ export class Dashboard implements BaseComponent {
     private target: `${TAB_NAME}`,
     private ingredients: Ingredient[],
     private recipes: RecipeWithIngredients[],
-    private days: DayMealsWithDishes[],
+    private days: DayWithMealsWithDishes[],
   ) {}
 
   async activeTab() {
