@@ -3,7 +3,7 @@ import { Ingredient } from "@prisma/client";
 import { INGREDIENT_PAGE_ID } from "../../pages/ingredient.js";
 
 const texts = {
-  placeholder: 'Hozzávaló neve',
+  placeholder: 'Alapanyag neve',
 };
 const ID = 'ingredient-header';
 

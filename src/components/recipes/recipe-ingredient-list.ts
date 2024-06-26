@@ -8,7 +8,7 @@ export const RECIPE_INGREDIENT_LIST_ID = 'recipe-ingredient-list';
 export const recipeIngredientDivider = '<div class="divider col-span-3 my-0 divider-secondary" ></div>';
 
 const texts = {
-  ingredientsHeader: 'Hozzávalók',
+  ingredientsHeader: 'Alapanyagok',
 };
 type Layout = 'list' | 'container';
 export class RecipeIngredientList implements BaseComponent {

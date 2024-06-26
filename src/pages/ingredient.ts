@@ -7,7 +7,7 @@ import { TAB_NAME } from '../components/tab-list.js';
 
 export const INGREDIENT_PAGE_ID = 'ingredient-page';
 const texts = {
-  newIngredient: 'Új Hozzávaló',
+  newIngredient: 'Új Alapanyag',
 };
 
 export class NewIngredientPage implements BaseComponent {

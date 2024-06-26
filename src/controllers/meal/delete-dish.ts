@@ -13,7 +13,7 @@ type DeleteDishRequest = FastifyRequest<{ Params: { date: string; mealType: Meal
 export default async (request: DeleteDishRequest, reply: FastifyReply) => {
   const { date, mealType, dishId } = request.params;
 
-  await deleteDish(paramToDate(date), mealType, dishId);
+  await deleteDish(dishId);
   const meal = await fetchMeal(paramToDate(date), mealType);
   if (!meal) return reply.status(404).send('Meal not found');
 

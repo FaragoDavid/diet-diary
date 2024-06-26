@@ -12,7 +12,7 @@ export default async (_: FastifyRequest, reply: FastifyReply) => {
 
   const fromDate = subDays(new Date(), 7);
   const toDate = new Date();
-  const days = await fetchDays(fromDate, toDate);
+  const days = await fetchDays();
 
   const template = `
     ${tabList(TAB_NAME.meals, { swapOob: HTMX_SWAP.ReplaceElement })}

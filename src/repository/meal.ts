@@ -1,5 +1,5 @@
 import { Day, Ingredient, Prisma } from '@prisma/client';
-import { endOfDay } from 'date-fns';
+import { endOfDay, startOfDay } from 'date-fns';
 
 import { MealType } from '../config.js';
 import prisma from '../utils/prisma-client.js';
@@ -17,17 +17,26 @@ const mealWithDishesSelect: Prisma.MealSelect = {
   },
 };
 
-export async function fetchDays(start: Date, end: Date) {
-  end = endOfDay(end);
+export async function fetchDays({ fromDate, toDate }: { fromDate?: Date; toDate?: Date } = {}) {
+  const where: Prisma.DayWhereInput = {};
+  if (fromDate) {
+    where.date = { gte: startOfDay(fromDate) };
+    (where.date as Prisma.DateTimeFilter<'Day'>).gte = startOfDay(fromDate);
+  }
+  if (toDate) {
+    if(!where.date) where.date = {};
+    (where.date as Prisma.DateTimeFilter<'Day'>).lte = endOfDay(toDate);
+  }
   return await prisma.day.findMany({
-    where: { date: { gte: start, lte: end } },
-    orderBy: { date: 'desc' },
+    ...(where && { where }),
     select: {
       date: true,
       meals: {
         select: mealWithDishesSelect,
       },
     },
+    orderBy: { date: 'desc' },
+    take: !fromDate && !toDate ? 30 : undefined,
   });
 }
 
@@ -139,13 +148,6 @@ async function addRecipeToMeal(date: Date, mealType: MealType, recipe: RecipeWit
   });
 }
 
-export async function deleteDish(date: Date, mealType: MealType, dishId: string) {
-  if (await prisma.ingredient.findUnique({ where: { id: dishId } })) {
-    await prisma.dish.deleteMany({ where: { mealDate: date, mealType, ingredientId: dishId } });
-  }
-
-  if (await prisma.recipe.findUnique({ where: { id: dishId } })) {
-    await prisma.dish.deleteMany({ where: { mealDate: date, mealType, recipeId: dishId } });
-  }
-  throw new Error('Dish is neither a recipe nor an ingredient');
+export async function deleteDish(id: string) {
+  await prisma.dish.deleteMany({ where: { id } });
 }

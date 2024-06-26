@@ -9,7 +9,7 @@ import { RECIPE_INGREDIENT_LIST_ID } from './recipe-ingredient-list.js';
 
 const NEW_RECIPE_INGREDIENT_ID = 'new-recipe-ingredient';
 const texts = {
-  newIngredient: 'Új hozzávaló hozzáadása',
+  newIngredient: 'Új alapanyag hozzáadása',
 };
 
 export class NewRecipeIngredient implements BaseComponent {

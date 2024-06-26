@@ -18,7 +18,6 @@ export class MealTab implements BaseComponent {
         id="${id}"
         type="date"
         class="input input-sm input-bordered"
-        value="${dateToInput(defaultValue)}"
         hx-get="/days"
         hx-target="#${DAY_LIST_ID}"
         hx-trigger="change"
