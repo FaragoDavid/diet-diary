@@ -8,6 +8,7 @@ import { StatLayout } from '../stats.js';
 import { DayMealDish, DayMealDishHeader } from './day-meal-dish.js';
 import { MealStats } from './meal-stats.js';
 import { NewDish } from './new-dish.js';
+import { DayMealDishList } from './day-meal-dish-list.js';
 
 enum STATS_SPAN {
   TWO = 'col-span-2',
@@ -80,7 +81,11 @@ export class DayMeal implements BaseComponent {
       ${this.mealName()}
       ${await new MealStats(this.meal, { layout: this.mealStatLayout, swapOob: false }).render()}
       ${this.showDishes ? this.deleteMeal() : ''}
-      ${this.showDishes ? await this.dishes() : ''}
+      ${
+        this.showDishes
+          ? await new DayMealDishList(this.meal, this.date, this.ingredients, this.recipes, { swapOob: this.swapOob }).render()
+          : ''
+      }
     `;
   }
 }

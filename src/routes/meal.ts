@@ -10,6 +10,7 @@ import getDayList from '../controllers/meal/get-day-list.js';
 import getDayPage from '../controllers/meal/get-day-page.js';
 import newDayPage from '../controllers/meal/get-new-day-page.js';
 import getMealsTab from '../controllers/meal/tab.js';
+import updateDish from '../controllers/meal/update-dish.js';
 
 export default (fastify: FastifyInstance) => {
   fastify.get('/mealsTab', createHandler(getMealsTab));
@@ -19,6 +20,7 @@ export default (fastify: FastifyInstance) => {
   fastify.post('/new-day', createHandler(createDay));
   fastify.post('/day/:date/meal', createHandler(addMeal));
   fastify.post('/day/:date/meal/:mealType/dish', createHandler(addDish));
+  fastify.post('/day/:date/meal/:mealType/dish/:dishId', createHandler(updateDish));
   fastify.delete('/day/:date/meal/:mealType', createHandler(deleteMeal));
   fastify.delete('/day/:date/meal/:mealType/dish/:dishId', createHandler(deleteDish));
 };

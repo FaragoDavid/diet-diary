@@ -151,3 +151,18 @@ async function addRecipeToMeal(date: Date, mealType: MealType, recipe: RecipeWit
 export async function deleteDish(id: string) {
   await prisma.dish.deleteMany({ where: { id } });
 }
+
+export async function updateDish(id: string, amount: number) {
+  const prevAmount = (await prisma.dish.findUnique({ where: { id } }))?.amount || 1;
+  const multiply = amount / prevAmount;
+
+  await prisma.dish.update({
+    where: { id },
+    data: {
+      amount,
+      calories: { multiply },
+      carbs: { multiply },
+      fat: { multiply },
+    },
+  });
+}

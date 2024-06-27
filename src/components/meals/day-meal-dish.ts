@@ -55,11 +55,21 @@ export class DayMealDish implements BaseComponent {
   }
 
   async render() {
-    const { name, amount, calories, carbs, fat } = this.dish;
+    const { id, name, amount, calories, carbs, fat } = this.dish;
 
     const template = `
       <div class="text">${name}</div>
-      ${dishAmount({ name, amount })}
+      ${dishAmount({
+        name: 'amount',
+        amount,
+        hx: {
+          verb: 'post',
+          url: `/day/${dateToParam(this.date)}/meal/${this.mealType}/dish/${id}`,
+          target: `#${getMealDishesId(this.date, this.mealType)}`,
+          swap: HTMX_SWAP.ReplaceElement,
+          trigger: 'change delay:100ms',
+        },
+      })}
       <div class="text text-right">${Math.floor(calories)}</div>
       <div class="text text-right">${Math.floor(carbs)}</div>
       <div class="text text-right">${Math.floor(fat)}</div>

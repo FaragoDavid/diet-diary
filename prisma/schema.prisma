@@ -10,9 +10,9 @@ generator client {
 model Ingredient {
   id             String  @id @default(uuid())
   name           String
-  caloriesPer100 Int?    @map("calories_per_100")
-  carbsPer100    Int?    @map("carbs_per_100")
-  fatPer100      Int?    @map("fat_per_100")
+  caloriesPer100 Float?    @map("calories_per_100")
+  carbsPer100    Float?    @map("carbs_per_100")
+  fatPer100      Float?    @map("fat_per_100")
   isVegetable    Boolean @default(false) @map("is_vegetable")
   isCarbCounted  Boolean @default(true) @map("is_carb_counted")
 
@@ -25,7 +25,7 @@ model Ingredient {
 model Recipe {
   id       String @id @default(uuid())
   name     String
-  amount   Int?
+  amount   Float?
   servings Int?
 
   ingredients RecipeIngredient[]
@@ -35,7 +35,7 @@ model Recipe {
 }
 
 model RecipeIngredient {
-  amount Int
+  amount Float
 
   recipe       Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
@@ -49,10 +49,10 @@ model RecipeIngredient {
 model Dish {
   id       String @id @default(uuid())
   name     String
-  amount   Int
-  calories Int
-  carbs    Int
-  fat      Int
+  amount   Float
+  calories Float
+  carbs    Float
+  fat      Float
 
   meal         Meal        @relation(fields: [mealDate, mealType], references: [date, type], onDelete: Cascade)
   mealDate     DateTime    @map("meal_date")
@@ -68,9 +68,9 @@ model Dish {
 model Meal {
   date     DateTime
   type     String
-  calories Int?
-  carbs    Int?
-  fat      Int?
+  calories Float?
+  carbs    Float?
+  fat      Float?
 
   dishes  Dish[]
   Day     Day      @relation(fields: [dayDate], references: [date], onDelete: Cascade)
