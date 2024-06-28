@@ -6,7 +6,8 @@
     "start:dev": "npx nodemon dist/server",
     "css": "npx tailwindcss -i ./css/input.css -o ./public/output.css --watch",
     "prisma:migrate:deploy": "npx prisma migrate deploy",
-    "test": "jest"
+    "test": "jest -i",
+    "test:watch": "jest --watch -i"
   },
   "license": "UNLICENSED",
   "dependencies": {

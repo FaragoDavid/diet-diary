@@ -7,3 +7,12 @@ services:
       - POSTGRES_DB=db
     ports:
       - 5435:5432
+
+  postgres_test:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=developer
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=db_test
+    ports:
+      - 5435:5432

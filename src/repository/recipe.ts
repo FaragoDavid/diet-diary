@@ -12,6 +12,7 @@ export async function fetchRecipes(query: string = '') {
         select: { amount: true, ingredient: true },
       },
     },
+    orderBy: { name: 'asc' },
   });
 }
 
@@ -52,23 +53,4 @@ export async function deleteRecipe(id: string) {
 
 export async function updateRecipeAmount(recipeId: string, amount: number) {
   await prisma.recipe.update({ where: { id: recipeId }, data: { amount } });
-}
-
-export async function addIngredient(recipeId: string, ingredientId: string, amount: number) {
-  return await prisma.recipeIngredient.create({
-    data: { recipeId, ingredientId, amount },
-    select: { amount: true, ingredient: true },
-  });
-}
-
-export async function updateIngredientAmount(recipeId: string, ingredientId: string, amount: number) {
-  await prisma.recipeIngredient.update({ where: { recipeId_ingredientId: { recipeId, ingredientId } }, data: { amount } });
-
-  return await fetchRecipe(recipeId);
-}
-
-export async function deleteRecipeIngredient(recipeId: string, ingredientId: string) {
-  await prisma.recipeIngredient.delete({ where: { recipeId_ingredientId: { recipeId, ingredientId } } });
-
-  return await fetchRecipe(recipeId);
 }

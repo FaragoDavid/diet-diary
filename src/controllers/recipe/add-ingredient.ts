@@ -3,8 +3,9 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { NewRecipeIngredient } from '../../components/recipes/new-recipe-ingredient';
 import { RecipeDetails } from '../../components/recipes/recipe-details';
 import { RecipeIngredientListItem } from '../../components/recipes/recipe-ingredient-list-item';
-import * as ingredientRepository from '../../repository/ingredient';
-import * as recipeRepository from '../../repository/recipe';
+import { fetchIngredients } from '../../repository/ingredient';
+import { fetchRecipe } from '../../repository/recipe';
+import { addIngredient } from '../../repository/recipe-ingredient';
 import { HTMX_SWAP } from '../../utils/htmx';
 
 type AddRecipeIngredientRequest = FastifyRequest<{
@@ -16,9 +17,9 @@ export default async (request: AddRecipeIngredientRequest, reply: FastifyReply) 
   const recipeId = request.params.recipeId;
   const { ingredientId, amount } = request.body;
 
-  const { amount: ingredientAmount, ingredient } = await recipeRepository.addIngredient(recipeId, ingredientId, Number(amount));
-  const ingredients = await ingredientRepository.fetchIngredients();
-  const recipe = await recipeRepository.fetchRecipe(recipeId);
+  const { amount: ingredientAmount, ingredient } = await addIngredient(recipeId, ingredientId, Number(amount));
+  const ingredients = await fetchIngredients();
+  const recipe = await fetchRecipe(recipeId);
   if (!recipe) {
     return reply.status(404).send('Recipe not found');
   }

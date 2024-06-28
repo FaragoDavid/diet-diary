@@ -2,6 +2,8 @@
 module.exports = {
   testEnvironment: 'node',
   modulePathIgnorePatterns: ['<rootDir>/dist/'],
+  setupFiles: ['dotenv/config'],
+  setupFilesAfterEnv: ['./src/test-setup.ts'],
   clearMocks: true,
   transform: {
     '^.+\\.tsx?$': [
