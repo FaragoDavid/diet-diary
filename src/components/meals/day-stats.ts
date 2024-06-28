@@ -1,6 +1,6 @@
-import { DayWithMealsWithDishes } from '../../repository/meal.js';
-import { dateToParam } from '../../utils/converters.js';
-import { StatLayout, stats } from '../stats.js';
+import { DayWithMealsWithDishes } from '../../repository/meal';
+import { dateToParam } from '../../utils/converters';
+import { StatLayout, stats } from '../stats';
 
 enum SPAN {
   NONE = '',

@@ -1,9 +1,9 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { IngredientTab } from '../../components/ingredients/ingredient-tab.js';
-import { TAB_NAME, tabList } from '../../components/tab-list.js';
-import * as ingredientRepository from '../../repository/ingredient.js';
-import { HTMX_SWAP } from '../../utils/htmx.js';
+import { IngredientTab } from '../../components/ingredients/ingredient-tab';
+import { TAB_NAME, tabList } from '../../components/tab-list';
+import * as ingredientRepository from '../../repository/ingredient';
+import { HTMX_SWAP } from '../../utils/htmx';
 
 export default async (_: FastifyRequest, reply: FastifyReply) => {
   const ingredients = await ingredientRepository.fetchIngredients();

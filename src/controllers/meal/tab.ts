@@ -1,12 +1,12 @@
 import { subDays } from 'date-fns';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { MealTab } from '../../components/meals/meal-tab.js';
-import { TAB_NAME, tabList } from '../../components/tab-list.js';
-import { fetchIngredients } from '../../repository/ingredient.js';
-import { fetchDays } from '../../repository/meal.js';
-import { HTMX_SWAP } from '../../utils/htmx.js';
-import { fetchRecipes } from '../../repository/recipe.js';
+import { MealTab } from '../../components/meals/meal-tab';
+import { TAB_NAME, tabList } from '../../components/tab-list';
+import { fetchIngredients } from '../../repository/ingredient';
+import { fetchDays } from '../../repository/meal';
+import { HTMX_SWAP } from '../../utils/htmx';
+import { fetchRecipes } from '../../repository/recipe';
 
 export default async (_: FastifyRequest, reply: FastifyReply) => {
   const ingredients = await fetchIngredients();

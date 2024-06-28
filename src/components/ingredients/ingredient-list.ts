@@ -1,6 +1,6 @@
 import { Ingredient } from '@prisma/client';
-import { swapOobTag } from '../../utils/swap-oob-wrapper.js';
-import { IngredientListItem } from './ingredient-list-item.js';
+import { swapOobTag } from '../../utils/swap-oob-wrapper';
+import { IngredientListItem } from './ingredient-list-item';
 
 export const INGREDIENT_LIST_ID = 'ingredient-list';
 

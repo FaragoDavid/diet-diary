@@ -1,11 +1,11 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { layout } from '../../components/layout.js';
-import { TAB_NAME } from '../../components/tab-list.js';
-import { Dashboard } from '../../pages/dashboard.js';
-import { fetchIngredients } from '../../repository/ingredient.js';
-import { fetchDays } from '../../repository/meal.js';
-import { fetchRecipes } from '../../repository/recipe.js';
+import { layout } from '../../components/layout';
+import { TAB_NAME } from '../../components/tab-list';
+import { Dashboard } from '../../pages/dashboard';
+import { fetchIngredients } from '../../repository/ingredient';
+import { fetchDays } from '../../repository/meal';
+import { fetchRecipes } from '../../repository/recipe';
 
 type GetDashboardRequest = FastifyRequest<{ Params: { target: `${TAB_NAME}` } }>;
 

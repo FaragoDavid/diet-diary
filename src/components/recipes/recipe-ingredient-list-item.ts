@@ -1,9 +1,9 @@
 import { Ingredient } from '@prisma/client';
 
-import icons from '../../utils/icons.js';
-import { amount } from '../amount.js';
-import { stats } from '../stats.js';
-import { recipeIngredientDivider } from './recipe-ingredient-list.js';
+import icons from '../../utils/icons';
+import { amount } from '../amount';
+import { stats } from '../stats';
+import { recipeIngredientDivider } from './recipe-ingredient-list';
 
 export class RecipeIngredientListItem implements BaseComponent {
   ingredientCals: number;

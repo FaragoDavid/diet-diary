@@ -1,9 +1,9 @@
 import { Ingredient, Recipe } from '@prisma/client';
 
-import { DayWithMealsWithDishes } from '../../repository/meal.js';
-import { dateToParam } from '../../utils/converters.js';
-import { swapOobTag } from '../../utils/swap-oob-wrapper.js';
-import { DayMeal } from './day-meal.js';
+import { DayWithMealsWithDishes } from '../../repository/meal';
+import { dateToParam } from '../../utils/converters';
+import { swapOobTag } from '../../utils/swap-oob-wrapper';
+import { DayMeal } from './day-meal';
 
 export function getDayMealListId(date: Date) {
   return `day-${dateToParam(date)}-meal-list`;

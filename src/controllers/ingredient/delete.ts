@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { IngredientList } from '../../components/ingredients/ingredient-list.js';
-import * as ingredientRepository from '../../repository/ingredient.js';
-import { HTMX_SWAP } from '../../utils/htmx.js';
+import { IngredientList } from '../../components/ingredients/ingredient-list';
+import * as ingredientRepository from '../../repository/ingredient';
+import { HTMX_SWAP } from '../../utils/htmx';
 
 type DeleteIngredientRequest = FastifyRequest<{ Params: { ingredientId: string }; Body: { query: string } }>;
 

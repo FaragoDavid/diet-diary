@@ -1,12 +1,12 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { dayHeader } from '../../components/meals/day-header.js';
-import { DayMealList } from '../../components/meals/day-meal-list.js';
-import { DayStats } from '../../components/meals/day-stats.js';
-import { MissingMeals } from '../../components/meals/missing-meals.js';
-import { fetchIngredients } from '../../repository/ingredient.js';
-import { createDay } from '../../repository/meal.js';
-import { fetchRecipes } from '../../repository/recipe.js';
+import { dayHeader } from '../../components/meals/day-header';
+import { DayMealList } from '../../components/meals/day-meal-list';
+import { DayStats } from '../../components/meals/day-stats';
+import { MissingMeals } from '../../components/meals/missing-meals';
+import { fetchIngredients } from '../../repository/ingredient';
+import { createDay } from '../../repository/meal';
+import { fetchRecipes } from '../../repository/recipe';
 
 type DashDate = `${string}-${string}-${string}`;
 type CreateDayRequest = FastifyRequest<{ Body: { date: DashDate } }>;

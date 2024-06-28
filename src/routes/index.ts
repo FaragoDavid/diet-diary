@@ -1,10 +1,10 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
-import registerDashboardRoutes from './dashboard.js';
-import registerIngredientRoutes from './ingredient.js';
-import { getLogin, postLogin } from './login.js';
-import registerMealRoutes from './meal.js';
-import registerRecipeRoutes from './recipe.js';
+import registerDashboardRoutes from './dashboard';
+import registerIngredientRoutes from './ingredient';
+import { getLogin, postLogin } from './login';
+import registerMealRoutes from './meal';
+import registerRecipeRoutes from './recipe';
 
 const registerLoginRoutes = (fastify: FastifyInstance) => {
   fastify.get('/', function handler(_: FastifyRequest, reply: FastifyReply) {

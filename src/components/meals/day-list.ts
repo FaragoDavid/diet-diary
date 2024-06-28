@@ -1,7 +1,7 @@
 import { Ingredient, Recipe } from '@prisma/client';
 
-import { DayWithMealsWithDishes } from '../../repository/meal.js';
-import { DayListItem } from './day-list-item.js';
+import { DayWithMealsWithDishes } from '../../repository/meal';
+import { DayListItem } from './day-list-item';
 
 export const DAY_LIST_ID = 'day-list';
 

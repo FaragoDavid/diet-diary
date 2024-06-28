@@ -1,8 +1,8 @@
 import { addDays, format } from 'date-fns';
 
-import { DAY_PAGE_ID } from '../../pages/day.js';
-import { DayWithMealsWithDishes } from '../../repository/meal.js';
-import { dateToInput } from '../../utils/converters.js';
+import { DAY_PAGE_ID } from '../../pages/day';
+import { DayWithMealsWithDishes } from '../../repository/meal';
+import { dateToInput } from '../../utils/converters';
 
 const ID = 'day-header';
 

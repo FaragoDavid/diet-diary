@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { RecipeList } from '../../components/recipes/recipe-list.js';
-import * as ingredientRepository from '../../repository/ingredient.js';
-import * as recipeRepository from '../../repository/recipe.js';
+import { RecipeList } from '../../components/recipes/recipe-list';
+import * as ingredientRepository from '../../repository/ingredient';
+import * as recipeRepository from '../../repository/recipe';
 
 type GetRecipeListRequest = FastifyRequest<{ Querystring: { query: string } }>;
 

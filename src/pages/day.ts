@@ -1,13 +1,13 @@
 import { Ingredient, Recipe } from '@prisma/client';
 
-import { BackLink } from '../components/back-link.js';
-import { dayHeader, newDayHeader } from '../components/meals/day-header.js';
-import { DayMealList } from '../components/meals/day-meal-list.js';
-import { DayMeal } from '../components/meals/day-meal.js';
-import { DayStats } from '../components/meals/day-stats.js';
-import { MissingMeals } from '../components/meals/missing-meals.js';
-import { TAB_NAME } from '../components/tab-list.js';
-import { DayWithMealsWithDishes } from '../repository/meal.js';
+import { BackLink } from '../components/back-link';
+import { dayHeader, newDayHeader } from '../components/meals/day-header';
+import { DayMealList } from '../components/meals/day-meal-list';
+import { DayMeal } from '../components/meals/day-meal';
+import { DayStats } from '../components/meals/day-stats';
+import { MissingMeals } from '../components/meals/missing-meals';
+import { TAB_NAME } from '../components/tab-list';
+import { DayWithMealsWithDishes } from '../repository/meal';
 
 export const DAY_PAGE_ID = 'day-page';
 const texts = {

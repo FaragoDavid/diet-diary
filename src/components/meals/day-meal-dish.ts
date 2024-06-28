@@ -1,13 +1,13 @@
 import { Dish } from '@prisma/client';
 
-import { MealType } from '../../config.js';
-import { dateToParam } from '../../utils/converters.js';
-import { HTMX_SWAP } from '../../utils/htmx.js';
-import icons from '../../utils/icons.js';
-import { swapOobWrapper } from '../../utils/swap-oob-wrapper.js';
-import { amount as dishAmount } from '../amount.js';
-import { getMealDishesId } from './day-meal.js';
-import { getMealNewDishSelectId } from './new-dish.js';
+import { MealType } from '../../config';
+import { dateToParam } from '../../utils/converters';
+import { HTMX_SWAP } from '../../utils/htmx';
+import icons from '../../utils/icons';
+import { swapOobWrapper } from '../../utils/swap-oob-wrapper';
+import { amount as dishAmount } from '../amount';
+import { getMealDishesId } from './day-meal';
+import { getMealNewDishSelectId } from './new-dish';
 
 const texts = {
   calories: 'Kal',

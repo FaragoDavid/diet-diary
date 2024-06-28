@@ -1,4 +1,4 @@
-import config from '../config.js';
+import config from '../config';
 
 const pathForPublicAsset = (fileName: string) => `${config.publicAssetsPath}/public/${fileName}`;
 

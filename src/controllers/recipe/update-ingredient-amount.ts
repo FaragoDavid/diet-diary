@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { RecipeDetails } from '../../components/recipes/recipe-details.js';
-import * as recipeRepository from '../../repository/recipe.js';
-import { HTMX_SWAP } from '../../utils/htmx.js';
+import { RecipeDetails } from '../../components/recipes/recipe-details';
+import * as recipeRepository from '../../repository/recipe';
+import { HTMX_SWAP } from '../../utils/htmx';
 
 type UpdateRecipeIngredientRequest = FastifyRequest<{ Params: { recipeId: string; ingredientId: string }; Body: { amount: string } }>;
 

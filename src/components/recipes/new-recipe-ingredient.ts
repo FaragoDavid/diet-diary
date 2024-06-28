@@ -1,11 +1,11 @@
 import { Ingredient } from '@prisma/client';
 
-import { RecipeWithIngredients } from '../../repository/recipe.js';
-import { HTMX_SWAP } from '../../utils/htmx.js';
-import { swapOobWrapper } from '../../utils/swap-oob-wrapper.js';
-import { amount } from '../amount.js';
-import { IngredientSelector } from './ingredient-selector.js';
-import { RECIPE_INGREDIENT_LIST_ID } from './recipe-ingredient-list.js';
+import { RecipeWithIngredients } from '../../repository/recipe';
+import { HTMX_SWAP } from '../../utils/htmx';
+import { swapOobWrapper } from '../../utils/swap-oob-wrapper';
+import { amount } from '../amount';
+import { IngredientSelector } from './ingredient-selector';
+import { RECIPE_INGREDIENT_LIST_ID } from './recipe-ingredient-list';
 
 const NEW_RECIPE_INGREDIENT_ID = 'new-recipe-ingredient';
 const texts = {

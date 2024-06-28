@@ -1,5 +1,5 @@
-import { RecipeWithIngredients } from '../../repository/recipe.js';
-import { StatsOptions, stats } from '../stats.js';
+import { RecipeWithIngredients } from '../../repository/recipe';
+import { StatsOptions, stats } from '../stats';
 
 export class RecipeStats implements BaseComponent {
   constructor(private recipe: RecipeWithIngredients, private options: StatsOptions) {}

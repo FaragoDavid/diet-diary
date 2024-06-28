@@ -1,14 +1,14 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { DayMealList } from '../../components/meals/day-meal-list.js';
-import { DayStats } from '../../components/meals/day-stats.js';
-import { MissingMeals } from '../../components/meals/missing-meals.js';
-import { MealType } from '../../config.js';
-import { deleteMeal, fetchDay } from '../../repository/meal.js';
-import { paramToDate } from '../../utils/converters.js';
-import { HTMX_SWAP } from '../../utils/htmx.js';
-import { fetchIngredients } from '../../repository/ingredient.js';
-import { fetchRecipes } from '../../repository/recipe.js';
+import { DayMealList } from '../../components/meals/day-meal-list';
+import { DayStats } from '../../components/meals/day-stats';
+import { MissingMeals } from '../../components/meals/missing-meals';
+import { MealType } from '../../config';
+import { deleteMeal, fetchDay } from '../../repository/meal';
+import { paramToDate } from '../../utils/converters';
+import { HTMX_SWAP } from '../../utils/htmx';
+import { fetchIngredients } from '../../repository/ingredient';
+import { fetchRecipes } from '../../repository/recipe';
 
 type DeleteMealRequest = FastifyRequest<{ Params: { date: string; mealType: MealType } }>;
 

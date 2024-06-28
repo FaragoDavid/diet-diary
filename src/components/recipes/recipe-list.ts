@@ -1,7 +1,7 @@
 import { Ingredient } from '@prisma/client';
 
-import { RecipeWithIngredients } from '../../repository/recipe.js';
-import { RecipeListItem } from './recipe-list-item.js';
+import { RecipeWithIngredients } from '../../repository/recipe';
+import { RecipeListItem } from './recipe-list-item';
 
 export const RECIPE_LIST_ID = 'recipe-list';
 

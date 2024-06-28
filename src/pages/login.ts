@@ -1,5 +1,5 @@
-import icons from '../utils/icons.js';
-import config from '../config.js';
+import icons from '../utils/icons';
+import config from '../config';
 
 export class Login implements BaseComponent {
   async render() {

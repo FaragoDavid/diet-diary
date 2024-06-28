@@ -1,10 +1,10 @@
 import { Ingredient } from '@prisma/client';
 
-import { RecipeWithIngredients } from '../../repository/recipe.js';
-import icons from '../../utils/icons.js';
-import { amount as amountInput } from '../amount.js';
-import { RecipeStats } from './recipe-stats.js';
-import { RECIPE_SEARCH_ID } from './recipe-tab.js';
+import { RecipeWithIngredients } from '../../repository/recipe';
+import icons from '../../utils/icons';
+import { amount as amountInput } from '../amount';
+import { RecipeStats } from './recipe-stats';
+import { RECIPE_SEARCH_ID } from './recipe-tab';
 
 export class RecipeListItem implements BaseComponent {
   constructor(private recipe: RecipeWithIngredients, private ingredients: Ingredient[]) {}

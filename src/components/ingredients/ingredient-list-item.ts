@@ -1,8 +1,8 @@
 import { Ingredient } from '@prisma/client';
 
-import icons from '../../utils/icons.js';
-import { stats } from '../stats.js';
-import { INGREDIENT_SEARCH_ID } from './ingredient-tab.js';
+import icons from '../../utils/icons';
+import { stats } from '../stats';
+import { INGREDIENT_SEARCH_ID } from './ingredient-tab';
 
 export class IngredientListItem {
   constructor(private ingredient: Ingredient) {}

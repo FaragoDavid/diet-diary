@@ -1,13 +1,13 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { DayMeal } from '../../components/meals/day-meal.js';
-import { DayStats } from '../../components/meals/day-stats.js';
-import { MealType } from '../../config.js';
-import { fetchIngredients } from '../../repository/ingredient.js';
-import { deleteDish, fetchDay, fetchMeal } from '../../repository/meal.js';
-import { paramToDate } from '../../utils/converters.js';
-import { HTMX_SWAP } from '../../utils/htmx.js';
-import { fetchRecipes } from '../../repository/recipe.js';
+import { DayMeal } from '../../components/meals/day-meal';
+import { DayStats } from '../../components/meals/day-stats';
+import { MealType } from '../../config';
+import { fetchIngredients } from '../../repository/ingredient';
+import { deleteDish, fetchDay, fetchMeal } from '../../repository/meal';
+import { paramToDate } from '../../utils/converters';
+import { HTMX_SWAP } from '../../utils/htmx';
+import { fetchRecipes } from '../../repository/recipe';
 
 type DeleteDishRequest = FastifyRequest<{ Params: { date: string; mealType: MealType; dishId: string } }>;
 

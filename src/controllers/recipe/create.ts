@@ -1,10 +1,10 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { RecipeDetails } from '../../components/recipes/recipe-details.js';
-import { recipeHeader } from '../../components/recipes/recipe-header.js';
-import { RecipeIngredientList } from '../../components/recipes/recipe-ingredient-list.js';
-import * as ingredientRepository from '../../repository/ingredient.js';
-import * as recipeRepository from '../../repository/recipe.js';
+import { RecipeDetails } from '../../components/recipes/recipe-details';
+import { recipeHeader } from '../../components/recipes/recipe-header';
+import { RecipeIngredientList } from '../../components/recipes/recipe-ingredient-list';
+import * as ingredientRepository from '../../repository/ingredient';
+import * as recipeRepository from '../../repository/recipe';
 
 type CreateRecipeRequest = FastifyRequest<{ Body: { recipeName: string } }>;
 

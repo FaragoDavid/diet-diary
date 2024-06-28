@@ -1,9 +1,9 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { layout } from '../../components/layout.js';
-import { RecipePage } from '../../pages/recipe.js';
-import * as ingredientRepository from '../../repository/ingredient.js';
-import * as recipeRepository from '../../repository/recipe.js';
+import { layout } from '../../components/layout';
+import { RecipePage } from '../../pages/recipe';
+import * as ingredientRepository from '../../repository/ingredient';
+import * as recipeRepository from '../../repository/recipe';
 
 type GetRecipeRequest = FastifyRequest<{ Params: { recipeId: string } }>;
 

@@ -1,7 +1,7 @@
-import { RecipeWithIngredients } from '../../repository/recipe.js';
-import { amount } from '../amount.js';
-import { stats } from '../stats.js';
-import { RecipeStats } from './recipe-stats.js';
+import { RecipeWithIngredients } from '../../repository/recipe';
+import { amount } from '../amount';
+import { stats } from '../stats';
+import { RecipeStats } from './recipe-stats';
 
 export class RecipeDetails implements BaseComponent {
   recipeAmount: number;

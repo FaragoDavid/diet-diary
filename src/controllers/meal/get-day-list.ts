@@ -1,9 +1,9 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { DayList } from '../../components/meals/day-list.js';
-import { fetchIngredients } from '../../repository/ingredient.js';
-import { fetchDays } from '../../repository/meal.js';
-import { fetchRecipes } from '../../repository/recipe.js';
+import { DayList } from '../../components/meals/day-list';
+import { fetchIngredients } from '../../repository/ingredient';
+import { fetchDays } from '../../repository/meal';
+import { fetchRecipes } from '../../repository/recipe';
 
 type GetMealsRequest = FastifyRequest<{ Querystring: { fromDate?: number; toDate?: number } }>;
 

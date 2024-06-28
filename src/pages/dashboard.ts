@@ -1,12 +1,12 @@
 import { Ingredient } from '@prisma/client';
 
-import { IngredientTab } from '../components/ingredients/ingredient-tab.js';
-import { MealTab } from '../components/meals/meal-tab.js';
-import { RecipeTab } from '../components/recipes/recipe-tab.js';
-import { TAB_NAME, tabList } from '../components/tab-list.js';
-import config from '../config.js';
-import { DayWithMealsWithDishes } from '../repository/meal.js';
-import { RecipeWithIngredients } from '../repository/recipe.js';
+import { IngredientTab } from '../components/ingredients/ingredient-tab';
+import { MealTab } from '../components/meals/meal-tab';
+import { RecipeTab } from '../components/recipes/recipe-tab';
+import { TAB_NAME, tabList } from '../components/tab-list';
+import config from '../config';
+import { DayWithMealsWithDishes } from '../repository/meal';
+import { RecipeWithIngredients } from '../repository/recipe';
 
 export class Dashboard implements BaseComponent {
   constructor(

@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import * as recipeRepository from '../../repository/recipe.js';
+import * as recipeRepository from '../../repository/recipe';
 
 type UpdateRecipeAmountRequest = FastifyRequest<{ Params: { recipeId: string }; Body: { amount: string; query: string } }>;
 

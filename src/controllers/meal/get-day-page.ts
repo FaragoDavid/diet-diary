@@ -1,11 +1,11 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { layout } from '../../components/layout.js';
-import { DayPage } from '../../pages/day.js';
-import { fetchIngredients } from '../../repository/ingredient.js';
-import { fetchDay } from '../../repository/meal.js';
-import { paramToDate } from '../../utils/converters.js';
-import { fetchRecipes } from '../../repository/recipe.js';
+import { layout } from '../../components/layout';
+import { DayPage } from '../../pages/day';
+import { fetchIngredients } from '../../repository/ingredient';
+import { fetchDay } from '../../repository/meal';
+import { paramToDate } from '../../utils/converters';
+import { fetchRecipes } from '../../repository/recipe';
 
 type GetDayRequest = FastifyRequest<{ Params: { date: string } }>;
 

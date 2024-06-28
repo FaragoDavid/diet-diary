@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyReply } from 'fastify';
 
-import createHandler from '../controllers/base.js';
-import getTab from '../controllers/dashboard/get.js';
+import createHandler from '../controllers/base';
+import getTab from '../controllers/dashboard/get';
 
 export default async (fastify: FastifyInstance) => {
   fastify.get(

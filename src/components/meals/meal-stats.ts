@@ -1,5 +1,5 @@
-import { MealWithDishes } from '../../repository/meal.js';
-import { StatLayout, stats } from '../stats.js';
+import { MealWithDishes } from '../../repository/meal';
+import { StatLayout, stats } from '../stats';
 
 export class MealStats implements BaseComponent {
   layout: StatLayout;

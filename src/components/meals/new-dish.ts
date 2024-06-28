@@ -1,10 +1,10 @@
 import { Ingredient, Recipe } from '@prisma/client';
 
-import { MealWithDishes } from '../../repository/meal.js';
-import { dateToParam } from '../../utils/converters.js';
-import { HTMX_SWAP } from '../../utils/htmx.js';
-import { swapOobTag, swapOobWrapper } from '../../utils/swap-oob-wrapper.js';
-import { amount as amountInput } from '../amount.js';
+import { MealWithDishes } from '../../repository/meal';
+import { dateToParam } from '../../utils/converters';
+import { HTMX_SWAP } from '../../utils/htmx';
+import { swapOobTag, swapOobWrapper } from '../../utils/swap-oob-wrapper';
+import { amount as amountInput } from '../amount';
 
 const texts = {
   ingredientSelectorPlaceholder: 'Válassz',

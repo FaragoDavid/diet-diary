@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { layout } from '../../components/layout.js';
-import { IngredientPage } from '../../pages/ingredient.js';
-import * as ingredientRepository from '../../repository/ingredient.js';
+import { layout } from '../../components/layout';
+import { IngredientPage } from '../../pages/ingredient';
+import * as ingredientRepository from '../../repository/ingredient';
 
 type GetIngredientRequest = FastifyRequest<{ Params: { ingredientId: string } }>;
 

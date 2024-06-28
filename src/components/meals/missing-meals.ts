@@ -1,7 +1,7 @@
-import config, { MealType } from '../../config.js';
-import { DayWithMealsWithDishes } from '../../repository/meal.js';
-import { dateToParam } from '../../utils/converters.js';
-import { swapOobTag } from '../../utils/swap-oob-wrapper.js';
+import config, { MealType } from '../../config';
+import { DayWithMealsWithDishes } from '../../repository/meal';
+import { dateToParam } from '../../utils/converters';
+import { swapOobTag } from '../../utils/swap-oob-wrapper';
 
 const MISSING_MEALS_ID = 'missing-meals';
 

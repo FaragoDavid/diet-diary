@@ -1,6 +1,6 @@
-import config from '../config.js';
-import { HTMX_SWAP } from '../utils/htmx.js';
-import { swapOobTag } from '../utils/swap-oob-wrapper.js';
+import config from '../config';
+import { HTMX_SWAP } from '../utils/htmx';
+import { swapOobTag } from '../utils/swap-oob-wrapper';
 
 export const enum TAB_NAME {
   ingredients = 'ingredients',
@@ -23,7 +23,7 @@ function tab(label: string, isActive: boolean, href: string) {
   `;
 }
 
-export function tabList(activeTab: `${TAB_NAME}`, options: {swapOob: HtmxSwapOobOption}) {
+export function tabList(activeTab: `${TAB_NAME}`, options: { swapOob: HtmxSwapOobOption }) {
   return `
     <div 
       id="${TAB_LIST_ID}"

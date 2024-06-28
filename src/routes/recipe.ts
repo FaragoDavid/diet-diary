@@ -1,16 +1,16 @@
 import { FastifyInstance } from 'fastify';
 
-import createHandler from '../controllers/base.js';
-import createRecipe from '../controllers/recipe/create.js';
-import deleteRecipe from '../controllers/recipe/delete.js';
-import getRecipeList from '../controllers/recipe/get-list.js';
-import newRecipePage from '../controllers/recipe/get-new-page.js';
-import getRecipePage from '../controllers/recipe/get-page.js';
-import getRecipeTab from '../controllers/recipe/get-tab.js';
-import addRecipeIngredient from '../controllers/recipe/add-ingredient.js';
-import deleteRecipeIngredient from '../controllers/recipe/delete-ingredient.js';
-import updateRecipeIngredientAmount from '../controllers/recipe/update-ingredient-amount.js';
-import updateRecipeAmount from '../controllers/recipe/update-amount.js';
+import createHandler from '../controllers/base';
+import createRecipe from '../controllers/recipe/create';
+import deleteRecipe from '../controllers/recipe/delete';
+import getRecipeList from '../controllers/recipe/get-list';
+import newRecipePage from '../controllers/recipe/get-new-page';
+import getRecipePage from '../controllers/recipe/get-page';
+import getRecipeTab from '../controllers/recipe/get-tab';
+import addRecipeIngredient from '../controllers/recipe/add-ingredient';
+import deleteRecipeIngredient from '../controllers/recipe/delete-ingredient';
+import updateRecipeIngredientAmount from '../controllers/recipe/update-ingredient-amount';
+import updateRecipeAmount from '../controllers/recipe/update-amount';
 
 export default async (fastify: FastifyInstance) => {
   fastify.get('/recipesTab', createHandler(getRecipeTab));

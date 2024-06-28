@@ -1,11 +1,11 @@
 import { Ingredient } from '@prisma/client';
 
-import { BackLink } from '../components/back-link.js';
-import { RecipeDetails } from '../components/recipes/recipe-details.js';
-import { newRecipeHeader, recipeHeader } from '../components/recipes/recipe-header.js';
-import { RecipeIngredientList } from '../components/recipes/recipe-ingredient-list.js';
-import { TAB_NAME } from '../components/tab-list.js';
-import { RecipeWithIngredients } from '../repository/recipe.js';
+import { BackLink } from '../components/back-link';
+import { RecipeDetails } from '../components/recipes/recipe-details';
+import { newRecipeHeader, recipeHeader } from '../components/recipes/recipe-header';
+import { RecipeIngredientList } from '../components/recipes/recipe-ingredient-list';
+import { TAB_NAME } from '../components/tab-list';
+import { RecipeWithIngredients } from '../repository/recipe';
 
 export const RECIPE_PAGE_ID = 'recipe-page';
 export class NewRecipePage implements BaseComponent {

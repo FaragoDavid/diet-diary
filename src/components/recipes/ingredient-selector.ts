@@ -1,6 +1,6 @@
 import { Ingredient } from '@prisma/client';
 
-import { swapOobTag } from '../../utils/swap-oob-wrapper.js';
+import { swapOobTag } from '../../utils/swap-oob-wrapper';
 
 const texts = {
   emptyOption: 'Válassz',

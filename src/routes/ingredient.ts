@@ -1,13 +1,13 @@
 import { FastifyInstance } from 'fastify';
 
-import createHandler from '../controllers/base.js';
-import createIngredient from '../controllers/ingredient/create.js';
-import deleteIngredient from '../controllers/ingredient/delete.js';
-import getIngredients from '../controllers/ingredient/get-list.js';
-import newIngredientPage from '../controllers/ingredient/get-new-page.js';
-import getIngredientPage from '../controllers/ingredient/get-page.js';
-import getIngredientsTab from '../controllers/ingredient/tab.js';
-import updateIngredient from '../controllers/ingredient/update.js';
+import createHandler from '../controllers/base';
+import createIngredient from '../controllers/ingredient/create';
+import deleteIngredient from '../controllers/ingredient/delete';
+import getIngredients from '../controllers/ingredient/get-list';
+import newIngredientPage from '../controllers/ingredient/get-new-page';
+import getIngredientPage from '../controllers/ingredient/get-page';
+import getIngredientsTab from '../controllers/ingredient/tab';
+import updateIngredient from '../controllers/ingredient/update';
 
 export default (fastify: FastifyInstance) => {
   fastify.get('/ingredientsTab', createHandler(getIngredientsTab));

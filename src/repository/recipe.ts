@@ -1,4 +1,4 @@
-import prisma from '../utils/prisma-client.js';
+import prisma from '../utils/prisma-client';
 
 export async function fetchRecipes(query: string = '') {
   return await prisma.recipe.findMany({

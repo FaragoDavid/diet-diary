@@ -1,9 +1,9 @@
 import { Day, Ingredient, Prisma } from '@prisma/client';
 import { endOfDay, startOfDay } from 'date-fns';
 
-import { MealType } from '../config.js';
-import prisma from '../utils/prisma-client.js';
-import { RecipeWithIngredients, fetchRecipe } from './recipe.js';
+import { MealType } from '../config';
+import prisma from '../utils/prisma-client';
+import { RecipeWithIngredients, fetchRecipe } from './recipe';
 
 const dishSelect: Prisma.DishSelect = { id: true, name: true, amount: true, calories: true, carbs: true, fat: true, ingredientId: true, recipeId: true };
 

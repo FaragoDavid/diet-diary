@@ -1,10 +1,10 @@
 import { Ingredient } from '@prisma/client';
 
-import config from '../../config.js';
-import { RecipeWithIngredients } from '../../repository/recipe.js';
-import icons from '../../utils/icons.js';
-import { TAB_CONTAINER_ID } from '../tab-list.js';
-import { RECIPE_LIST_ID, RecipeList } from './recipe-list.js';
+import config from '../../config';
+import { RecipeWithIngredients } from '../../repository/recipe';
+import icons from '../../utils/icons';
+import { TAB_CONTAINER_ID } from '../tab-list';
+import { RECIPE_LIST_ID, RecipeList } from './recipe-list';
 
 export const RECIPE_SEARCH_ID = 'search-recipe';
 

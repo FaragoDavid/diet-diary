@@ -1,8 +1,8 @@
 import { Ingredient } from '@prisma/client';
 
-import { RecipeWithIngredients } from '../../repository/recipe.js';
-import { NewRecipeIngredient } from './new-recipe-ingredient.js';
-import { RecipeIngredientListItem } from './recipe-ingredient-list-item.js';
+import { RecipeWithIngredients } from '../../repository/recipe';
+import { NewRecipeIngredient } from './new-recipe-ingredient';
+import { RecipeIngredientListItem } from './recipe-ingredient-list-item';
 
 export const RECIPE_INGREDIENT_LIST_ID = 'recipe-ingredient-list';
 export const recipeIngredientDivider = '<div class="divider col-span-3 my-0 divider-secondary" ></div>';

@@ -1,11 +1,11 @@
 import { Ingredient, Recipe } from '@prisma/client';
 import { format } from 'date-fns';
 
-import { DayWithMealsWithDishes } from '../../repository/meal.js';
-import { dateToParam } from '../../utils/converters.js';
-import icons from '../../utils/icons.js';
-import { DayMealList } from './day-meal-list.js';
-import { DayStats } from './day-stats.js';
+import { DayWithMealsWithDishes } from '../../repository/meal';
+import { dateToParam } from '../../utils/converters';
+import icons from '../../utils/icons';
+import { DayMealList } from './day-meal-list';
+import { DayStats } from './day-stats';
 
 export class DayListItem implements BaseComponent {
   constructor(private day: DayWithMealsWithDishes, private ingredients: Ingredient[], private recipes: Recipe[]) {}

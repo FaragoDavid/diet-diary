@@ -1,16 +1,16 @@
 import { FastifyInstance } from 'fastify';
 
-import createHandler from '../controllers/base.js';
-import addDish from '../controllers/meal/add-dish.js';
-import addMeal from '../controllers/meal/add-meal.js';
-import createDay from '../controllers/meal/create-day.js';
-import deleteDish from '../controllers/meal/delete-dish.js';
-import deleteMeal from '../controllers/meal/delete-meal.js';
-import getDayList from '../controllers/meal/get-day-list.js';
-import getDayPage from '../controllers/meal/get-day-page.js';
-import newDayPage from '../controllers/meal/get-new-day-page.js';
-import getMealsTab from '../controllers/meal/tab.js';
-import updateDish from '../controllers/meal/update-dish.js';
+import createHandler from '../controllers/base';
+import addDish from '../controllers/meal/add-dish';
+import addMeal from '../controllers/meal/add-meal';
+import createDay from '../controllers/meal/create-day';
+import deleteDish from '../controllers/meal/delete-dish';
+import deleteMeal from '../controllers/meal/delete-meal';
+import getDayList from '../controllers/meal/get-day-list';
+import getDayPage from '../controllers/meal/get-day-page';
+import newDayPage from '../controllers/meal/get-new-day-page';
+import getMealsTab from '../controllers/meal/tab';
+import updateDish from '../controllers/meal/update-dish';
 
 export default (fastify: FastifyInstance) => {
   fastify.get('/mealsTab', createHandler(getMealsTab));

@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { IngredientDetails } from '../../components/ingredients/ingredient-details.js';
-import { ingredientHeader } from '../../components/ingredients/ingredient-header.js';
-import * as ingredientRepository from '../../repository/ingredient.js';
+import { IngredientDetails } from '../../components/ingredients/ingredient-details';
+import { ingredientHeader } from '../../components/ingredients/ingredient-header';
+import * as ingredientRepository from '../../repository/ingredient';
 
 type CreateIngredientRequest = FastifyRequest<{ Body: { ingredientName: string } }>;
 

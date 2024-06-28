@@ -1,10 +1,10 @@
 import { Ingredient, Recipe } from '@prisma/client';
 
-import { MealType } from '../../config.js';
-import { MealWithDishes } from '../../repository/meal.js';
-import { dateToParam } from '../../utils/converters.js';
-import { DayMealDish, DayMealDishHeader } from './day-meal-dish.js';
-import { NewDish } from './new-dish.js';
+import { MealType } from '../../config';
+import { MealWithDishes } from '../../repository/meal';
+import { dateToParam } from '../../utils/converters';
+import { DayMealDish, DayMealDishHeader } from './day-meal-dish';
+import { NewDish } from './new-dish';
 
 export function getDeleteMealId(date: Date, mealType: string) {
   return `day-${dateToParam(date)}-${mealType}-delete`;

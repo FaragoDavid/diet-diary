@@ -1,10 +1,10 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { RecipeTab } from '../../components/recipes/recipe-tab.js';
-import { TAB_NAME, tabList } from '../../components/tab-list.js';
-import * as ingredientRepository from '../../repository/ingredient.js';
-import * as recipeRepository from '../../repository/recipe.js';
-import { HTMX_SWAP } from '../../utils/htmx.js';
+import { RecipeTab } from '../../components/recipes/recipe-tab';
+import { TAB_NAME, tabList } from '../../components/tab-list';
+import * as ingredientRepository from '../../repository/ingredient';
+import * as recipeRepository from '../../repository/recipe';
+import { HTMX_SWAP } from '../../utils/htmx';
 
 export default async (_: FastifyRequest, reply: FastifyReply) => {
   const recipes = await recipeRepository.fetchRecipes('');

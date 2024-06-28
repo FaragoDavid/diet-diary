@@ -1,5 +1,5 @@
-import { HTMX_SWAP } from '../utils/htmx.js';
-import { swapOobWrapper } from '../utils/swap-oob-wrapper.js';
+import { HTMX_SWAP } from '../utils/htmx';
+import { swapOobWrapper } from '../utils/swap-oob-wrapper';
 
 const macroTexts = {
   cal: 'Kal',

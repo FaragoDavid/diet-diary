@@ -1,9 +1,9 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { RecipeList } from '../../components/recipes/recipe-list.js';
-import * as ingredientRepository from '../../repository/ingredient.js';
-import * as recipeRepository from '../../repository/recipe.js';
-import { HTMX_SWAP } from '../../utils/htmx.js';
+import { RecipeList } from '../../components/recipes/recipe-list';
+import * as ingredientRepository from '../../repository/ingredient';
+import * as recipeRepository from '../../repository/recipe';
+import { HTMX_SWAP } from '../../utils/htmx';
 
 type DeleteRecipeRequest = FastifyRequest<{ Params: { recipeId: string }; Body: { query: string } }>;
 

@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { layout } from '../components/layout.js';
-import { Login } from '../pages/login.js';
-import config from '../config.js';
+import { layout } from '../components/layout';
+import { Login } from '../pages/login';
+import config from '../config';
 
 type PostLoginRequest = FastifyRequest<{ Body: { password: string } & Record<string, string> }>;
 

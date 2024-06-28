@@ -1,9 +1,9 @@
 import { Ingredient } from '@prisma/client';
 
-import { BackLink } from '../components/back-link.js';
-import { IngredientDetails } from '../components/ingredients/ingredient-details.js';
-import { ingredientHeader, newIngredientHeader } from '../components/ingredients/ingredient-header.js';
-import { TAB_NAME } from '../components/tab-list.js';
+import { BackLink } from '../components/back-link';
+import { IngredientDetails } from '../components/ingredients/ingredient-details';
+import { ingredientHeader, newIngredientHeader } from '../components/ingredients/ingredient-header';
+import { TAB_NAME } from '../components/tab-list';
 
 export const INGREDIENT_PAGE_ID = 'ingredient-page';
 const texts = {

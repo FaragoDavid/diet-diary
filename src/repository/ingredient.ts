@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { Prisma } from '@prisma/client';
 
-import prisma from '../utils/prisma-client.js';
+import prisma from '../utils/prisma-client';
 
 export type Ingredient = {
   id: string;

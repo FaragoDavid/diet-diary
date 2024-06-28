@@ -1,14 +1,14 @@
 import { Ingredient, Recipe } from '@prisma/client';
 
-import config, { MealType } from '../../config.js';
-import { MealWithDishes } from '../../repository/meal.js';
-import { dateToParam } from '../../utils/converters.js';
-import icons from '../../utils/icons.js';
-import { StatLayout } from '../stats.js';
-import { DayMealDish, DayMealDishHeader } from './day-meal-dish.js';
-import { MealStats } from './meal-stats.js';
-import { NewDish } from './new-dish.js';
-import { DayMealDishList } from './day-meal-dish-list.js';
+import config, { MealType } from '../../config';
+import { MealWithDishes } from '../../repository/meal';
+import { dateToParam } from '../../utils/converters';
+import icons from '../../utils/icons';
+import { StatLayout } from '../stats';
+import { DayMealDish, DayMealDishHeader } from './day-meal-dish';
+import { MealStats } from './meal-stats';
+import { NewDish } from './new-dish';
+import { DayMealDishList } from './day-meal-dish-list';
 
 enum STATS_SPAN {
   TWO = 'col-span-2',

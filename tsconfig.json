@@ -12,9 +12,8 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     "noImplicitAny": false,
-    "module": "NodeNext",
   },
   "files": ["src/types.d.ts"],
   "include": ["src", "test", "src/**/*.ts"],
-  "exclude": ["dist", "bundle", "node_modules"]
+  "exclude": ["dist", "bundle", "node_modules", "**/*.test.ts"]
 }

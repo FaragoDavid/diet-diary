@@ -1,11 +1,11 @@
 import { Ingredient, Recipe } from '@prisma/client';
 
-import config from '../../config.js';
-import { DayWithMealsWithDishes } from '../../repository/meal.js';
-import { dateToInput } from '../../utils/converters.js';
-import icons from '../../utils/icons.js';
-import { TAB_CONTAINER_ID } from '../tab-list.js';
-import { DAY_LIST_ID, DayList } from './day-list.js';
+import config from '../../config';
+import { DayWithMealsWithDishes } from '../../repository/meal';
+import { dateToInput } from '../../utils/converters';
+import icons from '../../utils/icons';
+import { TAB_CONTAINER_ID } from '../tab-list';
+import { DAY_LIST_ID, DayList } from './day-list';
 
 export class MealTab implements BaseComponent {
   public title = config.texts.titles.overview;

@@ -1,4 +1,4 @@
-import { Ingredient } from '../repository/ingredient.js';
+import { Ingredient } from '../repository/ingredient';
 
 export function nutrientFromDish(id: string, amount: number, nutrient: 'calories' | 'carbs' | 'fat', ingredients: Ingredient[]) {
   const ingredient = ingredients.find((ingr) => ingr.id === id);

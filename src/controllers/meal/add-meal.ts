@@ -1,13 +1,13 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { DayMealList } from '../../components/meals/day-meal-list.js';
-import { MissingMeals } from '../../components/meals/missing-meals.js';
-import { MealType } from '../../config.js';
-import { fetchIngredients } from '../../repository/ingredient.js';
-import { addMeal, fetchDay } from '../../repository/meal.js';
-import { paramToDate } from '../../utils/converters.js';
-import { HTMX_SWAP } from '../../utils/htmx.js';
-import { fetchRecipes } from '../../repository/recipe.js';
+import { DayMealList } from '../../components/meals/day-meal-list';
+import { MissingMeals } from '../../components/meals/missing-meals';
+import { MealType } from '../../config';
+import { fetchIngredients } from '../../repository/ingredient';
+import { addMeal, fetchDay } from '../../repository/meal';
+import { paramToDate } from '../../utils/converters';
+import { HTMX_SWAP } from '../../utils/htmx';
+import { fetchRecipes } from '../../repository/recipe';
 
 type AddMealRequest = FastifyRequest<{ Params: { date: string }; Body: { mealType: MealType } }>;
 
