@@ -1,3 +1,13 @@
+const enum MEAL_TYPE {
+  morningSnack = 'morningSnack',
+  breakfast = 'breakfast',
+  brunch = 'brunch',
+  lunch = 'lunch',
+  afternoonSnack = 'afternoonSnack',
+  dinner = 'dinner',
+  lateNightSnack = 'lateNightSnack',
+}
+
 export default {
   port: Number(process.env.PORT) || 3000,
   host: process.env.HOST || 'localhost',
@@ -43,16 +53,7 @@ export default {
     { key: MEAL_TYPE.afternoonSnack, name: 'Uzsonna', targetCal: 220 },
     { key: MEAL_TYPE.dinner, name: 'Vacsora', targetCal: 330 },
     { key: MEAL_TYPE.lateNightSnack, name: 'Utóvacsora', targetCal: 165 },
-  ]
+  ],
 };
 
-const enum MEAL_TYPE {
-  morningSnack = 'morningSnack',
-  breakfast = 'breakfast',
-  brunch = 'brunch',
-  lunch = 'lunch',
-  afternoonSnack = 'afternoonSnack',
-  dinner = 'dinner',
-  lateNightSnack = 'lateNightSnack',
-}
 export type MealType = `${MEAL_TYPE}`;
