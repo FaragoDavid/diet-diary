@@ -1,5 +1,7 @@
 import { Ingredient } from '@prisma/client';
 
+import { AmountInputOptions, amount } from '../amount';
+
 const texts = {
   calories: 'Kalória',
   carbs: 'Szénhidrát',
@@ -12,41 +14,47 @@ export class IngredientDetails implements BaseComponent {
   constructor(private ingredient: Ingredient) {}
 
   calories() {
+    const amountOptions: AmountInputOptions = {
+      name: 'calories',
+      hx: {
+        verb: 'post',
+        url: `/ingredient/${this.ingredient.id}`,
+      },
+    };
+    if (this.ingredient.caloriesPer100) amountOptions.amount = this.ingredient.caloriesPer100;
     return `
       <div class="text">${texts.calories}:</div>
-      <input
-        type="number"
-        name="calories"
-        class="input input-sm input-bordered w-16 text-right placeholder:text-neutral"
-        value="${this.ingredient.caloriesPer100}"
-        hx-post="/ingredient/${this.ingredient.id}"
-      />
+      ${amount(amountOptions)}
     `;
   }
 
   carbs() {
+    const amountOptions: AmountInputOptions = {
+      name: 'carbs',
+      hx: {
+        verb: 'post',
+        url: `/ingredient/${this.ingredient.id}`,
+      },
+    };
+    if (this.ingredient.carbsPer100) amountOptions.amount = this.ingredient.carbsPer100;
     return `
       <div class="text">${texts.carbs}:</div>
-      <input
-        type="number"
-        name="carbs"
-        class="input input-sm input-bordered w-16 text-right placeholder:text-neutral"
-        value="${this.ingredient.carbsPer100}"
-        hx-post="/ingredient/${this.ingredient.id}"
-      />
+      ${amount(amountOptions)}
     `;
   }
 
   fat() {
+    const amountOptions: AmountInputOptions = {
+      name: 'fat',
+      hx: {
+        verb: 'post',
+        url: `/ingredient/${this.ingredient.id}`,
+      },
+    };
+    if (this.ingredient.fatPer100) amountOptions.amount = this.ingredient.fatPer100;
     return `
       <div class="text">${texts.fat}:</div>
-      <input
-        type="number"
-        name="fat"
-        class="input input-sm input-bordered w-16 text-right placeholder:text-neutral"
-        value="${this.ingredient.fatPer100}"
-        hx-post="/ingredient/${this.ingredient.id}"
-      />
+      ${amount(amountOptions)}
     `;
   }
 

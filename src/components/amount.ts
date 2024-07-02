@@ -12,7 +12,8 @@ export type AmountInputHtmxOption = {
   include?: string;
   trigger?: string;
 };
-export function amount(options: { id?: string; amount?: number; name?: string; showText?: boolean; hx?: AmountInputHtmxOption }) {
+export type AmountInputOptions = { id?: string; amount?: number; name?: string; showText?: boolean; hx?: AmountInputHtmxOption };
+export function amount(options: AmountInputOptions) {
   const { amount, name, showText, hx, id } = options;
 
   return `
