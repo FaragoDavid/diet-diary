@@ -1,17 +1,20 @@
+import { HTMX_SWAP } from '../utils/htmx';
+
 const texts = {
   amount: 'Menny.',
 };
 
-type HxSwap = 'outerHTML' | 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend' | 'delete' | 'none';
-
-export function amount(options: {
-  id?: string;
-  amount?: number;
-  name?: string;
-  showText?: boolean;
-  hx?: { verb: 'get' | 'post'; url: string; target?: string; swap?: HxSwap, include?: string, trigger?: string };
-}) {
+export type AmountInputHtmxOption = {
+  verb: 'get' | 'post';
+  url: string;
+  target?: string;
+  swap?: `${HTMX_SWAP}`;
+  include?: string;
+  trigger?: string;
+};
+export function amount(options: { id?: string; amount?: number; name?: string; showText?: boolean; hx?: AmountInputHtmxOption }) {
   const { amount, name, showText, hx, id } = options;
+
   return `
     <div ${id ? `id="${id}"` : ''}
       class="flex flex-col justify-center items-center gap-y-1">
@@ -22,7 +25,7 @@ export function amount(options: {
           ${name ? `name="${name}"` : ''}
           class="input input-sm input-bordered w-16 pr-5 text-right peer placeholder:text-neutral" 
           ${amount ? `value="${amount}"` : ''}
-          ${!amount ? 'placeholder="0"' : ''}
+          placeholder="0"
           ${hx ? `hx-${hx.verb}="${hx.url}"` : ''}
           ${hx?.target ? `hx-target="${hx.target}"` : ''}
           ${hx?.include ? `hx-include="${hx.include}"` : ''}
