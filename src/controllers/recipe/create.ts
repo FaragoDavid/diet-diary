@@ -17,7 +17,7 @@ export default async (request: CreateRecipeRequest, reply: FastifyReply) => {
   const template = `
     ${recipeHeader(recipe)}
     ${await new RecipeDetails(recipe, { swapOob: false }).render()}
-    ${await new RecipeIngredientList(recipe, ingredients, { layout: 'container', swapOob: false }).render()}
+    ${await new RecipeIngredientList(recipe, ingredients, { layout: 'page', swapOob: false }).render()}
   `;
   return reply.type('text/html').header('HX-Push-Url', `/recipe/${recipe.id}`).send(template);
 };

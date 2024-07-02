@@ -10,7 +10,9 @@ export const recipeIngredientDivider = '<div class="divider col-span-3 my-0 divi
 const texts = {
   ingredientsHeader: 'Alapanyagok',
 };
-type Layout = 'list' | 'container';
+
+type Layout = 'list' | 'page';
+
 export class RecipeIngredientList implements BaseComponent {
   layout: Layout;
   swapOob: HtmxSwapOobOption;
@@ -54,7 +56,7 @@ export class RecipeIngredientList implements BaseComponent {
     switch (this.layout) {
       case 'list':
         return this.renderList();
-      case 'container':
+      case 'page':
         return this.renderContainer();
     }
   }
