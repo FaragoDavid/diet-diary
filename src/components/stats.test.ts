@@ -1,7 +1,8 @@
-import format from 'html-format';
+import { expect } from '@jest/globals';
 
-import { stats, StatsOptions } from './stats';
+import '../toContainHtml';
 import { HTMX_SWAP } from '../utils/htmx';
+import { stats, StatsOptions } from './stats';
 
 describe('stats', () => {
   const macroAmounts = {
@@ -45,25 +46,24 @@ describe('stats', () => {
 
     it('renders all macros', () => {
       const result = stats(macroAmounts, options);
-      expect(result).toContain(
-        format(`
-      <div class="flex">
-        <div class="flex flex-col justify-center items-center">
-          <div class="text text-center text-primary italic">Kal</div>
-          <div class="text text-center text-primary">${macroAmounts.cal}</div>
+      expect(result).toContainHtml(`
+        <div class="flex">
+          <div class="flex flex-col justify-center items-center">
+            <div class="text text-center text-primary italic">Kal</div>
+            <div class="text text-center text-primary">${macroAmounts.cal}</div>
+          </div>
+          <div class="divider divider-horizontal m-1" />
+          <div class="flex flex-col justify-center items-center">
+            <div class="text text-center text-primary italic">CH</div>
+            <div class="text text-center text-primary">${macroAmounts.carbs}</div>
+          </div>
+          <div class="divider divider-horizontal m-1" />
+          <div class="flex flex-col justify-center items-center">
+            <div class="text text-center text-primary italic">zsír</div>
+            <div class="text text-center text-primary">${macroAmounts.fat}</div>
+          </div>
         </div>
-        <div class="divider divider-horizontal m-1" />
-        <div class="flex flex-col justify-center items-center">
-          <div class="text text-center text-primary italic">CH</div>
-          <div class="text text-center text-primary">${macroAmounts.carbs}</div>
-        </div>
-        <div class="divider divider-horizontal m-1" />
-        <div class="flex flex-col justify-center items-center">
-          <div class="text text-center text-primary italic">zsír</div>
-          <div class="text text-center text-primary">${macroAmounts.fat}</div>
-        </div>
-      </div>`),
-      );
+      `);
     });
   });
 
@@ -99,16 +99,15 @@ describe('stats', () => {
 
     it('renders all macros', () => {
       const result = stats(macroAmounts, options);
-      expect(result).toContain(
-        format(`
-          <div class="flex">
-            <div class=\"text text-secondary italic\">Kal: ${macroAmounts.cal}</div>
-            <div class="divider divider-horizontal m-1" />
-            <div class=\"text text-secondary italic\">CH: ${macroAmounts.carbs}</div>
-            <div class="divider divider-horizontal m-1" />
-            <div class=\"text text-secondary italic\">zsír: ${macroAmounts.fat}</div>
-          </div>`),
-      );
+      expect(result).toContainHtml(`
+        <div class="flex">
+          <div class=\"text text-secondary italic\">Kal: ${macroAmounts.cal}</div>
+          <div class="divider divider-horizontal m-1" />
+          <div class=\"text text-secondary italic\">CH: ${macroAmounts.carbs}</div>
+          <div class="divider divider-horizontal m-1" />
+          <div class=\"text text-secondary italic\">zsír: ${macroAmounts.fat}</div>
+        </div>
+      `);
     });
   });
 
@@ -127,24 +126,21 @@ describe('stats', () => {
 
     it('renders all macros without size option', () => {
       const result = stats(macroAmounts, options);
-      expect(result).toContain(
-        format(`
-          <div class="text text-secondary">Kal: ${macroAmounts.cal}</div>
-          <div class="text text-secondary">CH: ${macroAmounts.carbs}</div>
-          <div class="text text-secondary">zsír: ${macroAmounts.fat}</div>
-        `),
-      );
+
+      expect(result).toContainHtml(`
+        <div class="text text-secondary">Kal: ${macroAmounts.cal}</div>
+        <div class="text text-secondary">CH: ${macroAmounts.carbs}</div>
+        <div class="text text-secondary">zsír: ${macroAmounts.fat}</div>
+      `);
     });
 
     it('renders all macros with size option', () => {
       (['sm', 'lg'] as StatsOptions['size'][]).forEach((size) => {
-        expect(stats(macroAmounts, { ...options, size })).toContain(
-          format(`
-            <div class="text text-secondary text-${size}">Kal: ${macroAmounts.cal}</div>
-            <div class="text text-secondary text-${size}">CH: ${macroAmounts.carbs}</div>
-            <div class="text text-secondary text-${size}">zsír: ${macroAmounts.fat}</div>
-          `),
-        );
+        expect(stats(macroAmounts, { ...options, size })).toContainHtml(`
+          <div class="text text-secondary text-${size}">Kal: ${macroAmounts.cal}</div>
+          <div class="text text-secondary text-${size}">CH: ${macroAmounts.carbs}</div>
+          <div class="text text-secondary text-${size}">zsír: ${macroAmounts.fat}</div>
+        `);
       });
     });
   });

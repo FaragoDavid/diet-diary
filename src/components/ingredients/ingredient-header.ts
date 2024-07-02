@@ -1,6 +1,6 @@
-import { Ingredient } from "@prisma/client";
+import { Ingredient } from '@prisma/client';
 
-import { INGREDIENT_PAGE_ID } from "../../pages/ingredient.js";
+import { INGREDIENT_PAGE_ID } from '../../pages/ingredient';
 
 const texts = {
   placeholder: 'Alapanyag neve',

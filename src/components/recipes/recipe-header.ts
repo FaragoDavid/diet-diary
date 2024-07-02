@@ -1,5 +1,5 @@
-import { RECIPE_PAGE_ID } from "../../pages/recipe.js";
-import { RecipeWithIngredients } from "../../repository/recipe.js";
+import { RECIPE_PAGE_ID } from '../../pages/recipe';
+import { RecipeWithIngredients } from '../../repository/recipe';
 
 const texts = {
   placeholder: 'Recept neve',
