@@ -10,7 +10,7 @@ jest.mock('./ingredient-list');
 jest.mock('../../utils/icons', () => ({ add: '<add-icon />', search: '<search-icon />' }));
 
 describe('Ingredient Tab Component', () => {
-  it('should render', async () => {
+  it('renders', async () => {
     const ingredients: Ingredient[] = [
       {
         id: '1',

@@ -27,7 +27,7 @@ describe('Ingredient List Item Component', () => {
     (stats as jest.Mock).mockImplementation(() => '<ingredient-stats />');
   });
 
-  it('should render when all macros are set on the ingredient', async () => {
+  it('renders when all macros are set on the ingredient', async () => {
     expect(await new IngredientListItem(ingredient).render()).toContainHtml(`
       <div class="text-sm text-wrap max-w-24">test-ingredient-name</div>
       <ingredient-stats />

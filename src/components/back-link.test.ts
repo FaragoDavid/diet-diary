@@ -3,12 +3,10 @@ import { expect } from '@jest/globals';
 import { BackLink } from '../components/back-link';
 import '../toContainHtml';
 
-jest.mock('../utils/icons', () => ({
-  back: '<back-icon />',
-}));
+jest.mock('../utils/icons', () => ({ back: '<back-icon />' }));
 
-describe('BackLink', () => {
-  it('should render the back link correctly', async () => {
+describe('Back Link Component', () => {
+  it('renders the back link correctly', async () => {
     const target = 'test-target';
 
     expect(await new BackLink(target).render()).toContainHtml(`
