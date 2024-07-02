@@ -31,7 +31,7 @@ export function tabList(activeTab: `${TAB_NAME}`, options: { swapOob: HtmxSwapOo
   return `
     <div 
       id="${TAB_LIST_ID}"
-      role="tablists"
+      role="tablist"
       class="tabs tabs-lifted"
       ${swapOobTag(options.swapOob)}
     >
