@@ -8,6 +8,9 @@ export async function fetchRecipes(query: string = '') {
       name: true,
       amount: true,
       servings: true,
+      calories: true,
+      carbs: true,
+      fat: true,
       ingredients: {
         select: { amount: true, ingredient: true },
       },
@@ -25,6 +28,9 @@ export async function fetchRecipe(id: string) {
       name: true,
       amount: true,
       servings: true,
+      calories: true,
+      carbs: true,
+      fat: true,
       ingredients: {
         select: { amount: true, ingredient: true },
       },
@@ -40,6 +46,9 @@ export async function createRecipe(name: string) {
       name: true,
       amount: true,
       servings: true,
+      calories: true,
+      carbs: true,
+      fat: true,
       ingredients: {
         select: { amount: true, ingredient: true },
       },

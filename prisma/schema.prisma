@@ -10,9 +10,9 @@ generator client {
 model Ingredient {
   id             String  @id @default(uuid())
   name           String
-  caloriesPer100 Float  @map("calories_per_100") @default(0)
-  carbsPer100    Float  @map("carbs_per_100") @default(0)
-  fatPer100      Float  @map("fat_per_100") @default(0)
+  caloriesPer100 Float   @default(0) @map("calories_per_100")
+  carbsPer100    Float   @default(0) @map("carbs_per_100")
+  fatPer100      Float   @default(0) @map("fat_per_100")
   isVegetable    Boolean @default(false) @map("is_vegetable")
   isCarbCounted  Boolean @default(true) @map("is_carb_counted")
 
@@ -25,11 +25,11 @@ model Ingredient {
 model Recipe {
   id       String @id @default(uuid())
   name     String
-  calories Float @default(0)
-  carbs    Float @default(0)
-  fat      Float @default(0)
-  amount   Float @default(0)
-  servings Int?
+  calories Float  @default(0)
+  carbs    Float  @default(0)
+  fat      Float  @default(0)
+  amount   Float?
+  servings Int    @default(1)
 
   ingredients RecipeIngredient[]
   dishes      Dish[]

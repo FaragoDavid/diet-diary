@@ -13,6 +13,8 @@ export class MealTab implements BaseComponent {
   constructor(private days: DayWithMealsWithDishes[], private ingredients: Ingredient[], private recipes: Recipe[]) {}
 
   dateInput(id: string, defaultValue: Date) {
+    
+    // style: https://stackoverflow.com/questions/14946091/are-there-any-style-options-for-the-html5-date-picker
     return `
       <input
         id="${id}"

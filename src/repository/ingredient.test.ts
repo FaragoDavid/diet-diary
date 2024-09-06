@@ -51,9 +51,9 @@ describe('Ingredient Repository', () => {
       expect(ingredient).toEqual({ 
         id: expect.any(String), 
         name: TEST_INGREDIENTS.CHICKEN.name,
-        caloriesPer100: null,
-        carbsPer100: null,
-        fatPer100: null,
+        caloriesPer100: 0,
+        carbsPer100: 0,
+        fatPer100: 0,
         isVegetable: false,
         isCarbCounted: true,
        });
