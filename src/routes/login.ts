@@ -16,8 +16,8 @@ export const postLogin = async (request: PostLoginRequest, reply: FastifyReply) 
   const { password } = request.body;
 
   if (password === config.password) {
-    return reply.setCookie('loggedIn', 'true').type('text/html').redirect(303, '/dashboard');
+    return reply.setCookie('loggedIn', 'true').type('text/html').redirect('/dashboard', 303);
   } else {
-    reply.redirect(301, '/login');
+    reply.redirect('/login', 301);
   }
 };

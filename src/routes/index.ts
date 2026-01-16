@@ -8,7 +8,7 @@ import registerRecipeRoutes from './recipe';
 
 const registerLoginRoutes = (fastify: FastifyInstance) => {
   fastify.get('/', function handler(_: FastifyRequest, reply: FastifyReply) {
-    reply.redirect(301, '/login');
+    reply.redirect('/login', 301);
   });
   fastify.get('/login', getLogin);
   fastify.post('/login', postLogin);
