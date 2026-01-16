@@ -36,7 +36,7 @@ const searchRecipes = (): string => {
   ) as string;
 };
 
-export class RecipeTab implements BaseComponent {
+export class RecipeTab {
   constructor(private recipes: RecipeWithIngredients[], private ingredients: Ingredient[]) {}
 
   async render(): Promise<string> {

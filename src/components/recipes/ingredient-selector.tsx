@@ -6,7 +6,7 @@ const texts = {
   emptyOption: 'Válassz',
 };
 
-export class IngredientSelector implements BaseComponent {
+export class IngredientSelector {
   swapOob: HtmxSwapOobOption;
   constructor(private recipeIngredientIds: string[], private ingredients: Ingredient[], options: { swapOob: HtmxSwapOobOption }) {
     this.swapOob = options.swapOob;

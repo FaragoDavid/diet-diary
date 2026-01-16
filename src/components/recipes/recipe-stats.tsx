@@ -1,7 +1,7 @@
 import { RecipeWithIngredients } from '../../repository/recipe';
 import { StatsOptions, stats } from '../stats';
 
-export class RecipeStats implements BaseComponent {
+export class RecipeStats {
   constructor(private recipe: RecipeWithIngredients, private options: StatsOptions) {}
 
   async render(): Promise<string> {

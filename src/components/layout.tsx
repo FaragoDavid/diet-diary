@@ -2,7 +2,7 @@ import config from '../config';
 
 const pathForPublicAsset = (fileName: string) => `${config.publicAssetsPath}/public/${fileName}`;
 
-const layout = async (body: BaseComponent) => {
+const layout = async (body: { render: () => Promise<string> }) => {
   return `<!DOCTYPE html>
     <html data-theme="emerald">
       <head>

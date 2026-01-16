@@ -6,7 +6,7 @@ import { amount as amountInput } from '../amount';
 import { RecipeStats } from './recipe-stats';
 import { RECIPE_SEARCH_ID } from './recipe-tab';
 
-export class RecipeListItem implements BaseComponent {
+export class RecipeListItem {
   constructor(private recipe: RecipeWithIngredients, private ingredients: Ingredient[]) {}
 
   name(): string {

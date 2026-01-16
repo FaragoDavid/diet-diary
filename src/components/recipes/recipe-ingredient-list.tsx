@@ -12,7 +12,7 @@ const texts = {
 
 type Layout = 'list' | 'page';
 
-export class RecipeIngredientList implements BaseComponent {
+export class RecipeIngredientList {
   layout: Layout;
   swapOob: HtmxSwapOobOption;
   constructor(

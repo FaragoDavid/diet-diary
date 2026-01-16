@@ -4,7 +4,7 @@ import { RecipeListItem } from './recipe-list-item';
 
 export const RECIPE_LIST_ID = 'recipe-list';
 
-export class RecipeList implements BaseComponent {
+export class RecipeList {
   swapOob: HtmxSwapOobOption;
   constructor(private recipes: RecipeWithIngredients[], private ingredients: Ingredient[], options: { swapOob: HtmxSwapOobOption }) {
     this.swapOob = options.swapOob;

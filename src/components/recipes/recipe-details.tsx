@@ -3,7 +3,7 @@ import { RecipeWithIngredients } from '../../repository/recipe';
 import { amount } from '../amount';
 import { RecipeStats } from './recipe-stats';
 
-export class RecipeDetails implements BaseComponent {
+export class RecipeDetails {
   recipeAmount: number;
   swapOob: HtmxSwapOobOption;
   constructor(private recipe: RecipeWithIngredients, options: { swapOob: HtmxSwapOobOption }) {

@@ -11,7 +11,7 @@ const texts = {
   newIngredient: 'Új alapanyag hozzáadása',
 };
 
-export class NewRecipeIngredient implements BaseComponent {
+export class NewRecipeIngredient {
   swapOob: HtmxSwapOobOption;
   constructor(private recipe: RecipeWithIngredients, private ingredients: Ingredient[], options: { swapOob: HtmxSwapOobOption }) {
     this.swapOob = options.swapOob;
