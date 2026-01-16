@@ -12,7 +12,18 @@ type DashDate = `${string}-${string}-${string}`;
 type CreateDayRequest = FastifyRequest<{ Body: { date: DashDate } }>;
 
 export default async (request: CreateDayRequest, reply: FastifyReply) => {
-  const bodyDate = new Date(request.body.date);
+  const { date } = request.body;
+
+  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return reply.status(400).type('text/html').send('<div class="alert alert-error">Invalid date format. Expected YYYY-MM-DD</div>');
+  }
+
+  const bodyDate = new Date(date);
+
+  if (isNaN(bodyDate.getTime())) {
+    return reply.status(400).type('text/html').send('<div class="alert alert-error">Invalid date value</div>');
+  }
+
   const day = await createDay(bodyDate);
   const ingredients = await fetchIngredients();
   const recipes = await fetchRecipes();

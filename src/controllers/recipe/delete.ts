@@ -9,7 +9,7 @@ type DeleteRecipeRequest = FastifyRequest<{ Params: { recipeId: string }; Body: 
 
 export default async (request: DeleteRecipeRequest, reply: FastifyReply) => {
   const { recipeId } = request.params;
-  const { query } = request.body;
+  const query = (request.body.query || '').trim();
 
   await recipeRepository.deleteRecipe(recipeId);
   let recipes = await recipeRepository.fetchRecipes(query);

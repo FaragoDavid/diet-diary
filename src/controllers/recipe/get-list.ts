@@ -7,7 +7,7 @@ import * as recipeRepository from '../../repository/recipe';
 type GetRecipeListRequest = FastifyRequest<{ Querystring: { query: string } }>;
 
 export default async (request: GetRecipeListRequest, reply: FastifyReply) => {
-  const query = request.query.query || '';
+  const query = (request.query.query || '').trim();
   const recipes = await recipeRepository.fetchRecipes(query);
   const ingredients = await ingredientRepository.fetchIngredients();
 

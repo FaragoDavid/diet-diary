@@ -9,9 +9,9 @@ import * as recipeRepository from '../../repository/recipe';
 type CreateRecipeRequest = FastifyRequest<{ Body: { recipeName: string } }>;
 
 export default async (request: CreateRecipeRequest, reply: FastifyReply) => {
-  const { recipeName } = request.body;
+  const recipeName = (request.body.recipeName || '').trim();
 
-  if (!recipeName || recipeName.trim().length === 0) {
+  if (!recipeName || recipeName.length === 0) {
     return reply.status(400).type('text/html').send('<div class="alert alert-error">Recipe name is required</div>');
   }
 

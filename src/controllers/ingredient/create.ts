@@ -7,9 +7,9 @@ import * as ingredientRepository from '../../repository/ingredient';
 type CreateIngredientRequest = FastifyRequest<{ Body: { ingredientName: string } }>;
 
 export default async (request: CreateIngredientRequest, reply: FastifyReply) => {
-  const { ingredientName } = request.body;
+  const ingredientName = (request.body.ingredientName || '').trim();
 
-  if (!ingredientName || ingredientName.trim().length === 0) {
+  if (!ingredientName || ingredientName.length === 0) {
     return reply.status(400).type('text/html').send('<div class="alert alert-error">Ingredient name is required</div>');
   }
 
