@@ -7,7 +7,9 @@
     "css": "npx tailwindcss -i ./css/input.css -o ./public/output.css --watch",
     "prisma:migrate:deploy": "npx prisma migrate deploy",
     "test": "jest -i",
-    "test:watch": "jest --watch -i"
+    "test:watch": "jest --watch -i",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "license": "UNLICENSED",
   "dependencies": {
@@ -26,6 +28,7 @@
     "@tsconfig/node24": "24.0.0",
     "@types/jest": "30.0.0",
     "@types/node": "24.0.0",
+    "cypress": "^15.9.0",
     "daisyui": "5.5.14",
     "jest": "30.2.0",
     "prisma": "6.19.2",
