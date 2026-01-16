@@ -5,10 +5,11 @@ import { RecipeListItem } from './recipe-list-item';
 export const RECIPE_LIST_ID = 'recipe-list';
 
 export class RecipeList {
-  swapOob: HtmxSwapOobOption;
-  constructor(private recipes: RecipeWithIngredients[], private ingredients: Ingredient[], options: { swapOob: HtmxSwapOobOption }) {
-    this.swapOob = options.swapOob;
-  }
+  constructor(
+    private recipes: RecipeWithIngredients[],
+    private ingredients: Ingredient[],
+    private options: { swapOob?: HtmxSwapOobOption } = {},
+  ) {}
 
   async render(): Promise<string> {
     const recipeComponents: string[] = [];
@@ -16,7 +17,7 @@ export class RecipeList {
       recipeComponents.push(await new RecipeListItem(recipe, this.ingredients).render());
     }
 
-    const swapOobAttr = this.swapOob ? ' hx-swap-oob="true"' : '';
+    const swapOobAttr = this.options.swapOob ? ' hx-swap-oob="true"' : '';
 
     return `
       <div 

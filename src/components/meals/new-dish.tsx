@@ -18,7 +18,6 @@ function getMealNewDishAmountId(date: Date, mealType: string) {
 }
 
 export class NewDish {
-  swapOob: HtmxSwapOobOption;
   newDishSelectId: string;
   newDishAmountId: string;
   constructor(
@@ -26,14 +25,13 @@ export class NewDish {
     private date: Date,
     private ingredients: Ingredient[],
     private recipes: Recipe[],
-    options: { swapOob: HtmxSwapOobOption },
+    private options: { swapOob?: HtmxSwapOobOption } = {},
   ) {
-    this.swapOob = options.swapOob;
     this.newDishSelectId = getMealNewDishSelectId(this.date, this.meal.type);
     this.newDishAmountId = getMealNewDishAmountId(this.date, this.meal.type);
   }
 
-  options() {
+  getSelectOptions() {
     const unusedIngredients = this.ingredients.filter(({ id }) => !this.meal.dishes.map(({ ingredientId }) => ingredientId).includes(id));
     const unusedRecipes = this.recipes.filter(({ id }) => !this.meal.dishes.map(({ recipeId }) => recipeId).includes(id));
     const options = [...unusedIngredients, ...unusedRecipes].sort((a, b) => a.name.localeCompare(b.name, ['hu']));
@@ -50,13 +48,14 @@ export class NewDish {
         id="${this.newDishSelectId}" 
         name="${this.meal.type}-dishId" 
         class="select select-bordered select-sm w-30" 
-        ${swapOobTag(this.swapOob)} 
+        ${swapOobTag(this.options.swapOob)} 
       >
-        ${this.options()}
+        ${this.getSelectOptions()}
       </select>
     `;
 
-    if (this.swapOob && this.swapOob !== HTMX_SWAP.ReplaceElement) return swapOobWrapper(this.newDishSelectId, this.swapOob, template);
+    if (this.options.swapOob && this.options.swapOob !== HTMX_SWAP.ReplaceElement)
+      return swapOobWrapper(this.newDishSelectId, this.options.swapOob, template);
     return template;
   }
 

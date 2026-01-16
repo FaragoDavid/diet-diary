@@ -6,15 +6,12 @@ import { DayListItem } from './day-list-item';
 export const DAY_LIST_ID = 'day-list';
 
 export class DayList {
-  swap: boolean;
   constructor(
     private days: DayWithMealsWithDishes[],
     private ingredients: Ingredient[],
     private recipes: Recipe[],
-    options: { swap: boolean },
-  ) {
-    this.swap = options.swap;
-  }
+    private options: { swap?: boolean } = {},
+  ) {}
 
   async render() {
     const dayComponents: string[] = [];
@@ -26,7 +23,7 @@ export class DayList {
       <div 
         id="${DAY_LIST_ID}" 
         class="grid grid-cols-max-3 grid-row-flex gap-2"
-        ${this.swap ? 'hx-swap-oob="true"' : ''}
+        ${this.options.swap ? 'hx-swap-oob="true"' : ''}
       >
         ${dayComponents.join('')}
       </div>`;

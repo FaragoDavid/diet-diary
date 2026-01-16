@@ -6,10 +6,10 @@ import { IngredientListItem } from './ingredient-list-item';
 export const INGREDIENT_LIST_ID = 'ingredient-list';
 
 export class IngredientList {
-  swapOob: HtmxSwapOobOption;
-  constructor(private ingredients: Ingredient[], options: { swapOob: HtmxSwapOobOption }) {
-    this.swapOob = options.swapOob;
-  }
+  constructor(
+    private ingredients: Ingredient[],
+    private options: { swapOob?: HtmxSwapOobOption } = {},
+  ) {}
 
   async render(): Promise<string> {
     let ingredientComponents: string[] = [];
@@ -22,7 +22,7 @@ export class IngredientList {
       class: 'grid grid-cols-max-6 grid-row-flex gap-2 items-center',
     };
 
-    const swapOobAttr = swapOobTag(this.swapOob);
+    const swapOobAttr = swapOobTag(this.options.swapOob);
     if (swapOobAttr) {
       divAttrs['hx-swap-oob'] = 'outerHTML';
     }

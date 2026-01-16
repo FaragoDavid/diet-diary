@@ -14,17 +14,13 @@ export function getMealDishesId(date: Date, mealType: string) {
 }
 
 export class DayMealDishList {
-  swapOob: HtmxSwapOobOption;
-
   constructor(
     private meal: MealWithDishes,
     private date: Date,
     private ingredients: Ingredient[],
     private recipes: Recipe[],
-    options: { swapOob: HtmxSwapOobOption },
-  ) {
-    this.swapOob = options.swapOob;
-  }
+    private options: { swapOob?: HtmxSwapOobOption } = {},
+  ) {}
 
   async render() {
     const dishComponents: string[] = [];
@@ -35,7 +31,7 @@ export class DayMealDishList {
       <div
        id="${getMealDishesId(this.date, this.meal.type)}"
        class="col-span-3 grid grid-cols-max-6 gap-2 items-center px-2"
-       ${this.swapOob ? 'hx-swap-oob="true"' : ''}
+       ${this.options.swapOob ? 'hx-swap-oob="true"' : ''}
       >
         ${
           this.meal.dishes.length > 0 ? await new DayMealDishHeader(this.date, this.meal.type as MealType, { swapOob: false }).render() : ''

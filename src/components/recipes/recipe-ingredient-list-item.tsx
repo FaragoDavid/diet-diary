@@ -10,12 +10,15 @@ export class RecipeIngredientListItem {
   ingredientCals: number;
   ingredientCarbs: number;
   ingredientFat: number;
-  isFirst: boolean;
-  constructor(private amount: number, private ingredient: Ingredient, private recipeId: string, options: { isFirst: boolean }) {
+  constructor(
+    private amount: number,
+    private ingredient: Ingredient,
+    private recipeId: string,
+    private options: { isFirst?: boolean } = {},
+  ) {
     this.ingredientCals = ((ingredient.caloriesPer100 || 0) / 100) * this.amount;
     this.ingredientCarbs = ((ingredient.carbsPer100 || 0) / 100) * this.amount;
     this.ingredientFat = ((ingredient.fatPer100 || 0) / 100) * this.amount;
-    this.isFirst = options.isFirst;
   }
 
   ingredientName(): string {
@@ -60,7 +63,7 @@ export class RecipeIngredientListItem {
     );
 
     return `
-      ${!this.isFirst ? recipeIngredientDivider : ''}
+      ${!this.options.isFirst ? recipeIngredientDivider : ''}
       ${this.ingredientName()}
       ${amountHtml}
       ${this.deleteIngredient()}

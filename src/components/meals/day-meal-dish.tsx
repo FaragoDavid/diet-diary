@@ -16,10 +16,11 @@ const texts = {
 };
 
 export class DayMealDishHeader {
-  swapOob: HtmxSwapOobOption;
-  constructor(private date: Date, private mealType: MealType, options: { swapOob: HtmxSwapOobOption }) {
-    this.swapOob = options.swapOob;
-  }
+  constructor(
+    private date: Date,
+    private mealType: MealType,
+    private options: { swapOob?: HtmxSwapOobOption } = {},
+  ) {}
 
   async render() {
     const template = `
@@ -31,17 +32,19 @@ export class DayMealDishHeader {
       <div class="text"></div>
     `;
 
-    if (this.swapOob && this.swapOob !== HTMX_SWAP.ReplaceElement)
-      return swapOobWrapper(getMealDishesId(this.date, this.mealType), this.swapOob, template);
+    if (this.options.swapOob && this.options.swapOob !== HTMX_SWAP.ReplaceElement)
+      return swapOobWrapper(getMealDishesId(this.date, this.mealType), this.options.swapOob, template);
     return template;
   }
 }
 
 export class DayMealDish {
-  swapOob: HtmxSwapOobOption;
-  constructor(private dish: Dish, private date: Date, private mealType: MealType, options: { swapOob: HtmxSwapOobOption }) {
-    this.swapOob = options.swapOob;
-  }
+  constructor(
+    private dish: Dish,
+    private date: Date,
+    private mealType: MealType,
+    private options: { swapOob?: HtmxSwapOobOption } = {},
+  ) {}
 
   deleteDish() {
     return `
@@ -76,8 +79,8 @@ export class DayMealDish {
       ${this.deleteDish()}
     `;
 
-    if (this.swapOob) {
-      return swapOobWrapper(getMealNewDishSelectId(this.date, this.mealType), this.swapOob, template);
+    if (this.options.swapOob) {
+      return swapOobWrapper(getMealNewDishSelectId(this.date, this.mealType), this.options.swapOob, template);
     }
     return template;
   }

@@ -10,15 +10,10 @@ enum SPAN {
 
 export class DayStats {
   static SPAN = SPAN;
-  layout: StatLayout;
-  span?: string;
-  swapOob: HtmxSwapOobOption;
-
-  constructor(private day: DayWithMealsWithDishes, options: { layout: StatLayout; span?: `${SPAN}`; swapOob: HtmxSwapOobOption }) {
-    this.layout = options.layout;
-    this.span = options.span;
-    this.swapOob = options.swapOob;
-  }
+  constructor(
+    private day: DayWithMealsWithDishes,
+    private options: { layout: StatLayout; span?: `${SPAN}`; swapOob?: HtmxSwapOobOption } = { layout: 'vertical' },
+  ) {}
 
   async render() {
     const { dayCals, dayCarbs, dayFat } = this.day.meals.reduce(
@@ -38,10 +33,10 @@ export class DayStats {
       { cal: dayCals, carbs: dayCarbs, fat: dayFat },
       {
         id: `day-${dateToParam(this.day.date)}-stats`,
-        layout: this.layout,
+        layout: this.options.layout,
         size: 'sm',
-        span: this.span,
-        swapOob: this.swapOob,
+        span: this.options.span,
+        swapOob: this.options.swapOob,
       },
     );
   }

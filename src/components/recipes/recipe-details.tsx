@@ -5,10 +5,11 @@ import { RecipeStats } from './recipe-stats';
 
 export class RecipeDetails {
   recipeAmount: number;
-  swapOob: HtmxSwapOobOption;
-  constructor(private recipe: RecipeWithIngredients, options: { swapOob: HtmxSwapOobOption }) {
+  constructor(
+    private recipe: RecipeWithIngredients,
+    private options: { swapOob?: HtmxSwapOobOption } = {},
+  ) {
     this.recipeAmount = this.recipe.amount || this.recipe.ingredients.reduce((acc, ingredient) => acc + ingredient.amount, 0);
-    this.swapOob = options.swapOob;
   }
 
   async render(): Promise<string> {
@@ -16,7 +17,7 @@ export class RecipeDetails {
       id: 'recipe-details',
       class: 'grid grid-rows-max-1 grid-flow-col gap-3',
     };
-    if (this.swapOob) attrs['hx-swap-oob'] = 'true';
+    if (this.options.swapOob) attrs['hx-swap-oob'] = 'true';
 
     const amountHtml = amount({
       amount: this.recipeAmount,

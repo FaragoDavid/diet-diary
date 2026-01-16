@@ -2,14 +2,10 @@ import { MealWithDishes } from '../../repository/meal';
 import { StatLayout, stats } from '../stats';
 
 export class MealStats {
-  layout: StatLayout;
-  span?: string;
-  swapOob: HtmxSwapOobOption;
-  constructor(private meal: MealWithDishes, options: { layout: StatLayout; span?: string; swapOob: HtmxSwapOobOption }) {
-    this.layout = options.layout;
-    this.span = options.span;
-    this.swapOob = options.swapOob;
-  }
+  constructor(
+    private meal: MealWithDishes,
+    private options: { layout: StatLayout; span?: string; swapOob?: HtmxSwapOobOption } = { layout: 'horizontal' },
+  ) {}
 
   async render() {
     const { mealCals, mealCH, mealFat } = this.meal.dishes.reduce(
@@ -25,10 +21,10 @@ export class MealStats {
       { cal: mealCals, carbs: mealCH, fat: mealFat },
       {
         id: `${this.meal.type}-stats`,
-        layout: this.layout,
-        span: this.span,
+        layout: this.options.layout,
+        span: this.options.span,
         size: 'sm',
-        swapOob: this.swapOob,
+        swapOob: this.options.swapOob,
       },
     );
   }

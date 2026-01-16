@@ -7,10 +7,11 @@ const texts = {
 };
 
 export class IngredientSelector {
-  swapOob: HtmxSwapOobOption;
-  constructor(private recipeIngredientIds: string[], private ingredients: Ingredient[], options: { swapOob: HtmxSwapOobOption }) {
-    this.swapOob = options.swapOob;
-  }
+  constructor(
+    private recipeIngredientIds: string[],
+    private ingredients: Ingredient[],
+    private options: { swapOob?: HtmxSwapOobOption } = {},
+  ) {}
 
   async render(): Promise<string> {
     const unusedIngredients = this.ingredients.filter(
@@ -21,7 +22,7 @@ export class IngredientSelector {
       id: 'ingredient-selector',
       class: 'flex justify-center',
     };
-    const swapOobAttr = swapOobTag(this.swapOob);
+    const swapOobAttr = swapOobTag(this.options.swapOob);
     if (swapOobAttr) attrs['hx-swap-oob'] = swapOobAttr.replace('hx-swap-oob="', '').replace('"', '');
 
     const optionsHtml = unusedIngredients.map(({ id, name }) => `<option value="${id}">${name}</option>`).join('');

@@ -6,10 +6,10 @@ import { swapOobTag } from '../../utils/swap-oob-wrapper';
 const MISSING_MEALS_ID = 'missing-meals';
 
 export class MissingMeals {
-  swapOob: HtmxSwapOobOption;
-  constructor(private day: DayWithMealsWithDishes, options: { swapOob: HtmxSwapOobOption }) {
-    this.swapOob = options.swapOob;
-  }
+  constructor(
+    private day: DayWithMealsWithDishes,
+    private options: { swapOob?: HtmxSwapOobOption } = {},
+  ) {}
 
   missingMealButton(value: MealType, name: string) {
     return `
@@ -32,7 +32,7 @@ export class MissingMeals {
       <div 
         id="${MISSING_MEALS_ID}"
         class="flex flex-wrap items-center justify-center gap-1"
-        ${swapOobTag(this.swapOob)}
+        ${swapOobTag(this.options.swapOob)}
       >
         ${missingMeals.length > 0 ? missingMeals.map(({ key, name }) => this.missingMealButton(key, name)).join('') : ''}
       </div>

@@ -12,10 +12,11 @@ const texts = {
 };
 
 export class NewRecipeIngredient {
-  swapOob: HtmxSwapOobOption;
-  constructor(private recipe: RecipeWithIngredients, private ingredients: Ingredient[], options: { swapOob: HtmxSwapOobOption }) {
-    this.swapOob = options.swapOob;
-  }
+  constructor(
+    private recipe: RecipeWithIngredients,
+    private ingredients: Ingredient[],
+    private options: { swapOob?: HtmxSwapOobOption } = {},
+  ) {}
 
   async render(): Promise<string> {
     const recipeIngredientIds = this.recipe.ingredients.map(({ ingredient }) => ingredient.id);
@@ -42,7 +43,7 @@ export class NewRecipeIngredient {
       </div>
     `;
 
-    if (this.swapOob) return swapOobWrapper(NEW_RECIPE_INGREDIENT_ID, this.swapOob, template);
+    if (this.options.swapOob) return swapOobWrapper(NEW_RECIPE_INGREDIENT_ID, this.options.swapOob, template);
     return template;
   }
 }

@@ -13,16 +13,11 @@ const texts = {
 type Layout = 'list' | 'page';
 
 export class RecipeIngredientList {
-  layout: Layout;
-  swapOob: HtmxSwapOobOption;
   constructor(
     private recipe: RecipeWithIngredients,
     private ingredients: Ingredient[],
-    options: { layout: Layout; swapOob: HtmxSwapOobOption },
-  ) {
-    this.layout = options.layout;
-    this.swapOob = options.swapOob;
-  }
+    private options: { layout?: Layout; swapOob?: HtmxSwapOobOption } = { layout: 'page' },
+  ) {}
 
   async renderList(): Promise<string> {
     const recipeIngredientComponents: string[] = [];
@@ -33,7 +28,7 @@ export class RecipeIngredientList {
       );
     }
 
-    const swapOobAttr = this.swapOob ? ' hx-swap-oob="true"' : '';
+    const swapOobAttr = this.options.swapOob ? ' hx-swap-oob="true"' : '';
 
     return `
       <div 
@@ -60,7 +55,8 @@ export class RecipeIngredientList {
   }
 
   async render(): Promise<string> {
-    switch (this.layout) {
+    const layout = this.options.layout || 'page';
+    switch (layout) {
       case 'list':
         return this.renderList();
       case 'page':

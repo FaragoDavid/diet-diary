@@ -24,20 +24,13 @@ export function getMealDishesId(date: Date, mealType: string) {
 
 export class DayMeal {
   static STATS_SPAN = STATS_SPAN;
-  mealStatLayout: StatLayout;
-  showDishes: boolean;
-  swapOob: HtmxSwapOobOption;
   constructor(
     private meal: MealWithDishes,
     private date: Date,
     private ingredients: Ingredient[],
     private recipes: Recipe[],
-    options: { layout: 'dayList' | 'page'; swapOob: HtmxSwapOobOption },
-  ) {
-    this.mealStatLayout = options.layout === 'page' ? 'horizontal' : 'cells';
-    this.showDishes = options.layout === 'page';
-    this.swapOob = options.swapOob;
-  }
+    private options: { layout: 'dayList' | 'page'; swapOob?: HtmxSwapOobOption } = { layout: 'page' },
+  ) {}
 
   mealName() {
     return `
@@ -55,7 +48,6 @@ export class DayMeal {
       <div
        id="${getMealDishesId(this.date, this.meal.type)}"
        class="col-span-3 grid grid-cols-max-6 gap-2 items-center px-2"
-       ${this.swapOob ? 'hx-swap-oob="true"' : ''}
       >
         ${
           this.meal.dishes.length > 0 ? await new DayMealDishHeader(this.date, this.meal.type as MealType, { swapOob: false }).render() : ''
@@ -79,13 +71,16 @@ export class DayMeal {
   }
 
   async render() {
+    const mealStatLayout: StatLayout = this.options.layout === 'page' ? 'horizontal' : 'cells';
+    const showDishes = this.options.layout === 'page';
+
     return `
       ${this.mealName()}
-      ${await new MealStats(this.meal, { layout: this.mealStatLayout, swapOob: false }).render()}
-      ${this.showDishes ? this.deleteMeal() : ''}
+      ${await new MealStats(this.meal, { layout: mealStatLayout, swapOob: false }).render()}
+      ${showDishes ? this.deleteMeal() : ''}
       ${
-        this.showDishes
-          ? await new DayMealDishList(this.meal, this.date, this.ingredients, this.recipes, { swapOob: this.swapOob }).render()
+        showDishes
+          ? await new DayMealDishList(this.meal, this.date, this.ingredients, this.recipes, { swapOob: this.options.swapOob }).render()
           : ''
       }
     `;
