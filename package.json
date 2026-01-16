@@ -21,7 +21,8 @@
     "dotenv": "17.2.3",
     "fastify": "5.7.1",
     "html-format": "1.1.7",
-    "simply-beautiful": "1.0.1"
+    "simply-beautiful": "1.0.1",
+    "typed-html": "3.0.1"
   },
   "devDependencies": {
     "@lit-labs/ssr": "4.0.0",

@@ -11,9 +11,12 @@
     "declaration": true,
     "sourceMap": true,
     "resolveJsonModule": true,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "jsx": "react",
+    "jsxFactory": "elements.createElement",
+    "jsxFragmentFactory": "elements.Fragment"
   },
   "files": ["src/types.d.ts"],
-  "include": ["src", "test", "src/**/*.ts"],
+  "include": ["src", "test", "src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["dist", "bundle", "node_modules", "**/*.test.ts"]
 }
