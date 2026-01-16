@@ -15,6 +15,10 @@ export const getLogin = async (_: FastifyRequest, reply: FastifyReply) => {
 export const postLogin = async (request: PostLoginRequest, reply: FastifyReply) => {
   const { password } = request.body;
 
+  if (!password || password.trim().length === 0) {
+    return reply.status(400).type('text/html').send('<div class="alert alert-error">Password is required</div>');
+  }
+
   if (password === config.password) {
     return reply.setCookie('loggedIn', 'true').type('text/html').redirect('/dashboard', 303);
   } else {

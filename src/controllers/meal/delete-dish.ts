@@ -16,10 +16,10 @@ export default async (request: DeleteDishRequest, reply: FastifyReply) => {
 
   await deleteDish(dishId);
   const meal = await fetchMeal(paramToDate(date), mealType);
-  if (!meal) return reply.status(404).send('Meal not found');
+  if (!meal) return reply.status(404).type('text/html').send('<div class="alert alert-error">Meal not found</div>');
 
   const day = await fetchDay(paramToDate(date));
-  if (!day) return reply.status(404).send('Day not found');
+  if (!day) return reply.status(404).type('text/html').send('<div class="alert alert-error">Day not found</div>');
 
   const ingredients = await fetchIngredients();
   const recipes = await fetchRecipes();

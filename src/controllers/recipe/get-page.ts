@@ -12,7 +12,7 @@ export default async (request: GetRecipeRequest, reply: FastifyReply) => {
 
   const recipe = await recipeRepository.fetchRecipe(recipeId);
   if (!recipe) {
-    return reply.status(404).send('Recipe not found');
+    return reply.status(404).type('text/html').send('<div class="alert alert-error">Recipe not found</div>');
   }
   const ingredients = await ingredientRepository.fetchIngredients();
 

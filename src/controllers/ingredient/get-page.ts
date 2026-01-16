@@ -11,7 +11,7 @@ export default async (request: GetIngredientRequest, reply: FastifyReply) => {
 
   const ingredient = await ingredientRepository.fetchIngredient(ingredientId);
   if (!ingredient) {
-    return reply.status(404).send('Ingredient not found');
+    return reply.status(404).type('text/html').send('<div class="alert alert-error">Ingredient not found</div>');
   }
 
   const template = await layout(new IngredientPage(ingredient));

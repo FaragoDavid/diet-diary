@@ -16,7 +16,7 @@ export default async (request: AddMealRequest, reply: FastifyReply) => {
 
   await addMeal(date, request.body.mealType);
   const day = await fetchDay(date);
-  if (!day) return reply.status(404).send('Day not found');
+  if (!day) return reply.status(404).type('text/html').send('<div class="alert alert-error">Day not found</div>');
 
   const ingredients = await fetchIngredients();
   const recipes = await fetchRecipes();

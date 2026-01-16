@@ -16,12 +16,22 @@ type AddDishRequest = FastifyRequest<{ Params: { date: string; mealType: MealTyp
 export default async (request: AddDishRequest, reply: FastifyReply) => {
   const { date, mealType } = request.params;
 
-  const dish = await addDish(paramToDate(date), mealType, request.body[`${mealType}-dishId`], Number(request.body.amount));
+  const amount = Number(request.body.amount);
+  if (isNaN(amount) || amount <= 0) {
+    return reply.status(400).type('text/html').send('<div class="alert alert-error">Invalid amount. Must be a positive number.</div>');
+  }
+
+  const dishId = request.body[`${mealType}-dishId`];
+  if (!dishId) {
+    return reply.status(400).type('text/html').send('<div class="alert alert-error">Please select an ingredient or recipe.</div>');
+  }
+
+  const dish = await addDish(paramToDate(date), mealType, dishId, amount);
   const day = await fetchDay(paramToDate(date));
-  if (!day) return reply.status(404).send('Day not found');
+  if (!day) return reply.status(404).type('text/html').send('<div class="alert alert-error">Day not found</div>');
 
   const meal = await fetchMeal(paramToDate(date), mealType);
-  if (!meal) return reply.status(404).send('Meal not found');
+  if (!meal) return reply.status(404).type('text/html').send('<div class="alert alert-error">Meal not found</div>');
 
   const ingredients = await fetchIngredients();
   const recipes = await fetchRecipes();

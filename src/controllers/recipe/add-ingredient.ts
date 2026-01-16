@@ -17,11 +17,20 @@ export default async (request: AddRecipeIngredientRequest, reply: FastifyReply) 
   const recipeId = request.params.recipeId;
   const { ingredientId, amount } = request.body;
 
-  const { amount: ingredientAmount, ingredient } = await addIngredient(recipeId, ingredientId, Number(amount));
+  if (!ingredientId) {
+    return reply.status(400).type('text/html').send('<div class="alert alert-error">Please select an ingredient</div>');
+  }
+
+  const amountNum = Number(amount);
+  if (isNaN(amountNum) || amountNum <= 0) {
+    return reply.status(400).type('text/html').send('<div class="alert alert-error">Invalid amount. Must be a positive number.</div>');
+  }
+
+  const { amount: ingredientAmount, ingredient } = await addIngredient(recipeId, ingredientId, amountNum);
   const ingredients = await fetchIngredients();
   const recipe = await fetchRecipe(recipeId);
   if (!recipe) {
-    return reply.status(404).send('Recipe not found');
+    return reply.status(404).type('text/html').send('<div class="alert alert-error">Recipe not found</div>');
   }
 
   const template = `

@@ -12,7 +12,7 @@ type GetDayRequest = FastifyRequest<{ Params: { date: string } }>;
 export default async (request: GetDayRequest, reply: FastifyReply) => {
   const { date } = request.params;
   const day = await fetchDay(paramToDate(date));
-  if (!day) return reply.status(404).send('Day not found');
+  if (!day) return reply.status(404).type('text/html').send('<div class="alert alert-error">Day not found</div>');
 
   const ingredients = await fetchIngredients();
   const recipes = await fetchRecipes();

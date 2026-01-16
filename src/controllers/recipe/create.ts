@@ -11,6 +11,10 @@ type CreateRecipeRequest = FastifyRequest<{ Body: { recipeName: string } }>;
 export default async (request: CreateRecipeRequest, reply: FastifyReply) => {
   const { recipeName } = request.body;
 
+  if (!recipeName || recipeName.trim().length === 0) {
+    return reply.status(400).type('text/html').send('<div class="alert alert-error">Recipe name is required</div>');
+  }
+
   const recipe = await recipeRepository.createRecipe(recipeName);
   const ingredients = await ingredientRepository.fetchIngredients();
 

@@ -14,7 +14,7 @@ export default async (request: DeleteRecipeIngredientRequest, reply: FastifyRepl
 
   const recipe = await deleteRecipeIngredient(recipeId, ingredientId);
   if (!recipe) {
-    return reply.status(404).send('Recipe not found');
+    return reply.status(404).type('text/html').send('<div class="alert alert-error">Recipe not found</div>');
   }
   const recipeIngredientIds = recipe.ingredients.map(({ ingredient }) => ingredient.id);
   const ingredients = await fetchIngredients();
