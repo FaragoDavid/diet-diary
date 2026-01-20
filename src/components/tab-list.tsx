@@ -1,12 +1,7 @@
 import * as elements from 'typed-html';
 import { HTMX_SWAP } from '../utils/htmx';
 import { swapOobTag } from '../utils/swap-oob-wrapper';
-
-const texts = {
-  ingredients: 'Alapanyagok',
-  recipes: 'Receptek',
-  meals: 'Étkezések',
-};
+import { texts } from '../constants/texts';
 
 export const enum TAB_NAME {
   ingredients = 'ingredients',
@@ -45,9 +40,9 @@ export function tabList(activeTab: `${TAB_NAME}`, options: { swapOob: HtmxSwapOo
 
   return (
     <div {...divAttrs}>
-      {tab(texts.ingredients, activeTab === TAB_NAME.ingredients, '/ingredientsTab')}
-      {tab(texts.recipes, activeTab === TAB_NAME.recipes, '/recipesTab')}
-      {tab(texts.meals, activeTab === TAB_NAME.meals, '/mealsTab')}
+      {tab(texts.navigation.ingredients, activeTab === TAB_NAME.ingredients, '/ingredientsTab')}
+      {tab(texts.navigation.recipes, activeTab === TAB_NAME.recipes, '/recipesTab')}
+      {tab(texts.navigation.meals, activeTab === TAB_NAME.meals, '/mealsTab')}
     </div>
   ) as string;
 }

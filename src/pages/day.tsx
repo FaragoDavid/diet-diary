@@ -8,25 +8,27 @@ import { DayStats } from '../components/meals/day-stats';
 import { MissingMeals } from '../components/meals/missing-meals';
 import { TAB_NAME } from '../components/tab-list';
 import { DayWithMealsWithDishes } from '../repository/meal';
+import { texts } from '../constants/texts';
 
 export const DAY_PAGE_ID = 'day-page';
-const texts = {
-  newDay: 'Új Nap',
-};
 
 export class NewDayPage {
   async render() {
     return `
       ${await new BackLink(TAB_NAME.meals).render()}
       <div id="${DAY_PAGE_ID}" class="flex flex-col place-items-center w-full gap-4 pt-6">
-        <div class="text-2xl text-primary">${texts.newDay}</div>
+        <div class="text-2xl text-primary">${texts.meals.newDay}</div>
         ${newDayHeader()}
       </div>`;
   }
 }
 
 export class DayPage {
-  constructor(private day: DayWithMealsWithDishes, private ingredients: Ingredient[], private recipes: Recipe[]) {}
+  constructor(
+    private day: DayWithMealsWithDishes,
+    private ingredients: Ingredient[],
+    private recipes: Recipe[],
+  ) {}
 
   async render() {
     const meals: string[] = [];

@@ -1,10 +1,7 @@
 import * as elements from 'typed-html';
 import { Ingredient } from '@prisma/client';
 import { swapOobTag } from '../../utils/swap-oob-wrapper';
-
-const texts = {
-  emptyOption: 'Válassz',
-};
+import { texts } from '../../constants/texts';
 
 export class IngredientSelector {
   constructor(
@@ -31,7 +28,7 @@ export class IngredientSelector {
       <div {...attrs}>
         <select name="ingredientId" class="select select-bordered select-sm">
           <option disabled="true" selected="true">
-            {texts.emptyOption}
+            {texts.common.emptyOption}
           </option>
           {optionsHtml}
         </select>

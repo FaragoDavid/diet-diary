@@ -2,14 +2,7 @@ import * as elements from 'typed-html';
 import { Ingredient } from '@prisma/client';
 
 import { AmountInputOptions, amount } from '../amount';
-
-const texts = {
-  calories: 'Kalória',
-  carbs: 'Szénhidrát',
-  fat: 'Zsír',
-  vegetable: 'Zöldség',
-  carbCounted: 'számolandó',
-};
+import { texts } from '../../constants/texts';
 
 export class IngredientDetails {
   constructor(private ingredient: Ingredient) {}
@@ -24,7 +17,7 @@ export class IngredientDetails {
     };
     if (this.ingredient.caloriesPer100) amountOptions.amount = this.ingredient.caloriesPer100;
     return `
-      <div class="text">${texts.calories}:</div>
+      <div class="text">${texts.nutrients.calories.long}:</div>
       ${amount(amountOptions)}
     `;
   }
@@ -39,7 +32,7 @@ export class IngredientDetails {
     };
     if (this.ingredient.carbsPer100) amountOptions.amount = this.ingredient.carbsPer100;
     return `
-      <div class="text">${texts.carbs}:</div>
+      <div class="text">${texts.nutrients.carbs.long}:</div>
       ${amount(amountOptions)}
     `;
   }
@@ -54,7 +47,7 @@ export class IngredientDetails {
     };
     if (this.ingredient.fatPer100) amountOptions.amount = this.ingredient.fatPer100;
     return `
-      <div class="text">${texts.fat}:</div>
+      <div class="text">${texts.nutrients.fat}:</div>
       ${amount(amountOptions)}
     `;
   }
@@ -69,7 +62,7 @@ export class IngredientDetails {
     if (this.ingredient.isVegetable) attrs.checked = 'checked';
 
     return `
-      <div class="text">${texts.vegetable}:</div>
+      <div class="text">${texts.ingredients.vegetable}:</div>
       <input ${Object.entries(attrs)
         .map(([k, v]) => `${k}="${v}"`)
         .join(' ')} />
@@ -86,7 +79,7 @@ export class IngredientDetails {
     if (this.ingredient.isCarbCounted) attrs.checked = 'checked';
 
     return `
-      <div class="text-sm pl-4">${texts.carbCounted}:</div>
+      <div class="text-sm pl-4">${texts.ingredients.carbCounted}:</div>
       <input ${Object.entries(attrs)
         .map(([k, v]) => `${k}="${v}"`)
         .join(' ')} />

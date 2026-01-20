@@ -8,12 +8,7 @@ import { swapOobWrapper } from '../../utils/swap-oob-wrapper';
 import { amount as dishAmount } from '../amount';
 import { getMealDishesId } from './day-meal';
 import { getMealNewDishSelectId } from './new-dish';
-
-const texts = {
-  calories: 'Kal',
-  carbs: 'CH',
-  fat: 'Zsír',
-};
+import { texts } from '../../constants/texts';
 
 export class DayMealDishHeader {
   constructor(
@@ -26,9 +21,9 @@ export class DayMealDishHeader {
     const template = `
       <div class="text"></div>
       <div class="text"></div>
-      <div class="text text-right">${texts.calories}</div>
-      <div class="text text-right">${texts.carbs}</div>
-      <div class="text text-right">${texts.fat}</div>
+      <div class="text text-right">${texts.nutrients.calories.short}</div>
+      <div class="text text-right">${texts.nutrients.carbs.short}</div>
+      <div class="text text-right">${texts.nutrients.fat}</div>
       <div class="text"></div>
     `;
 

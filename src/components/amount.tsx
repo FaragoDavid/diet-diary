@@ -1,9 +1,6 @@
 import * as elements from 'typed-html';
 import { HTMX_SWAP } from '../utils/htmx';
-
-const texts = {
-  amount: 'Menny.',
-};
+import { texts } from '../constants/texts';
 
 export type AmountInputHtmxOption = {
   verb: 'get' | 'post';
@@ -39,7 +36,7 @@ export function amount(options: AmountInputOptions): string {
 
   return (
     <div {...divAttrs}>
-      {showText && <div class="text text-center text-sm italic">{texts.amount}</div>}
+      {showText && <div class="text text-center text-sm italic">{texts.common.amount}</div>}
       <div class="flex justify-center items-center">
         <input {...inputAttrs} />
         <span class="relative right-4 text-sm peer-[:placeholder-shown]:text-neutral">g</span>

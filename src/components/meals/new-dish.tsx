@@ -5,10 +5,7 @@ import { dateToParam } from '../../utils/converters';
 import { HTMX_SWAP } from '../../utils/htmx';
 import { swapOobTag, swapOobWrapper } from '../../utils/swap-oob-wrapper';
 import { amount as amountInput } from '../amount';
-
-const texts = {
-  ingredientSelectorPlaceholder: 'Válassz',
-};
+import { texts } from '../../constants/texts';
 
 export function getMealNewDishSelectId(date: Date, mealType: string) {
   return `day-${dateToParam(date)}-${mealType}-new-dish-select`;
@@ -37,7 +34,7 @@ export class NewDish {
     const options = [...unusedIngredients, ...unusedRecipes].sort((a, b) => a.name.localeCompare(b.name, ['hu']));
 
     return `
-      <option disabled selected>${texts.ingredientSelectorPlaceholder}</option>
+      <option disabled selected>${texts.common.emptyOption}</option>
       ${options.map(({ id, name }) => `<option value="${id}">${name}</option>`).join('')}
     `;
   }

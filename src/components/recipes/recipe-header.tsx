@@ -1,10 +1,7 @@
 import * as elements from 'typed-html';
 import { RECIPE_PAGE_ID } from '../../pages/recipe';
 import { RecipeWithIngredients } from '../../repository/recipe';
-
-const texts = {
-  placeholder: 'Recept neve',
-};
+import { texts } from '../../constants/texts';
 const ID = 'recipe-header';
 
 export function newRecipeHeader(): string {
@@ -15,7 +12,7 @@ export function newRecipeHeader(): string {
         type="text"
         name="recipeName"
         class="input input-bordered"
-        placeholder={texts.placeholder}
+        placeholder={texts.recipes.placeholder}
         hx-post="/new-recipe"
         hx-target={`#${RECIPE_PAGE_ID}`}
       />

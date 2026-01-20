@@ -2,10 +2,7 @@ import * as elements from 'typed-html';
 import { Ingredient } from '@prisma/client';
 
 import { INGREDIENT_PAGE_ID } from '../../pages/ingredient';
-
-const texts = {
-  placeholder: 'Alapanyag neve',
-};
+import { texts } from '../../constants/texts';
 const ID = 'ingredient-header';
 
 export function newIngredientHeader(): string {
@@ -16,7 +13,7 @@ export function newIngredientHeader(): string {
         type="text"
         name="ingredientName"
         class="input input-bordered"
-        placeholder={texts.placeholder}
+        placeholder={texts.ingredients.placeholder}
         hx-post="/new-ingredient"
         hx-target={`#${INGREDIENT_PAGE_ID}`}
       />

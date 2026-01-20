@@ -2,13 +2,10 @@ import { Ingredient } from '@prisma/client';
 import { RecipeWithIngredients } from '../../repository/recipe';
 import { NewRecipeIngredient } from './new-recipe-ingredient';
 import { RecipeIngredientListItem } from './recipe-ingredient-list-item';
+import { texts } from '../../constants/texts';
 
 export const RECIPE_INGREDIENT_LIST_ID = 'recipe-ingredient-list';
 export const recipeIngredientDivider = '<div class="divider col-span-3 my-0 divider-secondary"></div>';
-
-const texts = {
-  ingredientsHeader: 'Alapanyagok',
-};
 
 type Layout = 'list' | 'page';
 
@@ -47,7 +44,7 @@ export class RecipeIngredientList {
     return `
       <div class="divider px-4"></div>
       <div id="recipe-ingredient-list-container">
-        <div class="text-lg text-center pb-4">${texts.ingredientsHeader}</div>
+        <div class="text-lg text-center pb-4">${texts.recipes.ingredientsHeader}</div>
         ${listHtml}
         ${newIngredientHtml}
       </div>

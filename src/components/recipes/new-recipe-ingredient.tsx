@@ -5,11 +5,9 @@ import { swapOobWrapper } from '../../utils/swap-oob-wrapper';
 import { amount } from '../amount';
 import { IngredientSelector } from './ingredient-selector';
 import { RECIPE_INGREDIENT_LIST_ID } from './recipe-ingredient-list';
+import { texts } from '../../constants/texts';
 
 const NEW_RECIPE_INGREDIENT_ID = 'new-recipe-ingredient';
-const texts = {
-  newIngredient: 'Új alapanyag hozzáadása',
-};
 
 export class NewRecipeIngredient {
   constructor(
@@ -35,7 +33,7 @@ export class NewRecipeIngredient {
 
     const template = `
       <div class="flex flex-col items-center justify-center gap-4">
-        <div class="text">${texts.newIngredient}</div>
+        <div class="text">${texts.recipes.newIngredient}</div>
         <div id="hm" class="flex items-center justify-center gap-4">
           ${selectorHtml}
           ${amountHtml}
