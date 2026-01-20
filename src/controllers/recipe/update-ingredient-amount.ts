@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { RecipeDetails } from '../../components/recipes/recipe-details';
-import { updateIngredientAmount } from '../../repository/recipe-ingredient';
 import { HTMX_SWAP } from '../../utils/htmx';
+import { recipeService } from '../../services/recipe.service';
 
 type UpdateRecipeIngredientRequest = FastifyRequest<{ Params: { recipeId: string; ingredientId: string }; Body: { amount: string } }>;
 
@@ -15,7 +15,7 @@ export default async (request: UpdateRecipeIngredientRequest, reply: FastifyRepl
     return reply.status(400).type('text/html').send('<div class="alert alert-error">Invalid amount. Must be a positive number.</div>');
   }
 
-  const recipe = await updateIngredientAmount(recipeId, ingredientId, amountNum);
+  const recipe = await recipeService.updateRecipeIngredientAmount(recipeId, ingredientId, amountNum);
   if (!recipe) {
     return reply.status(404).type('text/html').send('<div class="alert alert-error">Recipe not found</div>');
   }

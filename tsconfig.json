@@ -14,9 +14,10 @@
     "noImplicitAny": false,
     "jsx": "react",
     "jsxFactory": "elements.createElement",
-    "jsxFragmentFactory": "elements.Fragment"
+    "jsxFragmentFactory": "elements.Fragment",
+    "types": ["node", "jest"]
   },
   "files": ["src/types.d.ts"],
   "include": ["src", "test", "src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["dist", "bundle", "node_modules", "**/*.test.ts"]
+  "exclude": ["dist", "bundle", "node_modules"]
 }

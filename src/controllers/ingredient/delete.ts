@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { IngredientList } from '../../components/ingredients/ingredient-list';
-import * as ingredientRepository from '../../repository/ingredient';
 import { HTMX_SWAP } from '../../utils/htmx';
+import { ingredientService } from '../../services/ingredient.service';
 
 type DeleteIngredientRequest = FastifyRequest<{ Params: { ingredientId: string }; Body: { query: string } }>;
 
@@ -14,11 +14,7 @@ export default async (request: DeleteIngredientRequest, reply: FastifyReply) => 
     return reply.status(400).type('text/html').send('<div class="alert alert-error">Ingredient ID is required</div>');
   }
 
-  await ingredientRepository.deleteIngredient(ingredientId);
-  let ingredients = await ingredientRepository.fetchIngredients(query);
-  if (ingredients.length === 0) {
-    ingredients = await ingredientRepository.fetchIngredients();
-  }
+  const ingredients = await ingredientService.removeIngredient(ingredientId, query);
 
   const template = await new IngredientList(ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render();
 

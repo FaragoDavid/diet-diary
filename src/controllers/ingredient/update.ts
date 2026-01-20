@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import * as ingredientRepository from '../../repository/ingredient';
+import { ingredientService } from '../../services/ingredient.service';
 
 type UpdateIngredientRequest = FastifyRequest<{
   Params: { ingredientId: string };
@@ -23,7 +23,7 @@ export default async (request: UpdateIngredientRequest, reply: FastifyReply) => 
     return reply.status(400).type('text/html').send('<div class="alert alert-error">Invalid numeric values</div>');
   }
 
-  await ingredientRepository.updateIngredient(ingredientId, {
+  await ingredientService.updateIngredientDetails(ingredientId, {
     ...(caloriesNum !== null && { caloriesPer100: caloriesNum }),
     ...(carbsNum !== null && { carbsPer100: carbsNum }),
     ...(fatNum !== null && { fatPer100: fatNum }),

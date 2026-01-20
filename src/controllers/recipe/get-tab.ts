@@ -2,13 +2,11 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { RecipeTab } from '../../components/recipes/recipe-tab';
 import { TAB_NAME, tabList } from '../../components/tab-list';
-import * as ingredientRepository from '../../repository/ingredient';
-import * as recipeRepository from '../../repository/recipe';
 import { HTMX_SWAP } from '../../utils/htmx';
+import { recipeService } from '../../services/recipe.service';
 
 export default async (_: FastifyRequest, reply: FastifyReply) => {
-  const recipes = await recipeRepository.fetchRecipes('');
-  const ingredients = await ingredientRepository.fetchIngredients();
+  const { recipes, ingredients } = await recipeService.getAllRecipesWithIngredients('');
 
   const template = `
     ${tabList(TAB_NAME.recipes, { swapOob: HTMX_SWAP.ReplaceElement })}

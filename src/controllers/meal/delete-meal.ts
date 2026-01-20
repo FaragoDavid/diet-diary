@@ -4,11 +4,9 @@ import { DayMealList } from '../../components/meals/day-meal-list';
 import { DayStats } from '../../components/meals/day-stats';
 import { MissingMeals } from '../../components/meals/missing-meals';
 import { MealType } from '../../config';
-import { deleteMeal, fetchDay } from '../../repository/meal';
 import { paramToDate } from '../../utils/converters';
 import { HTMX_SWAP } from '../../utils/htmx';
-import { fetchIngredients } from '../../repository/ingredient';
-import { fetchRecipes } from '../../repository/recipe';
+import { mealService } from '../../services/meal.service';
 
 type DeleteMealRequest = FastifyRequest<{ Params: { date: string; mealType: MealType } }>;
 
@@ -16,12 +14,7 @@ export default async (request: DeleteMealRequest, reply: FastifyReply) => {
   const date = paramToDate(request.params.date);
   const mealType = request.params.mealType;
 
-  await deleteMeal(date, mealType);
-  const day = await fetchDay(date);
-  if (!day) return reply.status(404).type('text/html').send('<div class="alert alert-error">Day not found</div>');
-
-  const ingredients = await fetchIngredients();
-  const recipes = await fetchRecipes();
+  const { day, ingredients, recipes } = await mealService.removeMeal(date, mealType);
 
   const template = `
     ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swapOob: HTMX_SWAP.ReplaceElement }).render()}

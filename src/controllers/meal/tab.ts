@@ -3,18 +3,11 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { MealTab } from '../../components/meals/meal-tab';
 import { TAB_NAME, tabList } from '../../components/tab-list';
-import { fetchIngredients } from '../../repository/ingredient';
-import { fetchDays } from '../../repository/meal';
 import { HTMX_SWAP } from '../../utils/htmx';
-import { fetchRecipes } from '../../repository/recipe';
+import { mealService } from '../../services/meal.service';
 
 export default async (_: FastifyRequest, reply: FastifyReply) => {
-  const ingredients = await fetchIngredients();
-  const recipes = await fetchRecipes();
-
-  const fromDate = subDays(new Date(), 7);
-  const toDate = new Date();
-  const days = await fetchDays();
+  const { days, ingredients, recipes } = await mealService.getAllDays();
 
   const template = `
     ${tabList(TAB_NAME.meals, { swapOob: HTMX_SWAP.ReplaceElement })}
