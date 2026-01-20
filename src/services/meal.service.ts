@@ -131,9 +131,9 @@ export class MealService {
     return { day, ingredients, recipes };
   }
 
-  async getAllDays() {
+  async getAllDays(options?: { fromDate?: Date; toDate?: Date }) {
     const [days, ingredients, recipes] = await Promise.all([
-      mealRepository.fetchDays(),
+      mealRepository.fetchDays(options),
       ingredientRepository.fetchIngredients(),
       recipeRepository.fetchRecipes(),
     ]);

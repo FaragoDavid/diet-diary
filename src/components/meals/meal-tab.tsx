@@ -10,7 +10,11 @@ import { DAY_LIST_ID, DayList } from './day-list';
 export class MealTab {
   public title = config.texts.titles.overview;
 
-  constructor(private days: DayWithMealsWithDishes[], private ingredients: Ingredient[], private recipes: Recipe[]) {}
+  constructor(
+    private days: DayWithMealsWithDishes[],
+    private ingredients: Ingredient[],
+    private recipes: Recipe[],
+  ) {}
 
   dateInput(id: string, defaultValue: Date) {
     // style: https://stackoverflow.com/questions/14946091/are-there-any-style-options-for-the-html5-date-picker
@@ -42,6 +46,7 @@ export class MealTab {
     return `
       <a href="/new-day">
         <button 
+          id="add-day-btn"
           class="btn btn-secondary btn-sm"
         >${icons.add}</button>
       </a>

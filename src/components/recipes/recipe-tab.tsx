@@ -9,7 +9,7 @@ import { RECIPE_LIST_ID, RecipeList } from './recipe-list';
 export const RECIPE_SEARCH_ID = 'search-recipe';
 
 const addRecipe = (): string => {
-  const button = (<button type="submit" class="btn btn-primary btn-sm" />) as string;
+  const button = (<button id="add-recipe-btn" type="submit" class="btn btn-primary btn-sm" />) as string;
 
   return (<a href="/new-recipe">{button.replace('/>', `>${icons.add}</button>`)}</a>) as string;
 };
@@ -37,7 +37,10 @@ const searchRecipes = (): string => {
 };
 
 export class RecipeTab {
-  constructor(private recipes: RecipeWithIngredients[], private ingredients: Ingredient[]) {}
+  constructor(
+    private recipes: RecipeWithIngredients[],
+    private ingredients: Ingredient[],
+  ) {}
 
   async render(): Promise<string> {
     const recipeListHtml = await new RecipeList(this.recipes, this.ingredients, { swapOob: false }).render();

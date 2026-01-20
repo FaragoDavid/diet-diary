@@ -15,7 +15,7 @@ export class IngredientTab {
   addIngredient = (): string => {
     return `
       <a href="/new-ingredient">
-        <button type="submit" class="btn btn-primary btn-sm">
+        <button id="add-ingredient-btn" type="submit" class="btn btn-primary btn-sm">
           ${icons.add}
         </button>
       </a>

@@ -20,5 +20,5 @@ export default async (request: CreateIngredientRequest, reply: FastifyReply) => 
     ${await new IngredientDetails(ingredient).render()}
   `;
 
-  return reply.type('text/html').header('HX-Push-Url', `/recipe/${ingredient.id}`).send(template);
+  return reply.type('text/html').header('HX-Push-Url', `/ingredient/${ingredient.id}`).send(template);
 };

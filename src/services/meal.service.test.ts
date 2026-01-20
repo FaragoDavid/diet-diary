@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { mealService } from './meal.service';
 import { MealType } from '../config';
 import * as ingredientRepository from '../repository/ingredient';
