@@ -23,9 +23,9 @@ describe('Navigation and Tabs', () => {
     cy.visit('/dashboard/ingredients');
 
     cy.get('#add-ingredient-btn').click();
-    cy.get('input[name="ingredientName"]').type('Test Nav Item');
-    cy.get('form').submit();
+    cy.get('input[name="ingredientName"]').type('Test Nav Item').blur();
 
+    cy.wait(500);
     cy.url().should('match', /\/ingredient\/[a-z0-9-]+/);
 
     cy.contains('← Vissza').click();
@@ -37,9 +37,9 @@ describe('Navigation and Tabs', () => {
     cy.visit('/dashboard/ingredients');
 
     cy.get('#add-ingredient-btn').click();
-    cy.get('input[name="ingredientName"]').type('Nav Test Ingredient');
-    cy.get('form').submit();
+    cy.get('input[name="ingredientName"]').type('Nav Test Ingredient').blur();
 
+    cy.wait(500);
     cy.visit('/dashboard/ingredients');
     cy.contains('Nav Test Ingredient').click();
 
@@ -51,9 +51,9 @@ describe('Navigation and Tabs', () => {
     cy.visit('/dashboard/recipes');
 
     cy.get('#add-recipe-btn').click();
-    cy.get('input[name="recipeName"]').type('Nav Test Recipe');
-    cy.get('form').submit();
+    cy.get('input[name="recipeName"]').type('Nav Test Recipe').blur();
 
+    cy.wait(500);
     cy.visit('/dashboard/recipes');
     cy.contains('Nav Test Recipe').click();
 
@@ -66,9 +66,9 @@ describe('Navigation and Tabs', () => {
 
     cy.get('#add-day-btn').click();
     const today = new Date().toISOString().split('T')[0];
-    cy.get('input[name="date"]').type(today);
-    cy.get('form').submit();
+    cy.get('input[name="date"]').type(today).blur();
 
+    cy.wait(500);
     cy.visit('/dashboard/meals');
     cy.contains(new Date().getFullYear()).first().click();
 
@@ -80,8 +80,8 @@ describe('Navigation and Tabs', () => {
 
     for (let i = 0; i < 20; i++) {
       cy.get('#add-ingredient-btn').click();
-      cy.get('input[name="ingredientName"]').type(`Item ${i}`);
-      cy.get('form').submit();
+      cy.get('input[name="ingredientName"]').type(`Item ${i}`).blur();
+      cy.wait(500);
       cy.visit('/dashboard/ingredients');
     }
 

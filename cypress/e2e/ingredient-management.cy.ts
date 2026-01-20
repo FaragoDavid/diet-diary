@@ -56,7 +56,7 @@ describe('Ingredient Management', () => {
     cy.visit('/dashboard/ingredients');
     cy.contains(ingredientName).should('be.visible');
 
-    cy.contains(ingredientName).parent().parent().find('div[hx-delete]').first().click();
+    cy.contains(ingredientName).parents('[id^="ingredient-"]').find('div[hx-delete]').click();
 
     cy.wait(500);
     cy.contains(ingredientName).should('not.exist');
