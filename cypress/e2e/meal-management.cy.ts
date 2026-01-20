@@ -42,7 +42,7 @@ describe('Meal Management', () => {
     cy.get('button').contains('+').first().click();
     cy.wait(500);
 
-    cy.get('select').first().select('Rice');
+    cy.get('select[name="breakfast-dishId"]').select('Rice');
     cy.get('input[name="amount"]').first().type('150').blur();
 
     cy.wait(500);
@@ -64,7 +64,7 @@ describe('Meal Management', () => {
     cy.get('button').contains('+').first().click();
     cy.wait(500);
 
-    cy.get('select').first().select('Breakfast Bowl');
+    cy.get('select[name="breakfast-dishId"]').select('Breakfast Bowl');
     cy.get('input[name="amount"]').first().type('1').blur();
 
     cy.wait(500);
@@ -86,7 +86,7 @@ describe('Meal Management', () => {
     cy.get('button').contains('+').eq(1).click();
     cy.wait(500);
 
-    cy.get('select').first().select('Pasta');
+    cy.get('select[name="lunch-dishId"]').select('Pasta');
     cy.get('input[name="amount"]').first().type('100').blur();
 
     cy.wait(500);
@@ -112,7 +112,7 @@ describe('Meal Management', () => {
     cy.get('button').contains('+').first().click();
     cy.wait(500);
 
-    cy.get('select').first().select('Removable Dish');
+    cy.get('select[name="breakfast-dishId"]').select('Removable Dish');
     cy.get('input[name="amount"]').first().type('100').blur();
 
     cy.wait(500);
@@ -182,7 +182,7 @@ describe('Meal Management', () => {
     cy.get('button').contains('+').first().click();
     cy.wait(500);
 
-    cy.get('select').first().select('Chicken');
+    cy.get('select[name="breakfast-dishId"]').select('Chicken');
     cy.get('input[name="amount"]').first().type('100').blur();
 
     cy.wait(500);

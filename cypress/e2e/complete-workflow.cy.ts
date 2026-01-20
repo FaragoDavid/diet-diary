@@ -52,14 +52,14 @@ describe('Complete User Workflow', () => {
     cy.wait(500);
 
     // Step 4: Add recipe to breakfast
-    cy.get('select').first().select('Morning Oatmeal Bowl');
+    cy.get('select[name="breakfast-dishId"]').select('Morning Oatmeal Bowl');
     cy.get('input[name="amount"]').first().type('1').blur();
     cy.wait(500);
 
     cy.contains('Morning Oatmeal Bowl').should('be.visible');
 
     // Step 5: Add direct ingredient to breakfast
-    cy.get('select').first().select('Oatmeal');
+    cy.get('select[name="breakfast-dishId"]').select('Oatmeal');
     cy.get('input[name="amount"]').first().type('30').blur();
     cy.wait(500);
 
