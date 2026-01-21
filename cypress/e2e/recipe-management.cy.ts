@@ -95,17 +95,18 @@ describe('Recipe Management', () => {
   });
 
   it('allows user to delete a recipe', () => {
+    const recipeName = `Recipe-To-Delete-${Date.now()}`;
     cy.get('#add-recipe-btn').click();
-    cy.get('input[name="recipeName"]').type('Recipe To Delete').blur();
+    cy.get('input[name="recipeName"]').type(recipeName).blur();
     cy.wait(500);
 
     cy.visit('/dashboard/recipes');
-    cy.contains('Recipe To Delete').should('be.visible');
+    cy.contains(recipeName).should('be.visible');
 
-    cy.contains('Recipe To Delete').nextAll().find('div[hx-delete]').first().click();
+    cy.contains(recipeName).nextAll().find('div[hx-delete]').first().click();
 
     cy.wait(500);
-    cy.contains('Recipe To Delete').should('not.exist');
+    cy.contains(recipeName).should('not.exist');
   });
 
   it('allows user to search for recipes', () => {
