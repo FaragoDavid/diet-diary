@@ -47,11 +47,11 @@ describe('Ingredient Management', () => {
   });
 
   it('allows user to delete an ingredient', () => {
+    const ingredientName = `Delete-Me-${Date.now()}`;
+    
     cy.get('#add-ingredient-btn').click();
-    cy.get('input[name="ingredientName"]').type('Delete Me').blur();
+    cy.get('input[name="ingredientName"]').type(ingredientName).blur();
     cy.wait(500);
-
-    const ingredientName = 'Delete Me';
 
     cy.visit('/dashboard/ingredients');
     cy.contains(ingredientName).should('be.visible');
