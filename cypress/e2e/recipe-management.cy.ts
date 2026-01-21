@@ -17,7 +17,8 @@ describe('Recipe Management', () => {
   it('allows user to add ingredients to a recipe', () => {
     cy.visit('/dashboard/ingredients');
     cy.get('#add-ingredient-btn').click();
-    cy.get('input[name="ingredientName"]').type('Lettuce').blur();
+    const ingredientName = `Lettuce-${Date.now()}`;
+    cy.get('input[name="ingredientName"]').type(ingredientName).blur();
     cy.wait(500);
 
     cy.visit('/dashboard/recipes');
@@ -25,18 +26,19 @@ describe('Recipe Management', () => {
     cy.get('input[name="recipeName"]').type('Green Salad').blur();
     cy.wait(500);
 
-    cy.get('select[name="ingredientId"]').last().select('Lettuce');
+    cy.get('select[name="ingredientId"]').last().select(ingredientName);
     cy.get('input[name="amount"]').last().type('100').blur();
 
     cy.wait(500);
-    cy.contains('Lettuce').should('be.visible');
+    cy.contains(ingredientName).should('be.visible');
     cy.get('input[name="amount"]').first().should('have.value', '100');
   });
 
   it('allows user to update ingredient amount in recipe', () => {
     cy.visit('/dashboard/ingredients');
     cy.get('#add-ingredient-btn').click();
-    cy.get('input[name="ingredientName"]').type('Tomato').blur();
+    const ingredientName = `Tomato-${Date.now()}`;
+    cy.get('input[name="ingredientName"]').type(ingredientName).blur();
     cy.wait(500);
 
     cy.visit('/dashboard/recipes');
@@ -44,7 +46,7 @@ describe('Recipe Management', () => {
     cy.get('input[name="recipeName"]').type('Tomato Soup').blur();
     cy.wait(500);
 
-    cy.get('select[name="ingredientId"]').last().select('Tomato');
+    cy.get('select[name="ingredientId"]').last().select(ingredientName);
     cy.get('input[name="amount"]').last().type('150').blur();
 
     cy.wait(500);
@@ -71,7 +73,8 @@ describe('Recipe Management', () => {
   it('allows user to remove ingredient from recipe', () => {
     cy.visit('/dashboard/ingredients');
     cy.get('#add-ingredient-btn').click();
-    cy.get('input[name="ingredientName"]').type('Cucumber').blur();
+    const ingredientName = `Cucumber-${Date.now()}`;
+    cy.get('input[name="ingredientName"]').type(ingredientName).blur();
     cy.wait(500);
 
     cy.visit('/dashboard/recipes');
@@ -79,16 +82,16 @@ describe('Recipe Management', () => {
     cy.get('input[name="recipeName"]').type('Cucumber Salad').blur();
     cy.wait(500);
 
-    cy.get('select[name="ingredientId"]').last().select('Cucumber');
+    cy.get('select[name="ingredientId"]').last().select(ingredientName);
     cy.get('input[name="amount"]').last().type('100').blur();
 
     cy.wait(500);
-    cy.get('input[value="Cucumber"]').should('be.visible');
+    cy.get('input[value="' + ingredientName + '"]').should('be.visible');
 
     cy.get('button[hx-delete*="/recipe/"][hx-delete*="/ingredient/"]').first().click();
 
     cy.wait(500);
-    cy.get('input[value="Cucumber"]').should('not.exist');
+    cy.get('input[value="' + ingredientName + '"]').should('not.exist');
   });
 
   it('allows user to delete a recipe', () => {
