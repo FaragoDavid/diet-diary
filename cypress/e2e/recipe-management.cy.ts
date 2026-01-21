@@ -99,7 +99,7 @@ describe('Recipe Management', () => {
     cy.visit('/dashboard/recipes');
     cy.contains('Recipe To Delete').should('be.visible');
 
-    cy.contains('Recipe To Delete').parents('[id^="recipe-"]').find('div[hx-delete]').click();
+    cy.contains('Recipe To Delete').nextAll().find('div[hx-delete]').first().click();
 
     cy.wait(500);
     cy.contains('Recipe To Delete').should('not.exist');
