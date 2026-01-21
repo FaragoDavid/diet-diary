@@ -25,7 +25,7 @@ describe('Recipe Management', () => {
     cy.get('input[name="recipeName"]').type('Green Salad').blur();
     cy.wait(500);
 
-    cy.get('select[name="ingredientId"]').select('Lettuce');
+    cy.get('select[name="ingredientId"]').last().select('Lettuce');
     cy.get('input[name="amount"]').last().type('100').blur();
 
     cy.wait(500);
@@ -44,7 +44,7 @@ describe('Recipe Management', () => {
     cy.get('input[name="recipeName"]').type('Tomato Soup').blur();
     cy.wait(500);
 
-    cy.get('select[name="ingredientId"]').select('Tomato');
+    cy.get('select[name="ingredientId"]').last().select('Tomato');
     cy.get('input[name="amount"]').last().type('150').blur();
 
     cy.wait(500);
@@ -79,7 +79,7 @@ describe('Recipe Management', () => {
     cy.get('input[name="recipeName"]').type('Cucumber Salad').blur();
     cy.wait(500);
 
-    cy.get('select[name="ingredientId"]').select('Cucumber');
+    cy.get('select[name="ingredientId"]').last().select('Cucumber');
     cy.get('input[name="amount"]').last().type('100').blur();
 
     cy.wait(500);
@@ -137,7 +137,7 @@ describe('Recipe Management', () => {
     cy.get('input[name="recipeName"]').type('Test Recipe').blur();
     cy.wait(500);
 
-    cy.get('select[name="ingredientId"]').select('Test Ingredient');
+    cy.get('select[name="ingredientId"]').last().select('Test Ingredient');
     cy.get('input[name="amount"]').type('-5');
     cy.get('button').contains('Hozzáadás').click();
 
