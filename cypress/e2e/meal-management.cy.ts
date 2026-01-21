@@ -7,21 +7,24 @@ describe('Meal Management', () => {
   it('allows user to create a new day', () => {
     cy.get('#add-day-btn').click();
 
-    const today = new Date().toISOString().split('T')[0];
-    cy.get('input[name="date"]').type(today).blur();
-
-    cy.wait(500);
-    cy.url().should('include', '/day/');
-    cy.contains(new Date().getFullYear()).should('be.visible');
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    cy.get('input[name="date"]').type(tomorrowStr).blur();
+    
+    cy.wait(1000);
+    cy.get('button[name="mealType"][value="breakfast"]').should('be.visible');
   });
 
   it('allows user to add meals to a day', () => {
     cy.get('#add-day-btn').click();
-    const today = new Date().toISOString().split('T')[0];
-    cy.get('input[name="date"]').type(today).blur();
-    cy.wait(500);
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    cy.get('input[name="date"]').type(tomorrowStr).blur();
+    cy.wait(1000);
 
-    cy.contains('Reggeli').parent().find('button').contains('+').click();
+    cy.get('button[name="mealType"][value="breakfast"]').should('be.visible').click();
 
     cy.wait(500);
     cy.contains('Reggeli').should('be.visible');
@@ -30,112 +33,116 @@ describe('Meal Management', () => {
   it('allows user to add ingredient dish to a meal', () => {
     cy.visit('/dashboard/ingredients');
     cy.get('#add-ingredient-btn').click();
-    cy.get('input[name="ingredientName"]').type('Rice').blur();
+    const uniqueName = `Rice-${Date.now()}`;
+    cy.get('input[name="ingredientName"]').type(uniqueName).blur();
     cy.wait(500);
 
     cy.visit('/dashboard/meals');
     cy.get('#add-day-btn').click();
-    const today = new Date().toISOString().split('T')[0];
-    cy.get('input[name="date"]').type(today).blur();
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    cy.get('input[name="date"]').type(tomorrowStr).blur();
     cy.wait(500);
 
-    cy.get('button').contains('+').first().click();
+    cy.get('button[name="mealType"][value="breakfast"]').click();
     cy.wait(500);
 
-    cy.get('select[name="breakfast-dishId"]').select('Rice');
+    cy.get('select[name="breakfast-dishId"]').last().select(uniqueName);
     cy.get('input[name="amount"]').first().type('150').blur();
 
     cy.wait(500);
-    cy.contains('Rice').should('be.visible');
+    cy.contains(uniqueName).should('be.visible');
   });
 
   it('allows user to add recipe dish to a meal', () => {
     cy.visit('/dashboard/recipes');
     cy.get('#add-recipe-btn').click();
-    cy.get('input[name="recipeName"]').type('Breakfast Bowl').blur();
+    const uniqueName = `Breakfast-Bowl-${Date.now()}`;
+    cy.get('input[name="recipeName"]').type(uniqueName).blur();
     cy.wait(500);
 
     cy.visit('/dashboard/meals');
     cy.get('#add-day-btn').click();
-    const today = new Date().toISOString().split('T')[0];
-    cy.get('input[name="date"]').type(today).blur();
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    cy.get('input[name="date"]').type(tomorrowStr).blur();
     cy.wait(500);
 
-    cy.get('button').contains('+').first().click();
+    cy.get('button[name="mealType"][value="breakfast"]').click();
     cy.wait(500);
 
-    cy.get('select[name="breakfast-dishId"]').select('Breakfast Bowl');
+    cy.get('select[name="breakfast-dishId"]').last().select(uniqueName);
     cy.get('input[name="amount"]').first().type('1').blur();
 
     cy.wait(500);
-    cy.contains('Breakfast Bowl').should('be.visible');
+    cy.contains(uniqueName).should('be.visible');
   });
 
   it('allows user to update dish amount', () => {
     cy.visit('/dashboard/ingredients');
     cy.get('#add-ingredient-btn').click();
-    cy.get('input[name="ingredientName"]').type('Pasta').blur();
+    const uniqueName = `Pasta-${Date.now()}`;
+    cy.get('input[name="ingredientName"]').type(uniqueName).blur();
     cy.wait(500);
 
     cy.visit('/dashboard/meals');
     cy.get('#add-day-btn').click();
-    const today = new Date().toISOString().split('T')[0];
-    cy.get('input[name="date"]').type(today).blur();
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    cy.get('input[name="date"]').type(tomorrowStr).blur();
     cy.wait(500);
 
-    cy.get('button').contains('+').eq(1).click();
+    cy.get('button[name="mealType"][value="lunch"]').click();
     cy.wait(500);
 
-    cy.get('select[name="lunch-dishId"]').select('Pasta');
+    cy.get('select[name="lunch-dishId"]').last().select(uniqueName);
     cy.get('input[name="amount"]').first().type('100').blur();
 
     cy.wait(500);
-    cy.contains('Pasta').parents('.grid').find('input[name="amount"]').first().clear().type('200').blur();
+    cy.contains(uniqueName).parents('.grid').find('input[name="amount"]').first().clear().type('200').blur();
 
     cy.wait(500);
     cy.reload();
-    cy.contains('Pasta').parents('.grid').find('input[name="amount"]').first().should('have.value', '200');
+    cy.contains(uniqueName).parents('.grid').find('input[name="amount"]').first().should('have.value', '200');
   });
 
   it('allows user to remove dish from meal', () => {
     cy.visit('/dashboard/ingredients');
     cy.get('#add-ingredient-btn').click();
-    cy.get('input[name="ingredientName"]').type('Removable Dish').blur();
+    const uniqueName = `Removable-Dish-${Date.now()}`;
+    cy.get('input[name="ingredientName"]').type(uniqueName).blur();
     cy.wait(500);
 
     cy.visit('/dashboard/meals');
     cy.get('#add-day-btn').click();
-    const today = new Date().toISOString().split('T')[0];
-    cy.get('input[name="date"]').type(today).blur();
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    cy.get('input[name="date"]').type(tomorrowStr).blur();
     cy.wait(500);
 
-    cy.get('button').contains('+').first().click();
+    cy.get('button[name="mealType"][value="breakfast"]').click();
     cy.wait(500);
 
-    cy.get('select[name="breakfast-dishId"]').select('Removable Dish');
+    cy.get('select[name="breakfast-dishId"]').last().select(uniqueName);
     cy.get('input[name="amount"]').first().type('100').blur();
 
     cy.wait(500);
-    cy.contains('Removable Dish').should('be.visible');
+    cy.contains(uniqueName).should('be.visible');
 
-    cy.contains('Removable Dish').parents('.grid').find('button[hx-delete]').click();
+    cy.contains(uniqueName).parents('.grid').find('button[hx-delete]').click();
 
     cy.wait(500);
-    cy.contains('Removable Dish').should('not.exist');
+    cy.contains(uniqueName).should('not.exist');
   });
 
   it('allows user to remove meal from day', () => {
     cy.get('#add-day-btn').click();
-    const today = new Date().toISOString().split('T')[0];
-    cy.get('input[name="date"]').type(today).blur();
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    cy.get('input[name="date"]').type(tomorrowStr).blur();
     cy.wait(500);
 
-    cy.contains('Reggeli').parent().find('button').contains('+').click();
+    cy.get('button[name="mealType"][value="breakfast"]').click();
 
     cy.wait(500);
     cy.contains('Reggeli').should('be.visible');
 
-    cy.contains('Reggeli').parent().find('button').contains('×').click();
+    cy.contains('Reggeli').parent().find('button[hx-delete]').click();
 
     cy.wait(500);
     cy.contains('Reggeli').should('not.be.visible');
@@ -150,8 +157,8 @@ describe('Meal Management', () => {
 
   it.skip('displays validation error for missing dish selection', () => {
     cy.get('#add-day-btn').click();
-    const today = new Date().toISOString().split('T')[0];
-    cy.get('input[name="date"]').type(today).blur();
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    cy.get('input[name="date"]').type(tomorrowStr).blur();
     cy.wait(500);
 
     cy.contains('Reggeli').parent().find('button').contains('+').click();
@@ -166,7 +173,8 @@ describe('Meal Management', () => {
   it('displays nutrition stats for the day', () => {
     cy.visit('/dashboard/ingredients');
     cy.get('#add-ingredient-btn').click();
-    cy.get('input[name="ingredientName"]').type('Chicken').blur();
+    const uniqueName = `Chicken-${Date.now()}`;
+    cy.get('input[name="ingredientName"]').type(uniqueName).blur();
     cy.wait(500);
     cy.get('input[name="calories"]').clear().type('165').blur();
     cy.get('input[name="carbs"]').clear().type('0').blur();
@@ -175,14 +183,14 @@ describe('Meal Management', () => {
 
     cy.visit('/dashboard/meals');
     cy.get('#add-day-btn').click();
-    const today = new Date().toISOString().split('T')[0];
-    cy.get('input[name="date"]').type(today).blur();
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    cy.get('input[name="date"]').type(tomorrowStr).blur();
     cy.wait(500);
 
-    cy.get('button').contains('+').first().click();
+    cy.get('button[name="mealType"][value="breakfast"]').click();
     cy.wait(500);
 
-    cy.get('select[name="breakfast-dishId"]').select('Chicken');
+    cy.get('select[name="breakfast-dishId"]').last().select(uniqueName);
     cy.get('input[name="amount"]').first().type('100').blur();
 
     cy.wait(500);
