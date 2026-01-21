@@ -28,7 +28,7 @@ describe('Navigation and Tabs', () => {
     cy.wait(500);
     cy.url().should('match', /\/ingredient\/[a-z0-9-]+/);
 
-    cy.contains('← Vissza').click();
+    cy.get('a[href="/dashboard/ingredients"]').click();
     cy.url().should('include', '/dashboard/ingredients');
     cy.contains('Test Nav Item').should('be.visible');
   });
@@ -41,7 +41,7 @@ describe('Navigation and Tabs', () => {
 
     cy.wait(500);
     cy.visit('/dashboard/ingredients');
-    cy.contains('Nav Test Ingredient').click();
+    cy.contains('Nav Test Ingredient').nextAll().find('a.btn-secondary').first().click();
 
     cy.url().should('match', /\/ingredient\/[a-z0-9-]+/);
     cy.contains('Nav Test Ingredient').should('be.visible');
@@ -55,7 +55,7 @@ describe('Navigation and Tabs', () => {
 
     cy.wait(500);
     cy.visit('/dashboard/recipes');
-    cy.contains('Nav Test Recipe').click();
+    cy.contains('Nav Test Recipe').nextAll().find('a.btn-secondary').first().click();
 
     cy.url().should('match', /\/recipe\/[a-z0-9-]+/);
     cy.contains('Nav Test Recipe').should('be.visible');
@@ -68,11 +68,13 @@ describe('Navigation and Tabs', () => {
     const today = new Date().toISOString().split('T')[0];
     cy.get('input[name="date"]').type(today).blur();
 
-    cy.wait(500);
+    cy.wait(1000);
     cy.visit('/dashboard/meals');
-    cy.contains(new Date().getFullYear()).first().click();
+    cy.wait(500);
+    
+    cy.get('a[href^="/day/"]').first().click();
 
-    cy.url().should('include', '/meal/');
+    cy.url().should('include', '/day/');
   });
 
   it('maintains scroll position when using HTMX updates', () => {
@@ -87,7 +89,7 @@ describe('Navigation and Tabs', () => {
 
     cy.scrollTo(0, 500);
 
-    cy.get('input[type="search"]').type('Item 1');
+    cy.get('#ingredient-search').type('Item 1');
 
     cy.window().its('scrollY').should('be.gte', 0);
   });
