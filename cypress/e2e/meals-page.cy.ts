@@ -7,14 +7,14 @@ describe('Meals Page', () => {
   describe('Creating days', () => {
     it('creates a new day', () => {
       cy.visit('/dashboard/meals');
+      cy.intercept('POST', '/new-day').as('createDay');
       cy.get('#add-day-btn').click();
 
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       const tomorrowStr = tomorrow.toISOString().split('T')[0];
       cy.get('input[name="date"]').invoke('val', tomorrowStr).trigger('change');
-
-      cy.wait(1000);
+      cy.wait('@createDay');
       cy.get('button[name="mealType"][value="breakfast"]').should('be.visible');
     });
   });
@@ -22,44 +22,49 @@ describe('Meals Page', () => {
   describe('Managing meals', () => {
     beforeEach(() => {
       cy.visit('/dashboard/meals');
+      cy.intercept('POST', '/new-day').as('createDay');
       cy.get('#add-day-btn').click();
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       const tomorrowStr = tomorrow.toISOString().split('T')[0];
       cy.get('input[name="date"]').invoke('val', tomorrowStr).trigger('change');
-      cy.wait(1000);
+      cy.wait('@createDay');
     });
 
     it('adds breakfast meal to a day', () => {
+      cy.intercept('POST', '/day/*/meal').as('addMeal');
       cy.get('button[name="mealType"][value="breakfast"]').should('be.visible').click();
+      cy.wait('@addMeal');
 
-      cy.wait(500);
       cy.contains('Reggeli').should('be.visible');
     });
 
     it('adds lunch meal to a day', () => {
+      cy.intercept('POST', '/day/*/meal').as('addMeal');
       cy.get('button[name="mealType"][value="lunch"]').click();
+      cy.wait('@addMeal');
 
-      cy.wait(500);
       cy.contains('Ebéd').should('be.visible');
     });
 
     it('adds dinner meal to a day', () => {
+      cy.intercept('POST', '/day/*/meal').as('addMeal');
       cy.get('button[name="mealType"][value="dinner"]').click();
+      cy.wait('@addMeal');
 
-      cy.wait(500);
       cy.contains('Vacsora').should('be.visible');
     });
 
     it('removes meal from day', () => {
+      cy.intercept('POST', '/day/*/meal').as('addMeal');
+      cy.intercept('DELETE', '/day/*/meal/*').as('deleteMeal');
       cy.get('button[name="mealType"][value="breakfast"]').click();
-      cy.wait(500);
+      cy.wait('@addMeal');
       cy.contains('Reggeli').should('be.visible');
 
       const deleteButtonSelector = 'button[hx-delete*="/meal/"]';
       cy.get(deleteButtonSelector).first().should('be.visible').click();
-
-      cy.wait(1000);
+      cy.wait('@deleteMeal');
       cy.get(deleteButtonSelector).should('not.exist');
       cy.get('button[name="mealType"][value="breakfast"]').should('be.visible');
     });
@@ -71,65 +76,78 @@ describe('Meals Page', () => {
 
     beforeEach(() => {
       cy.visit('/dashboard/ingredients');
+      cy.intercept('POST', '/new-ingredient').as('createIngredient');
       cy.get('#add-ingredient-btn').click();
       ingredientName = `Ingredient-${Date.now()}`;
       cy.get('input[name="ingredientName"]').type(ingredientName).blur();
-      cy.wait(500);
+      cy.wait('@createIngredient');
 
       cy.visit('/dashboard/recipes');
+      cy.intercept('POST', '/new-recipe').as('createRecipe');
       cy.get('#add-recipe-btn').click();
       recipeName = `Recipe-${Date.now()}`;
       cy.get('input[name="recipeName"]').type(recipeName).blur();
-      cy.wait(500);
+      cy.wait('@createRecipe');
 
+      cy.intercept('POST', '/new-day').as('createDay');
       cy.visit('/dashboard/meals');
       cy.get('#add-day-btn').click();
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       const tomorrowStr = tomorrow.toISOString().split('T')[0];
       cy.get('input[name="date"]').invoke('val', tomorrowStr).trigger('change');
-      cy.wait(1000);
-      cy.get('button[name="mealType"][value="breakfast"]').click();
-      cy.wait(500);
+      cy.wait('@createDay');
+
+      cy.get('button[name="mealType"][value="breakfast"]').then($btn => {
+        if ($btn.is(':visible')) {
+          cy.intercept('POST', '/day/*/meal').as('addMeal');
+          cy.get('button[name="mealType"][value="breakfast"]').click();
+          cy.wait('@addMeal');
+        }
+      });
     });
 
     it('adds ingredient dish to breakfast', () => {
+      cy.intercept('POST', '/day/*/meal/*/dish').as('addDish');
       cy.get('select[name="breakfast-dishId"]').last().select(ingredientName);
       cy.get('input[name="amount"]').first().type('150').blur();
+      cy.wait('@addDish');
 
-      cy.wait(500);
       cy.contains(ingredientName).should('be.visible');
     });
 
     it('adds recipe dish to breakfast', () => {
+      cy.intercept('POST', '/day/*/meal/*/dish').as('addDish');
       cy.get('select[name="breakfast-dishId"]').last().select(recipeName);
       cy.get('input[name="amount"]').first().type('1').blur();
+      cy.wait('@addDish');
 
-      cy.wait(500);
       cy.contains(recipeName).should('be.visible');
     });
 
     it('updates dish amount', () => {
+      cy.intercept('POST', '/day/*/meal/*/dish').as('addDish');
+      cy.intercept('POST', '/day/*/meal/*/dish/*').as('updateDish');
       cy.get('select[name="breakfast-dishId"]').last().select(ingredientName);
       cy.get('input[name="amount"]').first().type('100').blur();
+      cy.wait('@addDish');
 
-      cy.wait(500);
       cy.contains(ingredientName).parents('.grid').find('input[name="amount"]').first().clear().type('200').blur();
+      cy.wait('@updateDish');
 
-      cy.wait(500);
       cy.reload();
       cy.contains(ingredientName).parents('.grid').find('input[name="amount"]').first().should('have.value', '200');
     });
 
     it('removes dish from meal', () => {
+      cy.intercept('POST', '/day/*/meal/*/dish').as('addDish');
       cy.get('select[name="breakfast-dishId"]').last().select(ingredientName);
       cy.get('input[name="amount"]').first().type('100').blur();
+      cy.wait('@addDish');
 
-      cy.wait(500);
       cy.contains(ingredientName).should('be.visible');
 
       cy.contains(ingredientName).parents('.grid').find('button[hx-delete]').first().click();
-
       cy.wait(500);
       cy.contains(ingredientName).should('not.exist');
     });
@@ -138,15 +156,15 @@ describe('Meals Page', () => {
   describe('Navigation', () => {
     it('navigates from meal list to day page', () => {
       cy.visit('/dashboard/meals');
+      cy.intercept('POST', '/new-day').as('createDay');
       cy.get('#add-day-btn').click();
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       const tomorrowStr = tomorrow.toISOString().split('T')[0];
       cy.get('input[name="date"]').invoke('val', tomorrowStr).trigger('change');
+      cy.wait('@createDay');
 
-      cy.wait(1000);
       cy.visit('/dashboard/meals');
-      cy.wait(500);
 
       cy.get('a[href^="/day/"]').first().click();
 

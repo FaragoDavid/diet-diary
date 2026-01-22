@@ -7,8 +7,10 @@ describe('Ingredients Page', () => {
 
   describe('Creating ingredients', () => {
     it('creates a new ingredient', () => {
+      cy.intercept('POST', '/new-ingredient').as('createIngredient');
       cy.get('#add-ingredient-btn').click();
       cy.get('input[name="ingredientName"]').type('Chicken Breast').blur();
+      cy.wait('@createIngredient');
 
       cy.url().should('match', /\/ingredient\/[a-z0-9-]+/);
       cy.contains('Chicken Breast').should('be.visible');
@@ -17,16 +19,18 @@ describe('Ingredients Page', () => {
 
   describe('Editing ingredients', () => {
     it('updates ingredient nutrition values', () => {
+      cy.intercept('POST', '/new-ingredient').as('createIngredient');
+      cy.intercept('POST', '/ingredient/*').as('updateIngredient');
       cy.get('#add-ingredient-btn').click();
       cy.get('input[name="ingredientName"]').type('Test Ingredient').blur();
-      cy.wait(500);
+      cy.wait('@createIngredient');
 
       cy.get('input[name="calories"]').clear().type('200').blur();
       cy.get('input[name="carbs"]').clear().type('5').blur();
       cy.get('input[name="fat"]').clear().type('10').blur();
       cy.get('input[type="checkbox"][name="isVegetable"]').check();
+      cy.wait('@updateIngredient');
 
-      cy.wait(500);
       cy.reload();
 
       cy.get('input[name="calories"]').should('have.value', '200');
@@ -55,26 +59,29 @@ describe('Ingredients Page', () => {
     it('deletes an ingredient', () => {
       const ingredientName = `Delete-Me-${Date.now()}`;
 
+      cy.intercept('POST', '/new-ingredient').as('createIngredient');
+      cy.intercept('DELETE', '/ingredient/*').as('deleteIngredient');
       cy.get('#add-ingredient-btn').click();
       cy.get('input[name="ingredientName"]').type(ingredientName).blur();
-      cy.wait(500);
+      cy.wait('@createIngredient');
 
       cy.visit('/dashboard/ingredients');
       cy.contains(ingredientName).should('be.visible');
 
       cy.contains(ingredientName).nextAll().find('div[hx-delete]').first().click();
+      cy.wait('@deleteIngredient');
 
-      cy.wait(500);
       cy.contains(ingredientName).should('not.exist');
     });
   });
 
   describe('Navigation', () => {
     it('navigates from list to detail page', () => {
+      cy.intercept('POST', '/new-ingredient').as('createIngredient');
       cy.get('#add-ingredient-btn').click();
       cy.get('input[name="ingredientName"]').type('Nav Test Ingredient').blur();
+      cy.wait('@createIngredient');
 
-      cy.wait(500);
       cy.visit('/dashboard/ingredients');
       cy.contains('Nav Test Ingredient').nextAll().find('a.btn-secondary').first().click();
 
@@ -83,10 +90,11 @@ describe('Ingredients Page', () => {
     });
 
     it('navigates back to list from detail page', () => {
+      cy.intercept('POST', '/new-ingredient').as('createIngredient');
       cy.get('#add-ingredient-btn').click();
       cy.get('input[name="ingredientName"]').type('Test Nav Item').blur();
+      cy.wait('@createIngredient');
 
-      cy.wait(500);
       cy.url().should('match', /\/ingredient\/[a-z0-9-]+/);
 
       cy.get('a[href="/dashboard/ingredients"]').click();

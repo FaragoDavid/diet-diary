@@ -7,10 +7,11 @@ describe('Recipes Page', () => {
   describe('Creating recipes', () => {
     it('creates a new recipe', () => {
       cy.visit('/dashboard/recipes');
+      cy.intercept('POST', '/new-recipe').as('createRecipe');
       cy.get('#add-recipe-btn').click();
 
       cy.get('input[name="recipeName"]').type('Chicken Salad').blur();
-      cy.wait(500);
+      cy.wait('@createRecipe');
 
       cy.url().should('match', /\/recipe\/[a-z0-9-]+/);
       cy.contains('Chicken Salad').should('be.visible');
@@ -18,20 +19,22 @@ describe('Recipes Page', () => {
 
     it('creates a recipe with ingredients', () => {
       cy.visit('/dashboard/ingredients');
+      cy.intercept('POST', '/new-ingredient').as('createIngredient');
       cy.get('#add-ingredient-btn').click();
       const ingredientName = `Lettuce-${Date.now()}`;
       cy.get('input[name="ingredientName"]').type(ingredientName).blur();
-      cy.wait(500);
+      cy.wait('@createIngredient');
 
       cy.visit('/dashboard/recipes');
+      cy.intercept('POST', '/new-recipe').as('createRecipe');
+      cy.intercept('POST', '/recipe/*/ingredient').as('addIngredient');
       cy.get('#add-recipe-btn').click();
       cy.get('input[name="recipeName"]').type('Green Salad').blur();
-      cy.wait(500);
+      cy.wait('@createRecipe');
 
       cy.get('select[name="ingredientId"]').last().select(ingredientName);
       cy.get('input[name="amount"]').last().type('100').blur();
-
-      cy.wait(500);
+      cy.wait('@addIngredient');
       cy.contains(ingredientName).should('be.visible');
       cy.get('input[name="amount"]').first().should('have.value', '100');
     });
@@ -42,24 +45,27 @@ describe('Recipes Page', () => {
 
     beforeEach(() => {
       cy.visit('/dashboard/ingredients');
+      cy.intercept('POST', '/new-ingredient').as('createIngredient');
       cy.get('#add-ingredient-btn').click();
       ingredientName = `Tomato-${Date.now()}`;
       cy.get('input[name="ingredientName"]').type(ingredientName).blur();
-      cy.wait(500);
+      cy.wait('@createIngredient');
     });
 
     it('updates ingredient amount in recipe', () => {
       cy.visit('/dashboard/recipes');
+      cy.intercept('POST', '/new-recipe').as('createRecipe');
+      cy.intercept('POST', /\/recipe\/[^/]+\/ingredient\/[^/]+/).as('updateIngredient');
+      cy.intercept('POST', '/recipe/*/ingredient').as('addIngredient');
       cy.get('#add-recipe-btn').click();
       cy.get('input[name="recipeName"]').type('Tomato Soup').blur();
-      cy.wait(500);
+      cy.wait('@createRecipe');
 
       cy.get('select[name="ingredientId"]').last().select(ingredientName);
       cy.get('input[name="amount"]').last().type('150').blur();
+      cy.wait('@addIngredient');
 
-      cy.wait(500);
       cy.get('input[name="amount"]').first().clear().type('200').blur();
-
       cy.wait(500);
       cy.reload();
       cy.get('input[name="amount"]').first().should('have.value', '200');
@@ -67,19 +73,21 @@ describe('Recipes Page', () => {
 
     it('removes ingredient from recipe', () => {
       cy.visit('/dashboard/recipes');
+      cy.intercept('POST', '/new-recipe').as('createRecipe');
+      cy.intercept('POST', '/recipe/*/ingredient').as('addIngredient');
+      cy.intercept('DELETE', '/recipe/*/ingredient/*').as('deleteIngredient');
       cy.get('#add-recipe-btn').click();
       cy.get('input[name="recipeName"]').type('Test Recipe').blur();
-      cy.wait(500);
+      cy.wait('@createRecipe');
 
       cy.get('select[name="ingredientId"]').last().select(ingredientName);
       cy.get('input[name="amount"]').last().type('100').blur();
+      cy.wait('@addIngredient');
 
-      cy.wait(500);
       cy.get('input[value="' + ingredientName + '"]').should('be.visible');
 
       cy.get('button[hx-delete*="/recipe/"][hx-delete*="/ingredient/"]').first().click();
-
-      cy.wait(500);
+      cy.wait('@deleteIngredient');
       cy.get('input[value="' + ingredientName + '"]').should('not.exist');
     });
   });
@@ -87,9 +95,10 @@ describe('Recipes Page', () => {
   describe('Searching recipes', () => {
     it('filters recipes by search term', () => {
       cy.visit('/dashboard/recipes');
+      cy.intercept('POST', '/new-recipe').as('createRecipe');
       cy.get('#add-recipe-btn').click();
       cy.get('input[name="recipeName"]').type('Unique Recipe Name').blur();
-      cy.wait(500);
+      cy.wait('@createRecipe');
 
       cy.visit('/dashboard/recipes');
 
