@@ -11,9 +11,17 @@ const enum MEAL_TYPE {
 export default {
   port: Number(process.env.PORT) || 3000,
   host: process.env.HOST || 'localhost',
-  password: process.env.PASSWORD || 'admin',
   cookieSecret: process.env.COOKIE_SECRET || 'cookie_secret',
+  sessionSecret: process.env.SESSION_SECRET || 'session_secret_change_in_production',
   publicAssetsPath: process.env.PUBLIC_ASSETS_PATH || 'http://localhost:3000',
+  oauth: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      callbackUrl: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:3000/auth/google/callback',
+    },
+    allowedEmails: process.env.ALLOWED_EMAILS?.split(',').map((e) => e.trim()) || [],
+  },
   pages: {
     login: {
       login: 'Bejelentkezés',

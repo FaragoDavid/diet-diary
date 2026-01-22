@@ -1,13 +1,5 @@
 Cypress.Commands.add('login', () => {
-  cy.request({
-    method: 'POST',
-    url: '/login',
-    form: true,
-    body: {
-      password: 'admin',
-    },
-  });
-  cy.getCookie('loggedIn').should('exist');
+  cy.visit('/test-login');
 });
 
 declare global {

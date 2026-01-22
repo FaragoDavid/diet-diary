@@ -1,9 +1,10 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import type { FastifyCookieOptions } from '@fastify/cookie';
 import cookie from '@fastify/cookie';
 import fastifyFormbody from '@fastify/formbody';
+import fastifySession from '@fastify/session';
+import fastifyOAuth from '@fastify/oauth2';
 import { fastifyStatic } from '@fastify/static';
 import fastify from 'fastify';
 import path from 'path';
@@ -18,13 +19,26 @@ app.register(fastifyStatic, {
   root: path.join(__dirname, '../public'),
   prefix: '/public/',
 });
-app.register(cookie, {
-  secret: config.cookieSecret,
-  parseOptions: {
-    httpOnly: true,
-    signed: true,
-  },
-} as FastifyCookieOptions);
+app.register(cookie);
+app.register(fastifySession, {
+  secret: config.sessionSecret,
+  cookie: { secure: false },
+});
+
+if (config.oauth.google.clientId && config.oauth.google.clientSecret) {
+  app.register(fastifyOAuth, {
+    name: 'googleOAuth2',
+    credentials: {
+      client: {
+        id: config.oauth.google.clientId,
+        secret: config.oauth.google.clientSecret,
+      },
+      auth: fastifyOAuth.GOOGLE_CONFIGURATION,
+    },
+    startRedirectPath: '/auth/google',
+    callbackUri: config.oauth.google.callbackUrl,
+  });
+}
 
 registerLoginRoutes(app);
 registerRoutes(app);
