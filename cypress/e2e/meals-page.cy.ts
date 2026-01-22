@@ -148,6 +148,25 @@ describe('Meals Page', () => {
       cy.wait(500);
       cy.contains(ingredientName).should('not.exist');
     });
+
+    it('adds multiple dishes to same meal', () => {
+      cy.intercept('POST', '/day/*/meal/*/dish').as('addDish');
+      
+      cy.get('select[name="breakfast-dishId"]').last().select(ingredientName);
+      cy.get('input[name="amount"]').first().type('100').blur();
+      cy.wait('@addDish');
+      cy.contains(ingredientName).should('be.visible');
+
+      cy.reload();
+      cy.wait(500);
+      
+      cy.get('select[name="breakfast-dishId"]').last().select(recipeName);
+      cy.get('input[name="amount"]').first().type('1').blur();
+      cy.wait(500);
+
+      cy.contains(ingredientName).should('be.visible');
+      cy.contains(recipeName).should('be.visible');
+    });
   });
 
   describe('Navigation', () => {

@@ -80,6 +80,16 @@ describe('Ingredients Page', () => {
     });
   });
 
+  describe('Searching ingredients', () => {
+    it('has search input with proper HTMX attributes', () => {
+      cy.get('#ingredient-search')
+        .should('exist')
+        .and('have.attr', 'hx-get', '/ingredients')
+        .and('have.attr', 'hx-target', '#ingredient-list')
+        .and('have.attr', 'hx-trigger', 'input');
+    });
+  });
+
   describe('Empty states', () => {
     it('shows add button when no ingredients exist', () => {
       cy.get('#add-ingredient-btn').should('be.visible');

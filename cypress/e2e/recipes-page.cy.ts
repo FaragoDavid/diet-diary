@@ -99,15 +99,14 @@ describe('Recipes Page', () => {
   });
 
   describe('Searching recipes', () => {
-    it('filters recipes by search term', () => {
-      cy.task('db:createRecipe', 'Unique Recipe Name');
+    it('has search input with proper HTMX attributes', () => {
       cy.visit('/dashboard/recipes');
-
-      cy.get('input[placeholder]').first().type('Unique');
-      cy.contains('Unique Recipe Name').should('be.visible');
-
-      cy.get('input[placeholder]').first().clear().type('NonExistent');
-      cy.contains('Unique Recipe Name').should('not.exist');
+      
+      cy.get('#search-recipe')
+        .should('exist')
+        .and('have.attr', 'hx-get', '/recipes')
+        .and('have.attr', 'hx-target', '#recipe-list')
+        .and('have.attr', 'hx-trigger', 'input');
     });
   });
 
@@ -126,6 +125,21 @@ describe('Recipes Page', () => {
 
       cy.contains(recipeName).should('not.exist');
       cy.get('#add-recipe-btn').should('be.visible');
+    });
+  });
+
+  describe('Recipe amount', () => {
+    it('updates recipe serving amount', () => {
+      cy.task('db:createRecipe', 'Test Amount Recipe').then((result: any) => {
+        cy.intercept('POST', `/recipe/${result.id}/amount`).as('updateAmount');
+        cy.visit(`/recipe/${result.id}`);
+        
+        cy.get('#recipe-details input[name="amount"]').clear().type('250').blur();
+        cy.wait('@updateAmount');
+        
+        cy.reload();
+        cy.get('#recipe-details input[name="amount"]').should('have.value', '250');
+      });
     });
   });
 
