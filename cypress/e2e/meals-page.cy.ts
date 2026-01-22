@@ -51,15 +51,16 @@ describe('Meals Page', () => {
       cy.contains('Vacsora').should('be.visible');
     });
 
-    it.skip('removes meal from day', () => {
+    it('removes meal from day', () => {
       cy.get('button[name="mealType"][value="breakfast"]').click();
       cy.wait(500);
       cy.contains('Reggeli').should('be.visible');
 
-      cy.get('button[hx-delete*="/meal/"]').first().should('be.visible').click();
+      const deleteButtonSelector = 'button[hx-delete*="/meal/"]';
+      cy.get(deleteButtonSelector).first().should('be.visible').click();
 
       cy.wait(1000);
-      cy.contains('Reggeli').should('not.exist');
+      cy.get(deleteButtonSelector).should('not.exist');
       cy.get('button[name="mealType"][value="breakfast"]').should('be.visible');
     });
   });
