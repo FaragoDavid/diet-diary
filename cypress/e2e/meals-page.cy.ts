@@ -128,6 +128,7 @@ describe('Meals Page', () => {
       cy.get('input[name="amount"]').first().type('100').blur();
       cy.wait('@addDish');
 
+      cy.reload();
       cy.contains(ingredientName).parents('.grid').find('input[name="amount"]').first().clear().type('200').blur();
       cy.wait('@updateDish');
 

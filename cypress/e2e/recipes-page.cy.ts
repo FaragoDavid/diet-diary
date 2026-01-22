@@ -129,6 +129,13 @@ describe('Recipes Page', () => {
     });
   });
 
+  describe('Empty states', () => {
+    it('shows add button when no recipes exist', () => {
+      cy.visit('/dashboard/recipes');
+      cy.get('#add-recipe-btn').should('be.visible');
+    });
+  });
+
   describe('Navigation', () => {
     it('navigates from list to detail page', () => {
       cy.task('db:createRecipe', 'Nav Test Recipe');
@@ -142,6 +149,16 @@ describe('Recipes Page', () => {
       cy.get('input[name="amount"]').should('exist');
       cy.get('select[name="ingredientId"]').should('exist');
       cy.get('a[href="/dashboard/recipes"]').should('be.visible');
+    });
+
+    it('navigates directly via URL', () => {
+      cy.task('db:createRecipe', 'Direct Nav Recipe').then((result: any) => {
+        cy.visit(`/recipe/${result.id}`);
+
+        cy.contains('Direct Nav Recipe').should('be.visible');
+        cy.get('input[name="amount"]').should('exist');
+        cy.get('select[name="ingredientId"]').should('exist');
+      });
     });
   });
 });

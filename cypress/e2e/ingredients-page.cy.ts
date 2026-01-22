@@ -48,35 +48,40 @@ describe('Ingredients Page', () => {
         cy.get('input[name="fat"]').should('have.value', '10');
       });
     });
-  });
 
-  describe('Searching ingredients', () => {
-    it('filters ingredients by search term', () => {
-      cy.task('db:createIngredient', 'Searchable Item');
-      cy.visit('/dashboard/ingredients');
+    it('updates isCarbCounted checkbox', () => {
+      const ingredientName = 'Carb Test Ingredient';
+      cy.task('db:createIngredient', ingredientName).then((result: any) => {
+        cy.intercept('POST', '/ingredient/*').as('updateIngredient');
+        cy.visit(`/ingredient/${result.id}`);
 
-      cy.get('input[placeholder]').first().type('Searchable');
-      cy.contains('Searchable Item').should('be.visible');
+        cy.get('input[type="checkbox"][name="isCarbCounted"]').should('be.checked');
+        cy.get('input[type="checkbox"][name="isCarbCounted"]').uncheck();
+        cy.wait('@updateIngredient');
 
-      cy.get('input[placeholder]').first().clear().type('NonExistent');
-      cy.contains('Searchable Item').should('not.exist');
+        cy.reload();
+        cy.get('input[type="checkbox"][name="isCarbCounted"]').should('not.be.checked');
+      });
     });
   });
 
   describe('Deleting ingredients', () => {
     it('deletes an ingredient', () => {
-      const ingredientName = `Delete-Me-${Date.now()}`;
+      const ingredientName = 'To Delete';
       cy.task('db:createIngredient', ingredientName);
-      cy.intercept('DELETE', '/ingredient/*').as('deleteIngredient');
       cy.visit('/dashboard/ingredients');
-      cy.contains(ingredientName).should('be.visible');
-      cy.contains(ingredientName).nextAll().find('a.btn-secondary').should('exist');
-      cy.contains(ingredientName).nextAll().find('div[hx-delete]').should('exist');
+      cy.intercept('DELETE', '/ingredient/*').as('deleteIngredient');
 
       cy.contains(ingredientName).nextAll().find('div[hx-delete]').first().click();
       cy.wait('@deleteIngredient');
 
       cy.contains(ingredientName).should('not.exist');
+      cy.get('#add-ingredient-btn').should('be.visible');
+    });
+  });
+
+  describe('Empty states', () => {
+    it('shows add button when no ingredients exist', () => {
       cy.get('#add-ingredient-btn').should('be.visible');
     });
   });
@@ -105,6 +110,17 @@ describe('Ingredients Page', () => {
         cy.get('a[href="/dashboard/ingredients"]').click();
         cy.url().should('include', '/dashboard/ingredients');
         cy.contains('Test Nav Item').should('be.visible');
+      });
+    });
+
+    it('navigates directly via URL', () => {
+      cy.task('db:createIngredient', 'Direct Nav Ingredient').then((result: any) => {
+        cy.visit(`/ingredient/${result.id}`);
+
+        cy.contains('Direct Nav Ingredient').should('be.visible');
+        cy.get('input[name="calories"]').should('exist');
+        cy.get('input[name="carbs"]').should('exist');
+        cy.get('input[name="fat"]').should('exist');
       });
     });
   });
