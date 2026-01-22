@@ -24,17 +24,10 @@ describe('Dashboard Navigation', () => {
 
   describe('Search functionality', () => {
     it('maintains scroll position when using HTMX updates', () => {
-      cy.visit('/dashboard/ingredients');
-
       for (let i = 0; i < 20; i++) {
-        cy.intercept('POST', '/new-ingredient').as(`createIngredient${i}`);
-        cy.get('#add-ingredient-btn').click();
-        cy.get('input[name="ingredientName"]').type(`Item ${i}`).blur();
-        cy.wait(`@createIngredient${i}`);
-        cy.visit('/dashboard/ingredients');
+        cy.task('db:createIngredient', `Item ${i}`);
       }
-
-      cy.scrollTo(0, 500);
+      cy.visit('/dashboard/ingredients');
 
       cy.get('#ingredient-search').type('Item 1');
 

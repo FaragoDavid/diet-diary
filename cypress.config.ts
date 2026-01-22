@@ -72,6 +72,42 @@ export default defineConfig({
           });
           return { date: day.date.toISOString() };
         },
+        async 'db:createRecipeWithIngredient'({
+          recipeName,
+          ingredientName,
+          amount,
+        }: {
+          recipeName: string;
+          ingredientName: string;
+          amount: number;
+        }) {
+          const ingredient = await prisma.ingredient.create({
+            data: {
+              name: ingredientName,
+              caloriesPer100: 100,
+              carbsPer100: 20,
+              fatPer100: 5,
+              isVegetable: false,
+              isCarbCounted: true,
+            },
+          });
+          const recipe = await prisma.recipe.create({
+            data: {
+              name: recipeName,
+              calories: 500,
+              carbs: 50,
+              fat: 20,
+              servings: 1,
+              ingredients: {
+                create: {
+                  ingredientId: ingredient.id,
+                  amount,
+                },
+              },
+            },
+          });
+          return { recipeId: recipe.id, recipeName: recipe.name, ingredientId: ingredient.id, ingredientName: ingredient.name };
+        },
       });
     },
   },

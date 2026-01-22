@@ -18,12 +18,8 @@ describe('Recipes Page', () => {
     });
 
     it('creates a recipe with ingredients', () => {
-      cy.visit('/dashboard/ingredients');
-      cy.intercept('POST', '/new-ingredient').as('createIngredient');
-      cy.get('#add-ingredient-btn').click();
       const ingredientName = `Lettuce-${Date.now()}`;
-      cy.get('input[name="ingredientName"]').type(ingredientName).blur();
-      cy.wait('@createIngredient');
+      cy.task('db:createIngredient', ingredientName);
 
       cy.visit('/dashboard/recipes');
       cy.intercept('POST', '/new-recipe').as('createRecipe');
@@ -44,12 +40,8 @@ describe('Recipes Page', () => {
     let ingredientName: string;
 
     beforeEach(() => {
-      cy.visit('/dashboard/ingredients');
-      cy.intercept('POST', '/new-ingredient').as('createIngredient');
-      cy.get('#add-ingredient-btn').click();
       ingredientName = `Tomato-${Date.now()}`;
-      cy.get('input[name="ingredientName"]').type(ingredientName).blur();
-      cy.wait('@createIngredient');
+      cy.task('db:createIngredient', ingredientName);
     });
 
     it('updates ingredient amount in recipe', () => {
@@ -94,12 +86,7 @@ describe('Recipes Page', () => {
 
   describe('Searching recipes', () => {
     it('filters recipes by search term', () => {
-      cy.visit('/dashboard/recipes');
-      cy.intercept('POST', '/new-recipe').as('createRecipe');
-      cy.get('#add-recipe-btn').click();
-      cy.get('input[name="recipeName"]').type('Unique Recipe Name').blur();
-      cy.wait('@createRecipe');
-
+      cy.task('db:createRecipe', 'Unique Recipe Name');
       cy.visit('/dashboard/recipes');
 
       cy.get('input[placeholder]').first().type('Unique');

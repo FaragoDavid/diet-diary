@@ -19,11 +19,10 @@ describe('Ingredients Page', () => {
 
   describe('Editing ingredients', () => {
     it('updates ingredient nutrition values', () => {
-      cy.intercept('POST', '/new-ingredient').as('createIngredient');
-      cy.intercept('POST', '/ingredient/*').as('updateIngredient');
-      cy.get('#add-ingredient-btn').click();
-      cy.get('input[name="ingredientName"]').type('Test Ingredient').blur();
-      cy.wait('@createIngredient');
+      const ingredientName = 'Test Ingredient';
+      cy.task('db:createIngredient', ingredientName).then((result: any) => {
+        cy.intercept('POST', '/ingredient/*').as('updateIngredient');
+        cy.visit(`/ingredient/${result.id}`);
 
       cy.get('input[name="calories"]').clear().type('200').blur();
       cy.get('input[name="carbs"]').clear().type('5').blur();
@@ -33,18 +32,17 @@ describe('Ingredients Page', () => {
 
       cy.reload();
 
-      cy.get('input[name="calories"]').should('have.value', '200');
-      cy.get('input[name="carbs"]').should('have.value', '5');
-      cy.get('input[name="fat"]').should('have.value', '10');
-      cy.get('input[type="checkbox"][name="isVegetable"]').should('be.checked');
+        cy.get('input[name="calories"]').should('have.value', '200');
+        cy.get('input[name="carbs"]').should('have.value', '5');
+        cy.get('input[name="fat"]').should('have.value', '10');
+        cy.get('input[type="checkbox"][name="isVegetable"]').should('be.checked');
+      });
     });
   });
 
   describe('Searching ingredients', () => {
     it('filters ingredients by search term', () => {
-      cy.get('#add-ingredient-btn').click();
-      cy.get('input[name="ingredientName"]').type('Searchable Item').blur();
-
+      cy.task('db:createIngredient', 'Searchable Item');
       cy.visit('/dashboard/ingredients');
 
       cy.get('input[placeholder]').first().type('Searchable');
@@ -58,13 +56,8 @@ describe('Ingredients Page', () => {
   describe('Deleting ingredients', () => {
     it('deletes an ingredient', () => {
       const ingredientName = `Delete-Me-${Date.now()}`;
-
-      cy.intercept('POST', '/new-ingredient').as('createIngredient');
+      cy.task('db:createIngredient', ingredientName);
       cy.intercept('DELETE', '/ingredient/*').as('deleteIngredient');
-      cy.get('#add-ingredient-btn').click();
-      cy.get('input[name="ingredientName"]').type(ingredientName).blur();
-      cy.wait('@createIngredient');
-
       cy.visit('/dashboard/ingredients');
       cy.contains(ingredientName).should('be.visible');
 
@@ -77,11 +70,7 @@ describe('Ingredients Page', () => {
 
   describe('Navigation', () => {
     it('navigates from list to detail page', () => {
-      cy.intercept('POST', '/new-ingredient').as('createIngredient');
-      cy.get('#add-ingredient-btn').click();
-      cy.get('input[name="ingredientName"]').type('Nav Test Ingredient').blur();
-      cy.wait('@createIngredient');
-
+      cy.task('db:createIngredient', 'Nav Test Ingredient');
       cy.visit('/dashboard/ingredients');
       cy.contains('Nav Test Ingredient').nextAll().find('a.btn-secondary').first().click();
 
@@ -90,16 +79,14 @@ describe('Ingredients Page', () => {
     });
 
     it('navigates back to list from detail page', () => {
-      cy.intercept('POST', '/new-ingredient').as('createIngredient');
-      cy.get('#add-ingredient-btn').click();
-      cy.get('input[name="ingredientName"]').type('Test Nav Item').blur();
-      cy.wait('@createIngredient');
+      cy.task('db:createIngredient', 'Test Nav Item').then((result: any) => {
+        cy.visit(`/ingredient/${result.id}`);
+        cy.url().should('match', /\/ingredient\/[a-z0-9-]+/);
 
-      cy.url().should('match', /\/ingredient\/[a-z0-9-]+/);
-
-      cy.get('a[href="/dashboard/ingredients"]').click();
-      cy.url().should('include', '/dashboard/ingredients');
-      cy.contains('Test Nav Item').should('be.visible');
+        cy.get('a[href="/dashboard/ingredients"]').click();
+        cy.url().should('include', '/dashboard/ingredients');
+        cy.contains('Test Nav Item').should('be.visible');
+      });
     });
   });
 });
