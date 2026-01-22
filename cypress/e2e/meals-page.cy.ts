@@ -15,44 +15,56 @@ describe('Meals Page', () => {
       const tomorrowStr = tomorrow.toISOString().split('T')[0];
       cy.get('input[name="date"]').invoke('val', tomorrowStr).trigger('change');
       cy.wait('@createDay');
+
+      cy.get('button[name="mealType"][value="morningSnack"]').should('be.visible');
       cy.get('button[name="mealType"][value="breakfast"]').should('be.visible');
+      cy.get('button[name="mealType"][value="brunch"]').should('be.visible');
+      cy.get('button[name="mealType"][value="lunch"]').should('be.visible');
+      cy.get('button[name="mealType"][value="afternoonSnack"]').should('be.visible');
+      cy.get('button[name="mealType"][value="dinner"]').should('be.visible');
+      cy.get('button[name="mealType"][value="lateNightSnack"]').should('be.visible');
+
+      cy.get('#day-header').should('be.visible').and('contain', tomorrow.getFullYear());
+
+      cy.get('[id*="-stats"]').should('be.visible');
+
+      const expectedDateParam = tomorrowStr.split('-').join('');
+      cy.url().should('include', `/day/${expectedDateParam}`);
     });
   });
 
   describe('Managing meals', () => {
+    let dayDate: string;
+
     beforeEach(() => {
-      cy.visit('/dashboard/meals');
-      cy.intercept('POST', '/new-day').as('createDay');
-      cy.get('#add-day-btn').click();
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
-      const tomorrowStr = tomorrow.toISOString().split('T')[0];
-      cy.get('input[name="date"]').invoke('val', tomorrowStr).trigger('change');
-      cy.wait('@createDay');
+      dayDate = tomorrow.toISOString().split('T')[0];
+
+      cy.task('db:createDay', dayDate);
+      cy.visit(`/day/${dayDate.replace(/-/g, '')}`);
     });
 
-    it('adds breakfast meal to a day', () => {
-      cy.intercept('POST', '/day/*/meal').as('addMeal');
-      cy.get('button[name="mealType"][value="breakfast"]').should('be.visible').click();
-      cy.wait('@addMeal');
+    it('adds all meal types to a day', () => {
+      const mealTypes = [
+        { meal: 'morningSnack', name: 'Előreggeli' },
+        { meal: 'breakfast', name: 'Reggeli' },
+        { meal: 'brunch', name: 'Tízórai' },
+        { meal: 'lunch', name: 'Ebéd' },
+        { meal: 'afternoonSnack', name: 'Uzsonna' },
+        { meal: 'dinner', name: 'Vacsora' },
+        { meal: 'lateNightSnack', name: 'Utóvacsora' },
+      ];
 
-      cy.contains('Reggeli').should('be.visible');
-    });
-
-    it('adds lunch meal to a day', () => {
-      cy.intercept('POST', '/day/*/meal').as('addMeal');
-      cy.get('button[name="mealType"][value="lunch"]').click();
-      cy.wait('@addMeal');
-
-      cy.contains('Ebéd').should('be.visible');
-    });
-
-    it('adds dinner meal to a day', () => {
-      cy.intercept('POST', '/day/*/meal').as('addMeal');
-      cy.get('button[name="mealType"][value="dinner"]').click();
-      cy.wait('@addMeal');
-
-      cy.contains('Vacsora').should('be.visible');
+      mealTypes.forEach(({ meal, name }) => {
+        cy.intercept('POST', '/day/*/meal').as(`addMeal-${meal}`);
+        cy.get(`button[name="mealType"][value="${meal}"]`).click();
+        cy.wait(`@addMeal-${meal}`);
+        cy.contains(name).should('be.visible');
+        cy.get(`button[hx-delete*="/meal/${meal}"]`).should('exist');
+        cy.get(`select[name="${meal}-dishId"]`).should('be.visible');
+        cy.get(`button[name="mealType"][value="${meal}"]`).should('not.exist');
+      });
     });
 
     it('removes meal from day', () => {
@@ -66,6 +78,7 @@ describe('Meals Page', () => {
       cy.get(deleteButtonSelector).first().should('be.visible').click();
       cy.wait('@deleteMeal');
       cy.get(deleteButtonSelector).should('not.exist');
+      cy.get('select[name="breakfast-dishId"]').should('not.exist');
       cy.get('button[name="mealType"][value="breakfast"]').should('be.visible');
     });
   });
@@ -73,38 +86,21 @@ describe('Meals Page', () => {
   describe('Adding dishes to meals', () => {
     let ingredientName: string;
     let recipeName: string;
+    let dayDate: string;
 
     beforeEach(() => {
-      cy.visit('/dashboard/ingredients');
-      cy.intercept('POST', '/new-ingredient').as('createIngredient');
-      cy.get('#add-ingredient-btn').click();
       ingredientName = `Ingredient-${Date.now()}`;
-      cy.get('input[name="ingredientName"]').type(ingredientName).blur();
-      cy.wait('@createIngredient');
-
-      cy.visit('/dashboard/recipes');
-      cy.intercept('POST', '/new-recipe').as('createRecipe');
-      cy.get('#add-recipe-btn').click();
       recipeName = `Recipe-${Date.now()}`;
-      cy.get('input[name="recipeName"]').type(recipeName).blur();
-      cy.wait('@createRecipe');
 
-      cy.intercept('POST', '/new-day').as('createDay');
-      cy.visit('/dashboard/meals');
-      cy.get('#add-day-btn').click();
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
-      const tomorrowStr = tomorrow.toISOString().split('T')[0];
-      cy.get('input[name="date"]').invoke('val', tomorrowStr).trigger('change');
-      cy.wait('@createDay');
+      dayDate = tomorrow.toISOString().split('T')[0];
 
-      cy.get('button[name="mealType"][value="breakfast"]').then($btn => {
-        if ($btn.is(':visible')) {
-          cy.intercept('POST', '/day/*/meal').as('addMeal');
-          cy.get('button[name="mealType"][value="breakfast"]').click();
-          cy.wait('@addMeal');
-        }
-      });
+      cy.task('db:createIngredient', ingredientName);
+      cy.task('db:createRecipe', recipeName);
+      cy.task('db:createDayWithMeal', { date: dayDate, mealType: 'breakfast' });
+
+      cy.visit(`/day/${dayDate.replace(/-/g, '')}`);
     });
 
     it('adds ingredient dish to breakfast', () => {
@@ -155,15 +151,11 @@ describe('Meals Page', () => {
 
   describe('Navigation', () => {
     it('navigates from meal list to day page', () => {
-      cy.visit('/dashboard/meals');
-      cy.intercept('POST', '/new-day').as('createDay');
-      cy.get('#add-day-btn').click();
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       const tomorrowStr = tomorrow.toISOString().split('T')[0];
-      cy.get('input[name="date"]').invoke('val', tomorrowStr).trigger('change');
-      cy.wait('@createDay');
 
+      cy.task('db:createDay', tomorrowStr);
       cy.visit('/dashboard/meals');
 
       cy.get('a[href^="/day/"]').first().click();
