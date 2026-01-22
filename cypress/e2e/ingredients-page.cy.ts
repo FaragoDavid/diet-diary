@@ -14,6 +14,12 @@ describe('Ingredients Page', () => {
 
       cy.url().should('match', /\/ingredient\/[a-z0-9-]+/);
       cy.contains('Chicken Breast').should('be.visible');
+      cy.get('input[name="calories"]').should('be.visible');
+      cy.get('input[name="carbs"]').should('be.visible');
+      cy.get('input[name="fat"]').should('be.visible');
+      cy.get('input[type="checkbox"][name="isVegetable"]').should('exist');
+      cy.get('input[type="checkbox"][name="isCarbCounted"]').should('exist').and('be.checked');
+      cy.get('a[href="/dashboard/ingredients"]').should('be.visible');
     });
   });
 
@@ -24,18 +30,22 @@ describe('Ingredients Page', () => {
         cy.intercept('POST', '/ingredient/*').as('updateIngredient');
         cy.visit(`/ingredient/${result.id}`);
 
-      cy.get('input[name="calories"]').clear().type('200').blur();
-      cy.get('input[name="carbs"]').clear().type('5').blur();
-      cy.get('input[name="fat"]').clear().type('10').blur();
-      cy.get('input[type="checkbox"][name="isVegetable"]').check();
-      cy.wait('@updateIngredient');
+        cy.contains(ingredientName).should('be.visible');
+        cy.get('input[name="calories"]').clear().type('200').blur();
+        cy.wait('@updateIngredient');
+        cy.get('input[name="carbs"]').clear().type('5').blur();
+        cy.wait('@updateIngredient');
+        cy.get('input[name="fat"]').clear().type('10').blur();
+        cy.wait('@updateIngredient');
+        cy.get('input[type="checkbox"][name="isVegetable"]').check();
+        cy.wait('@updateIngredient');
 
-      cy.reload();
+        cy.reload();
 
+        cy.contains(ingredientName).should('be.visible');
         cy.get('input[name="calories"]').should('have.value', '200');
         cy.get('input[name="carbs"]').should('have.value', '5');
         cy.get('input[name="fat"]').should('have.value', '10');
-        cy.get('input[type="checkbox"][name="isVegetable"]').should('be.checked');
       });
     });
   });
@@ -60,11 +70,14 @@ describe('Ingredients Page', () => {
       cy.intercept('DELETE', '/ingredient/*').as('deleteIngredient');
       cy.visit('/dashboard/ingredients');
       cy.contains(ingredientName).should('be.visible');
+      cy.contains(ingredientName).nextAll().find('a.btn-secondary').should('exist');
+      cy.contains(ingredientName).nextAll().find('div[hx-delete]').should('exist');
 
       cy.contains(ingredientName).nextAll().find('div[hx-delete]').first().click();
       cy.wait('@deleteIngredient');
 
       cy.contains(ingredientName).should('not.exist');
+      cy.get('#add-ingredient-btn').should('be.visible');
     });
   });
 
@@ -72,10 +85,16 @@ describe('Ingredients Page', () => {
     it('navigates from list to detail page', () => {
       cy.task('db:createIngredient', 'Nav Test Ingredient');
       cy.visit('/dashboard/ingredients');
+      cy.contains('Nav Test Ingredient').should('be.visible');
+      cy.contains('Nav Test Ingredient').nextAll().find('a.btn-secondary').should('exist');
       cy.contains('Nav Test Ingredient').nextAll().find('a.btn-secondary').first().click();
 
       cy.url().should('match', /\/ingredient\/[a-z0-9-]+/);
       cy.contains('Nav Test Ingredient').should('be.visible');
+      cy.get('input[name="calories"]').should('exist');
+      cy.get('input[name="carbs"]').should('exist');
+      cy.get('input[name="fat"]').should('exist');
+      cy.get('a[href="/dashboard/ingredients"]').should('be.visible');
     });
 
     it('navigates back to list from detail page', () => {

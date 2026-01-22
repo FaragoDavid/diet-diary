@@ -15,6 +15,9 @@ describe('Recipes Page', () => {
 
       cy.url().should('match', /\/recipe\/[a-z0-9-]+/);
       cy.contains('Chicken Salad').should('be.visible');
+      cy.get('input[name="amount"]').should('be.visible');
+      cy.get('select[name="ingredientId"]').should('be.visible');
+      cy.get('a[href="/dashboard/recipes"]').should('be.visible');
     });
 
     it('creates a recipe with ingredients', () => {
@@ -31,8 +34,12 @@ describe('Recipes Page', () => {
       cy.get('select[name="ingredientId"]').last().select(ingredientName);
       cy.get('input[name="amount"]').last().type('100').blur();
       cy.wait('@addIngredient');
+
       cy.contains(ingredientName).should('be.visible');
       cy.get('input[name="amount"]').first().should('have.value', '100');
+      cy.get('input[value="' + ingredientName + '"]').should('exist');
+      cy.get('button[hx-delete*="/recipe/"][hx-delete*="/ingredient/"]').should('exist');
+      cy.get('select[name="ingredientId"]').should('be.visible');
     });
   });
 
@@ -56,11 +63,15 @@ describe('Recipes Page', () => {
       cy.get('select[name="ingredientId"]').last().select(ingredientName);
       cy.get('input[name="amount"]').last().type('150').blur();
       cy.wait('@addIngredient');
+      cy.get(`input[value="${ingredientName}"]`).should('exist');
+      cy.get(`input[name="amount"]`).should('have.length.greaterThan', 1);
 
-      cy.get('input[name="amount"]').first().clear().type('200').blur();
+      cy.get('input[name="amount"]').eq(1).clear().type('200').blur();
       cy.wait(500);
       cy.reload();
-      cy.get('input[name="amount"]').first().should('have.value', '200');
+      cy.get('input[name="amount"]').eq(1).should('have.value', '200');
+      cy.get(`input[value="${ingredientName}"]`).should('exist');
+      cy.get('button[hx-delete*="/recipe/"][hx-delete*="/ingredient/"]').should('exist');
     });
 
     it('removes ingredient from recipe', () => {
@@ -77,10 +88,13 @@ describe('Recipes Page', () => {
       cy.wait('@addIngredient');
 
       cy.get('input[value="' + ingredientName + '"]').should('be.visible');
+      cy.get('button[hx-delete*="/recipe/"][hx-delete*="/ingredient/"]').should('exist');
 
       cy.get('button[hx-delete*="/recipe/"][hx-delete*="/ingredient/"]').first().click();
       cy.wait('@deleteIngredient');
+
       cy.get('input[value="' + ingredientName + '"]').should('not.exist');
+      cy.get('select[name="ingredientId"]').should('be.visible');
     });
   });
 
@@ -99,34 +113,35 @@ describe('Recipes Page', () => {
 
   describe('Deleting recipes', () => {
     it('deletes a recipe', () => {
-      cy.visit('/dashboard/recipes');
       const recipeName = `Recipe-To-Delete-${Date.now()}`;
-      cy.get('#add-recipe-btn').click();
-      cy.get('input[name="recipeName"]').type(recipeName).blur();
-      cy.wait(500);
-
+      cy.task('db:createRecipe', recipeName);
+      cy.intercept('DELETE', '/recipe/*').as('deleteRecipe');
       cy.visit('/dashboard/recipes');
       cy.contains(recipeName).should('be.visible');
+      cy.contains(recipeName).nextAll().find('a.btn-secondary').should('exist');
+      cy.contains(recipeName).nextAll().find('div[hx-delete]').should('exist');
 
       cy.contains(recipeName).nextAll().find('div[hx-delete]').first().click();
+      cy.wait('@deleteRecipe');
 
-      cy.wait(500);
       cy.contains(recipeName).should('not.exist');
+      cy.get('#add-recipe-btn').should('be.visible');
     });
   });
 
   describe('Navigation', () => {
     it('navigates from list to detail page', () => {
+      cy.task('db:createRecipe', 'Nav Test Recipe');
       cy.visit('/dashboard/recipes');
-      cy.get('#add-recipe-btn').click();
-      cy.get('input[name="recipeName"]').type('Nav Test Recipe').blur();
-
-      cy.wait(500);
-      cy.visit('/dashboard/recipes');
+      cy.contains('Nav Test Recipe').should('be.visible');
+      cy.contains('Nav Test Recipe').nextAll().find('a.btn-secondary').should('exist');
       cy.contains('Nav Test Recipe').nextAll().find('a.btn-secondary').first().click();
 
       cy.url().should('match', /\/recipe\/[a-z0-9-]+/);
       cy.contains('Nav Test Recipe').should('be.visible');
+      cy.get('input[name="amount"]').should('exist');
+      cy.get('select[name="ingredientId"]').should('exist');
+      cy.get('a[href="/dashboard/recipes"]').should('be.visible');
     });
   });
 });
