@@ -2,7 +2,7 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { RecipeDetails } from '../../components/recipes/recipe-details';
 import { HTMX_SWAP } from '../../utils/htmx';
-import { recipeService } from '../../services/recipe.service';
+import * as recipeService from '../../services/recipe.service';
 
 type UpdateRecipeIngredientRequest = FastifyRequest<{ Params: { recipeId: string; ingredientId: string }; Body: { amount: string } }>;
 

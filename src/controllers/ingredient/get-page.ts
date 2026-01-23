@@ -2,14 +2,14 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { layout } from '../../components/layout';
 import { IngredientPage } from '../../pages/ingredient';
-import { ingredientService } from '../../services/ingredient.service';
+import * as ingredientRepository from '../../repository/ingredient';
 
 type GetIngredientRequest = FastifyRequest<{ Params: { ingredientId: string } }>;
 
 export default async (request: GetIngredientRequest, reply: FastifyReply) => {
   const { ingredientId } = request.params;
 
-  const ingredient = await ingredientService.getIngredientById(ingredientId);
+  const ingredient = await ingredientRepository.fetchIngredient(ingredientId);
   if (!ingredient) {
     return reply.status(404).type('text/html').send('<div class="alert alert-error">Ingredient not found</div>');
   }

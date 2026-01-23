@@ -4,7 +4,9 @@ import { dayHeader } from '../../components/meals/day-header';
 import { DayMealList } from '../../components/meals/day-meal-list';
 import { DayStats } from '../../components/meals/day-stats';
 import { MissingMeals } from '../../components/meals/missing-meals';
-import { mealService } from '../../services/meal.service';
+import * as ingredientRepository from '../../repository/ingredient';
+import * as mealRepository from '../../repository/meal';
+import * as recipeRepository from '../../repository/recipe';
 
 type DashDate = `${string}-${string}-${string}`;
 type CreateDayRequest = FastifyRequest<{ Body: { date: DashDate } }>;
@@ -22,7 +24,8 @@ export default async (request: CreateDayRequest, reply: FastifyReply) => {
     return reply.status(400).type('text/html').send('<div class="alert alert-error">Invalid date value</div>');
   }
 
-  const { day, ingredients, recipes } = await mealService.createNewDay(bodyDate);
+  const day = await mealRepository.createDay(bodyDate);
+  const [ingredients, recipes] = await Promise.all([ingredientRepository.fetchIngredients(), recipeRepository.fetchRecipes()]);
 
   const template = `
     ${dayHeader(day)}

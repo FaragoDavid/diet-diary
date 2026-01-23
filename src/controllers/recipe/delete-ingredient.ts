@@ -4,15 +4,17 @@ import { IngredientSelector } from '../../components/recipes/ingredient-selector
 import { RecipeDetails } from '../../components/recipes/recipe-details';
 import { RecipeIngredientList } from '../../components/recipes/recipe-ingredient-list';
 import { HTMX_SWAP } from '../../utils/htmx';
-import { recipeService } from '../../services/recipe.service';
+import * as recipeService from '../../services/recipe.service';
+import * as ingredientRepository from '../../repository/ingredient';
 
 type DeleteRecipeIngredientRequest = FastifyRequest<{ Params: { recipeId: string; ingredientId: string } }>;
 
 export default async (request: DeleteRecipeIngredientRequest, reply: FastifyReply) => {
   const { recipeId, ingredientId } = request.params;
 
-  const { recipe, ingredients } = await recipeService.removeIngredientFromRecipe(recipeId, ingredientId);
+  const recipe = await recipeService.removeIngredientFromRecipe(recipeId, ingredientId);
   const recipeIngredientIds = recipe.ingredients.map(({ ingredient }) => ingredient.id);
+  const ingredients = await ingredientRepository.fetchIngredients();
 
   const template = `
     ${await new RecipeIngredientList(recipe, ingredients, { layout: 'list', swapOob: HTMX_SWAP.ReplaceElement }).render()}

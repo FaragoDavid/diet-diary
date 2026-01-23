@@ -6,7 +6,7 @@ import { MissingMeals } from '../../components/meals/missing-meals';
 import { MealType } from '../../config';
 import { paramToDate } from '../../utils/converters';
 import { HTMX_SWAP } from '../../utils/htmx';
-import { mealService } from '../../services/meal.service';
+import * as mealService from '../../services/meal.service';
 
 type DeleteMealRequest = FastifyRequest<{ Params: { date: string; mealType: MealType } }>;
 
@@ -14,7 +14,8 @@ export default async (request: DeleteMealRequest, reply: FastifyReply) => {
   const date = paramToDate(request.params.date);
   const mealType = request.params.mealType;
 
-  const { day, ingredients, recipes } = await mealService.removeMeal(date, mealType);
+  const day = await mealService.removeMeal(date, mealType);
+  const [ingredients, recipes] = await Promise.all([ingredientRepository.fetchIngredients(), recipeRepository.fetchRecipes()]);
 
   const template = `
     ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swapOob: HTMX_SWAP.ReplaceElement }).render()}

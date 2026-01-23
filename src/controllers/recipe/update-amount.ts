@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { recipeService } from '../../services/recipe.service';
+import * as recipeRepository from '../../repository/recipe';
 
 type UpdateRecipeAmountRequest = FastifyRequest<{ Params: { recipeId: string }; Body: { amount: string; query: string } }>;
 
@@ -13,7 +13,7 @@ export default async (request: UpdateRecipeAmountRequest, reply: FastifyReply) =
     return reply.status(400).type('text/html').send('<div class="alert alert-error">Invalid amount. Must be a positive number.</div>');
   }
 
-  await recipeService.updateRecipeServingAmount(recipeId, amountNum);
+  await recipeRepository.updateRecipeAmount(recipeId, amountNum);
 
   return reply.type('text/html').send();
 };

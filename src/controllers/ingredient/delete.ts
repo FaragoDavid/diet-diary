@@ -2,7 +2,7 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { IngredientList } from '../../components/ingredients/ingredient-list';
 import { HTMX_SWAP } from '../../utils/htmx';
-import { ingredientService } from '../../services/ingredient.service';
+import * as ingredientService from '../../services/ingredient.service';
 
 type DeleteIngredientRequest = FastifyRequest<{ Params: { ingredientId: string }; Body: { query: string } }>;
 

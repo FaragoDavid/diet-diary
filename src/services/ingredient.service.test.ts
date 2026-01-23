@@ -1,97 +1,13 @@
-import { ingredientService } from './ingredient.service';
+import * as ingredientService from './ingredient.service';
 import * as ingredientRepository from '../repository/ingredient';
 
 jest.mock('../repository/ingredient');
 
 const mockedIngredientRepository = ingredientRepository as jest.Mocked<typeof ingredientRepository>;
 
-describe('IngredientService', () => {
+describe('ingredientService', () => {
   afterEach(() => {
     jest.clearAllMocks();
-  });
-
-  describe('getAllIngredients', () => {
-    it('should fetch all ingredients without query', async () => {
-      const mockIngredients = [
-        { id: '1', name: 'chicken', caloriesPer100: 200, carbsPer100: 0, fatPer100: 10, isVegetable: false, isCarbCounted: true },
-        { id: '2', name: 'beef', caloriesPer100: 300, carbsPer100: 0, fatPer100: 20, isVegetable: false, isCarbCounted: true },
-      ];
-      mockedIngredientRepository.fetchIngredients.mockResolvedValue(mockIngredients);
-
-      const result = await ingredientService.getAllIngredients();
-
-      expect(result).toEqual(mockIngredients);
-      expect(mockedIngredientRepository.fetchIngredients).toHaveBeenCalledWith(undefined);
-    });
-
-    it('should fetch filtered ingredients with query', async () => {
-      const mockIngredients = [
-        { id: '1', name: 'chicken', caloriesPer100: 200, carbsPer100: 0, fatPer100: 10, isVegetable: false, isCarbCounted: true },
-      ];
-      mockedIngredientRepository.fetchIngredients.mockResolvedValue(mockIngredients);
-
-      const result = await ingredientService.getAllIngredients('chicken');
-
-      expect(result).toEqual(mockIngredients);
-      expect(mockedIngredientRepository.fetchIngredients).toHaveBeenCalledWith('chicken');
-    });
-  });
-
-  describe('getIngredientById', () => {
-    it('should fetch an ingredient by id', async () => {
-      const mockIngredient = {
-        id: '1',
-        name: 'chicken',
-        caloriesPer100: 200,
-        carbsPer100: 0,
-        fatPer100: 10,
-        isVegetable: false,
-        isCarbCounted: true,
-      };
-      mockedIngredientRepository.fetchIngredient.mockResolvedValue(mockIngredient);
-
-      const result = await ingredientService.getIngredientById('1');
-
-      expect(result).toEqual(mockIngredient);
-      expect(mockedIngredientRepository.fetchIngredient).toHaveBeenCalledWith('1');
-    });
-
-    it('should throw error when ingredient not found', async () => {
-      mockedIngredientRepository.fetchIngredient.mockResolvedValue(null);
-
-      await expect(ingredientService.getIngredientById('999')).rejects.toThrow('Ingredient not found');
-    });
-  });
-
-  describe('createIngredient', () => {
-    it('should create a new ingredient', async () => {
-      const mockIngredient = {
-        id: '1',
-        name: 'chicken',
-        caloriesPer100: 0,
-        carbsPer100: 0,
-        fatPer100: 0,
-        isVegetable: false,
-        isCarbCounted: true,
-      };
-      mockedIngredientRepository.insertIngredient.mockResolvedValue(mockIngredient);
-
-      const result = await ingredientService.createIngredient('chicken');
-
-      expect(result).toEqual(mockIngredient);
-      expect(mockedIngredientRepository.insertIngredient).toHaveBeenCalledWith('chicken');
-    });
-  });
-
-  describe('updateIngredientDetails', () => {
-    it('should update ingredient details', async () => {
-      const updateData = { caloriesPer100: 200, carbsPer100: 5, fatPer100: 10, isVegetable: false, isCarbCounted: true };
-      mockedIngredientRepository.updateIngredient.mockResolvedValue(undefined);
-
-      await ingredientService.updateIngredientDetails('1', updateData);
-
-      expect(mockedIngredientRepository.updateIngredient).toHaveBeenCalledWith('1', updateData);
-    });
   });
 
   describe('removeIngredient', () => {

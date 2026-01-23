@@ -3,7 +3,8 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { RecipeDetails } from '../../components/recipes/recipe-details';
 import { recipeHeader } from '../../components/recipes/recipe-header';
 import { RecipeIngredientList } from '../../components/recipes/recipe-ingredient-list';
-import { recipeService } from '../../services/recipe.service';
+import * as ingredientRepository from '../../repository/ingredient';
+import * as recipeRepository from '../../repository/recipe';
 
 type CreateRecipeRequest = FastifyRequest<{ Body: { recipeName: string } }>;
 
@@ -14,7 +15,8 @@ export default async (request: CreateRecipeRequest, reply: FastifyReply) => {
     return reply.status(400).type('text/html').send('<div class="alert alert-error">Recipe name is required</div>');
   }
 
-  const { recipe, ingredients } = await recipeService.createNewRecipe(recipeName);
+  const recipe = await recipeRepository.createRecipe(recipeName);
+  const ingredients = await ingredientRepository.fetchIngredients();
 
   const template = `
     ${recipeHeader(recipe)}

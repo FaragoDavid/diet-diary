@@ -5,14 +5,16 @@ import { DayStats } from '../../components/meals/day-stats';
 import { MealType } from '../../config';
 import { paramToDate } from '../../utils/converters';
 import { HTMX_SWAP } from '../../utils/htmx';
-import { mealService } from '../../services/meal.service';
-
+import * as mealService from '../../services/meal.service';
+import * as ingredientRepository from '../../repository/ingredient';
+import * as recipeRepository from '../../repository/recipe';
 type DeleteDishRequest = FastifyRequest<{ Params: { date: string; mealType: MealType; dishId: string } }>;
 
 export default async (request: DeleteDishRequest, reply: FastifyReply) => {
   const { date, mealType, dishId } = request.params;
 
-  const { meal, day, ingredients, recipes } = await mealService.removeDish(dishId, paramToDate(date), mealType);
+  const { meal, day } = await mealService.removeDish(dishId, paramToDate(date), mealType);
+  const [ingredients, recipes] = await Promise.all([ingredientRepository.fetchIngredients(), recipeRepository.fetchRecipes()]);
 
   const template = `
     ${await new DayStats(day, { layout: 'vertical', swapOob: HTMX_SWAP.ReplaceElement }).render()}

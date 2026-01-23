@@ -6,7 +6,7 @@ import { MealType } from '../../config';
 import { paramToDate } from '../../utils/converters';
 import { HTMX_SWAP } from '../../utils/htmx';
 import { MealStats } from '../../components/meals/meal-stats';
-import { mealService } from '../../services/meal.service';
+import * as mealService from '../../services/meal.service';
 
 type UpdateDishRequest = FastifyRequest<{ Params: { date: string; mealType: MealType; dishId: string }; Body: { amount: string } }>;
 
@@ -20,7 +20,8 @@ export default async (request: UpdateDishRequest, reply: FastifyReply) => {
     return reply.status(400).type('text/html').send('<div class="alert alert-error">Invalid amount. Must be a positive number.</div>');
   }
 
-  const { day, meal, ingredients, recipes } = await mealService.updateDishAmount(dishId, amountNum, date, mealType);
+  const { day, meal } = await mealService.updateDishAmount(dishId, amountNum, date, mealType);
+  const [ingredients, recipes] = await Promise.all([ingredientRepository.fetchIngredients(), recipeRepository.fetchRecipes()]);
 
   const template = `
     ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swapOob: HTMX_SWAP.ReplaceElement }).render()}

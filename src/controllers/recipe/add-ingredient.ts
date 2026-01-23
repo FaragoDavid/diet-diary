@@ -4,7 +4,8 @@ import { NewRecipeIngredient } from '../../components/recipes/new-recipe-ingredi
 import { RecipeDetails } from '../../components/recipes/recipe-details';
 import { RecipeIngredientListItem } from '../../components/recipes/recipe-ingredient-list-item';
 import { HTMX_SWAP } from '../../utils/htmx';
-import { recipeService } from '../../services/recipe.service';
+import * as recipeService from '../../services/recipe.service';
+import * as ingredientRepository from '../../repository/ingredient';
 
 type AddRecipeIngredientRequest = FastifyRequest<{
   Params: { recipeId: string };
@@ -24,11 +25,9 @@ export default async (request: AddRecipeIngredientRequest, reply: FastifyReply) 
     return reply.status(400).type('text/html').send('<div class="alert alert-error">Invalid amount. Must be a positive number.</div>');
   }
 
-  const { ingredientAmount, ingredient, recipe, ingredients } = await recipeService.addIngredientToRecipe(
-    recipeId,
-    ingredientId,
-    amountNum,
-  );
+  const { ingredientAmount, ingredient, recipe } = await recipeService.addIngredientToRecipe(recipeId, ingredientId, amountNum);
+
+  const ingredients = await ingredientRepository.fetchIngredients();
 
   const template = `
     ${await new RecipeIngredientListItem(ingredientAmount, ingredient, recipeId, { isFirst: recipe.ingredients.length === 1 }).render()}

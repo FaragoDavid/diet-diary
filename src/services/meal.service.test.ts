@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { mealService } from './meal.service';
+import * as mealService from './meal.service';
 import { MealType } from '../config';
 import * as ingredientRepository from '../repository/ingredient';
 import * as mealRepository from '../repository/meal';
@@ -13,7 +13,7 @@ const mockedIngredientRepository = ingredientRepository as jest.Mocked<typeof in
 const mockedMealRepository = mealRepository as jest.Mocked<typeof mealRepository>;
 const mockedRecipeRepository = recipeRepository as jest.Mocked<typeof recipeRepository>;
 
-describe('MealService', () => {
+describe('mealService', () => {
   const mockDate = new Date('2024-01-15');
   const mockMealType: MealType = 'breakfast';
 
@@ -58,31 +58,6 @@ describe('MealService', () => {
     jest.clearAllMocks();
   });
 
-  describe('getDayWithResources', () => {
-    it('should fetch day with ingredients and recipes in parallel', async () => {
-      mockedMealRepository.fetchDay.mockResolvedValue(mockDay);
-      mockedIngredientRepository.fetchIngredients.mockResolvedValue(mockIngredients);
-      mockedRecipeRepository.fetchRecipes.mockResolvedValue(mockRecipes);
-
-      const result = await mealService.getDayWithResources(mockDate);
-
-      expect(result).toEqual({ day: mockDay, ingredients: mockIngredients, recipes: mockRecipes });
-      expect(mockedMealRepository.fetchDay).toHaveBeenCalledWith(mockDate);
-      expect(mockedIngredientRepository.fetchIngredients).toHaveBeenCalled();
-      expect(mockedRecipeRepository.fetchRecipes).toHaveBeenCalled();
-    });
-
-    it('should return null when day not found', async () => {
-      mockedMealRepository.fetchDay.mockResolvedValue(null);
-      mockedIngredientRepository.fetchIngredients.mockResolvedValue(mockIngredients);
-      mockedRecipeRepository.fetchRecipes.mockResolvedValue(mockRecipes);
-
-      const result = await mealService.getDayWithResources(mockDate);
-
-      expect(result).toBeNull();
-    });
-  });
-
   describe('getMealWithResources', () => {
     it('should fetch meal, day, and resources in parallel', async () => {
       mockedMealRepository.fetchMeal.mockResolvedValue(mockMeal);
@@ -92,7 +67,7 @@ describe('MealService', () => {
 
       const result = await mealService.getMealWithResources(mockDate, mockMealType);
 
-      expect(result).toEqual({ meal: mockMeal, day: mockDay, ingredients: mockIngredients, recipes: mockRecipes });
+      expect(result).toEqual({ meal: mockMeal, day: mockDay });
       expect(mockedMealRepository.fetchMeal).toHaveBeenCalledWith(mockDate, mockMealType);
       expect(mockedMealRepository.fetchDay).toHaveBeenCalledWith(mockDate);
     });
@@ -100,8 +75,6 @@ describe('MealService', () => {
     it('should return null when meal not found', async () => {
       mockedMealRepository.fetchMeal.mockResolvedValue(null);
       mockedMealRepository.fetchDay.mockResolvedValue(mockDay);
-      mockedIngredientRepository.fetchIngredients.mockResolvedValue(mockIngredients);
-      mockedRecipeRepository.fetchRecipes.mockResolvedValue(mockRecipes);
 
       const result = await mealService.getMealWithResources(mockDate, mockMealType);
 
@@ -111,8 +84,6 @@ describe('MealService', () => {
     it('should return null when day not found', async () => {
       mockedMealRepository.fetchMeal.mockResolvedValue(mockMeal);
       mockedMealRepository.fetchDay.mockResolvedValue(null);
-      mockedIngredientRepository.fetchIngredients.mockResolvedValue(mockIngredients);
-      mockedRecipeRepository.fetchRecipes.mockResolvedValue(mockRecipes);
 
       const result = await mealService.getMealWithResources(mockDate, mockMealType);
 
@@ -125,12 +96,10 @@ describe('MealService', () => {
       mockedMealRepository.addDish.mockResolvedValue(mockDish);
       mockedMealRepository.fetchDay.mockResolvedValue(mockDay);
       mockedMealRepository.fetchMeal.mockResolvedValue(mockMeal);
-      mockedIngredientRepository.fetchIngredients.mockResolvedValue(mockIngredients);
-      mockedRecipeRepository.fetchRecipes.mockResolvedValue(mockRecipes);
 
       const result = await mealService.addDishToMeal(mockDate, mockMealType, '1', 100);
 
-      expect(result).toEqual({ dish: mockDish, day: mockDay, meal: mockMeal, ingredients: mockIngredients, recipes: mockRecipes });
+      expect(result).toEqual({ dish: mockDish, day: mockDay, meal: mockMeal });
       expect(mockedMealRepository.addDish).toHaveBeenCalledWith(mockDate, mockMealType, '1', 100);
     });
 
@@ -150,12 +119,10 @@ describe('MealService', () => {
       mockedMealRepository.updateDish.mockResolvedValue(undefined);
       mockedMealRepository.fetchDay.mockResolvedValue(mockDay);
       mockedMealRepository.fetchMeal.mockResolvedValue(mockMeal);
-      mockedIngredientRepository.fetchIngredients.mockResolvedValue(mockIngredients);
-      mockedRecipeRepository.fetchRecipes.mockResolvedValue(mockRecipes);
 
       const result = await mealService.updateDishAmount('1', 200, mockDate, mockMealType);
 
-      expect(result).toEqual({ day: mockDay, meal: mockMeal, ingredients: mockIngredients, recipes: mockRecipes });
+      expect(result).toEqual({ day: mockDay, meal: mockMeal });
       expect(mockedMealRepository.updateDish).toHaveBeenCalledWith('1', 200);
     });
 
@@ -163,8 +130,6 @@ describe('MealService', () => {
       mockedMealRepository.updateDish.mockResolvedValue(undefined);
       mockedMealRepository.fetchDay.mockResolvedValue(mockDay);
       mockedMealRepository.fetchMeal.mockResolvedValue(null);
-      mockedIngredientRepository.fetchIngredients.mockResolvedValue(mockIngredients);
-      mockedRecipeRepository.fetchRecipes.mockResolvedValue(mockRecipes);
 
       await expect(mealService.updateDishAmount('1', 200, mockDate, mockMealType)).rejects.toThrow(
         'Day or meal not found after updating dish',
@@ -177,12 +142,10 @@ describe('MealService', () => {
       mockedMealRepository.deleteDish.mockResolvedValue(undefined);
       mockedMealRepository.fetchMeal.mockResolvedValue(mockMeal);
       mockedMealRepository.fetchDay.mockResolvedValue(mockDay);
-      mockedIngredientRepository.fetchIngredients.mockResolvedValue(mockIngredients);
-      mockedRecipeRepository.fetchRecipes.mockResolvedValue(mockRecipes);
 
       const result = await mealService.removeDish('1', mockDate, mockMealType);
 
-      expect(result).toEqual({ meal: mockMeal, day: mockDay, ingredients: mockIngredients, recipes: mockRecipes });
+      expect(result).toEqual({ meal: mockMeal, day: mockDay });
       expect(mockedMealRepository.deleteDish).toHaveBeenCalledWith('1');
     });
 
@@ -201,12 +164,10 @@ describe('MealService', () => {
     it('should add meal and fetch resources', async () => {
       mockedMealRepository.addMeal.mockResolvedValue(undefined);
       mockedMealRepository.fetchDay.mockResolvedValue(mockDay);
-      mockedIngredientRepository.fetchIngredients.mockResolvedValue(mockIngredients);
-      mockedRecipeRepository.fetchRecipes.mockResolvedValue(mockRecipes);
 
       const result = await mealService.addMealToDay(mockDate, mockMealType);
 
-      expect(result).toEqual({ day: mockDay, ingredients: mockIngredients, recipes: mockRecipes });
+      expect(result).toEqual(mockDay);
       expect(mockedMealRepository.addMeal).toHaveBeenCalledWith(mockDate, mockMealType);
     });
 
@@ -224,12 +185,10 @@ describe('MealService', () => {
     it('should remove meal and fetch resources', async () => {
       mockedMealRepository.deleteMeal.mockResolvedValue(undefined);
       mockedMealRepository.fetchDay.mockResolvedValue(mockDay);
-      mockedIngredientRepository.fetchIngredients.mockResolvedValue(mockIngredients);
-      mockedRecipeRepository.fetchRecipes.mockResolvedValue(mockRecipes);
 
       const result = await mealService.removeMeal(mockDate, mockMealType);
 
-      expect(result).toEqual({ day: mockDay, ingredients: mockIngredients, recipes: mockRecipes });
+      expect(result).toEqual(mockDay);
       expect(mockedMealRepository.deleteMeal).toHaveBeenCalledWith(mockDate, mockMealType);
     });
 
@@ -240,35 +199,6 @@ describe('MealService', () => {
       mockedRecipeRepository.fetchRecipes.mockResolvedValue(mockRecipes);
 
       await expect(mealService.removeMeal(mockDate, mockMealType)).rejects.toThrow('Day not found after deleting meal');
-    });
-  });
-
-  describe('createNewDay', () => {
-    it('should create day and fetch resources', async () => {
-      mockedMealRepository.createDay.mockResolvedValue(mockDay);
-      mockedIngredientRepository.fetchIngredients.mockResolvedValue(mockIngredients);
-      mockedRecipeRepository.fetchRecipes.mockResolvedValue(mockRecipes);
-
-      const result = await mealService.createNewDay(mockDate);
-
-      expect(result).toEqual({ day: mockDay, ingredients: mockIngredients, recipes: mockRecipes });
-      expect(mockedMealRepository.createDay).toHaveBeenCalledWith(mockDate);
-    });
-  });
-
-  describe('getAllDays', () => {
-    it('should fetch all days and resources in parallel', async () => {
-      const mockDays = [mockDay];
-      mockedMealRepository.fetchDays.mockResolvedValue(mockDays);
-      mockedIngredientRepository.fetchIngredients.mockResolvedValue(mockIngredients);
-      mockedRecipeRepository.fetchRecipes.mockResolvedValue(mockRecipes);
-
-      const result = await mealService.getAllDays();
-
-      expect(result).toEqual({ days: mockDays, ingredients: mockIngredients, recipes: mockRecipes });
-      expect(mockedMealRepository.fetchDays).toHaveBeenCalled();
-      expect(mockedIngredientRepository.fetchIngredients).toHaveBeenCalled();
-      expect(mockedRecipeRepository.fetchRecipes).toHaveBeenCalled();
     });
   });
 });
