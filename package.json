@@ -1,15 +1,17 @@
 {
   "name": "diet-diary",
+  "author": "Faragó Dávid",
   "scripts": {
     "build": "tsc",
     "start": "node -r dotenv/config dist/server",
     "start:dev": "npx nodemon dist/server",
     "css": "npx tailwindcss -i ./css/input.css -o ./public/output.css --watch",
     "prisma:migrate:deploy": "npx prisma migrate deploy",
-    "test": "jest -i",
-    "test:watch": "jest --watch -i",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "jest -i",
+    "test:unit:watch": "jest --watch -i",
+    "test:e2e:dev": "cypress open",
+    "test:e2e": "cypress run"
   },
   "license": "UNLICENSED",
   "dependencies": {
