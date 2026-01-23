@@ -11,3 +11,8 @@
 - Use present tense and imperative mood (e.g., "Add feature" instead of "Added feature" or "Adds feature")
 - Commit changes in baby steps to make it easier to review and understand
 - Ensure all tests pass before committing code
+- Commit only when explicitly instructed to do so
+
+## Other
+
+- No comments, unless absolutely necessary
