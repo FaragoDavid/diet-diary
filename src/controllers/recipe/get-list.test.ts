@@ -20,9 +20,7 @@ describe('recipe/get-list', () => {
   });
 
   it('does not fetch ingredients when listing recipes', async () => {
-    const mockRecipes = [
-      { id: '1', name: 'Recipe 1', amount: 1, ingredients: [] },
-    ];
+    const mockRecipes = [{ id: '1', name: 'Recipe 1', amount: 1, ingredients: [] }];
 
     (recipeRepository.fetchRecipes as jest.Mock).mockResolvedValue(mockRecipes);
     (ingredientRepository.fetchIngredients as jest.Mock).mockResolvedValue([]);

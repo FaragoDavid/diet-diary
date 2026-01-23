@@ -18,9 +18,7 @@ describe('ingredient/get-list', () => {
   });
 
   it('filters ingredients at database level using query parameter', async () => {
-    const mockIngredients = [
-      { id: '1', name: 'Tomato', calories: 20, carbs: 4, fat: 0 },
-    ];
+    const mockIngredients = [{ id: '1', name: 'Tomato', calories: 20, carbs: 4, fat: 0 }];
 
     (ingredientRepository.fetchIngredients as jest.Mock).mockResolvedValue(mockIngredients);
 

@@ -3,10 +3,7 @@ import { recipeListItem } from './recipe-list-item';
 
 export const RECIPE_LIST_ID = 'recipe-list';
 
-export async function recipeList(
-  recipes: RecipeWithIngredients[],
-  options: { swapOob?: HtmxSwapOobOption } = {},
-) {
+export async function recipeList(recipes: RecipeWithIngredients[], options: { swapOob?: HtmxSwapOobOption } = {}) {
   const recipeComponents: string[] = [];
   for (const recipe of recipes) {
     recipeComponents.push(await recipeListItem(recipe));
