@@ -7,6 +7,8 @@ import { MealType } from '../../config';
 import { paramToDate } from '../../utils/converters';
 import { HTMX_SWAP } from '../../utils/htmx';
 import * as mealService from '../../services/meal.service';
+import * as ingredientRepository from '../../repository/ingredient';
+import * as recipeRepository from '../../repository/recipe';
 
 type DeleteMealRequest = FastifyRequest<{ Params: { date: string; mealType: MealType } }>;
 

@@ -31,7 +31,7 @@ This is a deliberate architectural decision to avoid unnecessary abstraction lay
 - Write clear, concise commit messages. Keep it one simple sentence, if possible
 - Use present tense and imperative mood (e.g., "Add feature" instead of "Added feature" or "Adds feature")
 - Commit changes in baby steps to make it easier to review and understand
-- Ensure all tests pass before committing code
+- Ensure both unit and e2e tests pass before committing code
 - Commit only when explicitly instructed to do so
 
 ## Other

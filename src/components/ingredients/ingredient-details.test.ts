@@ -40,6 +40,35 @@ describe('IngredientDetails', () => {
     });
   });
 
+  describe('checkboxes', () => {
+    it('should render vegetable checkbox when checked', () => {
+      const details = new IngredientDetails(mockIngredient);
+      const html = details.vegetableCheckbox();
+
+      expect(html).toContain('name="isVegetable"');
+      expect(html).toContain('checked="checked"');
+      expect(html).toContain('checkbox checkbox-sm');
+    });
+
+    it('should render vegetable checkbox when unchecked', () => {
+      const ingredient = { ...mockIngredient, isVegetable: false };
+      const details = new IngredientDetails(ingredient);
+      const html = details.vegetableCheckbox();
+
+      expect(html).toContain('name="isVegetable"');
+      expect(html).not.toContain('checked="checked"');
+    });
+
+    it('should render carb counted checkbox when unchecked', () => {
+      const details = new IngredientDetails(mockIngredient);
+      const html = details.carbCountedCheckbox();
+
+      expect(html).toContain('name="isCarbCounted"');
+      expect(html).not.toContain('checked="checked"');
+      expect(html).toContain('checkbox checkbox-xs');
+    });
+  });
+
   describe('render', () => {
     it('should render complete ingredient details', async () => {
       const details = new IngredientDetails(mockIngredient);

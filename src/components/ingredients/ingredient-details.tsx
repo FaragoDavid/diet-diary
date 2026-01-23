@@ -34,38 +34,35 @@ export class IngredientDetails {
     return this.nutrientInput('fat', texts.nutrients.fat, this.ingredient.fatPer100);
   }
 
-  vegetableCheckbox(): string {
+  private checkbox(name: string, label: string, checked: boolean, checkboxClass: string, labelClass: string = 'text'): string {
     const attrs: any = {
       type: 'checkbox',
-      name: 'isVegetable',
-      class: 'checkbox checkbox-sm',
+      name,
+      class: checkboxClass,
       'hx-post': `/ingredient/${this.ingredient.id}`,
     };
-    if (this.ingredient.isVegetable) attrs.checked = 'checked';
+    if (checked) attrs.checked = 'checked';
 
     return `
-      <div class="text">${texts.ingredients.vegetable}:</div>
+      <div class="${labelClass}">${label}:</div>
       <input ${Object.entries(attrs)
         .map(([k, v]) => `${k}="${v}"`)
         .join(' ')} />
     `;
   }
 
-  carbCountedCheckbox(): string {
-    const attrs: any = {
-      type: 'checkbox',
-      name: 'isCarbCounted',
-      class: 'checkbox checkbox-xs',
-      'hx-post': `/ingredient/${this.ingredient.id}`,
-    };
-    if (this.ingredient.isCarbCounted) attrs.checked = 'checked';
+  vegetableCheckbox(): string {
+    return this.checkbox('isVegetable', texts.ingredients.vegetable, this.ingredient.isVegetable, 'checkbox checkbox-sm');
+  }
 
-    return `
-      <div class="text-sm pl-4">${texts.ingredients.carbCounted}:</div>
-      <input ${Object.entries(attrs)
-        .map(([k, v]) => `${k}="${v}"`)
-        .join(' ')} />
-    `;
+  carbCountedCheckbox(): string {
+    return this.checkbox(
+      'isCarbCounted',
+      texts.ingredients.carbCounted,
+      this.ingredient.isCarbCounted,
+      'checkbox checkbox-xs',
+      'text-sm pl-4',
+    );
   }
 
   async render(): Promise<string> {
