@@ -1,12 +1,11 @@
 import * as elements from 'typed-html';
-import { Ingredient } from '@prisma/client';
 import { RecipeWithIngredients } from '../../repository/recipe';
 import icons from '../../utils/icons';
 import { amount as amountInput } from '../amount';
 import { recipeStats } from './recipe-stats';
 import { RECIPE_SEARCH_ID } from './recipe-tab';
 
-export async function recipeListItem(recipe: RecipeWithIngredients, ingredients: Ingredient[]) {
+export async function recipeListItem(recipe: RecipeWithIngredients) {
   const name = () => {
     return (<div class="text">{recipe.name}</div>) as string;
   };

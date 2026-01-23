@@ -1,4 +1,3 @@
-import { Ingredient } from '@prisma/client';
 import { RecipeWithIngredients } from '../../repository/recipe';
 import { recipeListItem } from './recipe-list-item';
 
@@ -6,12 +5,11 @@ export const RECIPE_LIST_ID = 'recipe-list';
 
 export async function recipeList(
   recipes: RecipeWithIngredients[],
-  ingredients: Ingredient[],
   options: { swapOob?: HtmxSwapOobOption } = {},
 ) {
   const recipeComponents: string[] = [];
   for (const recipe of recipes) {
-    recipeComponents.push(await recipeListItem(recipe, ingredients));
+    recipeComponents.push(await recipeListItem(recipe));
   }
 
   const swapOobAttr = options.swapOob ? ' hx-swap-oob="true"' : '';

@@ -1,5 +1,4 @@
 import * as elements from 'typed-html';
-import { Ingredient } from '@prisma/client';
 import config from '../../config';
 import { RecipeWithIngredients } from '../../repository/recipe';
 import icons from '../../utils/icons';
@@ -36,8 +35,8 @@ const searchRecipes = () => {
   ) as string;
 };
 
-export async function recipeTab(recipes: RecipeWithIngredients[], ingredients: Ingredient[]) {
-  const recipeListHtml = await recipeList(recipes, ingredients, { swapOob: false });
+export async function recipeTab(recipes: RecipeWithIngredients[]) {
+  const recipeListHtml = await recipeList(recipes, { swapOob: false });
 
   return `
     <div id="${TAB_CONTAINER_ID}" class="flex flex-col justify-center items-center space-y-4">
