@@ -4,14 +4,7 @@ import { MealType } from '../config';
 import * as ingredientRepository from '../repository/ingredient';
 import * as mealRepository from '../repository/meal';
 import * as recipeRepository from '../repository/recipe';
-
-function calculateIngredientNutrition(ingredient: Ingredient, amount: number) {
-  return {
-    calories: ((ingredient.caloriesPer100 || 0) / 100) * amount,
-    carbs: ((ingredient.carbsPer100 || 0) / 100) * amount,
-    fat: ((ingredient.fatPer100 || 0) / 100) * amount,
-  };
-}
+import { calculateIngredientNutrition } from '../utils/nutrition-calculator';
 
 function calculateRecipeNutrition(recipe: recipeRepository.RecipeWithIngredients, amount: number) {
   const { calories, carbs, fat } = recipe.ingredients.reduce(

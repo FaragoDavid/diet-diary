@@ -2,14 +2,7 @@ import { Ingredient } from '@prisma/client';
 import * as ingredientRepository from '../repository/ingredient';
 import * as recipeRepository from '../repository/recipe';
 import * as recipeIngredientRepository from '../repository/recipe-ingredient';
-
-function calculateNutrition(ingredient: Ingredient, amount: number) {
-  return {
-    calories: (ingredient.caloriesPer100 / 100) * amount,
-    carbs: (ingredient.carbsPer100 / 100) * amount,
-    fat: (ingredient.fatPer100 / 100) * amount,
-  };
-}
+import { calculateIngredientNutrition } from '../utils/nutrition-calculator';
 
 export async function addIngredientToRecipe(recipeId: string, ingredientId: string, amount: number) {
   const ingredient = await ingredientRepository.fetchIngredient(ingredientId);
@@ -22,7 +15,7 @@ export async function addIngredientToRecipe(recipeId: string, ingredientId: stri
     recipeId,
     ingredientId,
     amount,
-    calculateNutrition(ingredient, amount),
+    calculateIngredientNutrition(ingredient, amount),
   );
 
   const recipe = await recipeRepository.fetchRecipe(recipeId);
@@ -50,8 +43,8 @@ export async function updateRecipeIngredientAmount(recipeId: string, ingredientI
   const oldAmount = recipeIngredient.amount;
   const ingredient = recipeIngredient.ingredient;
 
-  const oldNutrition = calculateNutrition(ingredient, oldAmount);
-  const newNutrition = calculateNutrition(ingredient, amount);
+  const oldNutrition = calculateIngredientNutrition(ingredient, oldAmount);
+  const newNutrition = calculateIngredientNutrition(ingredient, amount);
 
   const updatedRecipe = await recipeIngredientRepository.updateIngredientAmount(recipeId, ingredientId, amount, {
     calories: newNutrition.calories - oldNutrition.calories,
@@ -85,7 +78,7 @@ export async function removeIngredientFromRecipe(recipeId: string, ingredientId:
   const updatedRecipe = await recipeIngredientRepository.deleteRecipeIngredient(
     recipeId,
     ingredientId,
-    calculateNutrition(ingredient, -amount),
+    calculateIngredientNutrition(ingredient, -amount),
   );
 
   if (!updatedRecipe) {
