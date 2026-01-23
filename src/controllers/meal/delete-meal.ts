@@ -24,5 +24,5 @@ export default async (request: DeleteMealRequest, reply: FastifyReply) => {
     ${await missingMeals(day, { swapOob: HTMX_SWAP.ReplaceElement })}
     ${await dayMealList(day, ingredients, recipes, { layout: 'page', swapOob: HTMX_SWAP.ReplaceElement })}
   `;
-  return reply.type('text/html').send(template);
+  return template;
 };

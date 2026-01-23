@@ -36,5 +36,5 @@ export default async (request: AddDishRequest, reply: FastifyReply) => {
     ${await mealStats(meal, { layout: 'horizontal', swapOob: HTMX_SWAP.ReplaceElement })}
   `;
 
-  return reply.type('text/html').send(template);
+  return template;
 };

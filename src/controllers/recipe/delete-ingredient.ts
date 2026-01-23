@@ -22,5 +22,5 @@ export default async (request: DeleteRecipeIngredientRequest, reply: FastifyRepl
     ${await ingredientSelector(recipeIngredientIds, ingredients, { swapOob: HTMX_SWAP.ReplaceElement })}
   `;
 
-  return reply.type('text/html').send(template);
+  return template;
 };

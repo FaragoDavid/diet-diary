@@ -18,5 +18,5 @@ export default async (request: GetMealsRequest, reply: FastifyReply) => {
   const [ingredients, recipes] = await Promise.all([ingredientRepository.fetchIngredients(), recipeRepository.fetchRecipes()]);
 
   const template = await dayList(days, ingredients, recipes, { swap: false });
-  return reply.type('text/html').send(template);
+  return template;
 };

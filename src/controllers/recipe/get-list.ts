@@ -12,5 +12,5 @@ export default async (request: GetRecipeListRequest, reply: FastifyReply) => {
   const ingredients = await ingredientRepository.fetchIngredients();
 
   const template = await recipeList(recipes, ingredients, { swapOob: false });
-  return reply.type('text/html').send(template);
+  return template;
 };

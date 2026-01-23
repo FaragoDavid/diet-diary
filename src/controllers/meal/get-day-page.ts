@@ -21,5 +21,5 @@ export default async (request: GetDayRequest, reply: FastifyReply) => {
 
   const template = await layout(new DayPage(day, ingredients, recipes));
 
-  return reply.type('text/html').send(template);
+  return template;
 };

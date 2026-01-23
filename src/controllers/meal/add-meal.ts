@@ -28,5 +28,5 @@ export default async (request: AddMealRequest, reply: FastifyReply) => {
     ${await dayMealList(day, ingredients, recipes, { layout: 'page', swapOob: HTMX_SWAP.ReplaceElement })}
   `;
 
-  return reply.type('text/html').send(template);
+  return template;
 };

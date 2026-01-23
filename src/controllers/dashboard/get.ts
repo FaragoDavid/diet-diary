@@ -19,5 +19,5 @@ export default async (request: GetDashboardRequest, reply: FastifyReply) => {
   ]);
 
   const template = await layout(new Dashboard(target, ingredients, recipes, days));
-  return reply.type('text/html').send(template);
+  return template;
 };

@@ -16,5 +16,5 @@ export default async (request: DeleteRecipeRequest, reply: FastifyReply) => {
 
   const template = await recipeList(recipes, ingredients, { swapOob: HTMX_SWAP.ReplaceElement });
 
-  return reply.type('text/html').send(template);
+  return template;
 };

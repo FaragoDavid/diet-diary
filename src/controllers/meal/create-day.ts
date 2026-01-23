@@ -35,5 +35,5 @@ export default async (request: CreateDayRequest, reply: FastifyReply) => {
   `;
 
   const dateParam = request.body.date.split('-').join('');
-  return reply.type('text/html').header('HX-Push-Url', `/day/${dateParam}`).send(template);
+  return { template, url: `/day/${dateParam}` };
 };

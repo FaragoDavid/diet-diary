@@ -16,5 +16,5 @@ export default async (request: GetIngredientRequest, reply: FastifyReply) => {
 
   const template = await layout(new IngredientPage(ingredient));
 
-  return reply.type('text/html').send(template);
+  return template;
 };

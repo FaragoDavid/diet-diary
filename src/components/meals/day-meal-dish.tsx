@@ -25,12 +25,7 @@ export async function dayMealDishHeader(date: Date, mealType: MealType, options:
   return template;
 }
 
-export async function dayMealDish(
-  dish: Dish,
-  date: Date,
-  mealType: MealType,
-  options: { swapOob?: HtmxSwapOobOption } = {},
-) {
+export async function dayMealDish(dish: Dish, date: Date, mealType: MealType, options: { swapOob?: HtmxSwapOobOption } = {}) {
   const deleteDish = () => {
     return `
       <button 

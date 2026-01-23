@@ -15,5 +15,5 @@ export default async (_: FastifyRequest, reply: FastifyReply) => {
     ${await recipeTab(recipes, ingredients)}
   `;
 
-  return reply.type('text/html').header('HX-Push-Url', `/dashboard/${TAB_NAME.recipes}`).send(template);
+  return { template, url: `/dashboard/${TAB_NAME.recipes}` };
 };

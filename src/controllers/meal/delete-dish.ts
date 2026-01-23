@@ -24,5 +24,5 @@ export default async (request: DeleteDishRequest, reply: FastifyReply) => {
     })}
   `;
 
-  return reply.type('text/html').send(template);
+  return template;
 };

@@ -22,5 +22,5 @@ export default async (request: UpdateRecipeIngredientRequest, reply: FastifyRepl
 
   const template = await recipeDetails(recipe, { swapOob: HTMX_SWAP.ReplaceElement });
 
-  return reply.type('text/html').send(template);
+  return template;
 };

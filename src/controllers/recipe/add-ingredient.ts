@@ -35,5 +35,5 @@ export default async (request: AddRecipeIngredientRequest, reply: FastifyReply) 
     ${await newRecipeIngredient(recipe, ingredients, { swapOob: HTMX_SWAP.ReplaceElement })}
   `;
 
-  return reply.type('text/html').send(template);
+  return template;
 };

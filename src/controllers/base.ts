@@ -1,15 +1,16 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
+import { htmlResponseMiddleware, HtmlResponse } from '../middleware/html-response';
 
 const cookieValidator = async (request: FastifyRequest, reply: FastifyReply) => {
   if (!request.session.user) return reply.redirect('/login', 301);
 };
 
-export default (handler: (request: FastifyRequest<any>, reply: FastifyReply) => Promise<void>) => {
+export default (handler: (request: FastifyRequest<any>, reply: FastifyReply) => Promise<HtmlResponse | void>) => {
   return {
     preHandler: cookieValidator,
     handler: async (request: FastifyRequest<any>, reply: FastifyReply) => {
       try {
-        await handler(request, reply);
+        await htmlResponseMiddleware(handler)(request, reply);
       } catch (error) {
         console.error('Error in request handler:', error);
 

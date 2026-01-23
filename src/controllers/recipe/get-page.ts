@@ -19,5 +19,5 @@ export default async (request: GetRecipeRequest, reply: FastifyReply) => {
 
   const template = await layout(new RecipePage(recipe, ingredients));
 
-  return reply.type('text/html').send(template);
+  return template;
 };
