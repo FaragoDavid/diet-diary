@@ -1,9 +1,9 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { DayMealDish, DayMealDishHeader } from '../../components/meals/day-meal-dish';
-import { DayStats } from '../../components/meals/day-stats';
-import { MealStats } from '../../components/meals/meal-stats';
-import { NewDish } from '../../components/meals/new-dish';
+import { dayMealDish, dayMealDishHeader } from '../../components/meals/day-meal-dish';
+import { dayStats } from '../../components/meals/day-stats';
+import { mealStats } from '../../components/meals/meal-stats';
+import { newDish } from '../../components/meals/new-dish';
 import { MealType } from '../../config';
 import { paramToDate } from '../../utils/converters';
 import { HTMX_SWAP } from '../../utils/htmx';
@@ -29,15 +29,11 @@ export default async (request: AddDishRequest, reply: FastifyReply) => {
   const [ingredients, recipes] = await Promise.all([ingredientRepository.fetchIngredients(), recipeRepository.fetchRecipes()]);
 
   const template = `
-    ${
-      meal.dishes.length === 1
-        ? await new DayMealDishHeader(day.date, meal.type as MealType, { swapOob: HTMX_SWAP.BeforeFirstChild }).render()
-        : ''
-    }
-    ${await new NewDish(meal, day.date, ingredients, recipes, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
-    ${await new DayMealDish(dish, day.date, mealType, { swapOob: HTMX_SWAP.BeforeElement }).render()}
-    ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swapOob: HTMX_SWAP.ReplaceElement }).render()}
-    ${await new MealStats(meal, { layout: 'horizontal', swapOob: HTMX_SWAP.ReplaceElement }).render()}
+    ${meal.dishes.length === 1 ? await dayMealDishHeader(day.date, meal.type as MealType, { swapOob: HTMX_SWAP.BeforeFirstChild }) : ''}
+    ${await newDish(meal, day.date, ingredients, recipes, { swapOob: HTMX_SWAP.ReplaceElement })}
+    ${await dayMealDish(dish, day.date, mealType, { swapOob: HTMX_SWAP.BeforeElement })}
+    ${await dayStats(day, { layout: 'vertical', span: 'col-span-5', swapOob: HTMX_SWAP.ReplaceElement })}
+    ${await mealStats(meal, { layout: 'horizontal', swapOob: HTMX_SWAP.ReplaceElement })}
   `;
 
   return reply.type('text/html').send(template);

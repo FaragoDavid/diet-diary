@@ -1,7 +1,7 @@
 import { Ingredient } from '@prisma/client';
 import { RecipeWithIngredients } from '../../repository/recipe';
-import { NewRecipeIngredient } from './new-recipe-ingredient';
-import { RecipeIngredientListItem } from './recipe-ingredient-list-item';
+import { newRecipeIngredient } from './new-recipe-ingredient';
+import { recipeIngredientListItem } from './recipe-ingredient-list-item';
 import { texts } from '../../constants/texts';
 
 export const RECIPE_INGREDIENT_LIST_ID = 'recipe-ingredient-list';
@@ -9,23 +9,19 @@ export const recipeIngredientDivider = '<div class="divider col-span-3 my-0 divi
 
 type Layout = 'list' | 'page';
 
-export class RecipeIngredientList {
-  constructor(
-    private recipe: RecipeWithIngredients,
-    private ingredients: Ingredient[],
-    private options: { layout?: Layout; swapOob?: HtmxSwapOobOption } = { layout: 'page' },
-  ) {}
-
-  async renderList(): Promise<string> {
+export async function recipeIngredientList(
+  recipe: RecipeWithIngredients,
+  ingredients: Ingredient[],
+  options: { layout?: Layout; swapOob?: HtmxSwapOobOption } = { layout: 'page' },
+) {
+  const renderList = async () => {
     const recipeIngredientComponents: string[] = [];
-    for (let ingrIndex = 0; ingrIndex < this.recipe.ingredients.length; ingrIndex++) {
-      const { amount, ingredient } = this.recipe.ingredients[ingrIndex]!;
-      recipeIngredientComponents.push(
-        await new RecipeIngredientListItem(amount, ingredient, this.recipe.id, { isFirst: ingrIndex === 0 }).render(),
-      );
+    for (let ingrIndex = 0; ingrIndex < recipe.ingredients.length; ingrIndex++) {
+      const { amount, ingredient } = recipe.ingredients[ingrIndex]!;
+      recipeIngredientComponents.push(await recipeIngredientListItem(amount, ingredient, recipe.id, { isFirst: ingrIndex === 0 }));
     }
 
-    const swapOobAttr = this.options.swapOob ? ' hx-swap-oob="true"' : '';
+    const swapOobAttr = options.swapOob ? ' hx-swap-oob="true"' : '';
 
     return `
       <div 
@@ -35,11 +31,11 @@ export class RecipeIngredientList {
         ${recipeIngredientComponents.join('')}
       </div>
     `;
-  }
+  };
 
-  async renderContainer(): Promise<string> {
-    const listHtml = await this.renderList();
-    const newIngredientHtml = await new NewRecipeIngredient(this.recipe, this.ingredients, { swapOob: false }).render();
+  const renderContainer = async () => {
+    const listHtml = await renderList();
+    const newIngredientHtml = await newRecipeIngredient(recipe, ingredients, { swapOob: false });
 
     return `
       <div class="divider px-4"></div>
@@ -49,15 +45,13 @@ export class RecipeIngredientList {
         ${newIngredientHtml}
       </div>
     `;
-  }
+  };
 
-  async render(): Promise<string> {
-    const layout = this.options.layout || 'page';
-    switch (layout) {
-      case 'list':
-        return this.renderList();
-      case 'page':
-        return this.renderContainer();
-    }
+  const layout = options.layout || 'page';
+  switch (layout) {
+    case 'list':
+      return renderList();
+    case 'page':
+      return renderContainer();
   }
 }

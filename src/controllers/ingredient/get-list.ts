@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { IngredientList } from '../../components/ingredients/ingredient-list';
+import { ingredientList } from '../../components/ingredients/ingredient-list';
 import * as ingredientRepository from '../../repository/ingredient';
 
 type GetIngredientsRequest = FastifyRequest<{ Querystring: { query: string } }>;
@@ -10,7 +10,7 @@ export default async (request: GetIngredientsRequest, reply: FastifyReply) => {
 
   const ingredients = await ingredientRepository.fetchIngredients(query);
 
-  const template = await new IngredientList(ingredients, { swapOob: false }).render();
+  const template = await ingredientList(ingredients, { swapOob: false });
 
   return reply.type('text/html').send(template);
 };

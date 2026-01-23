@@ -4,17 +4,17 @@ import config from '../../config';
 import { RecipeWithIngredients } from '../../repository/recipe';
 import icons from '../../utils/icons';
 import { TAB_CONTAINER_ID } from '../tab-list';
-import { RECIPE_LIST_ID, RecipeList } from './recipe-list';
+import { RECIPE_LIST_ID, recipeList } from './recipe-list';
 
 export const RECIPE_SEARCH_ID = 'search-recipe';
 
-const addRecipe = (): string => {
+const addRecipe = () => {
   const button = (<button id="add-recipe-btn" type="submit" class="btn btn-primary btn-sm" />) as string;
 
   return (<a href="/new-recipe">{button.replace('/>', `>${icons.add}</button>`)}</a>) as string;
 };
 
-const searchRecipes = (): string => {
+const searchRecipes = () => {
   const input = (
     <input
       type="text"
@@ -36,24 +36,17 @@ const searchRecipes = (): string => {
   ) as string;
 };
 
-export class RecipeTab {
-  constructor(
-    private recipes: RecipeWithIngredients[],
-    private ingredients: Ingredient[],
-  ) {}
+export async function recipeTab(recipes: RecipeWithIngredients[], ingredients: Ingredient[]) {
+  const recipeListHtml = await recipeList(recipes, ingredients, { swapOob: false });
 
-  async render(): Promise<string> {
-    const recipeListHtml = await new RecipeList(this.recipes, this.ingredients, { swapOob: false }).render();
-
-    return `
-      <div id="${TAB_CONTAINER_ID}" class="flex flex-col justify-center items-center space-y-4">
-        <div class="flex justify-center items-center space-x-2">
-          ${searchRecipes()}
-          <div class="divider divider-horizontal"></div> 
-          ${addRecipe()}
-        </div>
-        ${recipeListHtml}
+  return `
+    <div id="${TAB_CONTAINER_ID}" class="flex flex-col justify-center items-center space-y-4">
+      <div class="flex justify-center items-center space-x-2">
+        ${searchRecipes()}
+        <div class="divider divider-horizontal"></div> 
+        ${addRecipe()}
       </div>
-    `;
-  }
+      ${recipeListHtml}
+    </div>
+  `;
 }

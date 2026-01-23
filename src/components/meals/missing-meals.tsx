@@ -5,37 +5,30 @@ import { swapOobTag } from '../../utils/swap-oob-wrapper';
 
 const MISSING_MEALS_ID = 'missing-meals';
 
-export class MissingMeals {
-  constructor(
-    private day: DayWithMealsWithDishes,
-    private options: { swapOob?: HtmxSwapOobOption } = {},
-  ) {}
-
-  missingMealButton(value: MealType, name: string) {
+export async function missingMeals(day: DayWithMealsWithDishes, options: { swapOob?: HtmxSwapOobOption } = {}) {
+  const missingMealButton = (value: MealType, name: string) => {
     return `
       <button
         type="button"
         name="mealType"
         value="${value}"
         class="btn btn-sm btn-primary"
-        hx-post="/day/${dateToParam(this.day.date)}/meal"
+        hx-post="/day/${dateToParam(day.date)}/meal"
         hx-target="#${MISSING_MEALS_ID}"
       >
         ${name}
       </button>`;
-  }
+  };
 
-  async render() {
-    const missingMeals = config.mealTypes.filter(({ key }) => !this.day.meals.map(({ type }) => type).includes(key));
+  const missingMeals = config.mealTypes.filter(({ key }) => !day.meals.map(({ type }) => type).includes(key));
 
-    return `
-      <div 
-        id="${MISSING_MEALS_ID}"
-        class="flex flex-wrap items-center justify-center gap-1"
-        ${swapOobTag(this.options.swapOob)}
-      >
-        ${missingMeals.length > 0 ? missingMeals.map(({ key, name }) => this.missingMealButton(key, name)).join('') : ''}
-      </div>
-    `;
-  }
+  return `
+    <div 
+      id="${MISSING_MEALS_ID}"
+      class="flex flex-wrap items-center justify-center gap-1"
+      ${swapOobTag(options.swapOob)}
+    >
+      ${missingMeals.length > 0 ? missingMeals.map(({ key, name }) => missingMealButton(key, name)).join('') : ''}
+    </div>
+  `;
 }

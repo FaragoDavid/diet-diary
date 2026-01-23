@@ -14,67 +14,60 @@ function getMealNewDishAmountId(date: Date, mealType: string) {
   return `day-${dateToParam(date)}-${mealType}-new-dish-amount`;
 }
 
-export class NewDish {
-  newDishSelectId: string;
-  newDishAmountId: string;
-  constructor(
-    private meal: MealWithDishes,
-    private date: Date,
-    private ingredients: Ingredient[],
-    private recipes: Recipe[],
-    private options: { swapOob?: HtmxSwapOobOption } = {},
-  ) {
-    this.newDishSelectId = getMealNewDishSelectId(this.date, this.meal.type);
-    this.newDishAmountId = getMealNewDishAmountId(this.date, this.meal.type);
-  }
+export async function newDish(
+  meal: MealWithDishes,
+  date: Date,
+  ingredients: Ingredient[],
+  recipes: Recipe[],
+  options: { swapOob?: HtmxSwapOobOption } = {},
+) {
+  const newDishSelectId = getMealNewDishSelectId(date, meal.type);
+  const newDishAmountId = getMealNewDishAmountId(date, meal.type);
 
-  getSelectOptions() {
-    const unusedIngredients = this.ingredients.filter(({ id }) => !this.meal.dishes.map(({ ingredientId }) => ingredientId).includes(id));
-    const unusedRecipes = this.recipes.filter(({ id }) => !this.meal.dishes.map(({ recipeId }) => recipeId).includes(id));
+  const getSelectOptions = () => {
+    const unusedIngredients = ingredients.filter(({ id }) => !meal.dishes.map(({ ingredientId }) => ingredientId).includes(id));
+    const unusedRecipes = recipes.filter(({ id }) => !meal.dishes.map(({ recipeId }) => recipeId).includes(id));
     const options = [...unusedIngredients, ...unusedRecipes].sort((a, b) => a.name.localeCompare(b.name, ['hu']));
 
     return `
       <option disabled selected>${texts.common.emptyOption}</option>
       ${options.map(({ id, name }) => `<option value="${id}">${name}</option>`).join('')}
     `;
-  }
+  };
 
-  dishSelector() {
+  const dishSelector = () => {
     const template = `
       <select 
-        id="${this.newDishSelectId}" 
-        name="${this.meal.type}-dishId" 
+        id="${newDishSelectId}" 
+        name="${meal.type}-dishId" 
         class="select select-bordered select-sm w-30" 
-        ${swapOobTag(this.options.swapOob)} 
+        ${swapOobTag(options.swapOob)} 
       >
-        ${this.getSelectOptions()}
+        ${getSelectOptions()}
       </select>
     `;
 
-    if (this.options.swapOob && this.options.swapOob !== HTMX_SWAP.ReplaceElement)
-      return swapOobWrapper(this.newDishSelectId, this.options.swapOob, template);
+    if (options.swapOob && options.swapOob !== HTMX_SWAP.ReplaceElement) return swapOobWrapper(newDishSelectId, options.swapOob, template);
     return template;
-  }
+  };
 
-  amount() {
+  const amount = () => {
     return amountInput({
-      id: `${this.newDishAmountId}`,
+      id: `${newDishAmountId}`,
       name: `amount`,
       hx: {
         verb: 'post',
-        url: `/day/${dateToParam(this.date)}/meal/${this.meal.type}/dish`,
-        include: `[name=${this.meal.type}-dishId]`,
-        target: `#${this.newDishAmountId}`,
+        url: `/day/${dateToParam(date)}/meal/${meal.type}/dish`,
+        include: `[name=${meal.type}-dishId]`,
+        target: `#${newDishAmountId}`,
         swap: HTMX_SWAP.ReplaceElement,
         trigger: 'change delay:100ms',
       },
     });
-  }
+  };
 
-  async render() {
-    return `
-      ${this.dishSelector()}
-      ${this.amount()}
-    `;
-  }
+  return `
+    ${dishSelector()}
+    ${amount()}
+  `;
 }

@@ -1,9 +1,9 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { dayHeader } from '../../components/meals/day-header';
-import { DayMealList } from '../../components/meals/day-meal-list';
-import { DayStats } from '../../components/meals/day-stats';
-import { MissingMeals } from '../../components/meals/missing-meals';
+import { dayMealList } from '../../components/meals/day-meal-list';
+import { dayStats } from '../../components/meals/day-stats';
+import { missingMeals } from '../../components/meals/missing-meals';
 import * as ingredientRepository from '../../repository/ingredient';
 import * as mealRepository from '../../repository/meal';
 import * as recipeRepository from '../../repository/recipe';
@@ -29,9 +29,9 @@ export default async (request: CreateDayRequest, reply: FastifyReply) => {
 
   const template = `
     ${dayHeader(day)}
-    ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swapOob: false }).render()}
-    ${await new MissingMeals(day, { swapOob: false }).render()}
-    ${await new DayMealList(day, ingredients, recipes, { layout: 'page', swapOob: false }).render()}
+    ${await dayStats(day, { layout: 'vertical', span: 'col-span-5', swapOob: false })}
+    ${await missingMeals(day, { swapOob: false })}
+    ${await dayMealList(day, ingredients, recipes, { layout: 'page', swapOob: false })}
   `;
 
   const dateParam = request.body.date.split('-').join('');

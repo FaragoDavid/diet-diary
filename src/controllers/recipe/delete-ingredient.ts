@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { IngredientSelector } from '../../components/recipes/ingredient-selector';
-import { RecipeDetails } from '../../components/recipes/recipe-details';
-import { RecipeIngredientList } from '../../components/recipes/recipe-ingredient-list';
+import { ingredientSelector } from '../../components/recipes/ingredient-selector';
+import { recipeDetails } from '../../components/recipes/recipe-details';
+import { recipeIngredientList } from '../../components/recipes/recipe-ingredient-list';
 import { HTMX_SWAP } from '../../utils/htmx';
 import * as recipeService from '../../services/recipe.service';
 import * as ingredientRepository from '../../repository/ingredient';
@@ -17,9 +17,9 @@ export default async (request: DeleteRecipeIngredientRequest, reply: FastifyRepl
   const ingredients = await ingredientRepository.fetchIngredients();
 
   const template = `
-    ${await new RecipeIngredientList(recipe, ingredients, { layout: 'list', swapOob: HTMX_SWAP.ReplaceElement }).render()}
-    ${await new RecipeDetails(recipe, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
-    ${await new IngredientSelector(recipeIngredientIds, ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
+    ${await recipeIngredientList(recipe, ingredients, { layout: 'list', swapOob: HTMX_SWAP.ReplaceElement })}
+    ${await recipeDetails(recipe, { swapOob: HTMX_SWAP.ReplaceElement })}
+    ${await ingredientSelector(recipeIngredientIds, ingredients, { swapOob: HTMX_SWAP.ReplaceElement })}
   `;
 
   return reply.type('text/html').send(template);

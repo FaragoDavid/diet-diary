@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { IngredientDetails } from '../../components/ingredients/ingredient-details';
+import { ingredientDetails } from '../../components/ingredients/ingredient-details';
 import { ingredientHeader } from '../../components/ingredients/ingredient-header';
 import * as ingredientRepository from '../../repository/ingredient';
 
@@ -17,7 +17,7 @@ export default async (request: CreateIngredientRequest, reply: FastifyReply) => 
 
   const template = `
     ${ingredientHeader(ingredient)}
-    ${await new IngredientDetails(ingredient).render()}
+    ${await ingredientDetails(ingredient)}
   `;
 
   return reply.type('text/html').header('HX-Push-Url', `/ingredient/${ingredient.id}`).send(template);

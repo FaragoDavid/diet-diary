@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { DayList } from '../../components/meals/day-list';
+import { dayList } from '../../components/meals/day-list';
 import * as ingredientRepository from '../../repository/ingredient';
 import * as mealRepository from '../../repository/meal';
 import * as recipeRepository from '../../repository/recipe';
@@ -17,6 +17,6 @@ export default async (request: GetMealsRequest, reply: FastifyReply) => {
 
   const [ingredients, recipes] = await Promise.all([ingredientRepository.fetchIngredients(), recipeRepository.fetchRecipes()]);
 
-  const template = await new DayList(days, ingredients, recipes, { swap: false }).render();
+  const template = await dayList(days, ingredients, recipes, { swap: false });
   return reply.type('text/html').send(template);
 };

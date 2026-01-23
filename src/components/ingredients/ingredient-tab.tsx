@@ -5,14 +5,12 @@ import config from '../../config';
 import { HTMX_SWAP } from '../../utils/htmx';
 import icons from '../../utils/icons';
 import { TAB_CONTAINER_ID } from '../tab-list';
-import { INGREDIENT_LIST_ID, IngredientList } from './ingredient-list';
+import { INGREDIENT_LIST_ID, ingredientList } from './ingredient-list';
 
 export const INGREDIENT_SEARCH_ID = 'ingredient-search';
 
-export class IngredientTab {
-  constructor(private ingredients: Ingredient[]) {}
-
-  addIngredient = (): string => {
+export async function ingredientTab(ingredients: Ingredient[]) {
+  const addIngredient = () => {
     return `
       <a href="/new-ingredient">
         <button id="add-ingredient-btn" type="submit" class="btn btn-primary btn-sm">
@@ -22,7 +20,7 @@ export class IngredientTab {
     `;
   };
 
-  ingredientSearch = (): string => {
+  const ingredientSearch = () => {
     return `
       <label class="input input-sm input-bordered flex items-center gap-2">
         ${icons.search}
@@ -40,16 +38,14 @@ export class IngredientTab {
     `;
   };
 
-  async render() {
-    return `
-      <div id="${TAB_CONTAINER_ID}" class="flex flex-col justify-center items-center space-y-4">
-        <div class="flex justify-center items-center space-x-2">
-          ${this.ingredientSearch()}
-          <div class="divider divider-horizontal"></div>
-          ${this.addIngredient()}
-        </div>
-        ${await new IngredientList(this.ingredients, { swapOob: false }).render()}
+  return `
+    <div id="${TAB_CONTAINER_ID}" class="flex flex-col justify-center items-center space-y-4">
+      <div class="flex justify-center items-center space-x-2">
+        ${ingredientSearch()}
+        <div class="divider divider-horizontal"></div>
+        ${addIngredient()}
       </div>
-    `;
-  }
+      ${await ingredientList(ingredients, { swapOob: false })}
+    </div>
+  `;
 }

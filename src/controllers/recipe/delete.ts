@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { RecipeList } from '../../components/recipes/recipe-list';
+import { recipeList } from '../../components/recipes/recipe-list';
 import { HTMX_SWAP } from '../../utils/htmx';
 import * as recipeService from '../../services/recipe.service';
 import * as ingredientRepository from '../../repository/ingredient';
@@ -14,7 +14,7 @@ export default async (request: DeleteRecipeRequest, reply: FastifyReply) => {
   const recipes = await recipeService.removeRecipe(recipeId, query);
   const ingredients = await ingredientRepository.fetchIngredients();
 
-  const template = await new RecipeList(recipes, ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render();
+  const template = await recipeList(recipes, ingredients, { swapOob: HTMX_SWAP.ReplaceElement });
 
   return reply.type('text/html').send(template);
 };

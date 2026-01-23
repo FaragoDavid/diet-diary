@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { DayMealList } from '../../components/meals/day-meal-list';
-import { DayStats } from '../../components/meals/day-stats';
-import { MissingMeals } from '../../components/meals/missing-meals';
+import { dayMealList } from '../../components/meals/day-meal-list';
+import { dayStats } from '../../components/meals/day-stats';
+import { missingMeals } from '../../components/meals/missing-meals';
 import { MealType } from '../../config';
 import { paramToDate } from '../../utils/converters';
 import { HTMX_SWAP } from '../../utils/htmx';
@@ -20,9 +20,9 @@ export default async (request: DeleteMealRequest, reply: FastifyReply) => {
   const [ingredients, recipes] = await Promise.all([ingredientRepository.fetchIngredients(), recipeRepository.fetchRecipes()]);
 
   const template = `
-    ${await new DayStats(day, { layout: 'vertical', span: DayStats.SPAN.FIVE, swapOob: HTMX_SWAP.ReplaceElement }).render()}
-    ${await new MissingMeals(day, { swapOob: HTMX_SWAP.ReplaceElement }).render()}
-    ${await new DayMealList(day, ingredients, recipes, { layout: 'page', swapOob: HTMX_SWAP.ReplaceElement }).render()}
+    ${await dayStats(day, { layout: 'vertical', span: 'col-span-5', swapOob: HTMX_SWAP.ReplaceElement })}
+    ${await missingMeals(day, { swapOob: HTMX_SWAP.ReplaceElement })}
+    ${await dayMealList(day, ingredients, recipes, { layout: 'page', swapOob: HTMX_SWAP.ReplaceElement })}
   `;
   return reply.type('text/html').send(template);
 };

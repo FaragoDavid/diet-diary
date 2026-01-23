@@ -5,7 +5,7 @@ import { INGREDIENT_PAGE_ID } from '../../pages/ingredient';
 import { texts } from '../../constants/texts';
 const ID = 'ingredient-header';
 
-export function newIngredientHeader(): string {
+export function newIngredientHeader() {
   return (
     <div class="pb-6">
       <input
@@ -21,7 +21,7 @@ export function newIngredientHeader(): string {
   ) as string;
 }
 
-export function ingredientHeader(ingredient: Ingredient): string {
+export function ingredientHeader(ingredient: Ingredient) {
   return (
     <div id={ID} class="text-2xl text-center text-primary pb-6">
       {ingredient.name}

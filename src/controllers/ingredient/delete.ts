@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { IngredientList } from '../../components/ingredients/ingredient-list';
+import { ingredientList } from '../../components/ingredients/ingredient-list';
 import { HTMX_SWAP } from '../../utils/htmx';
 import * as ingredientService from '../../services/ingredient.service';
 
@@ -16,7 +16,7 @@ export default async (request: DeleteIngredientRequest, reply: FastifyReply) => 
 
   const ingredients = await ingredientService.removeIngredient(ingredientId, query);
 
-  const template = await new IngredientList(ingredients, { swapOob: HTMX_SWAP.ReplaceElement }).render();
+  const template = await ingredientList(ingredients, { swapOob: HTMX_SWAP.ReplaceElement });
 
   return reply.type('text/html').send(template);
 };

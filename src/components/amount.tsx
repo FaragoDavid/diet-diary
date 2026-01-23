@@ -11,7 +11,7 @@ export type AmountInputHtmxOption = {
   trigger?: string;
 };
 export type AmountInputOptions = { id?: string; amount?: number; name?: string; showText?: boolean; hx?: AmountInputHtmxOption };
-export function amount(options: AmountInputOptions): string {
+export function amount(options: AmountInputOptions) {
   const { amount, name, showText, hx, id } = options;
 
   const divAttrs: any = {

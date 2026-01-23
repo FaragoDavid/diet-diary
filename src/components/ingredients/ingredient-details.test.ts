@@ -1,6 +1,6 @@
-import { IngredientDetails } from './ingredient-details';
+import { ingredientDetails } from './ingredient-details';
 
-describe('IngredientDetails', () => {
+describe('ingredientDetails', () => {
   const mockIngredient = {
     id: 'test-id',
     name: 'Test Ingredient',
@@ -11,68 +11,9 @@ describe('IngredientDetails', () => {
     isCarbCounted: false,
   };
 
-  describe('nutrient inputs', () => {
-    it('should render calories input with value', () => {
-      const details = new IngredientDetails(mockIngredient);
-      const html = details.calories();
-
-      expect(html).toContain('name="calories"');
-      expect(html).toContain('value="200"');
-      expect(html).toContain('/ingredient/test-id');
-    });
-
-    it('should render carbs input with value', () => {
-      const details = new IngredientDetails(mockIngredient);
-      const html = details.carbs();
-
-      expect(html).toContain('name="carbs"');
-      expect(html).toContain('value="50"');
-      expect(html).toContain('/ingredient/test-id');
-    });
-
-    it('should render fat input with value', () => {
-      const details = new IngredientDetails(mockIngredient);
-      const html = details.fat();
-
-      expect(html).toContain('name="fat"');
-      expect(html).toContain('value="10"');
-      expect(html).toContain('/ingredient/test-id');
-    });
-  });
-
-  describe('checkboxes', () => {
-    it('should render vegetable checkbox when checked', () => {
-      const details = new IngredientDetails(mockIngredient);
-      const html = details.vegetableCheckbox();
-
-      expect(html).toContain('name="isVegetable"');
-      expect(html).toContain('checked="checked"');
-      expect(html).toContain('checkbox checkbox-sm');
-    });
-
-    it('should render vegetable checkbox when unchecked', () => {
-      const ingredient = { ...mockIngredient, isVegetable: false };
-      const details = new IngredientDetails(ingredient);
-      const html = details.vegetableCheckbox();
-
-      expect(html).toContain('name="isVegetable"');
-      expect(html).not.toContain('checked="checked"');
-    });
-
-    it('should render carb counted checkbox when unchecked', () => {
-      const details = new IngredientDetails(mockIngredient);
-      const html = details.carbCountedCheckbox();
-
-      expect(html).toContain('name="isCarbCounted"');
-      expect(html).not.toContain('checked="checked"');
-      expect(html).toContain('checkbox checkbox-xs');
-    });
-  });
-
   describe('render', () => {
     it('should render complete ingredient details', async () => {
-      const details = new IngredientDetails(mockIngredient);
-      const html = await details.render();
+      const html = await ingredientDetails(mockIngredient);
 
       expect(html).toContain('id="ingredient-details"');
       expect(html).toContain('name="calories"');

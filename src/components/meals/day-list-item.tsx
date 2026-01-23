@@ -4,37 +4,33 @@ import { format } from 'date-fns';
 import { DayWithMealsWithDishes } from '../../repository/meal';
 import { dateToParam } from '../../utils/converters';
 import icons from '../../utils/icons';
-import { DayMealList } from './day-meal-list';
-import { DayStats } from './day-stats';
+import { dayMealList } from './day-meal-list';
+import { dayStats } from './day-stats';
 
-export class DayListItem {
-  constructor(private day: DayWithMealsWithDishes, private ingredients: Ingredient[], private recipes: Recipe[]) {}
-
-  dayDate() {
+export async function dayListItem(day: DayWithMealsWithDishes, ingredients: Ingredient[], recipes: Recipe[]) {
+  const dayDate = () => {
     return `
-      <div class="flex items-center text-lg text-primary">${format(this.day.date, 'MMM. d. (EEE)')}</div>
+      <div class="flex items-center text-lg text-primary">${format(day.date, 'MMM. d. (EEE)')}</div>
     `;
-  }
+  };
 
-  editDay() {
+  const editDay = () => {
     return `
-      <a href="/day/${dateToParam(this.day.date)}">
+      <a href="/day/${dateToParam(day.date)}">
         <button 
           class="btn btn-primary btn-sm"
         >${icons.edit}</button>
       </a>
     `;
-  }
+  };
 
-  async render() {
-    return `
-      ${this.dayDate()}
-      ${await new DayStats(this.day, { layout: 'vertical', swapOob: false }).render()}
-      ${this.editDay()}
-      ${await new DayMealList(this.day, this.ingredients, this.recipes, {
-        layout: 'dayList',
-        swapOob: false,
-      }).render()}
-    `;
-  }
+  return `
+    ${dayDate()}
+    ${await dayStats(day, { layout: 'vertical', swapOob: false })}
+    ${editDay()}
+    ${await dayMealList(day, ingredients, recipes, {
+      layout: 'dayList',
+      swapOob: false,
+    })}
+  `;
 }

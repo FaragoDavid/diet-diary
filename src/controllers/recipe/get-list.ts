@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { RecipeList } from '../../components/recipes/recipe-list';
+import { recipeList } from '../../components/recipes/recipe-list';
 import * as ingredientRepository from '../../repository/ingredient';
 import * as recipeRepository from '../../repository/recipe';
 
@@ -11,6 +11,6 @@ export default async (request: GetRecipeListRequest, reply: FastifyReply) => {
   const recipes = await recipeRepository.fetchRecipes(query);
   const ingredients = await ingredientRepository.fetchIngredients();
 
-  const template = await new RecipeList(recipes, ingredients, { swapOob: false }).render();
+  const template = await recipeList(recipes, ingredients, { swapOob: false });
   return reply.type('text/html').send(template);
 };

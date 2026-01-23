@@ -1,11 +1,11 @@
 import { Ingredient, Recipe } from '@prisma/client';
 
-import { BackLink } from '../components/back-link';
+import { backLink } from '../components/back-link';
 import { dayHeader, newDayHeader } from '../components/meals/day-header';
-import { DayMealList } from '../components/meals/day-meal-list';
-import { DayMeal } from '../components/meals/day-meal';
-import { DayStats } from '../components/meals/day-stats';
-import { MissingMeals } from '../components/meals/missing-meals';
+import { dayMealList } from '../components/meals/day-meal-list';
+import { dayMeal } from '../components/meals/day-meal';
+import { dayStats } from '../components/meals/day-stats';
+import { missingMeals } from '../components/meals/missing-meals';
 import { TAB_NAME } from '../components/tab-list';
 import { DayWithMealsWithDishes } from '../repository/meal';
 import { texts } from '../constants/texts';
@@ -15,7 +15,7 @@ export const DAY_PAGE_ID = 'day-page';
 export class NewDayPage {
   async render() {
     return `
-      ${await new BackLink(TAB_NAME.meals).render()}
+      ${await backLink(TAB_NAME.meals)}
       <div id="${DAY_PAGE_ID}" class="flex flex-col place-items-center w-full gap-4 pt-6">
         <div class="text-2xl text-primary">${texts.meals.newDay}</div>
         ${newDayHeader()}
@@ -33,16 +33,16 @@ export class DayPage {
   async render() {
     const meals: string[] = [];
     for (const meal of this.day.meals) {
-      meals.push(await new DayMeal(meal, this.day.date, this.ingredients, this.recipes, { layout: 'page', swapOob: false }).render());
+      meals.push(await dayMeal(meal, this.day.date, this.ingredients, this.recipes, { layout: 'page', swapOob: false }));
     }
 
     return `
-      ${await new BackLink(TAB_NAME.meals).render()}
+      ${await backLink(TAB_NAME.meals)}
       <div id="${DAY_PAGE_ID}" class="flex flex-col justify-center items-center gap-4 pt-6">
         ${dayHeader(this.day)}
-        ${await new DayStats(this.day, { layout: 'vertical', span: DayStats.SPAN.NONE, swapOob: false }).render()}
-        ${await new MissingMeals(this.day, { swapOob: false }).render()}
-        ${await new DayMealList(this.day, this.ingredients, this.recipes, { layout: 'page', swapOob: false }).render()}
+        ${await dayStats(this.day, { layout: 'vertical', span: undefined, swapOob: false })}
+        ${await missingMeals(this.day, { swapOob: false })}
+        ${await dayMealList(this.day, this.ingredients, this.recipes, { layout: 'page', swapOob: false })}
       </div>`;
   }
 }

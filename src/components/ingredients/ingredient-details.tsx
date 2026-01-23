@@ -4,15 +4,13 @@ import { Ingredient } from '@prisma/client';
 import { AmountInputOptions, amount } from '../amount';
 import { texts } from '../../constants/texts';
 
-export class IngredientDetails {
-  constructor(private ingredient: Ingredient) {}
-
-  private nutrientInput(name: string, label: string, value: number | null): string {
+export async function ingredientDetails(ingredient: Ingredient) {
+  const nutrientInput = (name: string, label: string, value: number | null) => {
     const amountOptions: AmountInputOptions = {
       name,
       hx: {
         verb: 'post',
-        url: `/ingredient/${this.ingredient.id}`,
+        url: `/ingredient/${ingredient.id}`,
       },
     };
     if (value) amountOptions.amount = value;
@@ -20,26 +18,26 @@ export class IngredientDetails {
       <div class="text">${label}:</div>
       ${amount(amountOptions)}
     `;
-  }
+  };
 
-  calories(): string {
-    return this.nutrientInput('calories', texts.nutrients.calories.long, this.ingredient.caloriesPer100);
-  }
+  const calories = () => {
+    return nutrientInput('calories', texts.nutrients.calories.long, ingredient.caloriesPer100);
+  };
 
-  carbs(): string {
-    return this.nutrientInput('carbs', texts.nutrients.carbs.long, this.ingredient.carbsPer100);
-  }
+  const carbs = () => {
+    return nutrientInput('carbs', texts.nutrients.carbs.long, ingredient.carbsPer100);
+  };
 
-  fat(): string {
-    return this.nutrientInput('fat', texts.nutrients.fat, this.ingredient.fatPer100);
-  }
+  const fat = () => {
+    return nutrientInput('fat', texts.nutrients.fat, ingredient.fatPer100);
+  };
 
-  private checkbox(name: string, label: string, checked: boolean, checkboxClass: string, labelClass: string = 'text'): string {
+  const checkbox = (name: string, label: string, checked: boolean, checkboxClass: string, labelClass: string = 'text') => {
     const attrs: any = {
       type: 'checkbox',
       name,
       class: checkboxClass,
-      'hx-post': `/ingredient/${this.ingredient.id}`,
+      'hx-post': `/ingredient/${ingredient.id}`,
     };
     if (checked) attrs.checked = 'checked';
 
@@ -49,31 +47,23 @@ export class IngredientDetails {
         .map(([k, v]) => `${k}="${v}"`)
         .join(' ')} />
     `;
-  }
+  };
 
-  vegetableCheckbox(): string {
-    return this.checkbox('isVegetable', texts.ingredients.vegetable, this.ingredient.isVegetable, 'checkbox checkbox-sm');
-  }
+  const vegetableCheckbox = () => {
+    return checkbox('isVegetable', texts.ingredients.vegetable, ingredient.isVegetable, 'checkbox checkbox-sm');
+  };
 
-  carbCountedCheckbox(): string {
-    return this.checkbox(
-      'isCarbCounted',
-      texts.ingredients.carbCounted,
-      this.ingredient.isCarbCounted,
-      'checkbox checkbox-xs',
-      'text-sm pl-4',
-    );
-  }
+  const carbCountedCheckbox = () => {
+    return checkbox('isCarbCounted', texts.ingredients.carbCounted, ingredient.isCarbCounted, 'checkbox checkbox-xs', 'text-sm pl-4');
+  };
 
-  async render(): Promise<string> {
-    return (
-      <div id="ingredient-details" class="grid grid-cols-max-2 grid-row-flex gap-2 pb-4 items-center">
-        {this.calories()}
-        {this.carbs()}
-        {this.carbCountedCheckbox()}
-        {this.fat()}
-        {this.vegetableCheckbox()}
-      </div>
-    ) as string;
-  }
+  return (
+    <div id="ingredient-details" class="grid grid-cols-max-2 grid-row-flex gap-2 pb-4 items-center">
+      {calories()}
+      {carbs()}
+      {carbCountedCheckbox()}
+      {fat()}
+      {vegetableCheckbox()}
+    </div>
+  ) as string;
 }

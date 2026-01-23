@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { RecipeDetails } from '../../components/recipes/recipe-details';
+import { recipeDetails } from '../../components/recipes/recipe-details';
 import { HTMX_SWAP } from '../../utils/htmx';
 import * as recipeService from '../../services/recipe.service';
 
@@ -20,7 +20,7 @@ export default async (request: UpdateRecipeIngredientRequest, reply: FastifyRepl
     return reply.status(404).type('text/html').send('<div class="alert alert-error">Recipe not found</div>');
   }
 
-  const template = await new RecipeDetails(recipe, { swapOob: HTMX_SWAP.ReplaceElement }).render();
+  const template = await recipeDetails(recipe, { swapOob: HTMX_SWAP.ReplaceElement });
 
   return reply.type('text/html').send(template);
 };

@@ -12,7 +12,7 @@ export const enum TAB_NAME {
 export const TAB_CONTAINER_ID = 'tab-container';
 const TAB_LIST_ID = 'tab-list';
 
-function tab(label: string, isActive: boolean, href: string): string {
+function tab(label: string, isActive: boolean, href: string) {
   return (
     <a
       role="tab"
@@ -26,7 +26,7 @@ function tab(label: string, isActive: boolean, href: string): string {
   ) as string;
 }
 
-export function tabList(activeTab: `${TAB_NAME}`, options: { swapOob: HtmxSwapOobOption }): string {
+export function tabList(activeTab: `${TAB_NAME}`, options: { swapOob: HtmxSwapOobOption }) {
   const divAttrs: any = {
     id: TAB_LIST_ID,
     role: 'tablist',

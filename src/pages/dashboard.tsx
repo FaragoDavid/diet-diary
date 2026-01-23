@@ -1,8 +1,8 @@
 import { Ingredient } from '@prisma/client';
 
-import { IngredientTab } from '../components/ingredients/ingredient-tab';
-import { MealTab } from '../components/meals/meal-tab';
-import { RecipeTab } from '../components/recipes/recipe-tab';
+import { ingredientTab } from '../components/ingredients/ingredient-tab';
+import { mealTab } from '../components/meals/meal-tab';
+import { recipeTab } from '../components/recipes/recipe-tab';
 import { TAB_NAME, tabList } from '../components/tab-list';
 import config from '../config';
 import { DayWithMealsWithDishes } from '../repository/meal';
@@ -19,11 +19,11 @@ export class Dashboard {
   async activeTab() {
     switch (this.target) {
       case TAB_NAME.ingredients:
-        return await new IngredientTab(this.ingredients).render();
+        return await ingredientTab(this.ingredients);
       case TAB_NAME.recipes:
-        return await new RecipeTab(this.recipes, this.ingredients).render();
+        return await recipeTab(this.recipes, this.ingredients);
       default:
-        return await new MealTab(this.days, this.ingredients, this.recipes).render();
+        return await mealTab(this.days, this.ingredients, this.recipes);
     }
   }
 

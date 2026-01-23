@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { IngredientTab } from '../../components/ingredients/ingredient-tab';
+import { ingredientTab } from '../../components/ingredients/ingredient-tab';
 import { TAB_NAME, tabList } from '../../components/tab-list';
 import { HTMX_SWAP } from '../../utils/htmx';
 import * as ingredientRepository from '../../repository/ingredient';
@@ -10,7 +10,7 @@ export default async (_: FastifyRequest, reply: FastifyReply) => {
 
   const template = `
     ${tabList(TAB_NAME.ingredients, { swapOob: HTMX_SWAP.ReplaceElement })}
-    ${await new IngredientTab(ingredients).render()}
+    ${await ingredientTab(ingredients)}
   `;
 
   return reply.type('text/html').header('HX-Push-Url', `/dashboard/${TAB_NAME.ingredients}`).send(template);

@@ -3,45 +3,41 @@ import { RecipeWithIngredients } from '../../repository/recipe';
 import { HTMX_SWAP } from '../../utils/htmx';
 import { swapOobWrapper } from '../../utils/swap-oob-wrapper';
 import { amount } from '../amount';
-import { IngredientSelector } from './ingredient-selector';
+import { ingredientSelector } from './ingredient-selector';
 import { RECIPE_INGREDIENT_LIST_ID } from './recipe-ingredient-list';
 import { texts } from '../../constants/texts';
 
 const NEW_RECIPE_INGREDIENT_ID = 'new-recipe-ingredient';
 
-export class NewRecipeIngredient {
-  constructor(
-    private recipe: RecipeWithIngredients,
-    private ingredients: Ingredient[],
-    private options: { swapOob?: HtmxSwapOobOption } = {},
-  ) {}
+export async function newRecipeIngredient(
+  recipe: RecipeWithIngredients,
+  ingredients: Ingredient[],
+  options: { swapOob?: HtmxSwapOobOption } = {},
+) {
+  const recipeIngredientIds = recipe.ingredients.map(({ ingredient }) => ingredient.id);
 
-  async render(): Promise<string> {
-    const recipeIngredientIds = this.recipe.ingredients.map(({ ingredient }) => ingredient.id);
+  const selectorHtml = await ingredientSelector(recipeIngredientIds, ingredients, { swapOob: false });
+  const amountHtml = amount({
+    name: 'amount',
+    hx: {
+      verb: 'post',
+      url: `/recipe/${recipe.id}/ingredient`,
+      target: `#${RECIPE_INGREDIENT_LIST_ID}`,
+      swap: HTMX_SWAP.AfterLastChild,
+      include: '[name=ingredientId]',
+    },
+  });
 
-    const selectorHtml = await new IngredientSelector(recipeIngredientIds, this.ingredients, { swapOob: false }).render();
-    const amountHtml = amount({
-      name: 'amount',
-      hx: {
-        verb: 'post',
-        url: `/recipe/${this.recipe.id}/ingredient`,
-        target: `#${RECIPE_INGREDIENT_LIST_ID}`,
-        swap: HTMX_SWAP.AfterLastChild,
-        include: '[name=ingredientId]',
-      },
-    });
-
-    const template = `
-      <div class="flex flex-col items-center justify-center gap-4">
-        <div class="text">${texts.recipes.newIngredient}</div>
-        <div id="hm" class="flex items-center justify-center gap-4">
-          ${selectorHtml}
-          ${amountHtml}
-        </div>
+  const template = `
+    <div class="flex flex-col items-center justify-center gap-4">
+      <div class="text">${texts.recipes.newIngredient}</div>
+      <div id="hm" class="flex items-center justify-center gap-4">
+        ${selectorHtml}
+        ${amountHtml}
       </div>
-    `;
+    </div>
+  `;
 
-    if (this.options.swapOob) return swapOobWrapper(NEW_RECIPE_INGREDIENT_ID, this.options.swapOob, template);
-    return template;
-  }
+  if (options.swapOob) return swapOobWrapper(NEW_RECIPE_INGREDIENT_ID, options.swapOob, template);
+  return template;
 }

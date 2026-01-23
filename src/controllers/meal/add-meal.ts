@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { DayMealList } from '../../components/meals/day-meal-list';
-import { MissingMeals } from '../../components/meals/missing-meals';
+import { dayMealList } from '../../components/meals/day-meal-list';
+import { missingMeals } from '../../components/meals/missing-meals';
 import { MealType } from '../../config';
 import { paramToDate } from '../../utils/converters';
 import { HTMX_SWAP } from '../../utils/htmx';
@@ -24,8 +24,8 @@ export default async (request: AddMealRequest, reply: FastifyReply) => {
   const [ingredients, recipes] = await Promise.all([ingredientRepository.fetchIngredients(), recipeRepository.fetchRecipes()]);
 
   const template = `
-    ${await new MissingMeals(day, { swapOob: false }).render()}
-    ${await new DayMealList(day, ingredients, recipes, { layout: 'page', swapOob: HTMX_SWAP.ReplaceElement }).render()}
+    ${await missingMeals(day, { swapOob: false })}
+    ${await dayMealList(day, ingredients, recipes, { layout: 'page', swapOob: HTMX_SWAP.ReplaceElement })}
   `;
 
   return reply.type('text/html').send(template);

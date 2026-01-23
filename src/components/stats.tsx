@@ -15,7 +15,7 @@ export type StatLayout = 'horizontal' | 'vertical' | 'cells';
 type Macro = 'cal' | 'carbs' | 'fat';
 type Size = 'sm' | 'lg';
 
-function stat(macro: Macro, amount: number, layout: StatLayout, options?: { size?: Size }): string {
+function stat(macro: Macro, amount: number, layout: StatLayout, options?: { size?: Size }) {
   const macroText = macroTexts[macro];
   const amountText = Math.floor(amount);
 
@@ -42,7 +42,7 @@ function stat(macro: Macro, amount: number, layout: StatLayout, options?: { size
 }
 
 export type StatsOptions = { id?: string; layout: StatLayout; size?: Size; span?: string; swapOob?: HtmxSwapOobOption };
-export function stats(macroAmounts: { cal: number; carbs: number; fat: number }, options: StatsOptions): string {
+export function stats(macroAmounts: { cal: number; carbs: number; fat: number }, options: StatsOptions) {
   const { cal, carbs, fat } = macroAmounts;
   const { id, layout, size, span = '', swapOob } = options;
 

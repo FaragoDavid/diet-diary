@@ -4,7 +4,7 @@ import { RecipeWithIngredients } from '../../repository/recipe';
 import { texts } from '../../constants/texts';
 const ID = 'recipe-header';
 
-export function newRecipeHeader(): string {
+export function newRecipeHeader() {
   return (
     <div class="pb-6">
       <input
@@ -20,7 +20,7 @@ export function newRecipeHeader(): string {
   ) as string;
 }
 
-export function recipeHeader(recipe: RecipeWithIngredients): string {
+export function recipeHeader(recipe: RecipeWithIngredients) {
   return (
     <div id={ID} class="text-2xl text-center text-primary pb-6">
       {recipe.name}
