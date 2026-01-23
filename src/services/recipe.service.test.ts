@@ -98,6 +98,7 @@ describe('RecipeService', () => {
   describe('addIngredientToRecipe', () => {
     it('should add ingredient and fetch all resources', async () => {
       const ingredientAmount = { amount: 100, ingredient: mockIngredients[0] };
+      mockedIngredientRepository.fetchIngredient.mockResolvedValue(mockIngredients[0]);
       mockedRecipeIngredientRepository.addIngredient.mockResolvedValue(ingredientAmount);
       mockedIngredientRepository.fetchIngredients.mockResolvedValue(mockIngredients);
       mockedRecipeRepository.fetchRecipe.mockResolvedValue(mockRecipe);
@@ -110,13 +111,19 @@ describe('RecipeService', () => {
         ingredients: mockIngredients,
         recipe: mockRecipe,
       });
-      expect(mockedRecipeIngredientRepository.addIngredient).toHaveBeenCalledWith('1', '1', 100);
+      expect(mockedIngredientRepository.fetchIngredient).toHaveBeenCalledWith('1');
+      expect(mockedRecipeIngredientRepository.addIngredient).toHaveBeenCalledWith('1', '1', 100, {
+        calories: 200,
+        carbs: 0,
+        fat: 10,
+      });
       expect(mockedIngredientRepository.fetchIngredients).toHaveBeenCalled();
       expect(mockedRecipeRepository.fetchRecipe).toHaveBeenCalledWith('1');
     });
 
     it('should throw error when recipe not found after adding', async () => {
       const ingredientAmount = { amount: 100, ingredient: mockIngredients[0] };
+      mockedIngredientRepository.fetchIngredient.mockResolvedValue(mockIngredients[0]);
       mockedRecipeIngredientRepository.addIngredient.mockResolvedValue(ingredientAmount);
       mockedIngredientRepository.fetchIngredients.mockResolvedValue(mockIngredients);
       mockedRecipeRepository.fetchRecipe.mockResolvedValue(null);
@@ -127,16 +134,22 @@ describe('RecipeService', () => {
 
   describe('updateRecipeIngredientAmount', () => {
     it('should update recipe ingredient amount', async () => {
+      mockedRecipeRepository.fetchRecipe.mockResolvedValue(mockRecipe);
       mockedRecipeIngredientRepository.updateIngredientAmount.mockResolvedValue(mockRecipe);
 
       const result = await recipeService.updateRecipeIngredientAmount('1', '1', 200);
 
       expect(result).toEqual(mockRecipe);
-      expect(mockedRecipeIngredientRepository.updateIngredientAmount).toHaveBeenCalledWith('1', '1', 200);
+      expect(mockedRecipeRepository.fetchRecipe).toHaveBeenCalledWith('1');
+      expect(mockedRecipeIngredientRepository.updateIngredientAmount).toHaveBeenCalledWith('1', '1', 200, {
+        calories: 200,
+        carbs: 0,
+        fat: 10,
+      });
     });
 
     it('should throw error when recipe not found', async () => {
-      mockedRecipeIngredientRepository.updateIngredientAmount.mockResolvedValue(null);
+      mockedRecipeRepository.fetchRecipe.mockResolvedValue(null);
 
       await expect(recipeService.updateRecipeIngredientAmount('999', '1', 200)).rejects.toThrow('Recipe not found');
     });
@@ -144,6 +157,7 @@ describe('RecipeService', () => {
 
   describe('removeIngredientFromRecipe', () => {
     it('should remove ingredient and fetch ingredients', async () => {
+      mockedRecipeRepository.fetchRecipe.mockResolvedValue(mockRecipe);
       mockedRecipeIngredientRepository.deleteRecipeIngredient.mockResolvedValue(mockRecipe);
       mockedIngredientRepository.fetchIngredients.mockResolvedValue(mockIngredients);
 
@@ -154,7 +168,12 @@ describe('RecipeService', () => {
         recipeIngredientIds: ['1'],
         ingredients: mockIngredients,
       });
-      expect(mockedRecipeIngredientRepository.deleteRecipeIngredient).toHaveBeenCalledWith('1', '1');
+      expect(mockedRecipeRepository.fetchRecipe).toHaveBeenCalledWith('1');
+      expect(mockedRecipeIngredientRepository.deleteRecipeIngredient).toHaveBeenCalledWith('1', '1', {
+        calories: -200,
+        carbs: -0,
+        fat: -10,
+      });
       expect(mockedIngredientRepository.fetchIngredients).toHaveBeenCalled();
     });
 
