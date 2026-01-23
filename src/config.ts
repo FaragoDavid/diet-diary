@@ -1,12 +1,12 @@
-const enum MEAL_TYPE {
-  morningSnack = 'morningSnack',
-  breakfast = 'breakfast',
-  brunch = 'brunch',
-  lunch = 'lunch',
-  afternoonSnack = 'afternoonSnack',
-  dinner = 'dinner',
-  lateNightSnack = 'lateNightSnack',
-}
+export const MEAL_TYPE = {
+  morningSnack: 'morningSnack',
+  breakfast: 'breakfast',
+  brunch: 'brunch',
+  lunch: 'lunch',
+  afternoonSnack: 'afternoonSnack',
+  dinner: 'dinner',
+  lateNightSnack: 'lateNightSnack',
+} as const;
 
 export default {
   port: Number(process.env.PORT) || 3000,
@@ -64,4 +64,4 @@ export default {
   ],
 };
 
-export type MealType = `${MEAL_TYPE}`;
+export type MealType = (typeof MEAL_TYPE)[keyof typeof MEAL_TYPE];

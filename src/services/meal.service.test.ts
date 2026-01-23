@@ -1,6 +1,6 @@
 // @ts-nocheck
 import * as mealService from './meal.service';
-import { MealType } from '../config';
+import { MEAL_TYPE, MealType } from '../config';
 import * as ingredientRepository from '../repository/ingredient';
 import * as mealRepository from '../repository/meal';
 import * as recipeRepository from '../repository/recipe';
@@ -15,7 +15,7 @@ const mockedRecipeRepository = recipeRepository as jest.Mocked<typeof recipeRepo
 
 describe('mealService', () => {
   const mockDate = new Date('2024-01-15');
-  const mockMealType: MealType = 'breakfast';
+  const mockMealType: MealType = MEAL_TYPE.breakfast;
 
   const mockIngredients = [
     { id: '1', name: 'chicken', caloriesPer100: 200, carbsPer100: 0, fatPer100: 10, isVegetable: false, isCarbCounted: true },
@@ -43,7 +43,7 @@ describe('mealService', () => {
 
   const mockMeal = {
     id: '1',
-    type: 'breakfast' as MealType,
+    type: MEAL_TYPE.breakfast as MealType,
     dayId: '1',
     dishes: [mockDish],
   };
