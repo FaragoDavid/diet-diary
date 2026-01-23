@@ -44,40 +44,48 @@ function stat(macro: Macro, amount: number, layout: StatLayout, options?: { size
 export type StatsOptions = { id?: string; layout: StatLayout; size?: Size; span?: string; swapOob?: HtmxSwapOobOption };
 export function stats(macroAmounts: { cal: number; carbs: number; fat: number }, options: StatsOptions): string {
   const { cal, carbs, fat } = macroAmounts;
-  let { id, layout, size, span, swapOob } = options;
-  if (span == undefined) span = '';
+  const { id, layout, size, span = '', swapOob } = options;
 
-  let template = '';
-
-  if (layout === 'vertical' || layout === 'horizontal') {
-    const divAttrs: any = {
-      class: `flex${size ? ' ' + textSizes[size] : ''}${span ? ' ' + span : ''}`,
-    };
-    if (id) divAttrs.id = id;
-    if (swapOob === HTMX_SWAP.ReplaceElement) divAttrs['hx-swap-oob'] = swapOob;
-
-    template = (
-      <div {...divAttrs}>
-        {stat('cal', cal, layout)}
-        <div class="divider divider-horizontal m-1" />
-        {stat('carbs', carbs, layout)}
-        <div class="divider divider-horizontal m-1" />
-        {stat('fat', fat, layout)}
-      </div>
-    ) as string;
-  }
-
-  if (layout === 'cells') {
-    template = `
-      ${stat('cal', cal, layout, { size })}
-      ${stat('carbs', carbs, layout, { size })}
-      ${stat('fat', fat, layout, { size })}
-    `;
-  }
+  const template = generateTemplate(cal, carbs, fat, layout, size, span, id, swapOob);
 
   if (swapOob && swapOob !== HTMX_SWAP.ReplaceElement) {
     if (!id) throw new Error('id is required for hx-swap-oob');
     return swapOobWrapper(id, swapOob, template);
   }
   return template;
+}
+
+function generateTemplate(
+  cal: number,
+  carbs: number,
+  fat: number,
+  layout: StatLayout,
+  size: Size | undefined,
+  span: string,
+  id: string | undefined,
+  swapOob: HtmxSwapOobOption | undefined,
+): string {
+  if (layout === 'cells') {
+    return `
+      ${stat('cal', cal, layout, { size })}
+      ${stat('carbs', carbs, layout, { size })}
+      ${stat('fat', fat, layout, { size })}
+    `;
+  }
+
+  const divAttrs: any = {
+    class: `flex${size ? ' ' + textSizes[size] : ''}${span ? ' ' + span : ''}`,
+  };
+  if (id) divAttrs.id = id;
+  if (swapOob === HTMX_SWAP.ReplaceElement) divAttrs['hx-swap-oob'] = swapOob;
+
+  return (
+    <div {...divAttrs}>
+      {stat('cal', cal, layout)}
+      <div class="divider divider-horizontal m-1" />
+      {stat('carbs', carbs, layout)}
+      <div class="divider divider-horizontal m-1" />
+      {stat('fat', fat, layout)}
+    </div>
+  ) as string;
 }
