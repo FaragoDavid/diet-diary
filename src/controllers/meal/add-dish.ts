@@ -17,12 +17,12 @@ export default async (request: AddDishRequest, reply: FastifyReply) => {
 
   const amount = Number(request.body.amount);
   if (isNaN(amount) || amount <= 0) {
-    return reply.status(400).type('text/html').send('<div class="alert alert-error">Invalid amount. Must be a positive number.</div>');
+    return { error: 'Invalid amount. Must be a positive number.' };
   }
 
   const dishId = request.body[`${mealType}-dishId`];
   if (!dishId) {
-    return reply.status(400).type('text/html').send('<div class="alert alert-error">Please select an ingredient or recipe.</div>');
+    return { error: 'Please select an ingredient or recipe.' };
   }
 
   const { dish, day, meal } = await mealService.addDishToMeal(paramToDate(date), mealType, dishId, amount);

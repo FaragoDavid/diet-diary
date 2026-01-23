@@ -11,7 +11,7 @@ export default async (request: DeleteIngredientRequest, reply: FastifyReply) => 
   const query = (request.body.query || '').trim();
 
   if (!ingredientId) {
-    return reply.status(400).type('text/html').send('<div class="alert alert-error">Ingredient ID is required</div>');
+    return { error: 'Ingredient ID is required' };
   }
 
   const ingredients = await ingredientService.removeIngredient(ingredientId, query);

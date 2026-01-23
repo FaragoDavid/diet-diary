@@ -20,7 +20,7 @@ export default async (request: UpdateIngredientRequest, reply: FastifyReply) => 
     (carbsNum !== null && (isNaN(carbsNum) || carbsNum < 0)) ||
     (fatNum !== null && (isNaN(fatNum) || fatNum < 0))
   ) {
-    return reply.status(400).type('text/html').send('<div class="alert alert-error">Invalid numeric values</div>');
+    return { error: 'Invalid numeric values' };
   }
 
   await ingredientRepository.updateIngredient(ingredientId, {

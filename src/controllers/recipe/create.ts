@@ -12,7 +12,7 @@ export default async (request: CreateRecipeRequest, reply: FastifyReply) => {
   const recipeName = (request.body.recipeName || '').trim();
 
   if (!recipeName || recipeName.length === 0) {
-    return reply.status(400).type('text/html').send('<div class="alert alert-error">Recipe name is required</div>');
+    return { error: 'Recipe name is required' };
   }
 
   const recipe = await recipeRepository.createRecipe(recipeName);

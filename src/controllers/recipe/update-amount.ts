@@ -10,7 +10,7 @@ export default async (request: UpdateRecipeAmountRequest, reply: FastifyReply) =
 
   const amountNum = Number(amount);
   if (isNaN(amountNum) || amountNum <= 0) {
-    return reply.status(400).type('text/html').send('<div class="alert alert-error">Invalid amount. Must be a positive number.</div>');
+    return { error: 'Invalid amount. Must be a positive number.' };
   }
 
   await recipeRepository.updateRecipeAmount(recipeId, amountNum);

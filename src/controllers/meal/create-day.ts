@@ -15,13 +15,13 @@ export default async (request: CreateDayRequest, reply: FastifyReply) => {
   const { date } = request.body;
 
   if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-    return reply.status(400).type('text/html').send('<div class="alert alert-error">Invalid date format. Expected YYYY-MM-DD</div>');
+    return { error: 'Invalid date format. Expected YYYY-MM-DD' };
   }
 
   const bodyDate = new Date(date);
 
   if (isNaN(bodyDate.getTime())) {
-    return reply.status(400).type('text/html').send('<div class="alert alert-error">Invalid date value</div>');
+    return { error: 'Invalid date value' };
   }
 
   const day = await mealRepository.createDay(bodyDate);

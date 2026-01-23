@@ -17,12 +17,12 @@ export default async (request: AddRecipeIngredientRequest, reply: FastifyReply) 
   const { ingredientId, amount } = request.body;
 
   if (!ingredientId) {
-    return reply.status(400).type('text/html').send('<div class="alert alert-error">Please select an ingredient</div>');
+    return { error: 'Please select an ingredient' };
   }
 
   const amountNum = Number(amount);
   if (isNaN(amountNum) || amountNum <= 0) {
-    return reply.status(400).type('text/html').send('<div class="alert alert-error">Invalid amount. Must be a positive number.</div>');
+    return { error: 'Invalid amount. Must be a positive number.' };
   }
 
   const { ingredientAmount, ingredient, recipe } = await recipeService.addIngredientToRecipe(recipeId, ingredientId, amountNum);

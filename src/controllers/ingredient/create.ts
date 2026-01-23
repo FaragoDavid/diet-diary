@@ -10,7 +10,7 @@ export default async (request: CreateIngredientRequest, reply: FastifyReply) => 
   const ingredientName = (request.body.ingredientName || '').trim();
 
   if (!ingredientName || ingredientName.length === 0) {
-    return reply.status(400).type('text/html').send('<div class="alert alert-error">Ingredient name is required</div>');
+    return { error: 'Ingredient name is required' };
   }
 
   const ingredient = await ingredientRepository.insertIngredient(ingredientName);

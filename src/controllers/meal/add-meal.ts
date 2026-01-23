@@ -16,7 +16,7 @@ export default async (request: AddMealRequest, reply: FastifyReply) => {
   const { mealType } = request.body;
 
   if (!mealType) {
-    return reply.status(400).type('text/html').send('<div class="alert alert-error">Meal type is required</div>');
+    return { error: 'Meal type is required' };
   }
 
   const date = paramToDate(dateParam);
