@@ -92,41 +92,141 @@ describe('mealService', () => {
   });
 
   describe('addDishToMeal', () => {
-    it('should add dish and fetch all resources', async () => {
+    it('should calculate nutrition for ingredient and pass to repository', async () => {
+      const mockIngredient = {
+        id: '1',
+        name: 'chicken',
+        caloriesPer100: 200,
+        carbsPer100: 10,
+        fatPer100: 5,
+        isVegetable: false,
+        isCarbCounted: true,
+      };
+      mockedIngredientRepository.fetchIngredient.mockResolvedValue(mockIngredient);
+      mockedRecipeRepository.fetchRecipe.mockResolvedValue(null);
       mockedMealRepository.addDish.mockResolvedValue(mockDish);
       mockedMealRepository.fetchDay.mockResolvedValue(mockDay);
       mockedMealRepository.fetchMeal.mockResolvedValue(mockMeal);
 
-      const result = await mealService.addDishToMeal(mockDate, mockMealType, '1', 100);
+      const result = await mealService.addDishToMeal(mockDate, mockMealType, '1', 150);
 
       expect(result).toEqual({ dish: mockDish, day: mockDay, meal: mockMeal });
-      expect(mockedMealRepository.addDish).toHaveBeenCalledWith(mockDate, mockMealType, '1', 100);
+      expect(mockedMealRepository.addDish).toHaveBeenCalledWith(mockDate, mockMealType, {
+        name: 'chicken',
+        ingredientId: '1',
+        recipeId: null,
+        amount: 150,
+        calories: 300,
+        carbs: 15,
+        fat: 7.5,
+      });
+    });
+
+    it('should calculate nutrition for recipe and pass to repository', async () => {
+      const mockRecipe = {
+        id: 'r1',
+        name: 'Test Recipe',
+        servings: 2,
+        caloriesPer100: 0,
+        carbsPer100: 0,
+        fatPer100: 0,
+        ingredients: [
+          {
+            amount: 100,
+            ingredient: {
+              id: '1',
+              name: 'chicken',
+              caloriesPer100: 200,
+              carbsPer100: 10,
+              fatPer100: 5,
+              isVegetable: false,
+              isCarbCounted: true,
+            },
+          },
+          {
+            amount: 50,
+            ingredient: {
+              id: '2',
+              name: 'rice',
+              caloriesPer100: 100,
+              carbsPer100: 80,
+              fatPer100: 1,
+              isVegetable: false,
+              isCarbCounted: true,
+            },
+          },
+        ],
+      };
+      mockedIngredientRepository.fetchIngredient.mockResolvedValue(null);
+      mockedRecipeRepository.fetchRecipe.mockResolvedValue(mockRecipe);
+      mockedMealRepository.addDish.mockResolvedValue(mockDish);
+      mockedMealRepository.fetchDay.mockResolvedValue(mockDay);
+      mockedMealRepository.fetchMeal.mockResolvedValue(mockMeal);
+
+      const result = await mealService.addDishToMeal(mockDate, mockMealType, 'r1', 2);
+
+      expect(result).toEqual({ dish: mockDish, day: mockDay, meal: mockMeal });
+      expect(mockedMealRepository.addDish).toHaveBeenCalledWith(mockDate, mockMealType, {
+        name: 'Test Recipe',
+        ingredientId: null,
+        recipeId: 'r1',
+        amount: 2,
+        calories: 500,
+        carbs: 100,
+        fat: 11,
+      });
     });
 
     it('should throw error when day not found after adding', async () => {
+      mockedIngredientRepository.fetchIngredient.mockResolvedValue(mockIngredients[0]);
       mockedMealRepository.addDish.mockResolvedValue(mockDish);
       mockedMealRepository.fetchDay.mockResolvedValue(null);
       mockedMealRepository.fetchMeal.mockResolvedValue(mockMeal);
-      mockedIngredientRepository.fetchIngredients.mockResolvedValue(mockIngredients);
-      mockedRecipeRepository.fetchRecipes.mockResolvedValue(mockRecipes);
 
       await expect(mealService.addDishToMeal(mockDate, mockMealType, '1', 100)).rejects.toThrow('Day or meal not found after adding dish');
     });
   });
 
   describe('updateDishAmount', () => {
-    it('should update dish amount and fetch resources', async () => {
+    it('should calculate nutrition delta and update dish', async () => {
+      const mockDishWithNutrition = {
+        id: '1',
+        amount: 100,
+        calories: 200,
+        carbs: 10,
+        fat: 5,
+        ingredientId: '1',
+        recipeId: null,
+        name: 'chicken',
+      };
+      mockedMealRepository.fetchDish.mockResolvedValue(mockDishWithNutrition);
       mockedMealRepository.updateDish.mockResolvedValue(undefined);
       mockedMealRepository.fetchDay.mockResolvedValue(mockDay);
       mockedMealRepository.fetchMeal.mockResolvedValue(mockMeal);
 
-      const result = await mealService.updateDishAmount('1', 200, mockDate, mockMealType);
+      const result = await mealService.updateDishAmount('1', 150, mockDate, mockMealType);
 
       expect(result).toEqual({ day: mockDay, meal: mockMeal });
-      expect(mockedMealRepository.updateDish).toHaveBeenCalledWith('1', 200);
+      expect(mockedMealRepository.updateDish).toHaveBeenCalledWith('1', {
+        amount: 150,
+        calories: 300,
+        carbs: 15,
+        fat: 7.5,
+      });
     });
 
     it('should throw error when meal not found after updating', async () => {
+      const mockDishWithNutrition = {
+        id: '1',
+        amount: 100,
+        calories: 200,
+        carbs: 10,
+        fat: 5,
+        ingredientId: '1',
+        recipeId: null,
+        name: 'chicken',
+      };
+      mockedMealRepository.fetchDish.mockResolvedValue(mockDishWithNutrition);
       mockedMealRepository.updateDish.mockResolvedValue(undefined);
       mockedMealRepository.fetchDay.mockResolvedValue(mockDay);
       mockedMealRepository.fetchMeal.mockResolvedValue(null);

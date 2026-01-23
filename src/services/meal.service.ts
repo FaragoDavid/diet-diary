@@ -1,5 +1,37 @@
+import { Ingredient } from '@prisma/client';
+
 import { MealType } from '../config';
+import * as ingredientRepository from '../repository/ingredient';
 import * as mealRepository from '../repository/meal';
+import * as recipeRepository from '../repository/recipe';
+
+function calculateIngredientNutrition(ingredient: Ingredient, amount: number) {
+  return {
+    calories: ((ingredient.caloriesPer100 || 0) / 100) * amount,
+    carbs: ((ingredient.carbsPer100 || 0) / 100) * amount,
+    fat: ((ingredient.fatPer100 || 0) / 100) * amount,
+  };
+}
+
+function calculateRecipeNutrition(recipe: recipeRepository.RecipeWithIngredients, amount: number) {
+  const { calories, carbs, fat } = recipe.ingredients.reduce(
+    (acc, { amount: ingredientAmount, ingredient }) => {
+      const nutrition = calculateIngredientNutrition(ingredient, ingredientAmount);
+      return {
+        calories: acc.calories + nutrition.calories,
+        carbs: acc.carbs + nutrition.carbs,
+        fat: acc.fat + nutrition.fat,
+      };
+    },
+    { calories: 0, carbs: 0, fat: 0 },
+  );
+
+  return {
+    calories: calories * amount,
+    carbs: carbs * amount,
+    fat: fat * amount,
+  };
+}
 
 export async function getMealWithResources(
   date: Date,
@@ -16,19 +48,65 @@ export async function getMealWithResources(
 }
 
 export async function addDishToMeal(date: Date, mealType: MealType, dishId: string, amount: number) {
-  const dish = await mealRepository.addDish(date, mealType, dishId, amount);
+  const ingredient = await ingredientRepository.fetchIngredient(dishId);
+  if (ingredient) {
+    const nutrition = calculateIngredientNutrition(ingredient, amount);
+    const dish = await mealRepository.addDish(date, mealType, {
+      name: ingredient.name,
+      ingredientId: ingredient.id,
+      recipeId: null,
+      amount,
+      ...nutrition,
+    });
 
-  const [day, meal] = await Promise.all([mealRepository.fetchDay(date), mealRepository.fetchMeal(date, mealType)]);
+    const [day, meal] = await Promise.all([mealRepository.fetchDay(date), mealRepository.fetchMeal(date, mealType)]);
 
-  if (!day || !meal) {
-    throw new Error('Day or meal not found after adding dish');
+    if (!day || !meal) {
+      throw new Error('Day or meal not found after adding dish');
+    }
+
+    return { dish, day, meal };
   }
 
-  return { dish, day, meal };
+  const recipe = await recipeRepository.fetchRecipe(dishId);
+  if (recipe) {
+    const nutrition = calculateRecipeNutrition(recipe, amount);
+    const dish = await mealRepository.addDish(date, mealType, {
+      name: recipe.name,
+      ingredientId: null,
+      recipeId: recipe.id,
+      amount,
+      ...nutrition,
+    });
+
+    const [day, meal] = await Promise.all([mealRepository.fetchDay(date), mealRepository.fetchMeal(date, mealType)]);
+
+    if (!day || !meal) {
+      throw new Error('Day or meal not found after adding dish');
+    }
+
+    return { dish, day, meal };
+  }
+
+  throw new Error('Dish is neither a recipe nor an ingredient');
 }
 
 export async function updateDishAmount(dishId: string, amount: number, date: Date, mealType: MealType) {
-  await mealRepository.updateDish(dishId, amount);
+  const dish = await mealRepository.fetchDish(dishId);
+
+  if (!dish) {
+    throw new Error('Dish not found');
+  }
+
+  const oldAmount = dish.amount;
+  const multiply = amount / oldAmount;
+
+  await mealRepository.updateDish(dishId, {
+    amount,
+    calories: dish.calories * multiply,
+    carbs: dish.carbs * multiply,
+    fat: dish.fat * multiply,
+  });
 
   const [day, meal] = await Promise.all([mealRepository.fetchDay(date), mealRepository.fetchMeal(date, mealType)]);
 
