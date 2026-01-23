@@ -7,49 +7,31 @@ import { texts } from '../../constants/texts';
 export class IngredientDetails {
   constructor(private ingredient: Ingredient) {}
 
-  calories(): string {
+  private nutrientInput(name: string, label: string, value: number | null): string {
     const amountOptions: AmountInputOptions = {
-      name: 'calories',
+      name,
       hx: {
         verb: 'post',
         url: `/ingredient/${this.ingredient.id}`,
       },
     };
-    if (this.ingredient.caloriesPer100) amountOptions.amount = this.ingredient.caloriesPer100;
+    if (value) amountOptions.amount = value;
     return `
-      <div class="text">${texts.nutrients.calories.long}:</div>
+      <div class="text">${label}:</div>
       ${amount(amountOptions)}
     `;
+  }
+
+  calories(): string {
+    return this.nutrientInput('calories', texts.nutrients.calories.long, this.ingredient.caloriesPer100);
   }
 
   carbs(): string {
-    const amountOptions: AmountInputOptions = {
-      name: 'carbs',
-      hx: {
-        verb: 'post',
-        url: `/ingredient/${this.ingredient.id}`,
-      },
-    };
-    if (this.ingredient.carbsPer100) amountOptions.amount = this.ingredient.carbsPer100;
-    return `
-      <div class="text">${texts.nutrients.carbs.long}:</div>
-      ${amount(amountOptions)}
-    `;
+    return this.nutrientInput('carbs', texts.nutrients.carbs.long, this.ingredient.carbsPer100);
   }
 
   fat(): string {
-    const amountOptions: AmountInputOptions = {
-      name: 'fat',
-      hx: {
-        verb: 'post',
-        url: `/ingredient/${this.ingredient.id}`,
-      },
-    };
-    if (this.ingredient.fatPer100) amountOptions.amount = this.ingredient.fatPer100;
-    return `
-      <div class="text">${texts.nutrients.fat}:</div>
-      ${amount(amountOptions)}
-    `;
+    return this.nutrientInput('fat', texts.nutrients.fat, this.ingredient.fatPer100);
   }
 
   vegetableCheckbox(): string {
