@@ -14,9 +14,14 @@ export default async (request: DeleteIngredientRequest, reply: FastifyReply) => 
     return { error: 'Ingredient ID is required' };
   }
 
-  const ingredients = await ingredientService.removeIngredient(ingredientId, query);
-
-  const template = await ingredientList(ingredients, { swapOob: HTMX_SWAP.ReplaceElement });
-
-  return template;
+  try {
+    const ingredients = await ingredientService.removeIngredient(ingredientId, query);
+    const template = await ingredientList(ingredients, { swapOob: HTMX_SWAP.ReplaceElement });
+    return template;
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('Cannot delete ingredient')) {
+      return { error: error.message };
+    }
+    throw error;
+  }
 };
