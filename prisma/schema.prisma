@@ -79,11 +79,8 @@ model Dish {
 }
 
 model Meal {
-  date     DateTime
-  type     MealType
-  calories Float?
-  carbs    Float?
-  fat      Float?
+  date DateTime
+  type MealType
 
   dishes  Dish[]
   Day     Day      @relation(fields: [dayDate], references: [date], onDelete: Cascade)

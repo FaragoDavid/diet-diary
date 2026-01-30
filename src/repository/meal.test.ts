@@ -15,9 +15,6 @@ describe('Meal Repository', () => {
 
       expect(meal).toEqual({
         type: MEAL_TYPE.breakfast,
-        calories: null,
-        carbs: null,
-        fat: null,
         dishes: [],
       });
     });

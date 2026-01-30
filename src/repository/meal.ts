@@ -17,9 +17,6 @@ const dishSelect: Prisma.DishSelect = {
 
 const mealWithDishesSelect: Prisma.MealSelect = {
   type: true,
-  calories: true,
-  carbs: true,
-  fat: true,
   dishes: {
     select: dishSelect,
   },
