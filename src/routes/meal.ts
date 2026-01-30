@@ -4,6 +4,7 @@ import createHandler from '../controllers/base';
 import addDish from '../controllers/meal/add-dish';
 import addMeal from '../controllers/meal/add-meal';
 import createDay from '../controllers/meal/create-day';
+import createCookingVersion from '../controllers/meal/create-cooking-version';
 import deleteDish from '../controllers/meal/delete-dish';
 import deleteMeal from '../controllers/meal/delete-meal';
 import getDayList from '../controllers/meal/get-day-list';
@@ -21,6 +22,7 @@ export default (fastify: FastifyInstance) => {
   fastify.post('/day/:date/meal', createHandler(addMeal));
   fastify.post('/day/:date/meal/:mealType/dish', createHandler(addDish));
   fastify.post('/day/:date/meal/:mealType/dish/:dishId', createHandler(updateDish));
+  fastify.post('/day/:date/meal/:mealType/dish/:dishId/version', createHandler(createCookingVersion));
   fastify.delete('/day/:date/meal/:mealType', createHandler(deleteMeal));
   fastify.delete('/day/:date/meal/:mealType/dish/:dishId', createHandler(deleteDish));
 };

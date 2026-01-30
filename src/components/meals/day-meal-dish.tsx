@@ -10,6 +10,8 @@ import { getMealDishesId } from './day-meal';
 import { getMealNewDishSelectId } from './new-dish';
 import { texts } from '../../constants/texts';
 
+type DishWithRecipeId = Dish & { recipeId: string | null };
+
 export async function dayMealDishHeader(date: Date, mealType: MealType, options: { swapOob?: HtmxSwapOobOption } = {}) {
   const template = `
     <div class="text"></div>
@@ -25,7 +27,7 @@ export async function dayMealDishHeader(date: Date, mealType: MealType, options:
   return template;
 }
 
-export async function dayMealDish(dish: Dish, date: Date, mealType: MealType, options: { swapOob?: HtmxSwapOobOption } = {}) {
+export async function dayMealDish(dish: DishWithRecipeId, date: Date, mealType: MealType, options: { swapOob?: HtmxSwapOobOption } = {}) {
   const deleteDish = () => {
     return `
       <button 
@@ -33,6 +35,19 @@ export async function dayMealDish(dish: Dish, date: Date, mealType: MealType, op
         hx-delete="/day/${dateToParam(date)}/meal/${mealType}/dish/${dish.id}"
       >
         ${icons.delete}
+      </button>
+    `;
+  };
+
+  const saveAsVersion = () => {
+    if (!dish.recipeId) return '';
+    return `
+      <button 
+        class="btn btn-sm btn-secondary"
+        hx-post="/day/${dateToParam(date)}/meal/${mealType}/dish/${dish.id}/version"
+        title="Save as cooking version"
+      >
+        ${icons.copy}
       </button>
     `;
   };
@@ -55,7 +70,10 @@ export async function dayMealDish(dish: Dish, date: Date, mealType: MealType, op
     <div class="text text-right">${Math.floor(calories)}</div>
     <div class="text text-right">${Math.floor(carbs)}</div>
     <div class="text text-right">${Math.floor(fat)}</div>
-    ${deleteDish()}
+    <div class="flex gap-1">
+      ${saveAsVersion()}
+      ${deleteDish()}
+    </div>
   `;
 
   if (options.swapOob) {
