@@ -3,9 +3,9 @@ import prisma from '../utils/prisma-client';
 
 describe('Recipe Repository', () => {
   const TEST_RECIPES = {
-    CHICKEN_CURRY: { name: 'chicken curry', amount: null, servings: 1, calories: 0, carbs: 0, fat: 0 },
-    BEEF_STEW: { name: 'beef stew', amount: null, servings: 1, calories: 0, carbs: 0, fat: 0 },
-    PORK_CHOPS: { name: 'pork chops', amount: null, servings: 1, calories: 0, carbs: 0, fat: 0 },
+    CHICKEN_CURRY: { name: 'chicken curry', amount: null, servings: 1, calories: 0, carbs: 0, fat: 0, baseRecipeId: null },
+    BEEF_STEW: { name: 'beef stew', amount: null, servings: 1, calories: 0, carbs: 0, fat: 0, baseRecipeId: null },
+    PORK_CHOPS: { name: 'pork chops', amount: null, servings: 1, calories: 0, carbs: 0, fat: 0, baseRecipeId: null },
   };
 
   describe('fetchRecipes', () => {
@@ -121,7 +121,7 @@ describe('Recipe Repository', () => {
       });
 
       const versionIngredients = await prisma.recipeIngredient.findMany({
-        where: { recipeId: version.id },
+        where: { recipeId: version!.id },
       });
       expect(versionIngredients).toHaveLength(1);
       expect(versionIngredients[0]).toMatchObject({
@@ -149,13 +149,13 @@ describe('Recipe Repository', () => {
       const version = await createRecipeVersion(baseRecipe.id, 'Modified Curry');
 
       const versionIngredients = await prisma.recipeIngredient.findMany({
-        where: { recipeId: version.id },
+        where: { recipeId: version!.id },
         orderBy: { amount: 'asc' },
       });
 
       expect(versionIngredients).toHaveLength(2);
-      expect(versionIngredients[0].amount).toBe(100);
-      expect(versionIngredients[1].amount).toBe(200);
+      expect(versionIngredients[0]!.amount).toBe(100);
+      expect(versionIngredients[1]!.amount).toBe(200);
     });
   });
 });

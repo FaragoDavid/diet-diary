@@ -11,6 +11,7 @@ export async function fetchRecipes(query: string = '') {
       calories: true,
       carbs: true,
       fat: true,
+      baseRecipeId: true,
       ingredients: {
         select: { amount: true, ingredient: true },
       },
@@ -31,6 +32,7 @@ export async function fetchRecipe(id: string) {
       calories: true,
       carbs: true,
       fat: true,
+      baseRecipeId: true,
       ingredients: {
         select: { amount: true, ingredient: true },
       },
@@ -49,6 +51,7 @@ export async function createRecipe(name: string) {
       calories: true,
       carbs: true,
       fat: true,
+      baseRecipeId: true,
       ingredients: {
         select: { amount: true, ingredient: true },
       },

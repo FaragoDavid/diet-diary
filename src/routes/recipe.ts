@@ -2,6 +2,7 @@ import { FastifyInstance } from 'fastify';
 
 import createHandler from '../controllers/base';
 import createRecipe from '../controllers/recipe/create';
+import createRecipeVersion from '../controllers/recipe/create-version';
 import deleteRecipe from '../controllers/recipe/delete';
 import getRecipeList from '../controllers/recipe/get-list';
 import newRecipePage from '../controllers/recipe/get-new-page';
@@ -19,6 +20,7 @@ export default async (fastify: FastifyInstance) => {
   fastify.post('/new-recipe', createHandler(createRecipe));
   fastify.get('/recipe/:recipeId', createHandler(getRecipePage));
   fastify.delete('/recipe/:recipeId', createHandler(deleteRecipe));
+  fastify.post('/recipe/:recipeId/version', createHandler(createRecipeVersion));
   fastify.post('/recipe/:recipeId/amount', createHandler(updateRecipeAmount));
   fastify.post('/recipe/:recipeId/ingredient', createHandler(addRecipeIngredient));
   fastify.post('/recipe/:recipeId/ingredient/:ingredientId', createHandler(updateRecipeIngredientAmount));

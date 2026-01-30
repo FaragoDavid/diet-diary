@@ -22,8 +22,19 @@ export function newRecipeHeader() {
 
 export function recipeHeader(recipe: RecipeWithIngredients) {
   return (
-    <div id={ID} class="text-2xl text-center text-primary pb-6">
-      {recipe.name}
+    <div id={ID} class="pb-6">
+      <div class="text-2xl text-center text-primary pb-4">{recipe.name}</div>
+      <div class="flex justify-center">
+        <input type="text" name="versionName" class="input input-bordered input-sm mr-2" placeholder="Version name" />
+        <button
+          class="btn btn-sm btn-secondary"
+          hx-post={`/recipe/${recipe.id}/version`}
+          hx-target={`#${RECIPE_PAGE_ID}`}
+          hx-include="[name='versionName']"
+        >
+          Create Version
+        </button>
+      </div>
     </div>
   ) as string;
 }
