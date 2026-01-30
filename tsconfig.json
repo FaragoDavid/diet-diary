@@ -15,7 +15,7 @@
     "jsx": "react",
     "jsxFactory": "elements.createElement",
     "jsxFragmentFactory": "elements.Fragment",
-    "types": ["node", "jest"]
+    "types": ["node", "jest", "cypress"]
   },
   "files": ["src/types.d.ts"],
   "include": ["src", "test", "src/**/*.ts", "src/**/*.tsx"],
