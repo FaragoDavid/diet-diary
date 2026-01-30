@@ -1,4 +1,4 @@
-import { fetchRecipes, fetchRecipe, createRecipe, deleteRecipe, updateRecipeAmount } from '../repository/recipe';
+import { fetchRecipes, fetchRecipe, createRecipe, deleteRecipe, updateRecipeAmount, createRecipeVersion } from '../repository/recipe';
 import prisma from '../utils/prisma-client';
 
 describe('Recipe Repository', () => {
@@ -93,6 +93,69 @@ describe('Recipe Repository', () => {
         amount: newAmount,
         baseRecipeId: null,
       });
+    });
+  });
+
+  describe('createRecipeVersion', () => {
+    it('creates a new recipe version based on an existing recipe', async () => {
+      const chickenId = (await prisma.ingredient.create({ data: { name: 'chicken' } })).id;
+      const baseRecipe = await prisma.recipe.create({
+        data: {
+          ...TEST_RECIPES.CHICKEN_CURRY,
+          ingredients: {
+            create: [{ amount: 100, ingredientId: chickenId }],
+          },
+        },
+        include: { ingredients: true },
+      });
+
+      const version = await createRecipeVersion(baseRecipe.id, 'Chicken Curry v2');
+
+      expect(version).toMatchObject({
+        name: 'Chicken Curry v2',
+        baseRecipeId: baseRecipe.id,
+        calories: baseRecipe.calories,
+        carbs: baseRecipe.carbs,
+        fat: baseRecipe.fat,
+        servings: baseRecipe.servings,
+      });
+
+      const versionIngredients = await prisma.recipeIngredient.findMany({
+        where: { recipeId: version.id },
+      });
+      expect(versionIngredients).toHaveLength(1);
+      expect(versionIngredients[0]).toMatchObject({
+        amount: 100,
+        ingredientId: chickenId,
+      });
+    });
+
+    it('copies all ingredients from base recipe to version', async () => {
+      const chickenId = (await prisma.ingredient.create({ data: { name: 'chicken' } })).id;
+      const riceId = (await prisma.ingredient.create({ data: { name: 'rice' } })).id;
+
+      const baseRecipe = await prisma.recipe.create({
+        data: {
+          ...TEST_RECIPES.CHICKEN_CURRY,
+          ingredients: {
+            create: [
+              { amount: 100, ingredientId: chickenId },
+              { amount: 200, ingredientId: riceId },
+            ],
+          },
+        },
+      });
+
+      const version = await createRecipeVersion(baseRecipe.id, 'Modified Curry');
+
+      const versionIngredients = await prisma.recipeIngredient.findMany({
+        where: { recipeId: version.id },
+        orderBy: { amount: 'asc' },
+      });
+
+      expect(versionIngredients).toHaveLength(2);
+      expect(versionIngredients[0].amount).toBe(100);
+      expect(versionIngredients[1].amount).toBe(200);
     });
   });
 });
