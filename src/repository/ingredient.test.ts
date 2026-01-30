@@ -28,9 +28,7 @@ describe('Ingredient Repository', () => {
     it('should fetch filtered ingredients when a query is provided', async () => {
       const ingredients = await fetchIngredients(TEST_INGREDIENTS.CHICKEN.name);
 
-      expect(ingredients).toEqual([
-        { id: expect.any(String), ...TEST_INGREDIENTS.CHICKEN },
-      ]);
+      expect(ingredients).toEqual([{ id: expect.any(String), ...TEST_INGREDIENTS.CHICKEN }]);
     });
   });
 
@@ -48,15 +46,15 @@ describe('Ingredient Repository', () => {
     it('should insert a new ingredient', async () => {
       const ingredient = await insertIngredient(TEST_INGREDIENTS.CHICKEN.name);
 
-      expect(ingredient).toEqual({ 
-        id: expect.any(String), 
+      expect(ingredient).toEqual({
+        id: expect.any(String),
         name: TEST_INGREDIENTS.CHICKEN.name,
         caloriesPer100: 0,
         carbsPer100: 0,
         fatPer100: 0,
         isVegetable: false,
         isCarbCounted: true,
-       });
+      });
     });
   });
 
@@ -74,11 +72,67 @@ describe('Ingredient Repository', () => {
   describe('updateIngredient', () => {
     it('should update an ingredient by id', async () => {
       const TEST_INGREDIENT_ID = (await prisma.ingredient.create({ data: TEST_INGREDIENTS.CHICKEN })).id;
-      const testName = 'chicken 2'
-      
+      const testName = 'chicken 2';
+
       await updateIngredient(TEST_INGREDIENT_ID, { name: testName });
 
       expect(await prisma.ingredient.findMany()).toEqual([{ id: TEST_INGREDIENT_ID, ...TEST_INGREDIENTS.CHICKEN, name: testName }]);
+    });
+
+    it('should recalculate nutrition for all recipes using the ingredient when nutrition values change', async () => {
+      const chicken = await prisma.ingredient.create({ data: TEST_INGREDIENTS.CHICKEN });
+      const beef = await prisma.ingredient.create({ data: TEST_INGREDIENTS.BEEF });
+
+      const recipe = await prisma.recipe.create({
+        data: {
+          name: 'Test Recipe',
+          calories: 400,
+          carbs: 0,
+          fat: 20,
+        },
+      });
+
+      await prisma.recipeIngredient.create({
+        data: { recipeId: recipe.id, ingredientId: chicken.id, amount: 200 },
+      });
+      await prisma.recipeIngredient.create({
+        data: { recipeId: recipe.id, ingredientId: beef.id, amount: 100 },
+      });
+
+      await updateIngredient(chicken.id, { caloriesPer100: 250, carbsPer100: 5, fatPer100: 12 });
+
+      const updatedRecipe = await prisma.recipe.findUnique({ where: { id: recipe.id } });
+      expect(updatedRecipe).toMatchObject({
+        calories: 250 * 2 + 300 * 1,
+        carbs: 5 * 2 + 0 * 1,
+        fat: 12 * 2 + 20 * 1,
+      });
+    });
+
+    it('should not affect recipes when non-nutrition fields are updated', async () => {
+      const chicken = await prisma.ingredient.create({ data: TEST_INGREDIENTS.CHICKEN });
+
+      const recipe = await prisma.recipe.create({
+        data: {
+          name: 'Test Recipe',
+          calories: 400,
+          carbs: 0,
+          fat: 20,
+        },
+      });
+
+      await prisma.recipeIngredient.create({
+        data: { recipeId: recipe.id, ingredientId: chicken.id, amount: 200 },
+      });
+
+      await updateIngredient(chicken.id, { name: 'Chicken Breast' });
+
+      const updatedRecipe = await prisma.recipe.findUnique({ where: { id: recipe.id } });
+      expect(updatedRecipe).toMatchObject({
+        calories: 400,
+        carbs: 0,
+        fat: 20,
+      });
     });
   });
 });

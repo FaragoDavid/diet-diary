@@ -11,7 +11,7 @@ export type Ingredient = {
 };
 
 export async function fetchIngredients(query: string = '') {
-  return prisma.ingredient.findMany({ where: { name: { contains: query } }, orderBy: { name: 'asc' }});
+  return prisma.ingredient.findMany({ where: { name: { contains: query } }, orderBy: { name: 'asc' } });
 }
 
 export async function fetchIngredient(id: string) {
@@ -27,5 +27,47 @@ export async function deleteIngredient(id: string): Promise<void> {
 }
 
 export async function updateIngredient(id: string, data: Prisma.IngredientUpdateInput): Promise<void> {
+  const nutritionFieldsChanged = data.caloriesPer100 !== undefined || data.carbsPer100 !== undefined || data.fatPer100 !== undefined;
+
   await prisma.ingredient.update({ where: { id }, data });
+
+  if (nutritionFieldsChanged) {
+    const updatedIngredient = await prisma.ingredient.findUnique({ where: { id } });
+    if (!updatedIngredient) return;
+
+    const recipesWithIngredient = await prisma.recipe.findMany({
+      where: {
+        ingredients: {
+          some: { ingredientId: id },
+        },
+      },
+      include: {
+        ingredients: {
+          include: { ingredient: true },
+        },
+      },
+    });
+
+    for (const recipe of recipesWithIngredient) {
+      let totalCalories = 0;
+      let totalCarbs = 0;
+      let totalFat = 0;
+
+      for (const recipeIngredient of recipe.ingredients) {
+        const amount = recipeIngredient.amount / 100;
+        totalCalories += recipeIngredient.ingredient.caloriesPer100 * amount;
+        totalCarbs += recipeIngredient.ingredient.carbsPer100 * amount;
+        totalFat += recipeIngredient.ingredient.fatPer100 * amount;
+      }
+
+      await prisma.recipe.update({
+        where: { id: recipe.id },
+        data: {
+          calories: totalCalories,
+          carbs: totalCarbs,
+          fat: totalFat,
+        },
+      });
+    }
+  }
 }
