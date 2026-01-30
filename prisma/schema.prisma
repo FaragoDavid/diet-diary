@@ -33,14 +33,17 @@ model Ingredient {
 }
 
 model Recipe {
-  id       String @id @default(uuid())
-  name     String
-  calories Float  @default(0)
-  carbs    Float  @default(0)
-  fat      Float  @default(0)
-  amount   Float?
-  servings Int    @default(1)
+  id           String  @id @default(uuid())
+  name         String
+  calories     Float   @default(0)
+  carbs        Float   @default(0)
+  fat          Float   @default(0)
+  amount       Float?
+  servings     Int     @default(1)
+  baseRecipeId String? @map("base_recipe_id")
 
+  baseRecipe  Recipe?            @relation("RecipeVersions", fields: [baseRecipeId], references: [id])
+  versions    Recipe[]           @relation("RecipeVersions")
   ingredients RecipeIngredient[]
   dishes      Dish[]
 

@@ -1,10 +1,4 @@
-import {
-  fetchRecipes,
-  fetchRecipe,
-  createRecipe,
-  deleteRecipe,
-  updateRecipeAmount,
-} from '../repository/recipe';
+import { fetchRecipes, fetchRecipe, createRecipe, deleteRecipe, updateRecipeAmount } from '../repository/recipe';
 import prisma from '../utils/prisma-client';
 
 describe('Recipe Repository', () => {
@@ -70,7 +64,7 @@ describe('Recipe Repository', () => {
 
       await deleteRecipe(TEST_RECIPE_ID);
 
-      expect(await prisma.recipe.findMany()).toEqual([{ id: expect.any(String), ...TEST_RECIPES.BEEF_STEW }]);
+      expect(await prisma.recipe.findMany()).toEqual([{ id: expect.any(String), ...TEST_RECIPES.BEEF_STEW, baseRecipeId: null }]);
     });
 
     it('deletes the ingredients of the recipe', async () => {
@@ -97,6 +91,7 @@ describe('Recipe Repository', () => {
         id: TEST_RECIPE_ID,
         ...TEST_RECIPES.CHICKEN_CURRY,
         amount: newAmount,
+        baseRecipeId: null,
       });
     });
   });
