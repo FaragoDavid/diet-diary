@@ -33,6 +33,7 @@ This is a deliberate architectural decision to avoid unnecessary abstraction lay
 - Commit changes in baby steps to make it easier to review and understand
 - Ensure both unit and e2e tests pass before committing code
 - Commit only when explicitly instructed to do so
+- No 'git add -A' or equivalent commands; stage only relevant files
 
 ## Other
 
