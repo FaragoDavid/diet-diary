@@ -1,9 +1,20 @@
 datasource db {
   provider = "postgresql"
+  url      = env("DB_CONN_STRING")
 }
 
 generator client {
   provider = "prisma-client-js"
+}
+
+enum MealType {
+  morningSnack
+  breakfast
+  brunch
+  lunch
+  afternoonSnack
+  dinner
+  lateNightSnack
 }
 
 model Ingredient {
@@ -58,7 +69,7 @@ model Dish {
 
   meal         Meal        @relation(fields: [mealDate, mealType], references: [date, type], onDelete: Cascade)
   mealDate     DateTime    @map("meal_date")
-  mealType     String      @map("meal_type")
+  mealType     MealType    @map("meal_type")
   recipe       Recipe?     @relation(fields: [recipeId], references: [id])
   recipeId     String?     @map("recipe_id")
   ingredient   Ingredient? @relation(fields: [ingredientId], references: [id])
@@ -69,7 +80,7 @@ model Dish {
 
 model Meal {
   date     DateTime
-  type     String
+  type     MealType
   calories Float?
   carbs    Float?
   fat      Float?

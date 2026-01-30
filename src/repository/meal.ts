@@ -102,7 +102,7 @@ export async function addMeal(date: Date, type: MealType) {
   return await prisma.meal.create({
     data: {
       date,
-      type: type as string,
+      type,
       Day: { connect: { date } },
     },
     select: mealWithDishesSelect,

@@ -21,7 +21,7 @@ export class Dashboard {
       case TAB_NAME.ingredients:
         return await ingredientTab(this.ingredients);
       case TAB_NAME.recipes:
-        return await recipeTab(this.recipes, this.ingredients);
+        return await recipeTab(this.recipes);
       default:
         return await mealTab(this.days, this.ingredients, this.recipes);
     }

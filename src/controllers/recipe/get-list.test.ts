@@ -7,13 +7,13 @@ jest.mock('../../repository/ingredient');
 jest.mock('../../repository/recipe');
 
 describe('recipe/get-list', () => {
-  let mockRequest: FastifyRequest;
+  let mockRequest: FastifyRequest<{ Querystring: { query: string } }>;
   let mockReply: FastifyReply;
 
   beforeEach(() => {
     mockRequest = {
       query: { query: 'test' },
-    } as FastifyRequest;
+    } as FastifyRequest<{ Querystring: { query: string } }>;
     mockReply = {} as FastifyReply;
 
     jest.clearAllMocks();
