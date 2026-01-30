@@ -83,6 +83,33 @@ describe('Recipe Ingredient Repository', () => {
       );
     });
 
+    it('should merge amounts when adding duplicate ingredient', async () => {
+      await prisma.recipeIngredient.create({
+        data: { recipeId: TEST_RECIPES.CHICKEN_CURRY.id, ingredientId: TEST_INGREDIENTS.CHICK.id, amount: 100 },
+      });
+      await prisma.recipe.update({
+        where: { id: TEST_RECIPES.CHICKEN_CURRY.id },
+        data: { calories: 200, carbs: 0, fat: 10 },
+      });
+
+      const additionalAmount = 50;
+      const nutritionDelta = { calories: 100, carbs: 0, fat: 5 };
+
+      await addIngredient(TEST_RECIPES.CHICKEN_CURRY.id, TEST_INGREDIENTS.CHICK.id, additionalAmount, nutritionDelta);
+
+      const recipeIngredient = await prisma.recipeIngredient.findUnique({
+        where: { recipeId_ingredientId: { recipeId: TEST_RECIPES.CHICKEN_CURRY.id, ingredientId: TEST_INGREDIENTS.CHICK.id } },
+      });
+      expect(recipeIngredient?.amount).toEqual(150);
+
+      const recipe = await prisma.recipe.findUnique({ where: { id: TEST_RECIPES.CHICKEN_CURRY.id } });
+      expect(recipe).toMatchObject({
+        calories: 300,
+        carbs: 0,
+        fat: 15,
+      });
+    });
+
     describe('updateIngredientAmount', () => {
       it('should update the amount of an ingredient in a recipe', async () => {
         await prisma.recipeIngredient.create({

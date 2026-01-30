@@ -16,6 +16,32 @@ export async function addIngredient(
     throw new Error(`Recipe with id ${recipeId} does not exist`);
   }
 
+  const existingRecipeIngredient = await prisma.recipeIngredient.findUnique({
+    where: { recipeId_ingredientId: { recipeId, ingredientId } },
+    include: { ingredient: true },
+  });
+
+  if (existingRecipeIngredient) {
+    const newAmount = existingRecipeIngredient.amount + amount;
+
+    await prisma.$transaction([
+      prisma.recipeIngredient.update({
+        where: { recipeId_ingredientId: { recipeId, ingredientId } },
+        data: { amount: newAmount },
+      }),
+      prisma.recipe.update({
+        where: { id: recipeId },
+        data: {
+          calories: { increment: nutritionDelta.calories },
+          carbs: { increment: nutritionDelta.carbs },
+          fat: { increment: nutritionDelta.fat },
+        },
+      }),
+    ]);
+
+    return { amount: newAmount, ingredient: existingRecipeIngredient.ingredient };
+  }
+
   const [recipeIngredient] = await prisma.$transaction([
     prisma.recipeIngredient.create({
       data: { recipeId, ingredientId, amount },
