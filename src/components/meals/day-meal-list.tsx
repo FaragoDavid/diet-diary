@@ -1,6 +1,7 @@
-import { Ingredient, Recipe } from '@prisma/client';
+import { Ingredient } from '@prisma/client';
 
 import { DayWithMealsWithDishes } from '../../repository/meal';
+import { RecipeForSelection } from '../../repository/recipe';
 import { dateToParam } from '../../utils/converters';
 import { swapOobTag } from '../../utils/swap-oob-wrapper';
 import { dayMeal } from './day-meal';
@@ -12,7 +13,7 @@ export function getDayMealListId(date: Date) {
 export async function dayMealList(
   day: DayWithMealsWithDishes,
   ingredients: Ingredient[],
-  recipes: Recipe[],
+  recipes: RecipeForSelection[],
   options: { layout?: 'dayList' | 'page'; swapOob?: HtmxSwapOobOption } = { layout: 'page' },
 ) {
   const layout = options.layout || 'page';

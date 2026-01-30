@@ -1,13 +1,14 @@
-import { Ingredient, Recipe } from '@prisma/client';
+import { Ingredient } from '@prisma/client';
 
 import config from '../../config';
+import { RecipeForSelection } from '../../repository/recipe';
 import { DayWithMealsWithDishes } from '../../repository/meal';
 import { dateToInput } from '../../utils/converters';
 import icons from '../../utils/icons';
 import { TAB_CONTAINER_ID } from '../tab-list';
 import { DAY_LIST_ID, dayList } from './day-list';
 
-export async function mealTab(days: DayWithMealsWithDishes[], ingredients: Ingredient[], recipes: Recipe[]) {
+export async function mealTab(days: DayWithMealsWithDishes[], ingredients: Ingredient[], recipes: RecipeForSelection[]) {
   const dateInput = (id: string, defaultValue: Date) => {
     return `
       <input

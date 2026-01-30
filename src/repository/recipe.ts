@@ -1,5 +1,7 @@
 import prisma from '../utils/prisma-client';
 
+export type RecipeForSelection = Awaited<ReturnType<typeof fetchRecipes>>[number];
+
 export async function fetchRecipes(query: string = '') {
   return await prisma.recipe.findMany({
     where: { name: { contains: query } },

@@ -151,7 +151,7 @@ describe('Meals Page', () => {
 
     it('adds multiple dishes to same meal', () => {
       cy.intercept('POST', '/day/*/meal/*/dish').as('addDish');
-      
+
       cy.get('select[name="breakfast-dishId"]').last().select(ingredientName);
       cy.get('input[name="amount"]').first().type('100').blur();
       cy.wait('@addDish');
@@ -159,7 +159,7 @@ describe('Meals Page', () => {
 
       cy.reload();
       cy.wait(500);
-      
+
       cy.get('select[name="breakfast-dishId"]').last().select(recipeName);
       cy.get('input[name="amount"]').first().type('1').blur();
       cy.wait(500);
@@ -181,6 +181,47 @@ describe('Meals Page', () => {
       cy.get('a[href^="/day/"]').first().click();
 
       cy.url().should('include', '/day/');
+    });
+  });
+
+  describe('Recipe versioning', () => {
+    let dayDate: string;
+    let dayDateParam: string;
+    let recipeName: string;
+
+    beforeEach(() => {
+      recipeName = `TestRecipe-${Date.now()}`;
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      dayDate = tomorrow.toISOString().split('T')[0];
+      dayDateParam = dayDate.replace(/-/g, '');
+
+      cy.task('db:createDayWithMealAndRecipeDish', {
+        date: dayDate,
+        mealType: 'breakfast',
+        recipeName,
+      });
+    });
+
+    it('shows copy button for recipe dishes', () => {
+      cy.visit(`/day/${dayDateParam}`);
+      cy.contains(recipeName).parents('.grid').find('button[hx-post*="/version"]').should('exist');
+    });
+
+    it('creates a version with Hungarian date format', () => {
+      cy.visit(`/day/${dayDateParam}`);
+      cy.intercept('POST', '/day/*/meal/*/dish/*/version').as('createVersion');
+
+      cy.contains(recipeName).parents('.grid').find('button[hx-post*="/version"]').click();
+      cy.wait('@createVersion');
+
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const year = tomorrow.getFullYear();
+
+      cy.get('[class*="grid"]').should('contain.text', recipeName);
+      cy.get('[class*="grid"]').should('contain.text', '(');
+      cy.get('[class*="grid"]').should('contain.text', year.toString());
     });
   });
 });

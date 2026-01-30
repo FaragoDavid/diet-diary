@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { format } from 'date-fns';
+import { hu } from 'date-fns/locale';
 
 import { dayMealDishList } from '../../components/meals/day-meal-dish-list';
 import { MealType } from '../../config';
@@ -27,7 +28,7 @@ export default async (request: CreateCookingVersionRequest, reply: FastifyReply)
     return { error: 'Base recipe not found' };
   }
 
-  const versionName = `${baseRecipe.name} (${format(date, 'MMM d')})`;
+  const versionName = `${baseRecipe.name} (${format(date, 'MMM d, yyyy', { locale: hu })})`;
   const version = await recipeRepository.createRecipeVersion(dish.recipeId, versionName);
 
   if (!version) {

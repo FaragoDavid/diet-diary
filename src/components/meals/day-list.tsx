@@ -1,6 +1,7 @@
-import { Ingredient, Recipe } from '@prisma/client';
+import { Ingredient } from '@prisma/client';
 
 import { DayWithMealsWithDishes } from '../../repository/meal';
+import { RecipeForSelection } from '../../repository/recipe';
 import { dayListItem } from './day-list-item';
 
 export const DAY_LIST_ID = 'day-list';
@@ -8,7 +9,7 @@ export const DAY_LIST_ID = 'day-list';
 export async function dayList(
   days: DayWithMealsWithDishes[],
   ingredients: Ingredient[],
-  recipes: Recipe[],
+  recipes: RecipeForSelection[],
   options: { swap?: boolean } = {},
 ) {
   const dayComponents: string[] = [];

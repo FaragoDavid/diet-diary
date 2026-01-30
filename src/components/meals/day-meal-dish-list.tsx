@@ -1,6 +1,7 @@
-import { Ingredient, Recipe } from '@prisma/client';
+import { Ingredient } from '@prisma/client';
 
 import { MealType } from '../../config';
+import { RecipeForSelection } from '../../repository/recipe';
 import { MealWithDishes } from '../../repository/meal';
 import { dateToParam } from '../../utils/converters';
 import { dayMealDish, dayMealDishHeader } from './day-meal-dish';
@@ -17,7 +18,7 @@ export async function dayMealDishList(
   meal: MealWithDishes,
   date: Date,
   ingredients: Ingredient[],
-  recipes: Recipe[],
+  recipes: RecipeForSelection[],
   options: { swapOob?: HtmxSwapOobOption } = {},
 ) {
   const dishComponents: string[] = [];

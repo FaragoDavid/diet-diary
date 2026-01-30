@@ -1,6 +1,7 @@
-import { Ingredient, Recipe } from '@prisma/client';
+import { Ingredient } from '@prisma/client';
 
 import { MealWithDishes } from '../../repository/meal';
+import { RecipeForSelection } from '../../repository/recipe';
 import { dateToParam } from '../../utils/converters';
 import { HTMX_SWAP } from '../../utils/htmx';
 import { swapOobTag, swapOobWrapper } from '../../utils/swap-oob-wrapper';
@@ -18,7 +19,7 @@ export async function newDish(
   meal: MealWithDishes,
   date: Date,
   ingredients: Ingredient[],
-  recipes: Recipe[],
+  recipes: RecipeForSelection[],
   options: { swapOob?: HtmxSwapOobOption } = {},
 ) {
   const newDishSelectId = getMealNewDishSelectId(date, meal.type);

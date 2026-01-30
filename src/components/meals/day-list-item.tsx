@@ -1,13 +1,14 @@
-import { Ingredient, Recipe } from '@prisma/client';
+import { Ingredient } from '@prisma/client';
 import { format } from 'date-fns';
 
 import { DayWithMealsWithDishes } from '../../repository/meal';
+import { RecipeForSelection } from '../../repository/recipe';
 import { dateToParam } from '../../utils/converters';
 import icons from '../../utils/icons';
 import { dayMealList } from './day-meal-list';
 import { dayStats } from './day-stats';
 
-export async function dayListItem(day: DayWithMealsWithDishes, ingredients: Ingredient[], recipes: Recipe[]) {
+export async function dayListItem(day: DayWithMealsWithDishes, ingredients: Ingredient[], recipes: RecipeForSelection[]) {
   const dayDate = () => {
     return `
       <div class="flex items-center text-lg text-primary">${format(day.date, 'MMM. d. (EEE)')}</div>

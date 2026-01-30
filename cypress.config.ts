@@ -108,6 +108,51 @@ export default defineConfig({
           });
           return { recipeId: recipe.id, recipeName: recipe.name, ingredientId: ingredient.id, ingredientName: ingredient.name };
         },
+        async 'db:createDayWithMealAndRecipeDish'({ date, mealType, recipeName }: { date: string; mealType: string; recipeName: string }) {
+          const dayDate = new Date(date);
+          const recipe = await prisma.recipe.create({
+            data: {
+              name: recipeName,
+              calories: 500,
+              carbs: 50,
+              fat: 20,
+              servings: 1,
+            },
+          });
+          await prisma.day.upsert({
+            where: { date: dayDate },
+            update: {},
+            create: { date: dayDate },
+          });
+          await prisma.meal.create({
+            data: {
+              date: dayDate,
+              type: mealType,
+              dayDate: dayDate,
+            },
+          });
+          const dish = await prisma.dish.create({
+            data: {
+              name: recipeName,
+              recipeId: recipe.id,
+              amount: 1,
+              calories: 500,
+              carbs: 50,
+              fat: 20,
+              mealDate: dayDate,
+              mealType: mealType,
+            },
+          });
+          return { dishId: dish.id, recipeId: recipe.id, recipeName: recipe.name };
+        },
+        async 'db:getRecipeByName'(name: string) {
+          const recipe = await prisma.recipe.findFirst({ where: { name } });
+          return recipe;
+        },
+        async 'db:getDishById'(id: string) {
+          const dish = await prisma.dish.findUnique({ where: { id } });
+          return dish;
+        },
       });
     },
   },

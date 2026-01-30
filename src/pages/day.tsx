@@ -1,6 +1,7 @@
-import { Ingredient, Recipe } from '@prisma/client';
+import { Ingredient } from '@prisma/client';
 
 import { backLink } from '../components/back-link';
+import { RecipeForSelection } from '../repository/recipe';
 import { dayHeader, newDayHeader } from '../components/meals/day-header';
 import { dayMealList } from '../components/meals/day-meal-list';
 import { dayMeal } from '../components/meals/day-meal';
@@ -27,7 +28,7 @@ export class DayPage {
   constructor(
     private day: DayWithMealsWithDishes,
     private ingredients: Ingredient[],
-    private recipes: Recipe[],
+    private recipes: RecipeForSelection[],
   ) {}
 
   async render() {
