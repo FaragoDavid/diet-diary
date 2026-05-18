@@ -3,6 +3,7 @@
 ## Architecture: Client-side Firebase app
 
 This is a **pure client-side application** with no backend server:
+
 - React frontend queries Firestore directly
 - Firebase Auth handles user authentication
 - Firestore security rules enforce user data isolation (read/write only own data)
@@ -25,6 +26,7 @@ Firestore security rules: allow read/write only if `request.auth.uid == userId`.
 ## Phase 0: Setup
 
 ### Bundling (via Vite)
+
 - [x] Add Vite + @vitejs/plugin-react for JSX compilation
 - [x] Create `src/client/index.html` with `<script type="module" src="/main.tsx">`
 - [x] Create `src/client/main.tsx` entry point: imports React, ReactDOM, App, mounts to `#root`
@@ -36,17 +38,20 @@ Firestore security rules: allow read/write only if `request.auth.uid == userId`.
 - [x] Update `.gitignore` to include `dist/` and `node_modules/`
 
 ### Dependencies & Config
+
 - [x] Add React 19, React DOM, React Router
 - [x] Add `firebase` npm package for client
 - [x] Configure TypeScript for React JSX
 - [x] Add `.env.example` with `VITE_FIREBASE_API_KEY`
 
 ### Services
+
 - [x] Create `src/client/services/firebase.ts` — initialize Firebase app + Firestore
 - [x] Create `src/client/services/auth.ts` — `useAuth` hook, `signIn`, `signOut` (Google popup)
 - [x] Create `src/client/App.tsx` and placeholder components (Login, Dashboard)
 
 ### Cleanup
+
 - [ ] Remove Fastify and related dependencies (`@fastify/*`, `@prisma/client`, `prisma`)
 - [ ] Remove Prisma schema and migrations
 - [ ] Remove backend-only files (controllers, routes, middleware, services)
@@ -79,7 +84,7 @@ Firestore security rules: allow read/write only if `request.auth.uid == userId`.
 - [ ] Build React components: recipe list, recipe details, recipe ingredient list, recipe form
 - [ ] Handle real-time updates via Firestore listeners (or re-fetch after mutations)
 - [ ] **[TODO: Weight-aware nutrition calculation]** — Fix nutrition to support weight-based portions:
-  - Calculate (dishAmount / recipe.amount) * totalNutrition
+  - Calculate (dishAmount / recipe.amount) \* totalNutrition
   - Show units in UI: "100 g" vs "1.5 servings"
   - Fallback to multiplier if recipe.amount is null
 - [ ] Update E2E tests
@@ -115,6 +120,7 @@ Firestore security rules: allow read/write only if `request.auth.uid == userId`.
 ## Phase 6: Cleanup & Deployment
 
 ### Cleanup
+
 - [ ] Remove all backend code:
   - Delete `src/server.ts`, `src/controllers/`, `src/routes/`, `src/middleware/`
   - Delete old `src/services/`, `src/repository/` (replaced by inline Firestore services)
@@ -125,6 +131,7 @@ Firestore security rules: allow read/write only if `request.auth.uid == userId`.
 - [ ] Update `.gitignore` (remove dist/server references, keep dist/client)
 
 ### Deployment
+
 - [ ] Build script: `npm run build` outputs to `dist/client/`
 - [ ] Set up GitHub Actions workflow:
   - Trigger: push to main
