@@ -7,4 +7,3 @@ export default defineConfig({
     specPattern: 'cypress/e2e/**/*.cy.ts',
   },
 });
-

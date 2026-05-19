@@ -23,11 +23,7 @@ export default function Login() {
       <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full">
         <h1 className="text-3xl font-bold text-center mb-8 text-gray-900">Diet Diary</h1>
 
-        {error && (
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-            {error}
-          </div>
-        )}
+        {error && <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded text-red-700 text-sm">{error}</div>}
 
         <button
           onClick={handleSignIn}
@@ -46,10 +42,7 @@ export default function Login() {
             </>
           )}
         </button>
-
       </div>
     </div>
   );
 }
-
-

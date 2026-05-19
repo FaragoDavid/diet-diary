@@ -101,7 +101,7 @@ describe('Recipes Page', () => {
   describe('Searching recipes', () => {
     it('has search input with proper HTMX attributes', () => {
       cy.visit('/dashboard/recipes');
-      
+
       cy.get('#search-recipe')
         .should('exist')
         .and('have.attr', 'hx-get', '/recipes')
@@ -133,10 +133,10 @@ describe('Recipes Page', () => {
       cy.task('db:createRecipe', 'Test Amount Recipe').then((result: any) => {
         cy.intercept('POST', `/recipe/${result.id}/amount`).as('updateAmount');
         cy.visit(`/recipe/${result.id}`);
-        
+
         cy.get('#recipe-details input[name="amount"]').clear().type('250').blur();
         cy.wait('@updateAmount');
-        
+
         cy.reload();
         cy.get('#recipe-details input[name="amount"]').should('have.value', '250');
       });

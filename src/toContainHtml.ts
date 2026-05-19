@@ -6,7 +6,8 @@ const toContainHtml: MatcherFunction<[expected: unknown]> = function (actual, ex
   const pass = html(actual).includes(html(expected));
   if (pass) {
     return {
-      message: () => `expected ${this.utils.printReceived(html(actual))} not to contain substring ${this.utils.printExpected(html(expected))}`,
+      message: () =>
+        `expected ${this.utils.printReceived(html(actual))} not to contain substring ${this.utils.printExpected(html(expected))}`,
       pass: true,
     };
   } else {
