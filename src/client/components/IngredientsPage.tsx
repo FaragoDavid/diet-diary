@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, Plus, Pencil, Trash2, Leaf } from 'lucide-react';
+import { Search, Plus, Pencil, Trash2, Check, X } from 'lucide-react';
 import { useIngredients, createIngredient, updateIngredient, deleteIngredient } from '../services/ingredients';
 import { useDebounce } from '../hooks/useDebounce';
 import { TEXTS } from '../constants/texts';
@@ -99,7 +99,8 @@ export default function IngredientsPage({ uid }: { uid: string }) {
                 <th className="text-right">{TEXTS.nutrients.cal}</th>
                 <th className="text-right">{TEXTS.nutrients.ch}</th>
                 <th className="text-right">{TEXTS.nutrients.fat}</th>
-                <th className="text-center">{TEXTS.ingredients.tags}</th>
+                <th className="text-center">{TEXTS.ingredients.vegetable}</th>
+                <th className="text-center">{TEXTS.ingredients.carbLimit}</th>
                 <th className="text-right">{TEXTS.common.actions}</th>
               </tr>
             </thead>
@@ -107,7 +108,7 @@ export default function IngredientsPage({ uid }: { uid: string }) {
               {filtered.map((ing) =>
                 editingId === ing.id ? (
                   <tr key={ing.id}>
-                    <td colSpan={6}>
+                    <td colSpan={7}>
                       <IngredientForm initial={ing} onSave={(data) => handleUpdate(ing.id, data)} onCancel={() => setEditingId(null)} />
                     </td>
                   </tr>
@@ -150,13 +151,11 @@ function IngredientRow({
       <td className="text-right tabular-nums">{ing.caloriesPer100}</td>
       <td className="text-right tabular-nums">{ing.carbsPer100}</td>
       <td className="text-right tabular-nums">{ing.fatPer100}</td>
-      <td className="text-center space-x-1">
-        {ing.isVegetable && (
-          <span className="badge badge-sm badge-success gap-1">
-            <Leaf className="w-3 h-3" /> {TEXTS.ingredients.veg}
-          </span>
-        )}
-        {!ing.isCarbCounted && <span className="badge badge-sm badge-warning">{TEXTS.ingredients.noCarb}</span>}
+      <td className="text-center">
+        {ing.isVegetable && <Check className="w-4 h-4 inline" />}
+      </td>
+      <td className="text-center tabular-nums">
+        {ing.carbLimit === null ? <X className="w-4 h-4 inline" /> : ing.carbLimit > 0 ? ing.carbLimit : null}
       </td>
       <td className="text-right">
         <div className="flex justify-end gap-1">

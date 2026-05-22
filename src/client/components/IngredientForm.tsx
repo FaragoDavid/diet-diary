@@ -8,7 +8,7 @@ const emptyIngredient: NewIngredient = {
   carbsPer100: 0,
   fatPer100: 0,
   isVegetable: false,
-  isCarbCounted: true,
+  carbLimit: 0,
 };
 
 interface IngredientFormProps {
@@ -92,7 +92,7 @@ export default function IngredientForm({ initial, onSave, onCancel }: Ingredient
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-4 items-end">
         <label className="label cursor-pointer gap-2">
           <input
             type="checkbox"
@@ -102,15 +102,35 @@ export default function IngredientForm({ initial, onSave, onCancel }: Ingredient
           />
           <span className="label-text">{TEXTS.ingredients.vegetable}</span>
         </label>
-        <label className="label cursor-pointer gap-2">
-          <input
-            type="checkbox"
-            checked={form.isCarbCounted}
-            onChange={(e) => setField('isCarbCounted', e.target.checked)}
-            className="checkbox checkbox-sm"
-          />
-          <span className="label-text">{TEXTS.ingredients.carbCounted}</span>
-        </label>
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text">{TEXTS.ingredients.carbLimit}</span>
+          </label>
+          <div className="flex items-center gap-2">
+            <select
+              value={form.carbLimit === null ? 'never' : form.carbLimit === 0 ? 'always' : 'threshold'}
+              onChange={(e) => {
+                const v = e.target.value;
+                setField('carbLimit', v === 'never' ? null : v === 'always' ? 0 : 1);
+              }}
+              className="select select-bordered select-sm"
+            >
+              <option value="always">Mindig</option>
+              <option value="threshold">Limit felett</option>
+              <option value="never">Soha</option>
+            </select>
+            {form.carbLimit !== null && form.carbLimit > 0 && (
+              <input
+                type="number"
+                min="1"
+                step="1"
+                value={form.carbLimit}
+                onChange={(e) => setField('carbLimit', parseFloat(e.target.value) || 1)}
+                className="input input-bordered input-sm w-20"
+              />
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="flex justify-end gap-2 pt-2">

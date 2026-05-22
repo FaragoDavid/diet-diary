@@ -10,8 +10,7 @@ export const MOCK_INGREDIENTS: Ingredient[] = [
     carbsPer100: 0,
     fatPer100: 3.6,
     isVegetable: false,
-    isCarbCounted: true,
-
+    carbLimit: 0,
   },
   {
     id: 'ing-2',
@@ -20,8 +19,7 @@ export const MOCK_INGREDIENTS: Ingredient[] = [
     carbsPer100: 7,
     fatPer100: 0.4,
     isVegetable: true,
-    isCarbCounted: true,
-
+    carbLimit: 0,
   },
   {
     id: 'ing-3',
@@ -30,8 +28,7 @@ export const MOCK_INGREDIENTS: Ingredient[] = [
     carbsPer100: 28,
     fatPer100: 0.3,
     isVegetable: false,
-    isCarbCounted: true,
-
+    carbLimit: 10,
   },
   {
     id: 'ing-4',
@@ -40,8 +37,7 @@ export const MOCK_INGREDIENTS: Ingredient[] = [
     carbsPer100: 0,
     fatPer100: 100,
     isVegetable: false,
-    isCarbCounted: false,
-
+    carbLimit: null,
   },
   {
     id: 'ing-5',
@@ -50,8 +46,7 @@ export const MOCK_INGREDIENTS: Ingredient[] = [
     carbsPer100: 3.6,
     fatPer100: 0.4,
     isVegetable: true,
-    isCarbCounted: true,
-
+    carbLimit: 0,
   },
   {
     id: 'ing-6',
@@ -60,8 +55,7 @@ export const MOCK_INGREDIENTS: Ingredient[] = [
     carbsPer100: 1.1,
     fatPer100: 11,
     isVegetable: false,
-    isCarbCounted: true,
-
+    carbLimit: 0,
   },
   {
     id: 'ing-7',
@@ -70,8 +64,7 @@ export const MOCK_INGREDIENTS: Ingredient[] = [
     carbsPer100: 3.9,
     fatPer100: 0.2,
     isVegetable: true,
-    isCarbCounted: true,
-
+    carbLimit: 0,
   },
   {
     id: 'ing-8',
@@ -80,8 +73,7 @@ export const MOCK_INGREDIENTS: Ingredient[] = [
     carbsPer100: 3.4,
     fatPer100: 4.3,
     isVegetable: false,
-    isCarbCounted: true,
-
+    carbLimit: 0,
   },
 ];
 
