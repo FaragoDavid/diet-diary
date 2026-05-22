@@ -91,9 +91,9 @@ Firestore security rules: allow read/write only if `request.auth.uid == userId`.
 
 ## Phase 4: Meals Page
 
-- [ ] Build Firestore service: `createDay`, `fetchDays`, `addMeal`, `addDish`, etc.
-- [ ] Design Firestore queries for `/users/{uid}/days` (meals, dishes as subcollections)
-- [ ] Build React components: day list, day detail, meal section, dish items, new day form
+- [x] Build Firestore service: `createDay`, `fetchDays`, `addMeal`, `addDish`, etc.
+- [x] Design Firestore queries for `/users/{uid}/days` (meals, dishes as embedded arrays)
+- [x] Build React components: day list, day detail, meal section, dish items, new day form
 - [ ] **[New: Per-meal ingredient weight recording]** — Record actual weights used per ingredient:
   - Store `actualWeight` per ingredient per dish
   - Recalculate nutrition based on actual vs. recipe weights

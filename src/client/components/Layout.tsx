@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
-import { UtensilsCrossed, Leaf, LogOut } from 'lucide-react';
+import { UtensilsCrossed, Leaf, LogOut, Calendar } from 'lucide-react';
 import { signOut, type AppUser } from '../services/auth';
 
 const navItems = [
   { to: '/ingredients', label: 'Ingredients', icon: Leaf },
   { to: '/recipes', label: 'Recipes', icon: UtensilsCrossed },
+  { to: '/meals', label: 'Meals', icon: Calendar },
 ];
 
 export default function Layout({ user }: { user: AppUser }) {

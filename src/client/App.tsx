@@ -5,6 +5,8 @@ import Layout from './components/Layout';
 import IngredientsPage from './components/IngredientsPage';
 import RecipesPage from './components/RecipesPage';
 import RecipeDetail from './components/RecipeDetail';
+import MealsPage from './components/MealsPage';
+import DayDetail from './components/DayDetail';
 
 function LoadingScreen() {
   return (
@@ -36,6 +38,8 @@ export default function App() {
           <Route path="ingredients" element={<IngredientsPage uid={user.uid} />} />
           <Route path="recipes" element={<RecipesPage uid={user.uid} />} />
           <Route path="recipes/:recipeId" element={<RecipeDetail uid={user.uid} />} />
+          <Route path="meals" element={<MealsPage uid={user.uid} />} />
+          <Route path="meals/:dayId" element={<DayDetail uid={user.uid} />} />
         </Route>
       </Routes>
     </BrowserRouter>
