@@ -1,5 +1,6 @@
 import { useState, useRef, useMemo } from 'react';
 import { useDebounce } from '../hooks/useDebounce';
+import { TEXTS } from '../constants/texts';
 import type { Ingredient } from '../types/ingredient';
 
 interface IngredientAutocompleteProps {
@@ -12,7 +13,7 @@ interface IngredientAutocompleteProps {
 export default function IngredientAutocomplete({
   ingredients,
   onSelect,
-  placeholder = 'Search ingredients...',
+  placeholder = TEXTS.ingredients.search,
   maxResults = 15,
 }: IngredientAutocompleteProps) {
   const [query, setQuery] = useState('');
@@ -64,7 +65,7 @@ export default function IngredientAutocomplete({
       )}
       {open && debouncedQuery && results.length === 0 && (
         <div className="bg-base-100 shadow-lg rounded-box absolute z-50 w-full mt-1 p-3 text-sm text-base-content/50">
-          No ingredients found
+          {TEXTS.ingredients.noFound}
         </div>
       )}
     </div>

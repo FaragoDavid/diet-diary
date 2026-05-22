@@ -4,6 +4,7 @@ import { Search, Plus, Trash2 } from 'lucide-react';
 import { useRecipes, createRecipe, deleteRecipe } from '../services/recipes';
 import { useDebounce } from '../hooks/useDebounce';
 import { round } from '../utils/nutrition';
+import { TEXTS } from '../constants/texts';
 import type { Recipe } from '../types/recipe';
 
 export default function RecipesPage({ uid }: { uid: string }) {
@@ -50,26 +51,26 @@ export default function RecipesPage({ uid }: { uid: string }) {
   if (error) {
     return (
       <div className="alert alert-error">
-        <span>Failed to load recipes: {error}</span>
+        <span>{TEXTS.recipes.loadError}: {error}</span>
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Recipes</h2>
+      <h2 className="text-2xl font-bold">{TEXTS.nav.recipes}</h2>
 
       <form onSubmit={handleCreate} className="flex gap-2">
         <input
           type="text"
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
-          placeholder="New recipe name..."
+          placeholder={TEXTS.recipes.newPlaceholder}
           className="input input-bordered flex-1"
         />
         <button type="submit" disabled={creating || !newName.trim()} className="btn btn-primary">
           <Plus className="w-4 h-4" />
-          Add
+          {TEXTS.common.add}
         </button>
       </form>
 
@@ -78,7 +79,7 @@ export default function RecipesPage({ uid }: { uid: string }) {
           <Search className="w-4 h-4 opacity-50" />
           <input
             type="text"
-            placeholder="Search recipes..."
+            placeholder={TEXTS.recipes.search}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="grow"
@@ -88,7 +89,7 @@ export default function RecipesPage({ uid }: { uid: string }) {
 
       {filtered.length === 0 ? (
         <div className="text-center py-12 text-base-content/50">
-          {recipes.length === 0 ? 'No recipes yet. Create your first one!' : 'No matches.'}
+          {recipes.length === 0 ? TEXTS.recipes.noRecipes : TEXTS.common.noMatches}
         </div>
       ) : (
         <div className="grid gap-3">
@@ -110,9 +111,9 @@ function RecipeCard({ recipe, onDelete, deleting }: { recipe: Recipe; onDelete: 
             {recipe.name}
           </Link>
           <div className="text-sm text-base-content/60 mt-1">
-            {round(recipe.calories)} cal · {round(recipe.carbs)}g carbs · {round(recipe.fat)}g fat
+            {round(recipe.calories)} {TEXTS.nutrients.cal.toLowerCase()} · {round(recipe.carbs)}g {TEXTS.nutrients.ch.toLowerCase()} · {round(recipe.fat)}g {TEXTS.nutrients.fat.toLowerCase()}
             {recipe.amount != null && <span> · {recipe.amount}g</span>}
-            {recipe.ingredients.length > 0 && <span> · {recipe.ingredients.length} ingredients</span>}
+            {recipe.ingredients.length > 0 && <span> · {TEXTS.recipes.nIngredients(recipe.ingredients.length)}</span>}
           </div>
         </div>
         <button onClick={onDelete} disabled={deleting} className="btn btn-ghost btn-sm text-error">

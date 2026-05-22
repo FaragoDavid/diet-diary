@@ -6,6 +6,7 @@ import { useIngredients } from '../services/ingredients';
 import { useRecipes } from '../services/recipes';
 import { calculateIngredientNutrition, calculateRecipeNutrition, round } from '../utils/nutrition';
 import { MEAL_TYPES, MEAL_TYPE_LABELS } from '../types/day';
+import { TEXTS } from '../constants/texts';
 import type { Meal, Dish, MealType } from '../types/day';
 import type { Ingredient } from '../types/ingredient';
 import type { Recipe } from '../types/recipe';
@@ -31,9 +32,9 @@ export default function DayDetail({ uid }: { uid: string }) {
   if (!day) {
     return (
       <div className="text-center py-12">
-        <p className="text-base-content/50 mb-4">Day not found</p>
+        <p className="text-base-content/50 mb-4">{TEXTS.meals.dayNotFound}</p>
         <Link to="/meals" className="btn btn-ghost btn-sm">
-          <ArrowLeft className="w-4 h-4" /> Back to meals
+          <ArrowLeft className="w-4 h-4" /> {TEXTS.meals.backToMeals}
         </Link>
       </div>
     );
@@ -61,22 +62,22 @@ export default function DayDetail({ uid }: { uid: string }) {
   return (
     <div className="space-y-6">
       <Link to="/meals" className="btn btn-ghost btn-sm">
-        <ArrowLeft className="w-4 h-4" /> Meals
+        <ArrowLeft className="w-4 h-4" /> {TEXTS.nav.meals}
       </Link>
 
       <h2 className="text-2xl font-bold">{formatDate(day.date)}</h2>
 
       <div className="stats shadow">
         <div className="stat">
-          <div className="stat-title">Calories</div>
+          <div className="stat-title">{TEXTS.nutrients.calories}</div>
           <div className="stat-value text-lg">{round(dayTotals.calories)}</div>
         </div>
         <div className="stat">
-          <div className="stat-title">Carbs</div>
+          <div className="stat-title">{TEXTS.nutrients.ch}</div>
           <div className="stat-value text-lg">{round(dayTotals.carbs)}g</div>
         </div>
         <div className="stat">
-          <div className="stat-title">Fat</div>
+          <div className="stat-title">{TEXTS.nutrients.fat}</div>
           <div className="stat-value text-lg">{round(dayTotals.fat)}g</div>
         </div>
       </div>
@@ -84,7 +85,7 @@ export default function DayDetail({ uid }: { uid: string }) {
       <AddMealButton availableTypes={availableMealTypes} meals={day.meals} onSave={saveMeals} />
 
       {day.meals.length === 0 ? (
-        <p className="text-center py-8 text-base-content/50">No meals yet. Add one above.</p>
+        <p className="text-center py-8 text-base-content/50">{TEXTS.meals.noMeals}</p>
       ) : (
         <div className="space-y-4">
           {day.meals.map((meal) => (
@@ -131,7 +132,7 @@ function AddMealButton({
   return (
     <div className="dropdown">
       <div tabIndex={0} role="button" className="btn btn-primary btn-sm">
-        <Plus className="w-4 h-4" /> Add Meal
+        <Plus className="w-4 h-4" /> {TEXTS.meals.addMeal}
       </div>
       <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow">
         {availableTypes.map((type) => (
@@ -183,7 +184,7 @@ function MealSection({
           <h3 className="card-title text-base">{MEAL_TYPE_LABELS[meal.type]}</h3>
           <div className="flex items-center gap-2">
             <span className="text-sm text-base-content/60">
-              {round(mealTotals.calories)} cal · {round(mealTotals.carbs)}c · {round(mealTotals.fat)}f
+              {round(mealTotals.calories)} {TEXTS.nutrients.cal.toLowerCase()} · {round(mealTotals.carbs)}c · {round(mealTotals.fat)}f
             </span>
             <button onClick={removeMeal} className="btn btn-ghost btn-xs text-error">
               <Trash2 className="w-3.5 h-3.5" />
@@ -205,11 +206,11 @@ function MealSection({
             <table className="table table-sm">
               <thead>
                 <tr>
-                  <th>Dish</th>
-                  <th className="text-right">Amount</th>
-                  <th className="text-right">Cal</th>
-                  <th className="text-right">Carbs</th>
-                  <th className="text-right">Fat</th>
+                  <th>{TEXTS.meals.dish}</th>
+                  <th className="text-right">{TEXTS.meals.amount}</th>
+                  <th className="text-right">{TEXTS.nutrients.cal}</th>
+                  <th className="text-right">{TEXTS.nutrients.ch}</th>
+                  <th className="text-right">{TEXTS.nutrients.fat}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -246,8 +247,8 @@ function AddDishRow({
   const [saving, setSaving] = useState(false);
 
   const options = [
-    ...ingredients.map((i) => ({ id: `ing:${i.id}`, label: i.name, group: 'Ingredients' })),
-    ...recipes.map((r) => ({ id: `rec:${r.id}`, label: r.name, group: 'Recipes' })),
+    ...ingredients.map((i) => ({ id: `ing:${i.id}`, label: i.name, group: TEXTS.nav.ingredients })),
+    ...recipes.map((r) => ({ id: `rec:${r.id}`, label: r.name, group: TEXTS.nav.recipes })),
   ];
 
   const handleAdd = async () => {
@@ -300,11 +301,11 @@ function AddDishRow({
   return (
     <div className="flex gap-2 items-end">
       <select value={selectedId} onChange={(e) => setSelectedId(e.target.value)} className="select select-bordered flex-1 select-sm">
-        <option value="">Add dish...</option>
-        {options.some((o) => o.group === 'Ingredients') && (
-          <optgroup label="Ingredients">
+        <option value="">{TEXTS.meals.addDish}</option>
+        {options.some((o) => o.group === TEXTS.nav.ingredients) && (
+          <optgroup label={TEXTS.nav.ingredients}>
             {options
-              .filter((o) => o.group === 'Ingredients')
+              .filter((o) => o.group === TEXTS.nav.ingredients)
               .map((o) => (
                 <option key={o.id} value={o.id}>
                   {o.label}
@@ -312,10 +313,10 @@ function AddDishRow({
               ))}
           </optgroup>
         )}
-        {options.some((o) => o.group === 'Recipes') && (
-          <optgroup label="Recipes">
+        {options.some((o) => o.group === TEXTS.nav.recipes) && (
+          <optgroup label={TEXTS.nav.recipes}>
             {options
-              .filter((o) => o.group === 'Recipes')
+              .filter((o) => o.group === TEXTS.nav.recipes)
               .map((o) => (
                 <option key={o.id} value={o.id}>
                   {o.label}
@@ -331,7 +332,7 @@ function AddDishRow({
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
         className="input input-bordered input-sm w-20"
-        placeholder="g"
+        placeholder={TEXTS.meals.g}
       />
       <button onClick={handleAdd} disabled={saving || !selectedId} className="btn btn-primary btn-sm">
         <Plus className="w-4 h-4" />

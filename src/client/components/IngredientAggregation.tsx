@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { round } from '../utils/nutrition';
+import { TEXTS } from '../constants/texts';
 import type { Day } from '../types/day';
 import type { Ingredient } from '../types/ingredient';
 import type { Recipe } from '../types/recipe';
@@ -23,7 +24,7 @@ export default function IngredientAggregation({
   const aggregated = useMemo(() => aggregateIngredients(days, ingredientsMap, recipesMap), [days, ingredientsMap, recipesMap]);
 
   if (aggregated.length === 0) {
-    return <p className="text-center py-8 text-base-content/50">No ingredients used in this date range.</p>;
+    return <p className="text-center py-8 text-base-content/50">{TEXTS.ingredientAgg.noData}</p>;
   }
 
   return (
@@ -31,9 +32,9 @@ export default function IngredientAggregation({
       <table className="table table-zebra">
         <thead>
           <tr>
-            <th>Ingredient</th>
-            <th className="text-right">Total (g)</th>
-            <th className="text-right">Used in</th>
+            <th>{TEXTS.ingredientAgg.ingredient}</th>
+            <th className="text-right">{TEXTS.ingredientAgg.totalG}</th>
+            <th className="text-right">{TEXTS.ingredientAgg.usedIn}</th>
           </tr>
         </thead>
         <tbody>
@@ -41,13 +42,13 @@ export default function IngredientAggregation({
             <tr key={agg.ingredientId}>
               <td className="font-medium">{agg.name}</td>
               <td className="text-right tabular-nums">{round(agg.totalAmount)}</td>
-              <td className="text-right">{agg.sources.length} dishes</td>
+              <td className="text-right">{TEXTS.ingredientAgg.nDishes(agg.sources.length)}</td>
             </tr>
           ))}
         </tbody>
         <tfoot>
           <tr>
-            <th>Total</th>
+            <th>{TEXTS.ingredientAgg.total}</th>
             <th className="text-right tabular-nums">{round(aggregated.reduce((s, a) => s + a.totalAmount, 0))}</th>
             <th></th>
           </tr>

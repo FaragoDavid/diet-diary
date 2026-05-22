@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import { UtensilsCrossed, Leaf, LogOut, Calendar, LayoutDashboard } from 'lucide-react';
 import { signOut, type AppUser } from '../services/auth';
+import { TEXTS } from '../constants/texts';
 
 const navItems = [
-  { to: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/ingredients', label: 'Ingredients', icon: Leaf },
-  { to: '/recipes', label: 'Recipes', icon: UtensilsCrossed },
-  { to: '/meals', label: 'Meals', icon: Calendar },
+  { to: '/', label: TEXTS.nav.dashboard, icon: LayoutDashboard },
+  { to: '/ingredients', label: TEXTS.nav.ingredients, icon: Leaf },
+  { to: '/recipes', label: TEXTS.nav.recipes, icon: UtensilsCrossed },
+  { to: '/meals', label: TEXTS.nav.meals, icon: Calendar },
 ];
 
 export default function Layout({ user }: { user: AppUser }) {
@@ -26,7 +27,7 @@ export default function Layout({ user }: { user: AppUser }) {
     <div className="min-h-screen bg-base-200">
       <nav className="navbar bg-base-100 shadow-sm px-4">
         <div className="flex-1">
-          <span className="text-xl font-bold">Diet Diary</span>
+          <span className="text-xl font-bold">{TEXTS.app.title}</span>
         </div>
         <div className="flex items-center gap-2">
           {navItems.map(({ to, label, icon: Icon }) => (

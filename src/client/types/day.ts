@@ -1,15 +1,9 @@
+import { TEXTS } from '../constants/texts';
+
 export const MEAL_TYPES = ['morningSnack', 'breakfast', 'brunch', 'lunch', 'afternoonSnack', 'dinner', 'lateNightSnack'] as const;
 export type MealType = (typeof MEAL_TYPES)[number];
 
-export const MEAL_TYPE_LABELS: Record<MealType, string> = {
-  morningSnack: 'Morning Snack',
-  breakfast: 'Breakfast',
-  brunch: 'Brunch',
-  lunch: 'Lunch',
-  afternoonSnack: 'Afternoon Snack',
-  dinner: 'Dinner',
-  lateNightSnack: 'Late Night Snack',
-};
+export const MEAL_TYPE_LABELS: Record<MealType, string> = TEXTS.mealTypes;
 
 export interface Dish {
   id: string;

@@ -5,6 +5,7 @@ import { useRecipes, updateRecipe } from '../services/recipes';
 import { useIngredients } from '../services/ingredients';
 import IngredientAutocomplete from './IngredientAutocomplete';
 import { calculateRecipeNutrition, calculateIngredientNutrition, round } from '../utils/nutrition';
+import { TEXTS } from '../constants/texts';
 import type { Ingredient } from '../types/ingredient';
 import type { RecipeIngredient } from '../types/recipe';
 
@@ -41,9 +42,9 @@ export default function RecipeDetail({ uid }: { uid: string }) {
   if (!recipe) {
     return (
       <div className="text-center py-12">
-        <p className="text-base-content/50 mb-4">Recipe not found</p>
+        <p className="text-base-content/50 mb-4">{TEXTS.recipes.notFound}</p>
         <Link to="/recipes" className="btn btn-ghost btn-sm">
-          <ArrowLeft className="w-4 h-4" /> Back to recipes
+          <ArrowLeft className="w-4 h-4" /> {TEXTS.recipes.backToRecipes}
         </Link>
       </div>
     );
@@ -55,41 +56,41 @@ export default function RecipeDetail({ uid }: { uid: string }) {
   return (
     <div className="space-y-6">
       <Link to="/recipes" className="btn btn-ghost btn-sm">
-        <ArrowLeft className="w-4 h-4" /> Recipes
+        <ArrowLeft className="w-4 h-4" /> {TEXTS.nav.recipes}
       </Link>
 
       <RecipeHeader uid={uid} recipeId={recipe.id} name={recipe.name} amount={recipe.amount} servings={recipe.servings} />
 
       <div className="stats shadow">
         <div className="stat">
-          <div className="stat-title">Calories</div>
+          <div className="stat-title">{TEXTS.nutrients.calories}</div>
           <div className="stat-value text-lg">{round(nutrition.calories)}</div>
         </div>
         <div className="stat">
-          <div className="stat-title">Carbs</div>
+          <div className="stat-title">{TEXTS.nutrients.ch}</div>
           <div className="stat-value text-lg">{round(nutrition.carbs)}g</div>
         </div>
         <div className="stat">
-          <div className="stat-title">Fat</div>
+          <div className="stat-title">{TEXTS.nutrients.fat}</div>
           <div className="stat-value text-lg">{round(nutrition.fat)}g</div>
         </div>
       </div>
 
       <div className="space-y-3">
-        <h3 className="text-lg font-semibold">Ingredients</h3>
+        <h3 className="text-lg font-semibold">{TEXTS.recipes.ingredients}</h3>
         <AddIngredientRow recipeIngredients={recipe.ingredients} available={availableIngredients} onSave={saveIngredients} />
         {recipe.ingredients.length === 0 ? (
-          <p className="text-base-content/50 py-4 text-center">No ingredients yet. Add one above.</p>
+          <p className="text-base-content/50 py-4 text-center">{TEXTS.recipes.noIngredients}</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="table table-zebra">
               <thead>
                 <tr>
-                  <th>Ingredient</th>
-                  <th className="text-right">Amount (g)</th>
-                  <th className="text-right">Cal</th>
-                  <th className="text-right">Carbs</th>
-                  <th className="text-right">Fat</th>
+                  <th>{TEXTS.recipes.ingredient}</th>
+                  <th className="text-right">{TEXTS.recipes.amountG}</th>
+                  <th className="text-right">{TEXTS.nutrients.cal}</th>
+                  <th className="text-right">{TEXTS.nutrients.ch}</th>
+                  <th className="text-right">{TEXTS.nutrients.fat}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -150,13 +151,13 @@ function RecipeHeader({
     <div className="flex flex-wrap items-end gap-3">
       <div className="form-control flex-1 min-w-48">
         <label className="label">
-          <span className="label-text">Name</span>
+          <span className="label-text">{TEXTS.common.name}</span>
         </label>
         <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} className="input input-bordered" />
       </div>
       <div className="form-control w-28">
         <label className="label">
-          <span className="label-text">Amount (g)</span>
+          <span className="label-text">{TEXTS.recipes.amountG}</span>
         </label>
         <input
           type="number"
@@ -170,7 +171,7 @@ function RecipeHeader({
       </div>
       <div className="form-control w-24">
         <label className="label">
-          <span className="label-text">Servings</span>
+          <span className="label-text">{TEXTS.recipes.servings}</span>
         </label>
         <input
           type="number"
@@ -183,7 +184,7 @@ function RecipeHeader({
       </div>
       {hasChanges && (
         <button onClick={handleSave} disabled={saving || !editName.trim()} className="btn btn-primary btn-sm">
-          <Save className="w-4 h-4" /> {saving ? 'Saving...' : 'Save'}
+          <Save className="w-4 h-4" /> {saving ? TEXTS.common.saving : TEXTS.common.save}
         </button>
       )}
     </div>
@@ -215,7 +216,7 @@ function AddIngredientRow({
   return (
     <div className="flex gap-2 items-end">
       <div className="flex-1">
-        <IngredientAutocomplete ingredients={available} onSelect={handleSelect} placeholder="Add ingredient..." />
+        <IngredientAutocomplete ingredients={available} onSelect={handleSelect} placeholder={TEXTS.recipes.addIngredient} />
       </div>
       <div className="w-24">
         <input
@@ -225,7 +226,7 @@ function AddIngredientRow({
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           className="input input-bordered w-full"
-          placeholder="g"
+          placeholder={TEXTS.recipes.g}
         />
       </div>
       {saving && <span className="loading loading-spinner loading-sm"></span>}

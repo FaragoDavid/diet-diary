@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Ingredient, NewIngredient } from '../types/ingredient';
+import { TEXTS } from '../constants/texts';
 
 const emptyIngredient: NewIngredient = {
   name: '',
@@ -38,7 +39,7 @@ export default function IngredientForm({ initial, onSave, onCancel }: Ingredient
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="form-control">
         <label className="label">
-          <span className="label-text font-medium">Name</span>
+          <span className="label-text font-medium">{TEXTS.common.name}</span>
         </label>
         <input
           type="text"
@@ -53,7 +54,7 @@ export default function IngredientForm({ initial, onSave, onCancel }: Ingredient
       <div className="grid grid-cols-3 gap-3">
         <div className="form-control">
           <label className="label">
-            <span className="label-text">Cal / 100g</span>
+            <span className="label-text">{TEXTS.ingredients.calPer100g}</span>
           </label>
           <input
             type="number"
@@ -66,7 +67,7 @@ export default function IngredientForm({ initial, onSave, onCancel }: Ingredient
         </div>
         <div className="form-control">
           <label className="label">
-            <span className="label-text">Carbs / 100g</span>
+            <span className="label-text">{TEXTS.ingredients.carbsPer100g}</span>
           </label>
           <input
             type="number"
@@ -79,7 +80,7 @@ export default function IngredientForm({ initial, onSave, onCancel }: Ingredient
         </div>
         <div className="form-control">
           <label className="label">
-            <span className="label-text">Fat / 100g</span>
+            <span className="label-text">{TEXTS.ingredients.fatPer100g}</span>
           </label>
           <input
             type="number"
@@ -100,7 +101,7 @@ export default function IngredientForm({ initial, onSave, onCancel }: Ingredient
             onChange={(e) => setField('isVegetable', e.target.checked)}
             className="checkbox checkbox-sm"
           />
-          <span className="label-text">Vegetable</span>
+          <span className="label-text">{TEXTS.ingredients.vegetable}</span>
         </label>
         <label className="label cursor-pointer gap-2">
           <input
@@ -109,7 +110,7 @@ export default function IngredientForm({ initial, onSave, onCancel }: Ingredient
             onChange={(e) => setField('isCarbCounted', e.target.checked)}
             className="checkbox checkbox-sm"
           />
-          <span className="label-text">Carb counted</span>
+          <span className="label-text">{TEXTS.ingredients.carbCounted}</span>
         </label>
         <label className="label cursor-pointer gap-2">
           <input
@@ -118,16 +119,16 @@ export default function IngredientForm({ initial, onSave, onCancel }: Ingredient
             onChange={(e) => setField('inStock', e.target.checked)}
             className="checkbox checkbox-sm"
           />
-          <span className="label-text">In stock</span>
+          <span className="label-text">{TEXTS.ingredients.inStock}</span>
         </label>
       </div>
 
       <div className="flex justify-end gap-2 pt-2">
         <button type="button" onClick={onCancel} className="btn btn-ghost btn-sm">
-          Cancel
+          {TEXTS.common.cancel}
         </button>
         <button type="submit" disabled={saving || !form.name.trim()} className="btn btn-primary btn-sm">
-          {saving ? 'Saving...' : initial ? 'Update' : 'Add'}
+          {saving ? TEXTS.common.saving : initial ? TEXTS.common.update : TEXTS.common.add}
         </button>
       </div>
     </form>

@@ -5,6 +5,7 @@ import { useDays } from '../services/days';
 import { useIngredients } from '../services/ingredients';
 import { useRecipes } from '../services/recipes';
 import { round } from '../utils/nutrition';
+import { TEXTS } from '../constants/texts';
 import NutritionStats from './NutritionStats';
 import IngredientAggregation from './IngredientAggregation';
 import ShoppingList from './ShoppingList';
@@ -58,18 +59,18 @@ export default function DashboardPage({ uid }: { uid: string }) {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Dashboard</h2>
+      <h2 className="text-2xl font-bold">{TEXTS.nav.dashboard}</h2>
 
       <div className="flex flex-wrap items-end gap-3">
         <div className="form-control">
           <label className="label">
-            <span className="label-text">From</span>
+            <span className="label-text">{TEXTS.dashboard.from}</span>
           </label>
           <input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} className="input input-bordered input-sm" />
         </div>
         <div className="form-control">
           <label className="label">
-            <span className="label-text">To</span>
+            <span className="label-text">{TEXTS.dashboard.to}</span>
           </label>
           <input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} className="input input-bordered input-sm" />
         </div>
@@ -77,35 +78,35 @@ export default function DashboardPage({ uid }: { uid: string }) {
 
       <div className="stats shadow">
         <div className="stat">
-          <div className="stat-title">Total Calories</div>
+          <div className="stat-title">{TEXTS.dashboard.totalCalories}</div>
           <div className="stat-value text-lg">{round(totals.calories)}</div>
-          <div className="stat-desc">avg {round(totals.calories / dayCount)}/day</div>
+          <div className="stat-desc">avg {round(totals.calories / dayCount)}{TEXTS.dashboard.perDay}</div>
         </div>
         <div className="stat">
-          <div className="stat-title">Total Carbs</div>
+          <div className="stat-title">{TEXTS.dashboard.totalCarbs}</div>
           <div className="stat-value text-lg">{round(totals.carbs)}g</div>
-          <div className="stat-desc">avg {round(totals.carbs / dayCount)}g/day</div>
+          <div className="stat-desc">avg {round(totals.carbs / dayCount)}{TEXTS.dashboard.gPerDay}</div>
         </div>
         <div className="stat">
-          <div className="stat-title">Total Fat</div>
+          <div className="stat-title">{TEXTS.dashboard.totalFat}</div>
           <div className="stat-value text-lg">{round(totals.fat)}g</div>
-          <div className="stat-desc">avg {round(totals.fat / dayCount)}g/day</div>
+          <div className="stat-desc">avg {round(totals.fat / dayCount)}{TEXTS.dashboard.gPerDay}</div>
         </div>
         <div className="stat">
-          <div className="stat-title">Days</div>
+          <div className="stat-title">{TEXTS.dashboard.days}</div>
           <div className="stat-value text-lg">{filteredDays.length}</div>
         </div>
       </div>
 
       <div role="tablist" className="tabs tabs-bordered">
         <button role="tab" className={`tab gap-1 ${tab === 'stats' ? 'tab-active' : ''}`} onClick={() => setTab('stats')}>
-          <BarChart3 className="w-4 h-4" /> Daily Stats
+          <BarChart3 className="w-4 h-4" /> {TEXTS.dashboard.dailyStats}
         </button>
         <button role="tab" className={`tab gap-1 ${tab === 'ingredients' ? 'tab-active' : ''}`} onClick={() => setTab('ingredients')}>
-          <ClipboardList className="w-4 h-4" /> Ingredients
+          <ClipboardList className="w-4 h-4" /> {TEXTS.dashboard.ingredientsTab}
         </button>
         <button role="tab" className={`tab gap-1 ${tab === 'shopping' ? 'tab-active' : ''}`} onClick={() => setTab('shopping')}>
-          <ShoppingCart className="w-4 h-4" /> Shopping List
+          <ShoppingCart className="w-4 h-4" /> {TEXTS.dashboard.shoppingList}
         </button>
       </div>
 

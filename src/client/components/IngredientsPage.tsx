@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { Search, Plus, Pencil, Trash2, Leaf, Package } from 'lucide-react';
 import { useIngredients, createIngredient, updateIngredient, deleteIngredient } from '../services/ingredients';
 import { useDebounce } from '../hooks/useDebounce';
+import { TEXTS } from '../constants/texts';
 import IngredientForm from './IngredientForm';
 import type { Ingredient, NewIngredient } from '../types/ingredient';
 
@@ -53,7 +54,7 @@ export default function IngredientsPage({ uid }: { uid: string }) {
   if (error) {
     return (
       <div className="alert alert-error">
-        <span>Failed to load ingredients: {error}</span>
+        <span>{TEXTS.ingredients.loadError}: {error}</span>
       </div>
     );
   }
@@ -61,10 +62,10 @@ export default function IngredientsPage({ uid }: { uid: string }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Ingredients</h2>
+        <h2 className="text-2xl font-bold">{TEXTS.nav.ingredients}</h2>
         <button onClick={() => setShowAddForm(true)} className="btn btn-primary btn-sm">
           <Plus className="w-4 h-4" />
-          Add
+          {TEXTS.common.add}
         </button>
       </div>
 
@@ -74,7 +75,7 @@ export default function IngredientsPage({ uid }: { uid: string }) {
             <Search className="w-4 h-4 opacity-50" />
             <input
               type="text"
-              placeholder="Search ingredients..."
+              placeholder={TEXTS.ingredients.search}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="grow"
@@ -88,14 +89,14 @@ export default function IngredientsPage({ uid }: { uid: string }) {
             onChange={(e) => setShowInStockOnly(e.target.checked)}
             className="toggle toggle-sm"
           />
-          <span className="label-text">In stock only</span>
+          <span className="label-text">{TEXTS.ingredients.inStockOnly}</span>
         </label>
       </div>
 
       {showAddForm && (
         <div className="card bg-base-100 shadow-sm">
           <div className="card-body">
-            <h3 className="card-title text-lg">New Ingredient</h3>
+            <h3 className="card-title text-lg">{TEXTS.ingredients.newIngredient}</h3>
             <IngredientForm onSave={handleAdd} onCancel={() => setShowAddForm(false)} />
           </div>
         </div>
@@ -103,19 +104,19 @@ export default function IngredientsPage({ uid }: { uid: string }) {
 
       {filtered.length === 0 ? (
         <div className="text-center py-12 text-base-content/50">
-          {ingredients.length === 0 ? 'No ingredients yet. Add your first one!' : 'No matches.'}
+          {ingredients.length === 0 ? TEXTS.ingredients.noIngredients : TEXTS.common.noMatches}
         </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="table table-zebra">
             <thead>
               <tr>
-                <th>Name</th>
-                <th className="text-right">Cal</th>
-                <th className="text-right">Carbs</th>
-                <th className="text-right">Fat</th>
-                <th className="text-center">Tags</th>
-                <th className="text-right">Actions</th>
+                <th>{TEXTS.common.name}</th>
+                <th className="text-right">{TEXTS.nutrients.cal}</th>
+                <th className="text-right">{TEXTS.nutrients.ch}</th>
+                <th className="text-right">{TEXTS.nutrients.fat}</th>
+                <th className="text-center">{TEXTS.ingredients.tags}</th>
+                <th className="text-right">{TEXTS.common.actions}</th>
               </tr>
             </thead>
             <tbody>
@@ -142,7 +143,7 @@ export default function IngredientsPage({ uid }: { uid: string }) {
       )}
 
       <div className="text-sm text-base-content/50 text-right">
-        {filtered.length} of {ingredients.length} ingredients
+        {filtered.length} / {ingredients.length}
       </div>
     </div>
   );
@@ -168,15 +169,15 @@ function IngredientRow({
       <td className="text-center space-x-1">
         {ing.isVegetable && (
           <span className="badge badge-sm badge-success gap-1">
-            <Leaf className="w-3 h-3" /> Veg
+            <Leaf className="w-3 h-3" /> {TEXTS.ingredients.veg}
           </span>
         )}
         {ing.inStock && (
           <span className="badge badge-sm badge-info gap-1">
-            <Package className="w-3 h-3" /> Stock
+            <Package className="w-3 h-3" /> {TEXTS.ingredients.stock}
           </span>
         )}
-        {!ing.isCarbCounted && <span className="badge badge-sm badge-warning">No carb</span>}
+        {!ing.isCarbCounted && <span className="badge badge-sm badge-warning">{TEXTS.ingredients.noCarb}</span>}
       </td>
       <td className="text-right">
         <div className="flex justify-end gap-1">

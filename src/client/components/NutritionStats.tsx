@@ -1,9 +1,10 @@
 import { round } from '../utils/nutrition';
+import { TEXTS } from '../constants/texts';
 import type { Day } from '../types/day';
 
 export default function NutritionStats({ days }: { days: Day[] }) {
   if (days.length === 0) {
-    return <p className="text-center py-8 text-base-content/50">No data for this date range.</p>;
+    return <p className="text-center py-8 text-base-content/50">{TEXTS.dashboard.noData}</p>;
   }
 
   const sorted = [...days].sort((a, b) => a.date.localeCompare(b.date));
@@ -13,12 +14,12 @@ export default function NutritionStats({ days }: { days: Day[] }) {
       <table className="table table-zebra">
         <thead>
           <tr>
-            <th>Date</th>
-            <th className="text-right">Meals</th>
-            <th className="text-right">Dishes</th>
-            <th className="text-right">Calories</th>
-            <th className="text-right">Carbs (g)</th>
-            <th className="text-right">Fat (g)</th>
+            <th>{TEXTS.dashboard.date}</th>
+            <th className="text-right">{TEXTS.dashboard.mealsCount}</th>
+            <th className="text-right">{TEXTS.dashboard.dishesCount}</th>
+            <th className="text-right">{TEXTS.nutrients.calories}</th>
+            <th className="text-right">{TEXTS.dashboard.carbsG}</th>
+            <th className="text-right">{TEXTS.dashboard.fatG}</th>
           </tr>
         </thead>
         <tbody>
