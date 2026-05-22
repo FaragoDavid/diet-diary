@@ -79,10 +79,10 @@ Firestore security rules: allow read/write only if `request.auth.uid == userId`.
 
 ## Phase 3: Recipes Page
 
-- [ ] Build Firestore service: `createRecipe`, `fetchRecipes`, `updateRecipe`, `deleteRecipe`, ingredient management
-- [ ] Design Firestore queries for `/users/{uid}/recipes`
-- [ ] Build React components: recipe list, recipe details, recipe ingredient list, recipe form
-- [ ] Handle real-time updates via Firestore listeners (or re-fetch after mutations)
+- [x] Build Firestore service: `createRecipe`, `fetchRecipes`, `updateRecipe`, `deleteRecipe`, ingredient management
+- [x] Design Firestore queries for `/users/{uid}/recipes`
+- [x] Build React components: recipe list, recipe details, recipe ingredient list, recipe form
+- [x] Handle real-time updates via Firestore listeners (or re-fetch after mutations)
 - [ ] **[TODO: Weight-aware nutrition calculation]** — Fix nutrition to support weight-based portions:
   - Calculate (dishAmount / recipe.amount) \* totalNutrition
   - Show units in UI: "100 g" vs "1.5 servings"

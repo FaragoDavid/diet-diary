@@ -3,6 +3,8 @@ import { useAuth } from './services/auth';
 import Login from './components/Login';
 import Layout from './components/Layout';
 import IngredientsPage from './components/IngredientsPage';
+import RecipesPage from './components/RecipesPage';
+import RecipeDetail from './components/RecipeDetail';
 
 function LoadingScreen() {
   return (
@@ -32,6 +34,8 @@ export default function App() {
         <Route element={<Layout user={user} />}>
           <Route index element={<Navigate to="/ingredients" replace />} />
           <Route path="ingredients" element={<IngredientsPage uid={user.uid} />} />
+          <Route path="recipes" element={<RecipesPage uid={user.uid} />} />
+          <Route path="recipes/:recipeId" element={<RecipeDetail uid={user.uid} />} />
         </Route>
       </Routes>
     </BrowserRouter>
