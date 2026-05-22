@@ -29,16 +29,16 @@ export default function Layout({ user }: { user: AppUser }) {
         <div className="flex-1">
           <span className="text-xl font-bold">{TEXTS.app.title}</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           {navItems.map(({ to, label, icon: Icon }) => (
             <NavLink key={to} to={to} end={to === '/'} className={({ isActive }) => `btn btn-sm ${isActive ? 'btn-primary' : 'btn-ghost'}`}>
               <Icon className="w-4 h-4" />
-              {label}
+              <span className="hidden sm:inline">{label}</span>
             </NavLink>
           ))}
         </div>
-        <div className="flex-none flex items-center gap-3 ml-4">
-          <span className="text-sm text-base-content/70">{user.displayName || user.email}</span>
+        <div className="flex-none flex items-center gap-3 ml-2">
+          <span className="text-sm text-base-content/70 hidden sm:inline">{user.displayName || user.email}</span>
           <button onClick={handleSignOut} disabled={signingOut} className="btn btn-sm btn-ghost">
             <LogOut className="w-4 h-4" />
           </button>
