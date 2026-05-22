@@ -1,6 +1,8 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './services/auth';
 import Login from './components/Login';
-import Dashboard from './components/Dashboard';
+import Layout from './components/Layout';
+import IngredientsPage from './components/IngredientsPage';
 
 function LoadingScreen() {
   return (
@@ -24,5 +26,14 @@ export default function App() {
     return <Login />;
   }
 
-  return <Dashboard />;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Layout user={user} />}>
+          <Route index element={<Navigate to="/ingredients" replace />} />
+          <Route path="ingredients" element={<IngredientsPage uid={user.uid} />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }

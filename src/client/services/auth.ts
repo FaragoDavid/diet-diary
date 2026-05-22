@@ -2,18 +2,32 @@ import { useState, useEffect } from 'react';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged } from 'firebase/auth';
 import { getApp } from './firebase';
 
-export function useAuth() {
-  const [user, setUser] = useState<any>(undefined);
+export interface AppUser {
+  uid: string;
+  displayName: string | null;
+  email: string | null;
+}
+
+export function useAuth(): AppUser | null | undefined {
+  const [user, setUser] = useState<AppUser | null | undefined>(undefined);
 
   useEffect(() => {
     if (import.meta.env.DEV) {
-      setUser({ displayName: 'Dev User', email: 'dev@localhost' });
+      setUser({ uid: 'dev-user', displayName: 'Dev User', email: 'dev@localhost' });
       return;
     }
 
     const auth = getAuth(getApp());
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      setUser(firebaseUser);
+      setUser(
+        firebaseUser
+          ? {
+              uid: firebaseUser.uid,
+              displayName: firebaseUser.displayName,
+              email: firebaseUser.email,
+            }
+          : null,
+      );
     });
 
     return () => unsubscribe();

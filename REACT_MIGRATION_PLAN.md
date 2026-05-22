@@ -59,22 +59,22 @@ Firestore security rules: allow read/write only if `request.auth.uid == userId`.
 
 ## Phase 1: Login Page
 
-- [ ] Refine React login page component (Google OAuth button, error handling)
-- [ ] Wire up `signIn()` / `signOut()` from `auth.ts`
-- [ ] Protect app routes: redirect to login if `useAuth()` returns `null`
-- [ ] Dev mode mock user (set when `import.meta.env.DEV`)
-- [ ] Add sign-out button to Dashboard
+- [x] Refine React login page component (Google OAuth button, error handling)
+- [x] Wire up `signIn()` / `signOut()` from `auth.ts`
+- [x] Protect app routes: redirect to login if `useAuth()` returns `null`
+- [x] Dev mode mock user (set when `import.meta.env.DEV`)
+- [x] Add sign-out button to Dashboard
 - [ ] Update E2E tests for login flow
 
 ## Phase 2: Ingredients Page
 
-- [ ] Build Firestore service: `createIngredient`, `fetchIngredients`, `updateIngredient`, `deleteIngredient`
-- [ ] Design Firestore queries for `/users/{uid}/ingredients`
-- [ ] Build React components: ingredient list, ingredient details, ingredient form
-- [ ] Implement search/filter with debounced Firestore queries
-- [ ] **[TODO: Replace dropdowns with autocomplete]** — Build autocomplete component, limit results to 10-20 items
+- [x] Build Firestore service: `createIngredient`, `fetchIngredients`, `updateIngredient`, `deleteIngredient`
+- [x] Design Firestore queries for `/users/{uid}/ingredients`
+- [x] Build React components: ingredient list, ingredient details, ingredient form
+- [x] Implement search/filter with debounced Firestore queries
+- [x] **[TODO: Replace dropdowns with autocomplete]** — Build autocomplete component, limit results to 10-20 items
 - [ ] **[New: Ingredient substitutions]** — Add optional `substitutes` field (e.g., spinach → kale)
-- [ ] **[New: Ingredient availability]** — Add `inStock` boolean, filter by availability
+- [x] **[New: Ingredient availability]** — Add `inStock` boolean, filter by availability
 - [ ] Update E2E tests
 
 ## Phase 3: Recipes Page
