@@ -1,4 +1,0 @@
--- AlterTable
-ALTER TABLE "recipes" ADD COLUMN     "calories" DOUBLE PRECISION,
-ADD COLUMN     "carbs" DOUBLE PRECISION,
-ADD COLUMN     "fat" DOUBLE PRECISION;

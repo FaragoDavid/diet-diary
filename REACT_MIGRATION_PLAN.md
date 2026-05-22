@@ -119,18 +119,18 @@ Firestore security rules: allow read/write only if `request.auth.uid == userId`.
 
 ### Cleanup
 
-- [ ] Remove all backend code:
+- [x] Remove all backend code:
   - Delete `src/server.ts`, `src/controllers/`, `src/routes/`, `src/middleware/`
   - Delete old `src/services/`, `src/repository/` (replaced by inline Firestore services)
   - Delete old `src/utils/` (prisma-client, etc.)
-- [ ] Remove backend dependencies from package.json (Fastify, Prisma, OAuth, session, etc.)
-- [ ] Remove Prisma migrations directory
-- [ ] Remove old HTML templates, Alpine.js, HTMX, typed-html
-- [ ] Update `.gitignore` (remove dist/server references, keep dist/client)
+- [x] Remove backend dependencies from package.json (Fastify, Prisma, OAuth, session, etc.)
+- [x] Remove Prisma migrations directory
+- [x] Remove old HTML templates, Alpine.js, HTMX, typed-html
+- [x] Update `.gitignore` (remove dist/server references, keep dist/client)
 
 ### Deployment
 
-- [ ] Build script: `npm run build` outputs to `dist/client/`
+- [x] Build script: `npm run build` outputs to `dist/client/`
 - [ ] Set up GitHub Actions workflow:
   - Trigger: push to main
   - Steps: checkout → setup Node 20 → npm ci → npm run build (with VITE_FIREBASE_API_KEY secret) → deploy
@@ -139,7 +139,7 @@ Firestore security rules: allow read/write only if `request.auth.uid == userId`.
     - **Vercel**: `npm run build` → auto-deploy `dist/client/`
     - **Netlify**: `npm run build` → auto-deploy `dist/client/`
     - **S3 + CloudFront**: Static hosting with CDN
-- [ ] Asset hashing configured for cache busting (Vite default)
+- [x] Asset hashing configured for cache busting (Vite default)
 - [ ] Firestore security rules deployed and tested
 
 ## Notes
