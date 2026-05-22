@@ -6,7 +6,6 @@ export interface Ingredient {
   fatPer100: number;
   isVegetable: boolean;
   isCarbCounted: boolean;
-  inStock: boolean;
 }
 
 export type NewIngredient = Omit<Ingredient, 'id'>;

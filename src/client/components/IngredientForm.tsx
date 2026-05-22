@@ -9,7 +9,6 @@ const emptyIngredient: NewIngredient = {
   fatPer100: 0,
   isVegetable: false,
   isCarbCounted: true,
-  inStock: true,
 };
 
 interface IngredientFormProps {
@@ -111,15 +110,6 @@ export default function IngredientForm({ initial, onSave, onCancel }: Ingredient
             className="checkbox checkbox-sm"
           />
           <span className="label-text">{TEXTS.ingredients.carbCounted}</span>
-        </label>
-        <label className="label cursor-pointer gap-2">
-          <input
-            type="checkbox"
-            checked={form.inStock}
-            onChange={(e) => setField('inStock', e.target.checked)}
-            className="checkbox checkbox-sm"
-          />
-          <span className="label-text">{TEXTS.ingredients.inStock}</span>
         </label>
       </div>
 

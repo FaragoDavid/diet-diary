@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, Plus, Pencil, Trash2, Leaf, Package } from 'lucide-react';
+import { Search, Plus, Pencil, Trash2, Leaf } from 'lucide-react';
 import { useIngredients, createIngredient, updateIngredient, deleteIngredient } from '../services/ingredients';
 import { useDebounce } from '../hooks/useDebounce';
 import { TEXTS } from '../constants/texts';
@@ -10,22 +10,15 @@ export default function IngredientsPage({ uid }: { uid: string }) {
   const { ingredients, loading, error } = useIngredients(uid);
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedQuery = useDebounce(searchQuery, 200);
-  const [showInStockOnly, setShowInStockOnly] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
-    let result = ingredients;
-    if (debouncedQuery) {
-      const q = debouncedQuery.toLowerCase();
-      result = result.filter((i) => i.name.toLowerCase().includes(q));
-    }
-    if (showInStockOnly) {
-      result = result.filter((i) => i.inStock);
-    }
-    return result;
-  }, [ingredients, debouncedQuery, showInStockOnly]);
+    if (!debouncedQuery) return ingredients;
+    const q = debouncedQuery.toLowerCase();
+    return ingredients.filter((i) => i.name.toLowerCase().includes(q));
+  }, [ingredients, debouncedQuery]);
 
   const handleAdd = async (data: NewIngredient) => {
     await createIngredient(uid, data);
@@ -71,27 +64,16 @@ export default function IngredientsPage({ uid }: { uid: string }) {
         </button>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="form-control flex-1 min-w-48">
-          <label className="input input-bordered flex items-center gap-2">
-            <Search className="w-4 h-4 opacity-50" />
-            <input
-              type="text"
-              placeholder={TEXTS.ingredients.search}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="grow"
-            />
-          </label>
-        </div>
-        <label className="label cursor-pointer gap-2">
+      <div className="form-control">
+        <label className="input input-bordered flex items-center gap-2">
+          <Search className="w-4 h-4 opacity-50" />
           <input
-            type="checkbox"
-            checked={showInStockOnly}
-            onChange={(e) => setShowInStockOnly(e.target.checked)}
-            className="toggle toggle-sm"
+            type="text"
+            placeholder={TEXTS.ingredients.search}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="grow"
           />
-          <span className="label-text">{TEXTS.ingredients.inStockOnly}</span>
         </label>
       </div>
 
@@ -172,11 +154,6 @@ function IngredientRow({
         {ing.isVegetable && (
           <span className="badge badge-sm badge-success gap-1">
             <Leaf className="w-3 h-3" /> {TEXTS.ingredients.veg}
-          </span>
-        )}
-        {ing.inStock && (
-          <span className="badge badge-sm badge-info gap-1">
-            <Package className="w-3 h-3" /> {TEXTS.ingredients.stock}
           </span>
         )}
         {!ing.isCarbCounted && <span className="badge badge-sm badge-warning">{TEXTS.ingredients.noCarb}</span>}
