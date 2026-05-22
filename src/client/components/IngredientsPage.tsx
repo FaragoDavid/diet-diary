@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { Search, Plus, Pencil, Trash2, Check, X } from 'lucide-react';
 import { useIngredients, createIngredient, updateIngredient, deleteIngredient } from '../services/ingredients';
 import { useDebounce } from '../hooks/useDebounce';
@@ -11,8 +11,9 @@ export default function IngredientsPage({ uid }: { uid: string }) {
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedQuery = useDebounce(searchQuery, 200);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingIngredient, setEditingIngredient] = useState<Ingredient | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
   const filtered = useMemo(() => {
     if (!debouncedQuery) return ingredients;
@@ -20,14 +21,29 @@ export default function IngredientsPage({ uid }: { uid: string }) {
     return ingredients.filter((i) => i.name.toLowerCase().includes(q));
   }, [ingredients, debouncedQuery]);
 
+  const dialogOpen = showAddForm || editingIngredient !== null;
+
+  useEffect(() => {
+    if (dialogOpen) {
+      dialogRef.current?.showModal();
+    } else {
+      dialogRef.current?.close();
+    }
+  }, [dialogOpen]);
+
+  const closeDialog = () => {
+    setShowAddForm(false);
+    setEditingIngredient(null);
+  };
+
   const handleAdd = async (data: NewIngredient) => {
     await createIngredient(uid, data);
-    setShowAddForm(false);
+    closeDialog();
   };
 
   const handleUpdate = async (id: string, data: NewIngredient) => {
     await updateIngredient(uid, id, data);
-    setEditingId(null);
+    closeDialog();
   };
 
   const handleDelete = async (id: string) => {
@@ -77,15 +93,6 @@ export default function IngredientsPage({ uid }: { uid: string }) {
         </label>
       </div>
 
-      {showAddForm && (
-        <div className="card bg-base-100 shadow-sm">
-          <div className="card-body">
-            <h3 className="card-title text-lg">{TEXTS.ingredients.newIngredient}</h3>
-            <IngredientForm onSave={handleAdd} onCancel={() => setShowAddForm(false)} />
-          </div>
-        </div>
-      )}
-
       {filtered.length === 0 ? (
         <div className="text-center py-12 text-base-content/50">
           {ingredients.length === 0 ? TEXTS.ingredients.noIngredients : TEXTS.common.noMatches}
@@ -105,23 +112,15 @@ export default function IngredientsPage({ uid }: { uid: string }) {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((ing) =>
-                editingId === ing.id ? (
-                  <tr key={ing.id}>
-                    <td colSpan={7}>
-                      <IngredientForm initial={ing} onSave={(data) => handleUpdate(ing.id, data)} onCancel={() => setEditingId(null)} />
-                    </td>
-                  </tr>
-                ) : (
-                  <IngredientRow
-                    key={ing.id}
-                    ingredient={ing}
-                    onEdit={() => setEditingId(ing.id)}
-                    onDelete={() => handleDelete(ing.id)}
-                    deleting={deletingId === ing.id}
-                  />
-                ),
-              )}
+              {filtered.map((ing) => (
+                <IngredientRow
+                  key={ing.id}
+                  ingredient={ing}
+                  onEdit={() => setEditingIngredient(ing)}
+                  onDelete={() => handleDelete(ing.id)}
+                  deleting={deletingId === ing.id}
+                />
+              ))}
             </tbody>
           </table>
         </div>
@@ -130,6 +129,25 @@ export default function IngredientsPage({ uid }: { uid: string }) {
       <div className="text-sm text-base-content/50 text-right">
         {filtered.length} / {ingredients.length}
       </div>
+
+      <dialog ref={dialogRef} className="modal" onClose={closeDialog}>
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">
+            {editingIngredient ? TEXTS.common.update : TEXTS.ingredients.newIngredient}
+          </h3>
+          {showAddForm && <IngredientForm onSave={handleAdd} onCancel={closeDialog} />}
+          {editingIngredient && (
+            <IngredientForm
+              initial={editingIngredient}
+              onSave={(data) => handleUpdate(editingIngredient.id, data)}
+              onCancel={closeDialog}
+            />
+          )}
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
     </div>
   );
 }
@@ -151,9 +169,7 @@ function IngredientRow({
       <td className="text-right tabular-nums">{ing.caloriesPer100}</td>
       <td className="text-right tabular-nums">{ing.carbsPer100}</td>
       <td className="text-right tabular-nums">{ing.fatPer100}</td>
-      <td className="text-center">
-        {ing.isVegetable && <Check className="w-4 h-4 inline" />}
-      </td>
+      <td className="text-center">{ing.isVegetable && <Check className="w-4 h-4 inline" />}</td>
       <td className="text-center tabular-nums">
         {ing.carbLimit === null ? <X className="w-4 h-4 inline" /> : ing.carbLimit > 0 ? ing.carbLimit : null}
       </td>
