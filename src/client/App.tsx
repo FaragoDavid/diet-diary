@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useAuth } from './services/auth';
 import Login from './components/Login';
 import Layout from './components/Layout';
@@ -7,6 +7,7 @@ import RecipesPage from './components/RecipesPage';
 import RecipeDetail from './components/RecipeDetail';
 import MealsPage from './components/MealsPage';
 import DayDetail from './components/DayDetail';
+import DashboardPage from './components/DashboardPage';
 
 function LoadingScreen() {
   return (
@@ -34,7 +35,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<Layout user={user} />}>
-          <Route index element={<Navigate to="/ingredients" replace />} />
+          <Route index element={<DashboardPage uid={user.uid} />} />
           <Route path="ingredients" element={<IngredientsPage uid={user.uid} />} />
           <Route path="recipes" element={<RecipesPage uid={user.uid} />} />
           <Route path="recipes/:recipeId" element={<RecipeDetail uid={user.uid} />} />

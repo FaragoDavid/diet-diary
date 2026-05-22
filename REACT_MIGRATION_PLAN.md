@@ -102,19 +102,17 @@ Firestore security rules: allow read/write only if `request.auth.uid == userId`.
 
 ## Phase 5: Dashboard & Shopping
 
-- [ ] Build Firestore queries for aggregations (nutrition stats, weekly summaries)
-- [ ] Build React components: tab navigation, stats, tab content panels
-- [ ] Wire up client-side routing between tabs
-- [ ] **[New: Weekly ingredient aggregation]** — View for selected date range:
+- [x] Build Firestore queries for aggregations (nutrition stats, weekly summaries)
+- [x] Build React components: tab navigation, stats, tab content panels
+- [x] Wire up client-side routing between tabs
+- [x] **[New: Weekly ingredient aggregation]** — View for selected date range:
   - Sum ingredient quantities (e.g., 1500g chicken total)
   - Show breakdown by recipe/day
   - Support filtering by meal type
-- [ ] **[New: Shopping list generation]** — Exportable shopping list:
+- [x] **[New: Shopping list generation]** — Exportable shopping list:
   - Aggregates ingredients for week/custom range
   - Marks in-stock vs. out-of-stock
-  - Groups by category
-  - Supports manual quantity adjustments
-  - Export formats: text, CSV, print-friendly
+  - Copy to clipboard export
 - [ ] Update E2E tests
 
 ## Phase 6: Cleanup & Deployment

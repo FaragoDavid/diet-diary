@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
-import { UtensilsCrossed, Leaf, LogOut, Calendar } from 'lucide-react';
+import { UtensilsCrossed, Leaf, LogOut, Calendar, LayoutDashboard } from 'lucide-react';
 import { signOut, type AppUser } from '../services/auth';
 
 const navItems = [
+  { to: '/', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/ingredients', label: 'Ingredients', icon: Leaf },
   { to: '/recipes', label: 'Recipes', icon: UtensilsCrossed },
   { to: '/meals', label: 'Meals', icon: Calendar },
@@ -29,7 +30,7 @@ export default function Layout({ user }: { user: AppUser }) {
         </div>
         <div className="flex items-center gap-2">
           {navItems.map(({ to, label, icon: Icon }) => (
-            <NavLink key={to} to={to} className={({ isActive }) => `btn btn-sm ${isActive ? 'btn-primary' : 'btn-ghost'}`}>
+            <NavLink key={to} to={to} end={to === '/'} className={({ isActive }) => `btn btn-sm ${isActive ? 'btn-primary' : 'btn-ghost'}`}>
               <Icon className="w-4 h-4" />
               {label}
             </NavLink>
