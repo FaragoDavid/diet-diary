@@ -46,6 +46,7 @@ export const TEXTS = {
   recipes: {
     search: 'Recept keresése...',
     newPlaceholder: 'Új recept neve...',
+    newRecipe: 'Új Recept',
     notFound: 'Recept nem található',
     backToRecipes: 'Vissza a receptekhez',
     ingredients: 'Alapanyagok',

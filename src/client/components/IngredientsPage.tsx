@@ -132,9 +132,7 @@ export default function IngredientsPage({ uid }: { uid: string }) {
 
       <dialog ref={dialogRef} className="modal" onClose={closeDialog}>
         <div className="modal-box">
-          <h3 className="font-bold text-lg">
-            {editingIngredient ? TEXTS.common.update : TEXTS.ingredients.newIngredient}
-          </h3>
+          <h3 className="font-bold text-lg">{editingIngredient ? TEXTS.common.update : TEXTS.ingredients.newIngredient}</h3>
           {showAddForm && <IngredientForm onSave={handleAdd} onCancel={closeDialog} />}
           {editingIngredient && (
             <IngredientForm
