@@ -54,7 +54,9 @@ export default function IngredientsPage({ uid }: { uid: string }) {
   if (error) {
     return (
       <div className="alert alert-error">
-        <span>{TEXTS.ingredients.loadError}: {error}</span>
+        <span>
+          {TEXTS.ingredients.loadError}: {error}
+        </span>
       </div>
     );
   }

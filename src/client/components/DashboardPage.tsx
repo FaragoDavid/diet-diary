@@ -80,17 +80,26 @@ export default function DashboardPage({ uid }: { uid: string }) {
         <div className="stat">
           <div className="stat-title">{TEXTS.dashboard.totalCalories}</div>
           <div className="stat-value text-lg">{round(totals.calories)}</div>
-          <div className="stat-desc">avg {round(totals.calories / dayCount)}{TEXTS.dashboard.perDay}</div>
+          <div className="stat-desc">
+            avg {round(totals.calories / dayCount)}
+            {TEXTS.dashboard.perDay}
+          </div>
         </div>
         <div className="stat">
           <div className="stat-title">{TEXTS.dashboard.totalCarbs}</div>
           <div className="stat-value text-lg">{round(totals.carbs)}g</div>
-          <div className="stat-desc">avg {round(totals.carbs / dayCount)}{TEXTS.dashboard.gPerDay}</div>
+          <div className="stat-desc">
+            avg {round(totals.carbs / dayCount)}
+            {TEXTS.dashboard.gPerDay}
+          </div>
         </div>
         <div className="stat">
           <div className="stat-title">{TEXTS.dashboard.totalFat}</div>
           <div className="stat-value text-lg">{round(totals.fat)}g</div>
-          <div className="stat-desc">avg {round(totals.fat / dayCount)}{TEXTS.dashboard.gPerDay}</div>
+          <div className="stat-desc">
+            avg {round(totals.fat / dayCount)}
+            {TEXTS.dashboard.gPerDay}
+          </div>
         </div>
         <div className="stat">
           <div className="stat-title">{TEXTS.dashboard.days}</div>

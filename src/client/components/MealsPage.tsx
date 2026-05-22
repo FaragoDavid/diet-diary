@@ -40,7 +40,9 @@ export default function MealsPage({ uid }: { uid: string }) {
   if (error) {
     return (
       <div className="alert alert-error">
-        <span>{TEXTS.meals.loadError}: {error}</span>
+        <span>
+          {TEXTS.meals.loadError}: {error}
+        </span>
       </div>
     );
   }
@@ -94,7 +96,8 @@ function DayCard({ day, onDelete, deleting }: { day: Day; onDelete: () => void; 
             {formatDate(day.date)}
           </Link>
           <div className="text-sm text-base-content/60 mt-1">
-            {round(totals.calories)} {TEXTS.nutrients.cal.toLowerCase()} · {round(totals.carbs)}g {TEXTS.nutrients.ch.toLowerCase()} · {round(totals.fat)}g {TEXTS.nutrients.fat.toLowerCase()}
+            {round(totals.calories)} {TEXTS.nutrients.cal.toLowerCase()} · {round(totals.carbs)}g {TEXTS.nutrients.ch.toLowerCase()} ·{' '}
+            {round(totals.fat)}g {TEXTS.nutrients.fat.toLowerCase()}
             {dishCount > 0 && (
               <span>
                 {' '}

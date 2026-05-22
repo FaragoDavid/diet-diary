@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { collection, doc, addDoc, updateDoc, deleteDoc, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { getDb } from './firebase';
+import { MOCK_RECIPES } from './mock-data';
 import type { Recipe, NewRecipe, RecipeUpdate } from '../types/recipe';
 
 function recipesCol(uid: string) {
@@ -8,12 +9,12 @@ function recipesCol(uid: string) {
 }
 
 export function useRecipes(uid: string | undefined) {
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [recipes, setRecipes] = useState<Recipe[]>(import.meta.env.DEV ? MOCK_RECIPES : []);
+  const [loading, setLoading] = useState(!import.meta.env.DEV);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!uid) return;
+    if (import.meta.env.DEV || !uid) return;
     const q = query(recipesCol(uid), orderBy('name'));
     const unsub = onSnapshot(
       q,
@@ -33,6 +34,7 @@ export function useRecipes(uid: string | undefined) {
 }
 
 export async function createRecipe(uid: string, name: string): Promise<string> {
+  if (import.meta.env.DEV) return 'mock-id';
   const newRecipe: Omit<NewRecipe, 'id'> = {
     name,
     calories: 0,
@@ -48,9 +50,11 @@ export async function createRecipe(uid: string, name: string): Promise<string> {
 }
 
 export async function updateRecipe(uid: string, id: string, data: RecipeUpdate) {
+  if (import.meta.env.DEV) return;
   await updateDoc(doc(getDb(), 'users', uid, 'recipes', id), data);
 }
 
 export async function deleteRecipe(uid: string, id: string) {
+  if (import.meta.env.DEV) return;
   await deleteDoc(doc(getDb(), 'users', uid, 'recipes', id));
 }

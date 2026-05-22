@@ -51,7 +51,9 @@ export default function RecipesPage({ uid }: { uid: string }) {
   if (error) {
     return (
       <div className="alert alert-error">
-        <span>{TEXTS.recipes.loadError}: {error}</span>
+        <span>
+          {TEXTS.recipes.loadError}: {error}
+        </span>
       </div>
     );
   }
@@ -111,7 +113,8 @@ function RecipeCard({ recipe, onDelete, deleting }: { recipe: Recipe; onDelete: 
             {recipe.name}
           </Link>
           <div className="text-sm text-base-content/60 mt-1">
-            {round(recipe.calories)} {TEXTS.nutrients.cal.toLowerCase()} · {round(recipe.carbs)}g {TEXTS.nutrients.ch.toLowerCase()} · {round(recipe.fat)}g {TEXTS.nutrients.fat.toLowerCase()}
+            {round(recipe.calories)} {TEXTS.nutrients.cal.toLowerCase()} · {round(recipe.carbs)}g {TEXTS.nutrients.ch.toLowerCase()} ·{' '}
+            {round(recipe.fat)}g {TEXTS.nutrients.fat.toLowerCase()}
             {recipe.amount != null && <span> · {recipe.amount}g</span>}
             {recipe.ingredients.length > 0 && <span> · {TEXTS.recipes.nIngredients(recipe.ingredients.length)}</span>}
           </div>
