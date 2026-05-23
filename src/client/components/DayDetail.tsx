@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import { useDays, updateDay } from '../services/days';
@@ -166,6 +166,7 @@ function MealSection({
   recipesMap: Map<string, Recipe>;
   onSave: (meals: Meal[]) => Promise<void>;
 }) {
+  const [focusDishId, setFocusDishId] = useState<string | null>(null);
   const mealTotals = meal.dishes.reduce(
     (acc, d) => ({ calories: acc.calories + d.calories, carbs: acc.carbs + d.carbs, fat: acc.fat + d.fat }),
     { calories: 0, carbs: 0, fat: 0 },
@@ -195,10 +196,9 @@ function MealSection({
         <AddDishRow
           dishes={meal.dishes}
           ingredients={ingredients}
-          ingredientsMap={ingredientsMap}
           recipes={recipes}
-          recipesMap={recipesMap}
           onSave={updateDishes}
+          onAdded={setFocusDishId}
         />
 
         {meal.dishes.length > 0 && (
@@ -216,7 +216,15 @@ function MealSection({
               </thead>
               <tbody>
                 {meal.dishes.map((dish) => (
-                  <DishRow key={dish.id} dish={dish} allDishes={meal.dishes} onSave={updateDishes} />
+                  <DishRow
+                    key={dish.id}
+                    dish={dish}
+                    allDishes={meal.dishes}
+                    ingredientsMap={ingredientsMap}
+                    recipesMap={recipesMap}
+                    onSave={updateDishes}
+                    autoFocus={focusDishId === dish.id}
+                  />
                 ))}
               </tbody>
             </table>
@@ -230,98 +238,100 @@ function MealSection({
 function AddDishRow({
   dishes,
   ingredients,
-  ingredientsMap,
   recipes,
-  recipesMap,
   onSave,
+  onAdded,
 }: {
   dishes: Dish[];
   ingredients: Ingredient[];
-  ingredientsMap: Map<string, Ingredient>;
   recipes: Recipe[];
-  recipesMap: Map<string, Recipe>;
   onSave: (dishes: Dish[]) => Promise<void>;
+  onAdded: (dishId: string) => void;
 }) {
-  const [amount, setAmount] = useState('100');
   const [saving, setSaving] = useState(false);
 
   const handleSelect = async (selection: DishSelection) => {
-    const amountNum = parseFloat(amount) || 100;
     setSaving(true);
     try {
-      let dish: Dish | null = null;
-      if (selection.type === 'ingredient') {
-        const ingredient = ingredientsMap.get(selection.id);
-        if (!ingredient) return;
-        const n = calculateIngredientNutrition(ingredient, amountNum);
-        dish = {
-          id: crypto.randomUUID(),
-          name: ingredient.name,
-          amount: amountNum,
-          calories: round(n.calories),
-          carbs: round(n.carbs),
-          fat: round(n.fat),
-          recipeId: null,
-          ingredientId: selection.id,
-        };
-      } else {
-        const recipe = recipesMap.get(selection.id);
-        if (!recipe) return;
-        const n = calculateRecipeNutrition(recipe.ingredients, ingredientsMap);
-        const factor = recipe.amount ? amountNum / recipe.amount : amountNum / 100;
-        dish = {
-          id: crypto.randomUUID(),
-          name: recipe.name,
-          amount: amountNum,
-          calories: round(n.calories * factor),
-          carbs: round(n.carbs * factor),
-          fat: round(n.fat * factor),
-          recipeId: selection.id,
-          ingredientId: null,
-        };
-      }
-      if (dish) {
-        await onSave([...dishes, dish]);
-      }
+      const id = crypto.randomUUID();
+      const dish: Dish = {
+        id,
+        name: selection.name,
+        amount: 0,
+        calories: 0,
+        carbs: 0,
+        fat: 0,
+        recipeId: selection.type === 'recipe' ? selection.id : null,
+        ingredientId: selection.type === 'ingredient' ? selection.id : null,
+      };
+      onAdded(id);
+      await onSave([...dishes, dish]);
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div className="flex gap-2 items-end">
+    <div className="flex gap-2 items-center">
       <div className="flex-1">
         <DishSelector ingredients={ingredients} recipes={recipes} onSelect={handleSelect} />
       </div>
-      <input
-        type="number"
-        min="0"
-        step="1"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-        className="input input-bordered input-sm w-20"
-        placeholder={TEXTS.meals.g}
-      />
       {saving && <span className="loading loading-spinner loading-sm"></span>}
     </div>
   );
 }
 
-function DishRow({ dish, allDishes, onSave }: { dish: Dish; allDishes: Dish[]; onSave: (dishes: Dish[]) => Promise<void> }) {
-  const [editAmount, setEditAmount] = useState(dish.amount.toString());
+function DishRow({
+  dish,
+  allDishes,
+  ingredientsMap,
+  recipesMap,
+  onSave,
+  autoFocus,
+}: {
+  dish: Dish;
+  allDishes: Dish[];
+  ingredientsMap: Map<string, Ingredient>;
+  recipesMap: Map<string, Recipe>;
+  onSave: (dishes: Dish[]) => Promise<void>;
+  autoFocus?: boolean;
+}) {
+  const [editAmount, setEditAmount] = useState(dish.amount ? dish.amount.toString() : '');
   const [saving, setSaving] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (autoFocus) setTimeout(() => inputRef.current?.focus(), 0);
+  }, [autoFocus]);
+
+  const computeNutrition = (amount: number): { calories: number; carbs: number; fat: number } => {
+    if (dish.ingredientId) {
+      const ingredient = ingredientsMap.get(dish.ingredientId);
+      if (ingredient) return calculateIngredientNutrition(ingredient, amount);
+    } else if (dish.recipeId) {
+      const recipe = recipesMap.get(dish.recipeId);
+      if (recipe) {
+        const n = calculateRecipeNutrition(recipe.ingredients, ingredientsMap);
+        const factor = recipe.amount ? amount / recipe.amount : amount / 100;
+        return { calories: n.calories * factor, carbs: n.carbs * factor, fat: n.fat * factor };
+      }
+    }
+    if (dish.amount) {
+      const factor = amount / dish.amount;
+      return { calories: dish.calories * factor, carbs: dish.carbs * factor, fat: dish.fat * factor };
+    }
+    return { calories: 0, carbs: 0, fat: 0 };
+  };
 
   const handleBlur = async () => {
     const newAmount = parseFloat(editAmount);
     if (!newAmount || newAmount <= 0 || newAmount === dish.amount) return;
-    const factor = newAmount / dish.amount;
+    const n = computeNutrition(newAmount);
     setSaving(true);
     try {
       await onSave(
         allDishes.map((d) =>
-          d.id === dish.id
-            ? { ...d, amount: newAmount, calories: round(d.calories * factor), carbs: round(d.carbs * factor), fat: round(d.fat * factor) }
-            : d,
+          d.id === dish.id ? { ...d, amount: newAmount, calories: round(n.calories), carbs: round(n.carbs), fat: round(n.fat) } : d,
         ),
       );
     } finally {
@@ -343,6 +353,7 @@ function DishRow({ dish, allDishes, onSave }: { dish: Dish; allDishes: Dish[]; o
       <td className="font-medium">{dish.name}</td>
       <td className="text-right">
         <input
+          ref={inputRef}
           type="number"
           min="0"
           step="1"
