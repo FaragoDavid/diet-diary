@@ -3,19 +3,19 @@ import { useDebounce } from '../hooks/useDebounce';
 import { TEXTS } from '../constants/texts';
 import type { Ingredient } from '../types/ingredient';
 
-interface IngredientAutocompleteProps {
+interface IngredientSelectorProps {
   ingredients: Ingredient[];
   onSelect: (ingredient: Ingredient) => void;
   placeholder?: string;
   maxResults?: number;
 }
 
-export default function IngredientAutocomplete({
+export default function IngredientSelector({
   ingredients,
   onSelect,
   placeholder = TEXTS.ingredients.search,
   maxResults = 15,
-}: IngredientAutocompleteProps) {
+}: IngredientSelectorProps) {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const debouncedQuery = useDebounce(query, 150);

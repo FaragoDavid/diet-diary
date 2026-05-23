@@ -92,7 +92,6 @@ export const TEXTS = {
     perDay: '/nap',
     gPerDay: 'g/nap',
     dailyStats: 'Napi statisztika',
-    ingredientsTab: 'Alapanyagok',
     shoppingList: 'Bevásárlólista',
     date: 'Dátum',
     mealsCount: 'Étkezések',
@@ -100,14 +99,6 @@ export const TEXTS = {
     carbsG: 'CH (g)',
     fatG: 'Zsír (g)',
     noData: 'Nincs adat ebben az időszakban.',
-  },
-  ingredientAgg: {
-    ingredient: 'Alapanyag',
-    totalG: 'Összes (g)',
-    usedIn: 'Felhasználva',
-    total: 'Összesen',
-    nDishes: (n: number): string => `${n} étel`,
-    noData: 'Nem használtál alapanyagot ebben az időszakban.',
   },
   shoppingList: {
     ingredient: 'Alapanyag',

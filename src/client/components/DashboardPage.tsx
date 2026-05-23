@@ -1,13 +1,12 @@
 import { useState, useMemo } from 'react';
 import { startOfWeek, endOfWeek, format, isWithinInterval, parseISO } from 'date-fns';
-import { BarChart3, ShoppingCart, ClipboardList } from 'lucide-react';
+import { BarChart3, ShoppingCart } from 'lucide-react';
 import { useDays } from '../services/days';
 import { useIngredients } from '../services/ingredients';
 import { useRecipes } from '../services/recipes';
 import { round } from '../utils/nutrition';
 import { TEXTS } from '../constants/texts';
 import NutritionStats from './NutritionStats';
-import IngredientAggregation from './IngredientAggregation';
 import ShoppingList from './ShoppingList';
 
 export default function DashboardPage({ uid }: { uid: string }) {
@@ -18,7 +17,7 @@ export default function DashboardPage({ uid }: { uid: string }) {
   const today = new Date();
   const [fromDate, setFromDate] = useState(() => format(startOfWeek(today, { weekStartsOn: 1 }), 'yyyy-MM-dd'));
   const [toDate, setToDate] = useState(() => format(endOfWeek(today, { weekStartsOn: 1 }), 'yyyy-MM-dd'));
-  const [tab, setTab] = useState<'stats' | 'ingredients' | 'shopping'>('stats');
+  const [tab, setTab] = useState<'stats' | 'shopping'>('stats');
 
   const filteredDays = useMemo(() => {
     const from = parseISO(fromDate);
@@ -111,16 +110,12 @@ export default function DashboardPage({ uid }: { uid: string }) {
         <button role="tab" className={`tab gap-1 ${tab === 'stats' ? 'tab-active' : ''}`} onClick={() => setTab('stats')}>
           <BarChart3 className="w-4 h-4" /> {TEXTS.dashboard.dailyStats}
         </button>
-        <button role="tab" className={`tab gap-1 ${tab === 'ingredients' ? 'tab-active' : ''}`} onClick={() => setTab('ingredients')}>
-          <ClipboardList className="w-4 h-4" /> {TEXTS.dashboard.ingredientsTab}
-        </button>
         <button role="tab" className={`tab gap-1 ${tab === 'shopping' ? 'tab-active' : ''}`} onClick={() => setTab('shopping')}>
           <ShoppingCart className="w-4 h-4" /> {TEXTS.dashboard.shoppingList}
         </button>
       </div>
 
       {tab === 'stats' && <NutritionStats days={filteredDays} />}
-      {tab === 'ingredients' && <IngredientAggregation days={filteredDays} ingredientsMap={ingredientsMap} recipesMap={recipesMap} />}
       {tab === 'shopping' && <ShoppingList days={filteredDays} ingredientsMap={ingredientsMap} recipesMap={recipesMap} />}
     </div>
   );
