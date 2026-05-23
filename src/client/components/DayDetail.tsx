@@ -65,24 +65,28 @@ export default function DayDetail({ uid }: { uid: string }) {
 
   return (
     <div className="space-y-6">
-      <Link to="/meals" className="btn btn-ghost btn-sm">
-        <ArrowLeft className="w-4 h-4" /> {TEXTS.nav.meals}
-      </Link>
-
-      <h2 className="text-2xl font-bold">{formatDate(day.date)}</h2>
-      <p className="text-base-content/60">
-        <span className={getNutrientColor(dayTotals.calories, DAY_TARGETS.calories)}>
-          {round(dayTotals.calories)} {TEXTS.nutrients.cal.toLowerCase()}
-        </span>
-        {' · '}
-        <span className={getNutrientColor(dayTotals.carbs, DAY_TARGETS.carbs)}>
-          {round(dayTotals.carbs)}g {TEXTS.nutrients.ch.toLowerCase()}
-        </span>
-        {' · '}
-        {round(dayTotals.fat)}g {TEXTS.nutrients.fat.toLowerCase()}
-      </p>
-
-      <AddMealButton availableTypes={availableMealTypes} meals={day.meals} onSave={saveMeals} />
+      <div className="sticky top-0 z-10 bg-base-200 -mx-4 px-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Link to="/meals" className="btn btn-ghost btn-sm btn-square">
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+            <h2 className="text-2xl font-bold">{formatDate(day.date)}</h2>
+            <span className="text text-base-content/60">
+              <span className={getNutrientColor(dayTotals.calories, DAY_TARGETS.calories)}>
+                {round(dayTotals.calories)} {TEXTS.nutrients.cal.toLowerCase()}
+              </span>
+              {' · '}
+              <span className={getNutrientColor(dayTotals.carbs, DAY_TARGETS.carbs)}>
+                {round(dayTotals.carbs)}g {TEXTS.nutrients.ch.toLowerCase()}
+              </span>
+              {' · '}
+              {round(dayTotals.fat)}g {TEXTS.nutrients.fat.toLowerCase()}
+            </span>
+          </div>
+          <AddMealButton availableTypes={availableMealTypes} meals={day.meals} onSave={saveMeals} />
+        </div>
+      </div>
 
       {day.meals.length === 0 ? (
         <p className="text-center py-8 text-base-content/50">{TEXTS.meals.noMeals}</p>
