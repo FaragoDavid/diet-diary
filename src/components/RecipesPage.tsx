@@ -22,11 +22,13 @@ export default function RecipesPage({ uid }: { uid: string }) {
   const [isNew, setIsNew] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
+  const baseRecipes = useMemo(() => recipes.filter((r) => !r.baseRecipeId), [recipes]);
+
   const filtered = useMemo(() => {
-    if (!debouncedQuery) return recipes;
+    if (!debouncedQuery) return baseRecipes;
     const q = debouncedQuery.toLowerCase();
-    return recipes.filter((r) => r.name.toLowerCase().includes(q));
-  }, [recipes, debouncedQuery]);
+    return baseRecipes.filter((r) => r.name.toLowerCase().includes(q));
+  }, [baseRecipes, debouncedQuery]);
 
   const selectedRecipe = selectedId ? (recipes.find((r) => r.id === selectedId) ?? null) : null;
 

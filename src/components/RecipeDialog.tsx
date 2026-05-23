@@ -13,12 +13,14 @@ export default function RecipeDialog({
   ingredients,
   onClose,
   initialEditHeader = false,
+  baseRecipeName,
 }: {
   uid: string;
   recipe: Recipe;
   ingredients: Ingredient[];
   onClose: () => void;
   initialEditHeader?: boolean;
+  baseRecipeName?: string;
 }) {
   const ingredientsMap = useMemo(() => new Map(ingredients.map((i) => [i.id, i])), [ingredients]);
   const [editingHeader, setEditingHeader] = useState(initialEditHeader);
@@ -42,6 +44,11 @@ export default function RecipeDialog({
 
   return (
     <div className="space-y-4">
+      {baseRecipeName && (
+        <div className="text-xs text-base-content/50">
+          {TEXTS.recipes.basedOn}: {baseRecipeName}
+        </div>
+      )}
       {editingHeader ? (
         <RecipeHeaderForm
           uid={uid}

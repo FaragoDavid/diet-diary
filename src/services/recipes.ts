@@ -3,7 +3,7 @@ import { collection, doc, addDoc, updateDoc, deleteDoc, query, orderBy, onSnapsh
 import { getDb } from './firebase';
 import { createDevStore } from '../utils/dev-store';
 import { MOCK_RECIPES } from '../constants/mock-data';
-import type { Recipe, NewRecipe, RecipeUpdate } from '../types/recipe';
+import type { Recipe, RecipeUpdate } from '../types/recipe';
 
 function recipesCol(uid: string) {
   return collection(getDb(), 'users', uid, 'recipes');
@@ -71,4 +71,24 @@ export async function deleteRecipe(uid: string, id: string) {
     return;
   }
   await deleteDoc(doc(getDb(), 'users', uid, 'recipes', id));
+}
+
+export async function createVariant(uid: string, baseRecipe: Recipe): Promise<string> {
+  const variant: Recipe = {
+    id: `rec-${Date.now()}`,
+    name: baseRecipe.name,
+    calories: baseRecipe.calories,
+    carbs: baseRecipe.carbs,
+    fat: baseRecipe.fat,
+    amount: baseRecipe.amount,
+    servings: baseRecipe.servings,
+    baseRecipeId: baseRecipe.baseRecipeId ?? baseRecipe.id,
+    ingredients: [...baseRecipe.ingredients],
+  };
+  if (import.meta.env.DEV) {
+    devStore.add(variant);
+    return variant.id;
+  }
+  const ref = await addDoc(recipesCol(uid), variant);
+  return ref.id;
 }

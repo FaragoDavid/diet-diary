@@ -1,15 +1,16 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, GitBranch } from 'lucide-react';
 import { useDays, updateDay } from '../services/days';
 import { useIngredients } from '../services/ingredients';
-import { useRecipes } from '../services/recipes';
+import { useRecipes, createVariant } from '../services/recipes';
 import { calculateIngredientNutrition, calculateRecipeNutrition, round, getNutrientColor } from '../utils/nutrition';
 import { formatDate, formatDateShort } from '../utils/format';
 import { MEAL_TYPES, MEAL_TYPE_LABELS } from '../types/day';
 import { TEXTS } from '../constants/texts';
 import { MEAL_TARGETS, DAY_TARGETS } from '../constants/meal-targets';
 import DishSelector from './DishSelector';
+import RecipeDialog from './RecipeDialog';
 import type { DishSelection } from './DishSelector';
 import type { Meal, Dish, MealType } from '../types/day';
 import type { Ingredient } from '../types/ingredient';
@@ -24,6 +25,19 @@ export default function DayDetail({ uid }: { uid: string }) {
   const day = days.find((d) => d.id === dayId);
   const ingredientsMap = useMemo(() => new Map(ingredients.map((i) => [i.id, i])), [ingredients]);
   const recipesMap = useMemo(() => new Map(recipes.map((r) => [r.id, r])), [recipes]);
+  const [editingVariantId, setEditingVariantId] = useState<string | null>(null);
+  const variantDialogRef = useRef<HTMLDialogElement>(null);
+
+  const editingVariant = editingVariantId ? recipes.find((r) => r.id === editingVariantId) ?? null : null;
+  const editingVariantBase = editingVariant?.baseRecipeId ? recipes.find((r) => r.id === editingVariant.baseRecipeId)?.name : undefined;
+
+  useEffect(() => {
+    if (editingVariant) {
+      variantDialogRef.current?.showModal();
+    } else {
+      variantDialogRef.current?.close();
+    }
+  }, [editingVariant]);
 
   if (daysLoading || ingredientsLoading || recipesLoading) {
     return (
@@ -98,6 +112,7 @@ export default function DayDetail({ uid }: { uid: string }) {
           {day.meals.map((meal) => (
             <MealSection
               key={meal.type}
+              uid={uid}
               meal={meal}
               allMeals={day.meals}
               ingredients={ingredients}
@@ -105,10 +120,28 @@ export default function DayDetail({ uid }: { uid: string }) {
               recipes={recipes}
               recipesMap={recipesMap}
               onSave={saveMeals}
+              onEditVariant={setEditingVariantId}
             />
           ))}
         </div>
       )}
+
+      <dialog ref={variantDialogRef} className="modal" onClose={() => setEditingVariantId(null)}>
+        <div className="modal-box">
+          {editingVariant && (
+            <RecipeDialog
+              uid={uid}
+              recipe={editingVariant}
+              ingredients={ingredients}
+              onClose={() => setEditingVariantId(null)}
+              baseRecipeName={editingVariantBase}
+            />
+          )}
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
     </div>
   );
 }
@@ -155,6 +188,7 @@ function AddMealButton({
 }
 
 function MealSection({
+  uid,
   meal,
   allMeals,
   ingredients,
@@ -162,7 +196,9 @@ function MealSection({
   recipes,
   recipesMap,
   onSave,
+  onEditVariant,
 }: {
+  uid: string;
   meal: Meal;
   allMeals: Meal[];
   ingredients: Ingredient[];
@@ -170,6 +206,7 @@ function MealSection({
   recipes: Recipe[];
   recipesMap: Map<string, Recipe>;
   onSave: (meals: Meal[]) => Promise<void>;
+  onEditVariant: (variantId: string) => void;
 }) {
   const [focusDishId, setFocusDishId] = useState<string | null>(null);
   const targets = MEAL_TARGETS[meal.type];
@@ -228,11 +265,13 @@ function MealSection({
                 {meal.dishes.map((dish) => (
                   <DishRow
                     key={dish.id}
+                    uid={uid}
                     dish={dish}
                     allDishes={meal.dishes}
                     ingredientsMap={ingredientsMap}
                     recipesMap={recipesMap}
                     onSave={updateDishes}
+                    onEditVariant={onEditVariant}
                     autoFocus={focusDishId === dish.id}
                   />
                 ))}
@@ -292,18 +331,22 @@ function AddDishRow({
 }
 
 function DishRow({
+  uid,
   dish,
   allDishes,
   ingredientsMap,
   recipesMap,
   onSave,
+  onEditVariant,
   autoFocus,
 }: {
+  uid: string;
   dish: Dish;
   allDishes: Dish[];
   ingredientsMap: Map<string, Ingredient>;
   recipesMap: Map<string, Recipe>;
   onSave: (dishes: Dish[]) => Promise<void>;
+  onEditVariant: (variantId: string) => void;
   autoFocus?: boolean;
 }) {
   const [editAmount, setEditAmount] = useState(dish.amount ? dish.amount.toString() : '');
@@ -358,6 +401,20 @@ function DishRow({
     }
   };
 
+  const handleCustomize = async () => {
+    if (!dish.recipeId) return;
+    const recipe = recipesMap.get(dish.recipeId);
+    if (!recipe) return;
+    setSaving(true);
+    try {
+      const variantId = await createVariant(uid, recipe);
+      await onSave(allDishes.map((d) => (d.id === dish.id ? { ...d, recipeId: variantId } : d)));
+      onEditVariant(variantId);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <tr>
       <td className="font-medium">{dish.name}</td>
@@ -377,9 +434,16 @@ function DishRow({
       <td className="text-right tabular-nums">{round(dish.carbs)}</td>
       <td className="text-right tabular-nums">{round(dish.fat)}</td>
       <td>
-        <button onClick={handleDelete} disabled={saving} className="btn btn-ghost btn-xs text-error">
-          <Trash2 className="w-3.5 h-3.5" />
-        </button>
+        <div className="flex gap-0.5">
+          {dish.recipeId && (
+            <button onClick={handleCustomize} disabled={saving} className="btn btn-ghost btn-xs" title={TEXTS.meals.customize}>
+              <GitBranch className="w-3.5 h-3.5" />
+            </button>
+          )}
+          <button onClick={handleDelete} disabled={saving} className="btn btn-ghost btn-xs text-error">
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </td>
     </tr>
   );

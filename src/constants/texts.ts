@@ -58,6 +58,8 @@ export const TEXTS = {
     nIngredients: (n: number): string => `${n} alapanyag`,
     loadError: 'Receptek betöltése sikertelen',
     g: 'g',
+    variant: 'Variáns',
+    basedOn: 'Alap',
   },
   meals: {
     newDay: 'Új Nap',
@@ -71,6 +73,7 @@ export const TEXTS = {
     backToMeals: 'Vissza az étkezésekhez',
     loadError: 'Napok betöltése sikertelen',
     g: 'g',
+    customize: 'Testreszabás',
   },
   dishes: {
     ingredient: 'alapanyag',

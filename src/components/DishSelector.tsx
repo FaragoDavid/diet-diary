@@ -33,12 +33,20 @@ export default function DishSelector({
   const results = useMemo(() => {
     if (!debouncedQuery) return [];
     const q = debouncedQuery.toLowerCase();
+    const recipesMap = new Map(recipes.map((r) => [r.id, r]));
     const matchedIngredients = ingredients
       .filter((i) => i.name.toLowerCase().includes(q))
-      .map((i) => ({ type: 'ingredient' as const, id: i.id, name: i.name, detail: i }));
+      .map((i) => ({ type: 'ingredient' as const, id: i.id, name: i.name, subtitle: null }));
     const matchedRecipes = recipes
       .filter((r) => r.name.toLowerCase().includes(q))
-      .map((r) => ({ type: 'recipe' as const, id: r.id, name: r.name, detail: r }));
+      .map((r) => {
+        let subtitle: string | null = null;
+        if (r.baseRecipeId) {
+          const base = recipesMap.get(r.baseRecipeId);
+          subtitle = r.amount ? `${r.amount}g` : base ? `${TEXTS.recipes.variant}` : null;
+        }
+        return { type: 'recipe' as const, id: r.id, name: r.name, subtitle };
+      });
     return [...matchedIngredients, ...matchedRecipes].slice(0, maxResults);
   }, [ingredients, recipes, debouncedQuery, maxResults]);
 
@@ -69,7 +77,10 @@ export default function DishSelector({
           {results.map((item) => (
             <li key={`${item.type}:${item.id}`}>
               <button type="button" onMouseDown={() => handleSelect(item)} className="flex justify-between">
-                <span>{item.name}</span>
+                <span>
+                  {item.name}
+                  {item.subtitle && <span className="text-xs text-base-content/50 ml-1">({item.subtitle})</span>}
+                </span>
                 <span className="text-xs text-base-content/50">
                   {item.type === 'ingredient' ? TEXTS.dishes.ingredient : TEXTS.dishes.recipe}
                 </span>
