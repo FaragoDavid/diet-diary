@@ -6,7 +6,6 @@ import IngredientsPage from './components/IngredientsPage';
 import RecipesPage from './components/RecipesPage';
 import MealsPage from './components/MealsPage';
 import DayDetail from './components/DayDetail';
-import DashboardPage from './components/DashboardPage';
 import { TEXTS } from './constants/texts';
 
 function LoadingScreen() {
@@ -35,11 +34,11 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<Layout user={user} />}>
-          <Route index element={<DashboardPage uid={user.uid} />} />
-          <Route path="ingredients" element={<IngredientsPage uid={user.uid} />} />
-          <Route path="recipes" element={<RecipesPage uid={user.uid} />} />
+          <Route index element={<MealsPage uid={user.uid} />} />
           <Route path="meals" element={<MealsPage uid={user.uid} />} />
           <Route path="meals/:dayId" element={<DayDetail uid={user.uid} />} />
+          <Route path="ingredients" element={<IngredientsPage uid={user.uid} />} />
+          <Route path="recipes" element={<RecipesPage uid={user.uid} />} />
         </Route>
       </Routes>
     </BrowserRouter>

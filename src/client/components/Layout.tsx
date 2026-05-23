@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
-import { UtensilsCrossed, Leaf, LogOut, Calendar, LayoutDashboard } from 'lucide-react';
+import { UtensilsCrossed, Leaf, LogOut, Calendar } from 'lucide-react';
 import { signOut, type AppUser } from '../services/auth';
 import { TEXTS } from '../constants/texts';
 
 const navItems = [
-  { to: '/', label: TEXTS.nav.dashboard, icon: LayoutDashboard },
+  { to: '/', label: TEXTS.nav.meals, icon: Calendar },
   { to: '/ingredients', label: TEXTS.nav.ingredients, icon: Leaf },
   { to: '/recipes', label: TEXTS.nav.recipes, icon: UtensilsCrossed },
-  { to: '/meals', label: TEXTS.nav.meals, icon: Calendar },
 ];
 
 export default function Layout({ user: _ }: { user: AppUser }) {
