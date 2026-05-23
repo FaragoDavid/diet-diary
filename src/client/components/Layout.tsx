@@ -25,7 +25,7 @@ export default function Layout({ user }: { user: AppUser }) {
 
   return (
     <div className="min-h-screen bg-base-200">
-      <nav className="navbar bg-base-100 shadow-sm px-4">
+      <nav className="navbar bg-base-100 shadow-sm px-4 sticky top-0 z-20">
         <div className="flex-1">
           <span className="text-xl font-bold">{TEXTS.app.title}</span>
         </div>

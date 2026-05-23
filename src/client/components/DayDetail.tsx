@@ -65,7 +65,7 @@ export default function DayDetail({ uid }: { uid: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="sticky top-0 z-10 bg-base-200 -mx-4 px-4">
+      <div className="sticky top-16 z-10 bg-base-200 -mx-4 px-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Link to="/meals" className="btn btn-ghost btn-sm btn-square">
