@@ -4,7 +4,7 @@ import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import { useDays, updateDay } from '../services/days';
 import { useIngredients } from '../services/ingredients';
 import { useRecipes } from '../services/recipes';
-import { calculateIngredientNutrition, calculateRecipeNutrition, round } from '../utils/nutrition';
+import { calculateIngredientNutrition, calculateRecipeNutrition, round, getNutrientColor } from '../utils/nutrition';
 import { formatDate, formatDateShort } from '../utils/format';
 import { MEAL_TYPES, MEAL_TYPE_LABELS } from '../types/day';
 import { TEXTS } from '../constants/texts';
@@ -383,12 +383,4 @@ function DishRow({
       </td>
     </tr>
   );
-}
-
-function getNutrientColor(actual: number, target: number | undefined): string {
-  if (!target) return '';
-  const deviation = Math.abs(actual - target) / target;
-  if (deviation > 0.2) return 'text-error';
-  if (deviation > 0.1) return 'text-warning';
-  return '';
 }

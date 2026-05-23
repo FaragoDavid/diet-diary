@@ -39,3 +39,11 @@ export function formatNutrition(values: { calories: number; carbs: number; fat: 
   const fat = TEXTS.nutrients.fat.toLowerCase();
   return `${round(values.calories)} ${cal} · ${round(values.carbs)}g ${ch} · ${round(values.fat)}g ${fat}`;
 }
+
+export function getNutrientColor(actual: number, target: number | undefined): string {
+  if (!target) return '';
+  const deviation = Math.abs(actual - target) / target;
+  if (deviation > 0.2) return 'text-error';
+  if (deviation > 0.1) return 'text-warning';
+  return '';
+}

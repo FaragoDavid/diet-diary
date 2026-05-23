@@ -4,7 +4,7 @@ import { Plus, Trash2, Calendar, ShoppingCart, Copy, Check } from 'lucide-react'
 import { useDays, createDay, deleteDay } from '../services/days';
 import { useIngredients } from '../services/ingredients';
 import { useRecipes } from '../services/recipes';
-import { round } from '../utils/nutrition';
+import { round, getNutrientColor } from '../utils/nutrition';
 import { formatDate } from '../utils/format';
 import { DAY_TARGETS } from '../constants/meal-targets';
 import { TEXTS } from '../constants/texts';
@@ -205,12 +205,4 @@ function DayCard({ day, onDelete, onShopping, deleting }: { day: Day; onDelete: 
       </div>
     </Link>
   );
-}
-
-function getNutrientColor(actual: number, target: number | undefined): string {
-  if (!target) return '';
-  const deviation = Math.abs(actual - target) / target;
-  if (deviation > 0.2) return 'text-error';
-  if (deviation > 0.1) return 'text-warning';
-  return '';
 }
