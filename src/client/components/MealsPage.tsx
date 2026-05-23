@@ -91,13 +91,13 @@ function DayCard({ day, onDelete, deleting }: { day: Day; onDelete: () => void; 
   const dishCount = day.meals.reduce((sum, m) => sum + m.dishes.length, 0);
 
   return (
-    <div className="card bg-base-100 shadow-sm">
+    <Link to={`/meals/${day.id}`} className="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
       <div className="card-body p-4 flex-row items-center justify-between">
         <div>
-          <Link to={`/meals/${day.id}`} className="card-title text-base link link-hover gap-2">
+          <div className="card-title text-base gap-2">
             <Calendar className="w-4 h-4" />
             {formatDate(day.date)}
-          </Link>
+          </div>
           <div className="text-sm text-base-content/60 mt-1">
             <span className={getNutrientColor(totals.calories, DAY_TARGETS.calories)}>
               {round(totals.calories)} {TEXTS.nutrients.cal.toLowerCase()}
@@ -116,11 +116,18 @@ function DayCard({ day, onDelete, deleting }: { day: Day; onDelete: () => void; 
             )}
           </div>
         </div>
-        <button onClick={onDelete} disabled={deleting} className="btn btn-ghost btn-sm text-error">
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            onDelete();
+          }}
+          disabled={deleting}
+          className="btn btn-ghost btn-sm text-error"
+        >
           <Trash2 className="w-4 h-4" />
         </button>
       </div>
-    </div>
+    </Link>
   );
 }
 
