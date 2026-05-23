@@ -192,7 +192,7 @@ function MealSection({
                   <th className="text-right">{TEXTS.nutrients.cal}</th>
                   <th className="text-right">{TEXTS.nutrients.ch}</th>
                   <th className="text-right">{TEXTS.nutrients.fat}</th>
-                  <th></th>
+                  <th className="w-0"></th>
                 </tr>
               </thead>
               <tbody>
@@ -341,7 +341,7 @@ function DishRow({
           value={editAmount}
           onChange={(e) => setEditAmount(e.target.value)}
           onBlur={handleBlur}
-          className="input input-bordered input-xs w-20 text-right"
+          className="input input-bordered input-sm text-right"
         />
       </td>
       <td className="text-right tabular-nums">{round(dish.calories)}</td>
