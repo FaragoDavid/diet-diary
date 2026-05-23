@@ -7,6 +7,8 @@ import { useRecipes } from '../services/recipes';
 import { calculateIngredientNutrition, calculateRecipeNutrition, round, formatNutrition } from '../utils/nutrition';
 import { MEAL_TYPES, MEAL_TYPE_LABELS } from '../types/day';
 import { TEXTS } from '../constants/texts';
+import DishSelector from './DishSelector';
+import type { DishSelection } from './DishSelector';
 import type { Meal, Dish, MealType } from '../types/day';
 import type { Ingredient } from '../types/ingredient';
 import type { Recipe } from '../types/recipe';
@@ -183,9 +185,7 @@ function MealSection({
         <div className="flex items-center justify-between">
           <h3 className="card-title text-base">{MEAL_TYPE_LABELS[meal.type]}</h3>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-base-content/60">
-              {formatNutrition(mealTotals)}
-            </span>
+            <span className="text-sm text-base-content/60">{formatNutrition(mealTotals)}</span>
             <button onClick={removeMeal} className="btn btn-ghost btn-xs text-error">
               <Trash2 className="w-3.5 h-3.5" />
             </button>
@@ -242,24 +242,16 @@ function AddDishRow({
   recipesMap: Map<string, Recipe>;
   onSave: (dishes: Dish[]) => Promise<void>;
 }) {
-  const [selectedId, setSelectedId] = useState('');
   const [amount, setAmount] = useState('100');
   const [saving, setSaving] = useState(false);
 
-  const options = [
-    ...ingredients.map((i) => ({ id: `ing:${i.id}`, label: i.name, group: TEXTS.nav.ingredients })),
-    ...recipes.map((r) => ({ id: `rec:${r.id}`, label: r.name, group: TEXTS.nav.recipes })),
-  ];
-
-  const handleAdd = async () => {
-    if (!selectedId) return;
+  const handleSelect = async (selection: DishSelection) => {
     const amountNum = parseFloat(amount) || 100;
     setSaving(true);
     try {
       let dish: Dish | null = null;
-      if (selectedId.startsWith('ing:')) {
-        const ingId = selectedId.slice(4);
-        const ingredient = ingredientsMap.get(ingId);
+      if (selection.type === 'ingredient') {
+        const ingredient = ingredientsMap.get(selection.id);
         if (!ingredient) return;
         const n = calculateIngredientNutrition(ingredient, amountNum);
         dish = {
@@ -270,11 +262,10 @@ function AddDishRow({
           carbs: round(n.carbs),
           fat: round(n.fat),
           recipeId: null,
-          ingredientId: ingId,
+          ingredientId: selection.id,
         };
-      } else if (selectedId.startsWith('rec:')) {
-        const recId = selectedId.slice(4);
-        const recipe = recipesMap.get(recId);
+      } else {
+        const recipe = recipesMap.get(selection.id);
         if (!recipe) return;
         const n = calculateRecipeNutrition(recipe.ingredients, ingredientsMap);
         const factor = recipe.amount ? amountNum / recipe.amount : amountNum / 100;
@@ -285,13 +276,12 @@ function AddDishRow({
           calories: round(n.calories * factor),
           carbs: round(n.carbs * factor),
           fat: round(n.fat * factor),
-          recipeId: recId,
+          recipeId: selection.id,
           ingredientId: null,
         };
       }
       if (dish) {
         await onSave([...dishes, dish]);
-        setSelectedId('');
       }
     } finally {
       setSaving(false);
@@ -300,31 +290,9 @@ function AddDishRow({
 
   return (
     <div className="flex gap-2 items-end">
-      <select value={selectedId} onChange={(e) => setSelectedId(e.target.value)} className="select select-bordered flex-1 select-sm">
-        <option value="">{TEXTS.meals.addDish}</option>
-        {options.some((o) => o.group === TEXTS.nav.ingredients) && (
-          <optgroup label={TEXTS.nav.ingredients}>
-            {options
-              .filter((o) => o.group === TEXTS.nav.ingredients)
-              .map((o) => (
-                <option key={o.id} value={o.id}>
-                  {o.label}
-                </option>
-              ))}
-          </optgroup>
-        )}
-        {options.some((o) => o.group === TEXTS.nav.recipes) && (
-          <optgroup label={TEXTS.nav.recipes}>
-            {options
-              .filter((o) => o.group === TEXTS.nav.recipes)
-              .map((o) => (
-                <option key={o.id} value={o.id}>
-                  {o.label}
-                </option>
-              ))}
-          </optgroup>
-        )}
-      </select>
+      <div className="flex-1">
+        <DishSelector ingredients={ingredients} recipes={recipes} onSelect={handleSelect} />
+      </div>
       <input
         type="number"
         min="0"
@@ -334,9 +302,7 @@ function AddDishRow({
         className="input input-bordered input-sm w-20"
         placeholder={TEXTS.meals.g}
       />
-      <button onClick={handleAdd} disabled={saving || !selectedId} className="btn btn-primary btn-sm">
-        <Plus className="w-4 h-4" />
-      </button>
+      {saving && <span className="loading loading-spinner loading-sm"></span>}
     </div>
   );
 }

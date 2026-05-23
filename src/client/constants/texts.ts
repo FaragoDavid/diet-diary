@@ -73,6 +73,10 @@ export const TEXTS = {
     loadError: 'Napok betöltése sikertelen',
     g: 'g',
   },
+  dishes: {
+    ingredient: 'alapanyag',
+    recipe: 'recept',
+  },
   mealTypes: {
     morningSnack: 'Előreggeli',
     breakfast: 'Reggeli',
