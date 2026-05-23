@@ -168,9 +168,7 @@ export const MOCK_DAYS: Day[] = [
       },
       {
         type: 'lateNightSnack',
-        dishes: [
-          { id: 'd-6a', name: 'Túró', amount: 100, calories: 98, carbs: 23, fat: 4.3, recipeId: null, ingredientId: 'ing-8' },
-        ],
+        dishes: [{ id: 'd-6a', name: 'Túró', amount: 100, calories: 98, carbs: 23, fat: 4.3, recipeId: null, ingredientId: 'ing-8' }],
       },
     ],
   },

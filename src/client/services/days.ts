@@ -21,8 +21,7 @@ export function useDays(uid: string | undefined) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (import.meta.env.DEV)
-      return devStore.subscribe((items) => setDays(sortedDesc(items)));
+    if (import.meta.env.DEV) return devStore.subscribe((items) => setDays(sortedDesc(items)));
     if (!uid) return;
     const q = query(daysCol(uid), orderBy('date', 'desc'));
     const unsub = onSnapshot(

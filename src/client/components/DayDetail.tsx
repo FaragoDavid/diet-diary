@@ -5,7 +5,7 @@ import { useDays, updateDay } from '../services/days';
 import { useIngredients } from '../services/ingredients';
 import { useRecipes } from '../services/recipes';
 import { calculateIngredientNutrition, calculateRecipeNutrition, round } from '../utils/nutrition';
-import { formatDate } from '../utils/format';
+import { formatDate, formatDateShort } from '../utils/format';
 import { MEAL_TYPES, MEAL_TYPE_LABELS } from '../types/day';
 import { TEXTS } from '../constants/texts';
 import { MEAL_TARGETS, DAY_TARGETS } from '../constants/meal-targets';
@@ -71,7 +71,10 @@ export default function DayDetail({ uid }: { uid: string }) {
             <Link to="/meals" className="btn btn-ghost btn-sm btn-square">
               <ArrowLeft className="w-4 h-4" />
             </Link>
-            <h2 className="text-2xl font-bold">{formatDate(day.date)}</h2>
+            <h2 className="text-xl font-bold">
+              <span className="sm:hidden">{formatDateShort(day.date)}</span>
+              <span className="hidden sm:inline">{formatDate(day.date)}</span>
+            </h2>
             <span className="text text-base-content/60">
               <span className={getNutrientColor(dayTotals.calories, DAY_TARGETS.calories)}>
                 {round(dayTotals.calories)} {TEXTS.nutrients.cal.toLowerCase()}
@@ -136,7 +139,7 @@ function AddMealButton({
   return (
     <div className="dropdown">
       <div tabIndex={0} role="button" className="btn btn-primary btn-sm">
-        <Plus className="w-4 h-4" /> {TEXTS.meals.addMeal}
+        <Plus className="w-4 h-4" /> <span className="hidden sm:inline">{TEXTS.meals.addMeal}</span>
       </div>
       <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow">
         {availableTypes.map((type) => (
