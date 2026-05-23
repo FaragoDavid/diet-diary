@@ -129,10 +129,14 @@ export const MOCK_DAYS: Day[] = [
     date: '2026-05-22',
     meals: [
       {
+        type: 'morningSnack',
+        dishes: [{ id: 'd-0', name: 'Túró', amount: 150, calories: 147, carbs: 5.1, fat: 6.5, recipeId: null, ingredientId: 'ing-8' }],
+      },
+      {
         type: 'breakfast',
         dishes: [
           { id: 'd-1', name: 'Tojás', amount: 150, calories: 232, carbs: 1.7, fat: 16.5, recipeId: null, ingredientId: 'ing-6' },
-          { id: 'd-2', name: 'Paradicsom', amount: 100, calories: 18, carbs: 3.9, fat: 0.2, recipeId: null, ingredientId: 'ing-7' },
+          { id: 'd-2', name: 'Rizs', amount: 80, calories: 104, carbs: 22.4, fat: 0.2, recipeId: null, ingredientId: 'ing-3' },
         ],
       },
       {
@@ -148,13 +152,24 @@ export const MOCK_DAYS: Day[] = [
             recipeId: 'rec-1',
             ingredientId: null,
           },
-          { id: 'd-4', name: 'Rizs', amount: 200, calories: 260, carbs: 56, fat: 0.6, recipeId: null, ingredientId: 'ing-3' },
+          { id: 'd-4', name: 'Rizs', amount: 150, calories: 195, carbs: 42, fat: 0.5, recipeId: null, ingredientId: 'ing-3' },
         ],
+      },
+      {
+        type: 'afternoonSnack',
+        dishes: [{ id: 'd-5a', name: 'Túró', amount: 200, calories: 196, carbs: 6.8, fat: 8.6, recipeId: null, ingredientId: 'ing-8' }],
       },
       {
         type: 'dinner',
         dishes: [
-          { id: 'd-5', name: 'Túrós tészta', amount: 350, calories: 420, carbs: 45, fat: 12, recipeId: 'rec-2', ingredientId: null },
+          { id: 'd-5', name: 'Csirkemell', amount: 200, calories: 330, carbs: 0, fat: 7.2, recipeId: null, ingredientId: 'ing-1' },
+          { id: 'd-6', name: 'Spenótos rizs', amount: 300, calories: 310, carbs: 58, fat: 2, recipeId: 'rec-3', ingredientId: null },
+        ],
+      },
+      {
+        type: 'lateNightSnack',
+        dishes: [
+          { id: 'd-6a', name: 'Túró', amount: 100, calories: 98, carbs: 23, fat: 4.3, recipeId: null, ingredientId: 'ing-8' },
         ],
       },
     ],
@@ -165,13 +180,22 @@ export const MOCK_DAYS: Day[] = [
     meals: [
       {
         type: 'breakfast',
-        dishes: [{ id: 'd-6', name: 'Túró', amount: 200, calories: 196, carbs: 6.8, fat: 8.6, recipeId: null, ingredientId: 'ing-8' }],
+        dishes: [
+          { id: 'd-7', name: 'Tojás', amount: 200, calories: 310, carbs: 2.2, fat: 22, recipeId: null, ingredientId: 'ing-6' },
+          { id: 'd-7a', name: 'Rizs', amount: 100, calories: 130, carbs: 28, fat: 0.3, recipeId: null, ingredientId: 'ing-3' },
+        ],
       },
       {
         type: 'lunch',
         dishes: [
-          { id: 'd-7', name: 'Spenótos rizs', amount: 300, calories: 310, carbs: 58, fat: 2, recipeId: 'rec-3', ingredientId: null },
-          { id: 'd-8', name: 'Csirkemell', amount: 150, calories: 248, carbs: 0, fat: 5.4, recipeId: null, ingredientId: 'ing-1' },
+          { id: 'd-8', name: 'Spenótos rizs', amount: 300, calories: 310, carbs: 58, fat: 2, recipeId: 'rec-3', ingredientId: null },
+          { id: 'd-9', name: 'Csirkemell', amount: 150, calories: 248, carbs: 0, fat: 5.4, recipeId: null, ingredientId: 'ing-1' },
+        ],
+      },
+      {
+        type: 'dinner',
+        dishes: [
+          { id: 'd-9a', name: 'Túrós tészta', amount: 350, calories: 420, carbs: 45, fat: 12, recipeId: 'rec-2', ingredientId: null },
         ],
       },
     ],
@@ -184,15 +208,23 @@ export const MOCK_DAYS: Day[] = [
         type: 'lunch',
         dishes: [
           {
-            id: 'd-9',
+            id: 'd-10',
             name: 'Csirkemell brokkolival',
-            amount: 200,
-            calories: 150,
-            carbs: 3.5,
-            fat: 4,
+            amount: 400,
+            calories: 299,
+            carbs: 7,
+            fat: 8,
             recipeId: 'rec-1',
             ingredientId: null,
           },
+          { id: 'd-11', name: 'Rizs', amount: 100, calories: 130, carbs: 28, fat: 0.3, recipeId: null, ingredientId: 'ing-3' },
+        ],
+      },
+      {
+        type: 'dinner',
+        dishes: [
+          { id: 'd-12', name: 'Csirkemell', amount: 200, calories: 330, carbs: 0, fat: 7.2, recipeId: null, ingredientId: 'ing-1' },
+          { id: 'd-13', name: 'Brokkoli', amount: 200, calories: 68, carbs: 14, fat: 0.8, recipeId: null, ingredientId: 'ing-2' },
         ],
       },
     ],

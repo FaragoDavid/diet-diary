@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Trash2, Calendar } from 'lucide-react';
 import { useDays, createDay, deleteDay } from '../services/days';
-import { formatNutrition } from '../utils/nutrition';
+import { round } from '../utils/nutrition';
 import { formatDate } from '../utils/format';
+import { DAY_TARGETS } from '../constants/meal-targets';
 import { TEXTS } from '../constants/texts';
 import type { Day } from '../types/day';
 
@@ -97,7 +98,15 @@ function DayCard({ day, onDelete, deleting }: { day: Day; onDelete: () => void; 
             {formatDate(day.date)}
           </Link>
           <div className="text-sm text-base-content/60 mt-1">
-            {formatNutrition(totals)}
+            <span className={getNutrientColor(totals.calories, DAY_TARGETS.calories)}>
+              {round(totals.calories)} {TEXTS.nutrients.cal.toLowerCase()}
+            </span>
+            {' · '}
+            <span className={getNutrientColor(totals.carbs, DAY_TARGETS.carbs)}>
+              {round(totals.carbs)}g {TEXTS.nutrients.ch.toLowerCase()}
+            </span>
+            {' · '}
+            {round(totals.fat)}g {TEXTS.nutrients.fat.toLowerCase()}
             {dishCount > 0 && (
               <span>
                 {' '}
@@ -112,4 +121,12 @@ function DayCard({ day, onDelete, deleting }: { day: Day; onDelete: () => void; 
       </div>
     </div>
   );
+}
+
+function getNutrientColor(actual: number, target: number | undefined): string {
+  if (!target) return '';
+  const deviation = Math.abs(actual - target) / target;
+  if (deviation > 0.2) return 'text-error';
+  if (deviation > 0.1) return 'text-warning';
+  return '';
 }

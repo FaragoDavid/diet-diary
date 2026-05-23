@@ -4,10 +4,11 @@ import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import { useDays, updateDay } from '../services/days';
 import { useIngredients } from '../services/ingredients';
 import { useRecipes } from '../services/recipes';
-import { calculateIngredientNutrition, calculateRecipeNutrition, round, formatNutrition } from '../utils/nutrition';
+import { calculateIngredientNutrition, calculateRecipeNutrition, round } from '../utils/nutrition';
 import { formatDate } from '../utils/format';
 import { MEAL_TYPES, MEAL_TYPE_LABELS } from '../types/day';
 import { TEXTS } from '../constants/texts';
+import { MEAL_TARGETS, DAY_TARGETS } from '../constants/meal-targets';
 import DishSelector from './DishSelector';
 import type { DishSelection } from './DishSelector';
 import type { Meal, Dish, MealType } from '../types/day';
@@ -69,7 +70,17 @@ export default function DayDetail({ uid }: { uid: string }) {
       </Link>
 
       <h2 className="text-2xl font-bold">{formatDate(day.date)}</h2>
-      <p className="text-base-content/60">{formatNutrition(dayTotals)}</p>
+      <p className="text-base-content/60">
+        <span className={getNutrientColor(dayTotals.calories, DAY_TARGETS.calories)}>
+          {round(dayTotals.calories)} {TEXTS.nutrients.cal.toLowerCase()}
+        </span>
+        {' · '}
+        <span className={getNutrientColor(dayTotals.carbs, DAY_TARGETS.carbs)}>
+          {round(dayTotals.carbs)}g {TEXTS.nutrients.ch.toLowerCase()}
+        </span>
+        {' · '}
+        {round(dayTotals.fat)}g {TEXTS.nutrients.fat.toLowerCase()}
+      </p>
 
       <AddMealButton availableTypes={availableMealTypes} meals={day.meals} onSave={saveMeals} />
 
@@ -154,6 +165,7 @@ function MealSection({
   onSave: (meals: Meal[]) => Promise<void>;
 }) {
   const [focusDishId, setFocusDishId] = useState<string | null>(null);
+  const targets = MEAL_TARGETS[meal.type];
   const mealTotals = meal.dishes.reduce(
     (acc, d) => ({ calories: acc.calories + d.calories, carbs: acc.carbs + d.carbs, fat: acc.fat + d.fat }),
     { calories: 0, carbs: 0, fat: 0 },
@@ -173,7 +185,17 @@ function MealSection({
         <div className="flex items-center justify-between">
           <h3 className="card-title text-base">{MEAL_TYPE_LABELS[meal.type]}</h3>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-base-content/60">{formatNutrition(mealTotals)}</span>
+            <span className="text-sm text-base-content/60">
+              <span className={getNutrientColor(mealTotals.calories, targets?.calories)}>
+                {round(mealTotals.calories)} {TEXTS.nutrients.cal.toLowerCase()}
+              </span>
+              {' · '}
+              <span className={getNutrientColor(mealTotals.carbs, targets?.carbs)}>
+                {round(mealTotals.carbs)}g {TEXTS.nutrients.ch.toLowerCase()}
+              </span>
+              {' · '}
+              {round(mealTotals.fat)}g {TEXTS.nutrients.fat.toLowerCase()}
+            </span>
             <button onClick={removeMeal} className="btn btn-ghost btn-xs text-error">
               <Trash2 className="w-3.5 h-3.5" />
             </button>
@@ -354,4 +376,12 @@ function DishRow({
       </td>
     </tr>
   );
+}
+
+function getNutrientColor(actual: number, target: number | undefined): string {
+  if (!target) return '';
+  const deviation = Math.abs(actual - target) / target;
+  if (deviation > 0.2) return 'text-error';
+  if (deviation > 0.1) return 'text-warning';
+  return '';
 }
