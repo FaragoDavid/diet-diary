@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { collection, doc, addDoc, updateDoc, deleteDoc, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { getDb } from './firebase';
-import { createDevStore } from './dev-store';
-import { MOCK_RECIPES } from './mock-data';
+import { createDevStore } from '../utils/dev-store';
+import { MOCK_RECIPES } from '../constants/mock-data';
 import type { Recipe, NewRecipe, RecipeUpdate } from '../types/recipe';
 
 function recipesCol(uid: string) {

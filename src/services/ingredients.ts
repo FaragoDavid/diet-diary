@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { collection, doc, addDoc, updateDoc, deleteDoc, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { getDb } from './firebase';
-import { createDevStore } from './dev-store';
-import { MOCK_INGREDIENTS } from './mock-data';
+import { createDevStore } from '../utils/dev-store';
+import { MOCK_INGREDIENTS } from '../constants/mock-data';
 import type { Ingredient, NewIngredient, IngredientUpdate } from '../types/ingredient';
 
 function ingredientsCol(uid: string) {

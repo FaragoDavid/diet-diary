@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { collection, doc, setDoc, deleteDoc, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { getDb } from './firebase';
-import { createDevStore } from './dev-store';
-import { MOCK_DAYS } from './mock-data';
+import { createDevStore } from '../utils/dev-store';
+import { MOCK_DAYS } from '../constants/mock-data';
 import type { Day, Meal } from '../types/day';
 
 function daysCol(uid: string) {
