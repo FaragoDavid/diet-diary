@@ -73,7 +73,7 @@ export default function MealsPage({ uid }: { uid: string }) {
 
   const handleCopy = async () => {
     const items = aggregateIngredients(shoppingDay, ingredientsMap, recipesMap);
-    const text = items.map((item) => `${item.name}: ${round(item.totalAmount * shoppingDaysCount)}g`).join('\n');
+    const text = items.map((item) => `- [ ] ${item.name}: ${round(item.totalAmount * shoppingDaysCount)}g`).join('\n');
     await navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
