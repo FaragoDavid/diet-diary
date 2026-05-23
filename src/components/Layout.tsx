@@ -6,8 +6,8 @@ import { TEXTS } from '../constants/texts';
 
 const navItems = [
   { to: '/', label: TEXTS.nav.meals, icon: Calendar },
-  { to: '/ingredients', label: TEXTS.nav.ingredients, icon: Leaf },
   { to: '/recipes', label: TEXTS.nav.recipes, icon: UtensilsCrossed },
+  { to: '/ingredients', label: TEXTS.nav.ingredients, icon: Leaf },
 ];
 
 export default function Layout({ user: _ }: { user: AppUser }) {

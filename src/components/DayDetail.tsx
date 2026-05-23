@@ -1,20 +1,17 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Plus, Trash2, GitBranch } from 'lucide-react';
+import { ArrowLeft, Plus } from 'lucide-react';
 import { useDays, updateDay } from '../services/days';
 import { useIngredients } from '../services/ingredients';
-import { useRecipes, createVariant } from '../services/recipes';
-import { calculateIngredientNutrition, calculateRecipeNutrition, round, getNutrientColor } from '../utils/nutrition';
+import { useRecipes } from '../services/recipes';
+import { round, getNutrientColor } from '../utils/nutrition';
 import { formatDate, formatDateShort } from '../utils/format';
 import { MEAL_TYPES, MEAL_TYPE_LABELS } from '../types/day';
 import { TEXTS } from '../constants/texts';
-import { MEAL_TARGETS, DAY_TARGETS } from '../constants/meal-targets';
-import DishSelector from './DishSelector';
-import RecipeDialog from './RecipeDialog';
-import type { DishSelection } from './DishSelector';
-import type { Meal, Dish, MealType } from '../types/day';
-import type { Ingredient } from '../types/ingredient';
-import type { Recipe } from '../types/recipe';
+import { DAY_TARGETS } from '../constants/meal-targets';
+import DayMeal from './DayMeal';
+import VariantDialog from './VariantDialog';
+import type { Meal, MealType } from '../types/day';
 
 export default function DayDetail({ uid }: { uid: string }) {
   const { dayId } = useParams<{ dayId: string }>();
@@ -26,18 +23,6 @@ export default function DayDetail({ uid }: { uid: string }) {
   const ingredientsMap = useMemo(() => new Map(ingredients.map((i) => [i.id, i])), [ingredients]);
   const recipesMap = useMemo(() => new Map(recipes.map((r) => [r.id, r])), [recipes]);
   const [editingVariantId, setEditingVariantId] = useState<string | null>(null);
-  const variantDialogRef = useRef<HTMLDialogElement>(null);
-
-  const editingVariant = editingVariantId ? recipes.find((r) => r.id === editingVariantId) ?? null : null;
-  const editingVariantBase = editingVariant?.baseRecipeId ? recipes.find((r) => r.id === editingVariant.baseRecipeId)?.name : undefined;
-
-  useEffect(() => {
-    if (editingVariant) {
-      variantDialogRef.current?.showModal();
-    } else {
-      variantDialogRef.current?.close();
-    }
-  }, [editingVariant]);
 
   if (daysLoading || ingredientsLoading || recipesLoading) {
     return (
@@ -110,7 +95,7 @@ export default function DayDetail({ uid }: { uid: string }) {
       ) : (
         <div className="grid gap-2">
           {day.meals.map((meal) => (
-            <MealSection
+            <DayMeal
               key={meal.type}
               uid={uid}
               meal={meal}
@@ -126,22 +111,13 @@ export default function DayDetail({ uid }: { uid: string }) {
         </div>
       )}
 
-      <dialog ref={variantDialogRef} className="modal" onClose={() => setEditingVariantId(null)}>
-        <div className="modal-box">
-          {editingVariant && (
-            <RecipeDialog
-              uid={uid}
-              recipe={editingVariant}
-              ingredients={ingredients}
-              onClose={() => setEditingVariantId(null)}
-              baseRecipeName={editingVariantBase}
-            />
-          )}
-        </div>
-        <form method="dialog" className="modal-backdrop">
-          <button>close</button>
-        </form>
-      </dialog>
+      <VariantDialog
+        uid={uid}
+        variantId={editingVariantId}
+        recipes={recipes}
+        ingredients={ingredients}
+        onClose={() => setEditingVariantId(null)}
+      />
     </div>
   );
 }
@@ -184,267 +160,5 @@ function AddMealButton({
         ))}
       </ul>
     </div>
-  );
-}
-
-function MealSection({
-  uid,
-  meal,
-  allMeals,
-  ingredients,
-  ingredientsMap,
-  recipes,
-  recipesMap,
-  onSave,
-  onEditVariant,
-}: {
-  uid: string;
-  meal: Meal;
-  allMeals: Meal[];
-  ingredients: Ingredient[];
-  ingredientsMap: Map<string, Ingredient>;
-  recipes: Recipe[];
-  recipesMap: Map<string, Recipe>;
-  onSave: (meals: Meal[]) => Promise<void>;
-  onEditVariant: (variantId: string) => void;
-}) {
-  const [focusDishId, setFocusDishId] = useState<string | null>(null);
-  const targets = MEAL_TARGETS[meal.type];
-  const mealTotals = meal.dishes.reduce(
-    (acc, d) => ({ calories: acc.calories + d.calories, carbs: acc.carbs + d.carbs, fat: acc.fat + d.fat }),
-    { calories: 0, carbs: 0, fat: 0 },
-  );
-
-  const removeMeal = async () => {
-    await onSave(allMeals.filter((m) => m.type !== meal.type));
-  };
-
-  const updateDishes = async (dishes: Dish[]) => {
-    await onSave(allMeals.map((m) => (m.type === meal.type ? { ...m, dishes } : m)));
-  };
-
-  return (
-    <div className="card bg-base-100 shadow-sm">
-      <div className="card-body p-4 space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="card-title text-base">{MEAL_TYPE_LABELS[meal.type]}</h3>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-base-content/60">
-              <span className={getNutrientColor(mealTotals.calories, targets?.calories)}>
-                {round(mealTotals.calories)} {TEXTS.nutrients.cal.toLowerCase()}
-              </span>
-              {' · '}
-              <span className={getNutrientColor(mealTotals.carbs, targets?.carbs)}>
-                {round(mealTotals.carbs)}g {TEXTS.nutrients.ch.toLowerCase()}
-              </span>
-              {' · '}
-              {round(mealTotals.fat)}g {TEXTS.nutrients.fat.toLowerCase()}
-            </span>
-            <button onClick={removeMeal} className="btn btn-ghost btn-xs text-error">
-              <Trash2 className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
-
-        <AddDishRow dishes={meal.dishes} ingredients={ingredients} recipes={recipes} onSave={updateDishes} onAdded={setFocusDishId} />
-
-        {meal.dishes.length > 0 && (
-          <div className="overflow-x-auto">
-            <table className="table table-sm">
-              <thead>
-                <tr>
-                  <th>{TEXTS.meals.dish}</th>
-                  <th className="text-right">{TEXTS.meals.amount}</th>
-                  <th className="text-right">{TEXTS.nutrients.cal}</th>
-                  <th className="text-right">{TEXTS.nutrients.ch}</th>
-                  <th className="text-right">{TEXTS.nutrients.fat}</th>
-                  <th className="w-0"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {meal.dishes.map((dish) => (
-                  <DishRow
-                    key={dish.id}
-                    uid={uid}
-                    dish={dish}
-                    allDishes={meal.dishes}
-                    ingredientsMap={ingredientsMap}
-                    recipesMap={recipesMap}
-                    onSave={updateDishes}
-                    onEditVariant={onEditVariant}
-                    autoFocus={focusDishId === dish.id}
-                  />
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function AddDishRow({
-  dishes,
-  ingredients,
-  recipes,
-  onSave,
-  onAdded,
-}: {
-  dishes: Dish[];
-  ingredients: Ingredient[];
-  recipes: Recipe[];
-  onSave: (dishes: Dish[]) => Promise<void>;
-  onAdded: (dishId: string) => void;
-}) {
-  const [saving, setSaving] = useState(false);
-
-  const handleSelect = async (selection: DishSelection) => {
-    setSaving(true);
-    try {
-      const id = crypto.randomUUID();
-      const dish: Dish = {
-        id,
-        name: selection.name,
-        amount: 0,
-        calories: 0,
-        carbs: 0,
-        fat: 0,
-        recipeId: selection.type === 'recipe' ? selection.id : null,
-        ingredientId: selection.type === 'ingredient' ? selection.id : null,
-      };
-      onAdded(id);
-      await onSave([...dishes, dish]);
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  return (
-    <div className="flex gap-2 items-center">
-      <div className="flex-1">
-        <DishSelector ingredients={ingredients} recipes={recipes} onSelect={handleSelect} />
-      </div>
-      {saving && <span className="loading loading-spinner loading-sm"></span>}
-    </div>
-  );
-}
-
-function DishRow({
-  uid,
-  dish,
-  allDishes,
-  ingredientsMap,
-  recipesMap,
-  onSave,
-  onEditVariant,
-  autoFocus,
-}: {
-  uid: string;
-  dish: Dish;
-  allDishes: Dish[];
-  ingredientsMap: Map<string, Ingredient>;
-  recipesMap: Map<string, Recipe>;
-  onSave: (dishes: Dish[]) => Promise<void>;
-  onEditVariant: (variantId: string) => void;
-  autoFocus?: boolean;
-}) {
-  const [editAmount, setEditAmount] = useState(dish.amount ? dish.amount.toString() : '');
-  const [saving, setSaving] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (autoFocus) setTimeout(() => inputRef.current?.focus(), 0);
-  }, [autoFocus]);
-
-  const computeNutrition = (amount: number): { calories: number; carbs: number; fat: number } => {
-    if (dish.ingredientId) {
-      const ingredient = ingredientsMap.get(dish.ingredientId);
-      if (ingredient) return calculateIngredientNutrition(ingredient, amount);
-    } else if (dish.recipeId) {
-      const recipe = recipesMap.get(dish.recipeId);
-      if (recipe) {
-        const n = calculateRecipeNutrition(recipe.ingredients, ingredientsMap);
-        const factor = recipe.amount ? amount / recipe.amount : amount / 100;
-        return { calories: n.calories * factor, carbs: n.carbs * factor, fat: n.fat * factor };
-      }
-    }
-    if (dish.amount) {
-      const factor = amount / dish.amount;
-      return { calories: dish.calories * factor, carbs: dish.carbs * factor, fat: dish.fat * factor };
-    }
-    return { calories: 0, carbs: 0, fat: 0 };
-  };
-
-  const handleBlur = async () => {
-    const newAmount = parseFloat(editAmount);
-    if (!newAmount || newAmount <= 0 || newAmount === dish.amount) return;
-    const n = computeNutrition(newAmount);
-    setSaving(true);
-    try {
-      await onSave(
-        allDishes.map((d) =>
-          d.id === dish.id ? { ...d, amount: newAmount, calories: round(n.calories), carbs: round(n.carbs), fat: round(n.fat) } : d,
-        ),
-      );
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleDelete = async () => {
-    setSaving(true);
-    try {
-      await onSave(allDishes.filter((d) => d.id !== dish.id));
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleCustomize = async () => {
-    if (!dish.recipeId) return;
-    const recipe = recipesMap.get(dish.recipeId);
-    if (!recipe) return;
-    setSaving(true);
-    try {
-      const variantId = await createVariant(uid, recipe);
-      await onSave(allDishes.map((d) => (d.id === dish.id ? { ...d, recipeId: variantId } : d)));
-      onEditVariant(variantId);
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  return (
-    <tr>
-      <td className="font-medium">{dish.name}</td>
-      <td className="text-right">
-        <input
-          ref={inputRef}
-          type="number"
-          min="0"
-          step="1"
-          value={editAmount}
-          onChange={(e) => setEditAmount(e.target.value)}
-          onBlur={handleBlur}
-          className="input input-bordered input-sm text-right"
-        />
-      </td>
-      <td className="text-right tabular-nums">{round(dish.calories)}</td>
-      <td className="text-right tabular-nums">{round(dish.carbs)}</td>
-      <td className="text-right tabular-nums">{round(dish.fat)}</td>
-      <td>
-        <div className="flex gap-0.5">
-          {dish.recipeId && (
-            <button onClick={handleCustomize} disabled={saving} className="btn btn-ghost btn-xs" title={TEXTS.meals.customize}>
-              <GitBranch className="w-3.5 h-3.5" />
-            </button>
-          )}
-          <button onClick={handleDelete} disabled={saving} className="btn btn-ghost btn-xs text-error">
-            <Trash2 className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      </td>
-    </tr>
   );
 }
