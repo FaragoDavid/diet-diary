@@ -11,13 +11,18 @@ function daysCol(uid: string) {
 
 const devStore = createDevStore(MOCK_DAYS);
 
+function sortedDesc(items: Day[]): Day[] {
+  return [...items].sort((a, b) => b.date.localeCompare(a.date));
+}
+
 export function useDays(uid: string | undefined) {
-  const [days, setDays] = useState<Day[]>(import.meta.env.DEV ? devStore.getItems() : []);
+  const [days, setDays] = useState<Day[]>(import.meta.env.DEV ? sortedDesc(devStore.getItems()) : []);
   const [loading, setLoading] = useState(!import.meta.env.DEV);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (import.meta.env.DEV) return devStore.subscribe(setDays);
+    if (import.meta.env.DEV)
+      return devStore.subscribe((items) => setDays(sortedDesc(items)));
     if (!uid) return;
     const q = query(daysCol(uid), orderBy('date', 'desc'));
     const unsub = onSnapshot(

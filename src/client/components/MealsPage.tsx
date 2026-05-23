@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Trash2, Calendar } from 'lucide-react';
 import { useDays, createDay, deleteDay } from '../services/days';
 import { round } from '../utils/nutrition';
@@ -10,16 +10,21 @@ import type { Day } from '../types/day';
 
 export default function MealsPage({ uid }: { uid: string }) {
   const { days, loading, error } = useDays(uid);
-  const [newDate, setNewDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [creating, setCreating] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-  const handleCreate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newDate) return;
+  const handleCreate = async () => {
     setCreating(true);
     try {
-      await createDay(uid, newDate);
+      const existingDates = new Set(days.map((d) => d.date));
+      const date = new Date();
+      while (existingDates.has(date.toISOString().slice(0, 10))) {
+        date.setDate(date.getDate() + 1);
+      }
+      const dateStr = date.toISOString().slice(0, 10);
+      await createDay(uid, dateStr);
+      navigate(`/meals/${dateStr}`);
     } finally {
       setCreating(false);
     }
@@ -51,16 +56,12 @@ export default function MealsPage({ uid }: { uid: string }) {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold">{TEXTS.nav.meals}</h2>
-
-      <form onSubmit={handleCreate} className="flex gap-2 items-end">
-        <div className="form-control">
-          <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} className="input input-bordered" />
-        </div>
-        <button type="submit" disabled={creating || !newDate} className="btn btn-primary">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold">{TEXTS.nav.meals}</h2>
+        <button onClick={handleCreate} disabled={creating} className="btn btn-primary btn-sm">
           <Plus className="w-4 h-4" /> {TEXTS.meals.newDay}
         </button>
-      </form>
+      </div>
 
       {days.length === 0 ? (
         <div className="text-center py-12 text-base-content/50">{TEXTS.meals.noDays}</div>
