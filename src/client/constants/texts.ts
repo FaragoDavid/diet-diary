@@ -94,4 +94,11 @@ export const TEXTS = {
     itemCount: 'tétel',
     daysCount: 'Napok',
   },
+  confirm: {
+    deleteIngredient: 'Alapanyag törlése',
+    deleteRecipe: 'Recept törlése',
+    usedInRecipes: 'Receptekben használva',
+    usedInDays: 'Napokban használva',
+    confirmDelete: 'Törlés',
+  },
 };

@@ -2,17 +2,22 @@ import { useState, useMemo, useRef, useEffect } from 'react';
 import { Search, Plus, Trash2, Pencil } from 'lucide-react';
 import { useRecipes, createRecipe, deleteRecipe } from '../services/recipes';
 import { useIngredients } from '../services/ingredients';
+import { useDays } from '../services/days';
 import { useDebounce } from '../hooks/useDebounce';
 import RecipeDialog from './RecipeDialog';
+import ConfirmDialog from './ConfirmDialog';
 import { round } from '../utils/nutrition';
+import { formatDate } from '../utils/format';
 import { TEXTS } from '../constants/texts';
 
 export default function RecipesPage({ uid }: { uid: string }) {
   const { recipes, loading, error } = useRecipes(uid);
   const { ingredients } = useIngredients(uid);
+  const { days } = useDays(uid);
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedQuery = useDebounce(searchQuery, 200);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isNew, setIsNew] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -51,9 +56,30 @@ export default function RecipesPage({ uid }: { uid: string }) {
     closeDialog();
   };
 
+  const getUsageLines = (id: string): string[] => {
+    const usedInDays = days.filter((d) => d.meals.some((m) => m.dishes.some((dish) => dish.recipeId === id)));
+    if (usedInDays.length > 0) {
+      return [`${TEXTS.confirm.usedInDays}: ${usedInDays.map((d) => formatDate(d.date)).join(', ')}`];
+    }
+    return [];
+  };
+
   const handleDelete = async (id: string) => {
+    const lines = getUsageLines(id);
+    if (lines.length > 0) {
+      setConfirmDeleteId(id);
+      return;
+    }
     setDeletingId(id);
     await deleteRecipe(uid, id);
+    setDeletingId(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!confirmDeleteId) return;
+    setConfirmDeleteId(null);
+    setDeletingId(confirmDeleteId);
+    await deleteRecipe(uid, confirmDeleteId);
     setDeletingId(null);
   };
 
@@ -170,6 +196,14 @@ export default function RecipesPage({ uid }: { uid: string }) {
           <button>close</button>
         </form>
       </dialog>
+
+      <ConfirmDialog
+        open={confirmDeleteId !== null}
+        title={TEXTS.confirm.deleteRecipe}
+        lines={confirmDeleteId ? getUsageLines(confirmDeleteId) : []}
+        onConfirm={handleConfirmDelete}
+        onClose={() => setConfirmDeleteId(null)}
+      />
     </div>
   );
 }

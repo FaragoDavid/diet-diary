@@ -1,18 +1,25 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { Search, Plus, Pencil, Trash2, Check, X } from 'lucide-react';
 import { useIngredients, createIngredient, updateIngredient, deleteIngredient } from '../services/ingredients';
+import { useRecipes } from '../services/recipes';
+import { useDays } from '../services/days';
 import { useDebounce } from '../hooks/useDebounce';
 import { TEXTS } from '../constants/texts';
+import { formatDate } from '../utils/format';
 import IngredientForm from './IngredientForm';
+import ConfirmDialog from './ConfirmDialog';
 import type { Ingredient, NewIngredient } from '../types/ingredient';
 
 export default function IngredientsPage({ uid }: { uid: string }) {
   const { ingredients, loading, error } = useIngredients(uid);
+  const { recipes } = useRecipes(uid);
+  const { days } = useDays(uid);
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedQuery = useDebounce(searchQuery, 200);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingIngredient, setEditingIngredient] = useState<Ingredient | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   const filtered = useMemo(() => {
@@ -46,9 +53,35 @@ export default function IngredientsPage({ uid }: { uid: string }) {
     closeDialog();
   };
 
+  const getUsageLines = (id: string): string[] => {
+    const lines: string[] = [];
+    const usedInRecipes = recipes.filter((r) => r.ingredients.some((ri) => ri.ingredientId === id));
+    if (usedInRecipes.length > 0) {
+      lines.push(`${TEXTS.confirm.usedInRecipes}: ${usedInRecipes.map((r) => r.name).join(', ')}`);
+    }
+    const usedInDays = days.filter((d) => d.meals.some((m) => m.dishes.some((dish) => dish.ingredientId === id)));
+    if (usedInDays.length > 0) {
+      lines.push(`${TEXTS.confirm.usedInDays}: ${usedInDays.map((d) => formatDate(d.date)).join(', ')}`);
+    }
+    return lines;
+  };
+
   const handleDelete = async (id: string) => {
+    const lines = getUsageLines(id);
+    if (lines.length > 0) {
+      setConfirmDeleteId(id);
+      return;
+    }
     setDeletingId(id);
     await deleteIngredient(uid, id);
+    setDeletingId(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!confirmDeleteId) return;
+    setConfirmDeleteId(null);
+    setDeletingId(confirmDeleteId);
+    await deleteIngredient(uid, confirmDeleteId);
     setDeletingId(null);
   };
 
@@ -146,6 +179,14 @@ export default function IngredientsPage({ uid }: { uid: string }) {
           <button>close</button>
         </form>
       </dialog>
+
+      <ConfirmDialog
+        open={confirmDeleteId !== null}
+        title={TEXTS.confirm.deleteIngredient}
+        lines={confirmDeleteId ? getUsageLines(confirmDeleteId) : []}
+        onConfirm={handleConfirmDelete}
+        onClose={() => setConfirmDeleteId(null)}
+      />
     </div>
   );
 }
