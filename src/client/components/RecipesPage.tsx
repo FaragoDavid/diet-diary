@@ -25,7 +25,7 @@ export default function RecipesPage({ uid }: { uid: string }) {
     return recipes.filter((r) => r.name.toLowerCase().includes(q));
   }, [recipes, debouncedQuery]);
 
-  const selectedRecipe = selectedId ? recipes.find((r) => r.id === selectedId) ?? null : null;
+  const selectedRecipe = selectedId ? (recipes.find((r) => r.id === selectedId) ?? null) : null;
 
   useEffect(() => {
     if (selectedRecipe) {
@@ -191,6 +191,7 @@ function RecipeDetailDialog({
 }) {
   const ingredientsMap = useMemo(() => new Map(ingredients.map((i) => [i.id, i])), [ingredients]);
   const [editingHeader, setEditingHeader] = useState(initialEditHeader);
+  const [focusIngredientId, setFocusIngredientId] = useState<string | null>(null);
 
   const saveIngredients = useCallback(
     async (updated: RecipeIngredient[]) => {
@@ -224,8 +225,9 @@ function RecipeDetailDialog({
           <div>
             <h3 className="font-bold text-lg">{recipe.name}</h3>
             <div className="text-sm text-base-content/70">
-              {recipe.amount ? `${recipe.amount}g` : '—'} · {recipe.servings} {TEXTS.recipes.servings.toLowerCase()} · {TEXTS.nutrients.cal}:{' '}
-              {round(nutrition.calories)} · {TEXTS.nutrients.ch}: {round(nutrition.carbs)}g · {TEXTS.nutrients.fat}: {round(nutrition.fat)}g
+              {recipe.amount ? `${recipe.amount}g` : '—'} · {recipe.servings} {TEXTS.recipes.servings.toLowerCase()} · {TEXTS.nutrients.cal}
+              : {round(nutrition.calories)} · {TEXTS.nutrients.ch}: {round(nutrition.carbs)}g · {TEXTS.nutrients.fat}:{' '}
+              {round(nutrition.fat)}g
             </div>
           </div>
           <button onClick={() => setEditingHeader(true)} className="btn btn-ghost btn-xs">
@@ -236,7 +238,12 @@ function RecipeDetailDialog({
 
       <div className="space-y-3">
         <h4 className="font-semibold">{TEXTS.recipes.ingredients}</h4>
-        <AddIngredientRow recipeIngredients={recipe.ingredients} available={availableIngredients} onSave={saveIngredients} />
+        <AddIngredientRow
+          recipeIngredients={recipe.ingredients}
+          available={availableIngredients}
+          onSave={saveIngredients}
+          onAdded={setFocusIngredientId}
+        />
         {recipe.ingredients.length === 0 ? (
           <p className="text-base-content/50 py-4 text-center">{TEXTS.recipes.noIngredients}</p>
         ) : (
@@ -260,6 +267,7 @@ function RecipeDetailDialog({
                     ingredient={ingredientsMap.get(ri.ingredientId)}
                     allIngredients={recipe.ingredients}
                     onSave={saveIngredients}
+                    autoFocus={focusIngredientId === ri.ingredientId}
                   />
                 ))}
               </tbody>
@@ -376,39 +384,29 @@ function AddIngredientRow({
   recipeIngredients,
   available,
   onSave,
+  onAdded,
 }: {
   recipeIngredients: RecipeIngredient[];
   available: Ingredient[];
   onSave: (ingredients: RecipeIngredient[]) => Promise<void>;
+  onAdded: (ingredientId: string) => void;
 }) {
-  const [amount, setAmount] = useState('100');
   const [saving, setSaving] = useState(false);
 
   const handleSelect = async (ingredient: Ingredient) => {
-    const amountNum = parseFloat(amount) || 100;
     setSaving(true);
     try {
-      await onSave([...recipeIngredients, { ingredientId: ingredient.id, name: ingredient.name, amount: amountNum }]);
+      onAdded(ingredient.id);
+      await onSave([...recipeIngredients, { ingredientId: ingredient.id, name: ingredient.name, amount: 0 }]);
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div className="flex gap-2 items-end">
+    <div className="flex gap-2 items-center">
       <div className="flex-1">
         <IngredientAutocomplete ingredients={available} onSelect={handleSelect} placeholder={TEXTS.recipes.addIngredient} />
-      </div>
-      <div className="w-20">
-        <input
-          type="number"
-          min="0"
-          step="1"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          className="input input-bordered input-sm w-full"
-          placeholder={TEXTS.recipes.g}
-        />
       </div>
       {saving && <span className="loading loading-spinner loading-sm"></span>}
     </div>
@@ -420,14 +418,21 @@ function RecipeIngredientRow({
   ingredient,
   allIngredients,
   onSave,
+  autoFocus,
 }: {
   ri: RecipeIngredient;
   ingredient: Ingredient | undefined;
   allIngredients: RecipeIngredient[];
   onSave: (ingredients: RecipeIngredient[]) => Promise<void>;
+  autoFocus?: boolean;
 }) {
-  const [editAmount, setEditAmount] = useState(ri.amount.toString());
+  const [editAmount, setEditAmount] = useState(ri.amount ? ri.amount.toString() : '');
   const [saving, setSaving] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (autoFocus) setTimeout(() => inputRef.current?.focus(), 0);
+  }, [autoFocus]);
 
   const nutrition = ingredient ? calculateIngredientNutrition(ingredient, ri.amount) : { calories: 0, carbs: 0, fat: 0 };
 
@@ -456,6 +461,8 @@ function RecipeIngredientRow({
       <td className="font-medium">{ri.name}</td>
       <td className="text-right">
         <input
+          ref={inputRef}
+          data-ingredient-id={ri.ingredientId}
           type="number"
           min="0"
           step="1"
