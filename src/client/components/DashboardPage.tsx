@@ -57,7 +57,7 @@ export default function DashboardPage({ uid }: { uid: string }) {
   const dayCount = filteredDays.length || 1;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <h2 className="text-2xl font-bold">{TEXTS.nav.dashboard}</h2>
 
       <div className="flex flex-wrap items-end gap-3">

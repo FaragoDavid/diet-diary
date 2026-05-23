@@ -64,7 +64,7 @@ export default function DayDetail({ uid }: { uid: string }) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="sticky top-16 z-10 bg-base-200 -mx-4 px-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -94,7 +94,7 @@ export default function DayDetail({ uid }: { uid: string }) {
       {day.meals.length === 0 ? (
         <p className="text-center py-8 text-base-content/50">{TEXTS.meals.noMeals}</p>
       ) : (
-        <div className="space-y-4">
+        <div className="grid gap-2">
           {day.meals.map((meal) => (
             <MealSection
               key={meal.type}

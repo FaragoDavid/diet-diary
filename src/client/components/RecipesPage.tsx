@@ -155,7 +155,7 @@ export default function RecipesPage({ uid }: { uid: string }) {
       </div>
 
       <dialog ref={dialogRef} className="modal" onClose={handleCloseDialog}>
-        <div className="modal-box max-w-2xl">
+        <div className="modal-box">
           {selectedRecipe && (
             <RecipeDialog
               uid={uid}

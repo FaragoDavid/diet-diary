@@ -54,7 +54,7 @@ export default function RecipeDialog({
       ) : (
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-bold text-lg">{recipe.name}</h3>
+            <h3 className="font-bold text-base">{recipe.name}</h3>
             <div className="text-sm text-base-content/70">
               {recipe.amount ? `${recipe.amount}g` : '—'} · {recipe.servings} {TEXTS.recipes.servings.toLowerCase()} ·{' '}
               {formatNutrition(nutrition)}
@@ -299,7 +299,7 @@ function RecipeIngredientRow({
           value={editAmount}
           onChange={(e) => setEditAmount(e.target.value)}
           onBlur={handleBlur}
-          className="input input-bordered input-xs w-20 text-right"
+          className="input input-bordered input-sm text-right"
         />
       </td>
       <td className="text-right tabular-nums">{round(nutrition.calories)}</td>

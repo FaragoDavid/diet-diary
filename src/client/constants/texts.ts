@@ -110,5 +110,6 @@ export const TEXTS = {
     copyList: 'Lista másolása',
     copied: 'Másolva!',
     noData: 'Nincs bevásárolnivaló ebben az időszakban.',
+    itemCount: 'tétel',
   },
 };

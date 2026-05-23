@@ -65,7 +65,7 @@ export default function ShoppingList({
         </table>
       </div>
 
-      <div className="text-sm text-base-content/50 text-right">{items.length} tétel</div>
+      <div className="text-sm text-base-content/50 text-right">{items.length} {TEXTS.shoppingList.itemCount}</div>
     </div>
   );
 }

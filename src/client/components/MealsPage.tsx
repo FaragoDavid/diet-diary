@@ -66,7 +66,7 @@ export default function MealsPage({ uid }: { uid: string }) {
       {days.length === 0 ? (
         <div className="text-center py-12 text-base-content/50">{TEXTS.meals.noDays}</div>
       ) : (
-        <div className="grid gap-3">
+        <div className="grid gap-2">
           {days.map((day) => (
             <DayCard key={day.id} day={day} onDelete={() => handleDelete(day.id)} deleting={deletingId === day.id} />
           ))}
