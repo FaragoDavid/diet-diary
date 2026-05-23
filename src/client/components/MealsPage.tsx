@@ -88,8 +88,6 @@ function DayCard({ day, onDelete, deleting }: { day: Day; onDelete: () => void; 
     },
     { calories: 0, carbs: 0, fat: 0 },
   );
-  const dishCount = day.meals.reduce((sum, m) => sum + m.dishes.length, 0);
-
   return (
     <Link to={`/meals/${day.id}`} className="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
       <div className="card-body p-4 flex-row items-center justify-between">
@@ -108,12 +106,6 @@ function DayCard({ day, onDelete, deleting }: { day: Day; onDelete: () => void; 
             </span>
             {' · '}
             {round(totals.fat)}g {TEXTS.nutrients.fat.toLowerCase()}
-            {dishCount > 0 && (
-              <span>
-                {' '}
-                · {day.meals.length} {TEXTS.dashboard.mealsCount.toLowerCase()} · {dishCount} {TEXTS.dashboard.dishesCount.toLowerCase()}
-              </span>
-            )}
           </div>
         </div>
         <button
