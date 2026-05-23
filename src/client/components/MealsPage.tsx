@@ -1,18 +1,44 @@
-import { useState } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Trash2, Calendar } from 'lucide-react';
+import { Plus, Trash2, Calendar, ShoppingCart, Copy, Check } from 'lucide-react';
 import { useDays, createDay, deleteDay } from '../services/days';
+import { useIngredients } from '../services/ingredients';
+import { useRecipes } from '../services/recipes';
 import { round } from '../utils/nutrition';
 import { formatDate } from '../utils/format';
 import { DAY_TARGETS } from '../constants/meal-targets';
 import { TEXTS } from '../constants/texts';
+import ShoppingList, { aggregateIngredients } from './ShoppingList';
 import type { Day } from '../types/day';
 
 export default function MealsPage({ uid }: { uid: string }) {
   const { days, loading, error } = useDays(uid);
+  const { ingredients } = useIngredients(uid);
+  const { recipes } = useRecipes(uid);
   const [creating, setCreating] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [shoppingStartDate, setShoppingStartDate] = useState<string | null>(null);
+  const [shoppingDaysCount, setShoppingDaysCount] = useState(1);
+  const [copied, setCopied] = useState(false);
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const navigate = useNavigate();
+
+  const ingredientsMap = useMemo(() => new Map(ingredients.map((i) => [i.id, i])), [ingredients]);
+  const recipesMap = useMemo(() => new Map(recipes.map((r) => [r.id, r])), [recipes]);
+
+  const shoppingDay = useMemo(() => {
+    if (!shoppingStartDate) return [];
+    const day = days.find((d) => d.date === shoppingStartDate);
+    return day ? [day] : [];
+  }, [days, shoppingStartDate]);
+
+  useEffect(() => {
+    if (shoppingStartDate) {
+      dialogRef.current?.showModal();
+    } else {
+      dialogRef.current?.close();
+    }
+  }, [shoppingStartDate]);
 
   const handleCreate = async () => {
     setCreating(true);
@@ -34,6 +60,23 @@ export default function MealsPage({ uid }: { uid: string }) {
     setDeletingId(dayId);
     await deleteDay(uid, dayId);
     setDeletingId(null);
+  };
+
+  const handleOpenShopping = (date: string) => {
+    setShoppingDaysCount(1);
+    setShoppingStartDate(date);
+  };
+
+  const handleCloseShopping = () => {
+    setShoppingStartDate(null);
+  };
+
+  const handleCopy = async () => {
+    const items = aggregateIngredients(shoppingDay, ingredientsMap, recipesMap);
+    const text = items.map((item) => `${item.name}: ${round(item.totalAmount * shoppingDaysCount)}g`).join('\n');
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   if (loading) {
@@ -68,15 +111,45 @@ export default function MealsPage({ uid }: { uid: string }) {
       ) : (
         <div className="grid gap-2">
           {days.map((day) => (
-            <DayCard key={day.id} day={day} onDelete={() => handleDelete(day.id)} deleting={deletingId === day.id} />
+            <DayCard
+              key={day.id}
+              day={day}
+              onDelete={() => handleDelete(day.id)}
+              onShopping={() => handleOpenShopping(day.date)}
+              deleting={deletingId === day.id}
+            />
           ))}
         </div>
       )}
+
+      <dialog ref={dialogRef} className="modal" onClose={handleCloseShopping}>
+        <div className="modal-box">
+          <div className="flex items-center gap-1 mb-4">
+            <span className="text-sm font-medium mr-1">{TEXTS.shoppingList.daysCount}:</span>
+            {[1, 2, 3, 4, 5, 6, 7].map((n) => (
+              <button
+                key={n}
+                onClick={() => setShoppingDaysCount(n)}
+                className={`btn btn-sm ${shoppingDaysCount === n ? 'btn-primary' : 'btn-ghost'}`}
+              >
+                {n}
+              </button>
+            ))}
+            <button onClick={handleCopy} className="btn btn-sm btn-outline ml-auto">
+              {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+            </button>
+          </div>
+          <ShoppingList days={shoppingDay} ingredientsMap={ingredientsMap} recipesMap={recipesMap} multiplier={shoppingDaysCount} />
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
     </div>
   );
 }
 
-function DayCard({ day, onDelete, deleting }: { day: Day; onDelete: () => void; deleting: boolean }) {
+function DayCard({ day, onDelete, onShopping, deleting }: { day: Day; onDelete: () => void; onShopping: () => void; deleting: boolean }) {
   const totals = day.meals.reduce(
     (acc, meal) => {
       meal.dishes.forEach((d) => {
@@ -108,16 +181,27 @@ function DayCard({ day, onDelete, deleting }: { day: Day; onDelete: () => void; 
             {round(totals.fat)}g {TEXTS.nutrients.fat.toLowerCase()}
           </div>
         </div>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            onDelete();
-          }}
-          disabled={deleting}
-          className="btn btn-ghost btn-sm text-error"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              onShopping();
+            }}
+            className="btn btn-ghost btn-sm"
+          >
+            <ShoppingCart className="w-4 h-4" />
+          </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              onDelete();
+            }}
+            disabled={deleting}
+            className="btn btn-ghost btn-sm text-error"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
       </div>
     </Link>
   );

@@ -1,23 +1,16 @@
 import { useState, useMemo } from 'react';
 import { startOfWeek, endOfWeek, format, isWithinInterval, parseISO } from 'date-fns';
-import { BarChart3, ShoppingCart } from 'lucide-react';
 import { useDays } from '../services/days';
-import { useIngredients } from '../services/ingredients';
-import { useRecipes } from '../services/recipes';
 import { round } from '../utils/nutrition';
 import { TEXTS } from '../constants/texts';
 import NutritionStats from './NutritionStats';
-import ShoppingList from './ShoppingList';
 
 export default function DashboardPage({ uid }: { uid: string }) {
-  const { days, loading: daysLoading } = useDays(uid);
-  const { ingredients, loading: ingredientsLoading } = useIngredients(uid);
-  const { recipes, loading: recipesLoading } = useRecipes(uid);
+  const { days, loading } = useDays(uid);
 
   const today = new Date();
   const [fromDate, setFromDate] = useState(() => format(startOfWeek(today, { weekStartsOn: 1 }), 'yyyy-MM-dd'));
   const [toDate, setToDate] = useState(() => format(endOfWeek(today, { weekStartsOn: 1 }), 'yyyy-MM-dd'));
-  const [tab, setTab] = useState<'stats' | 'shopping'>('stats');
 
   const filteredDays = useMemo(() => {
     const from = parseISO(fromDate);
@@ -27,11 +20,6 @@ export default function DashboardPage({ uid }: { uid: string }) {
       return isWithinInterval(date, { start: from, end: to });
     });
   }, [days, fromDate, toDate]);
-
-  const ingredientsMap = useMemo(() => new Map(ingredients.map((i) => [i.id, i])), [ingredients]);
-  const recipesMap = useMemo(() => new Map(recipes.map((r) => [r.id, r])), [recipes]);
-
-  const loading = daysLoading || ingredientsLoading || recipesLoading;
 
   if (loading) {
     return (
@@ -106,17 +94,7 @@ export default function DashboardPage({ uid }: { uid: string }) {
         </div>
       </div>
 
-      <div role="tablist" className="tabs tabs-bordered">
-        <button role="tab" className={`tab gap-1 ${tab === 'stats' ? 'tab-active' : ''}`} onClick={() => setTab('stats')}>
-          <BarChart3 className="w-4 h-4" /> {TEXTS.dashboard.dailyStats}
-        </button>
-        <button role="tab" className={`tab gap-1 ${tab === 'shopping' ? 'tab-active' : ''}`} onClick={() => setTab('shopping')}>
-          <ShoppingCart className="w-4 h-4" /> {TEXTS.dashboard.shoppingList}
-        </button>
-      </div>
-
-      {tab === 'stats' && <NutritionStats days={filteredDays} />}
-      {tab === 'shopping' && <ShoppingList days={filteredDays} ingredientsMap={ingredientsMap} recipesMap={recipesMap} />}
+      <NutritionStats days={filteredDays} />
     </div>
   );
 }

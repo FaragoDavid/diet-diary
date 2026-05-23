@@ -111,5 +111,6 @@ export const TEXTS = {
     copied: 'Másolva!',
     noData: 'Nincs bevásárolnivaló ebben az időszakban.',
     itemCount: 'tétel',
+    daysCount: 'Napok',
   },
 };

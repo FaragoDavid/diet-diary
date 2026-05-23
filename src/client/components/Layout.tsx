@@ -11,7 +11,7 @@ const navItems = [
   { to: '/meals', label: TEXTS.nav.meals, icon: Calendar },
 ];
 
-export default function Layout({ user }: { user: AppUser }) {
+export default function Layout({ user: _ }: { user: AppUser }) {
   const [signingOut, setSigningOut] = useState(false);
 
   const handleSignOut = async () => {
