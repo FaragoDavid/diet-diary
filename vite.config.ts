@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  base: '/diet-diary/',
   root: 'src',
   build: {
     outDir: '../dist',
