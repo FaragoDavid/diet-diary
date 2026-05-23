@@ -1,6 +1,6 @@
 import { TEXTS } from '../constants/texts';
 import type { Ingredient } from '../types/ingredient';
-import type { RecipeIngredient } from '../types/recipe';
+import type { Recipe, RecipeIngredient } from '../types/recipe';
 
 interface NutritionValues {
   calories: number;
@@ -46,4 +46,25 @@ export function getNutrientColor(actual: number, target: number | undefined): st
   if (deviation > 0.2) return 'text-error';
   if (deviation > 0.1) return 'text-warning';
   return '';
+}
+
+export function recipeToIngredient(recipe: Recipe): Ingredient {
+  const amount = recipe.amount || 100;
+  return {
+    id: recipe.id,
+    name: recipe.name,
+    caloriesPer100: (recipe.calories / amount) * 100,
+    carbsPer100: (recipe.carbs / amount) * 100,
+    fatPer100: (recipe.fat / amount) * 100,
+    isVegetable: false,
+    carbLimit: null,
+  };
+}
+
+export function buildNutritionMap(ingredients: Ingredient[], recipes: Recipe[]): Map<string, Ingredient> {
+  const map = new Map(ingredients.map((i) => [i.id, i]));
+  for (const r of recipes) {
+    if (!map.has(r.id)) map.set(r.id, recipeToIngredient(r));
+  }
+  return map;
 }

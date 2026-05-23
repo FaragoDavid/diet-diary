@@ -121,6 +121,20 @@ export const MOCK_RECIPES: Recipe[] = [
       { ingredientId: 'ing-5', name: 'Spenót', amount: 100 },
     ],
   },
+  {
+    id: 'rec-4',
+    name: 'Csirkés rizstál',
+    calories: 609,
+    carbs: 65,
+    fat: 10,
+    amount: 700,
+    servings: 2,
+    baseRecipeId: null,
+    ingredients: [
+      { ingredientId: 'rec-3', name: 'Spenótos rizs', amount: 300 },
+      { ingredientId: 'ing-1', name: 'Csirkemell', amount: 400 },
+    ],
+  },
 ];
 
 export const MOCK_DAYS: Day[] = [

@@ -4,7 +4,7 @@ import { Plus, Trash2, Calendar, ShoppingCart, Copy, Check } from 'lucide-react'
 import { useDays, createDay, deleteDay } from '../services/days';
 import { useIngredients } from '../services/ingredients';
 import { useRecipes } from '../services/recipes';
-import { round, getNutrientColor } from '../utils/nutrition';
+import { round, getNutrientColor, buildNutritionMap } from '../utils/nutrition';
 import { formatDate } from '../utils/format';
 import { DAY_TARGETS } from '../constants/meal-targets';
 import { TEXTS } from '../constants/texts';
@@ -23,7 +23,7 @@ export default function MealsPage() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const navigate = useNavigate();
 
-  const ingredientsMap = useMemo(() => new Map(ingredients.map((i) => [i.id, i])), [ingredients]);
+  const ingredientsMap = useMemo(() => buildNutritionMap(ingredients, recipes), [ingredients, recipes]);
   const recipesMap = useMemo(() => new Map(recipes.map((r) => [r.id, r])), [recipes]);
 
   const shoppingDay = useMemo(() => {

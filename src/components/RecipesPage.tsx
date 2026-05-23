@@ -185,12 +185,7 @@ export default function RecipesPage() {
       <dialog ref={dialogRef} className="modal" onClose={handleCloseDialog}>
         <div className="modal-box">
           {selectedRecipe && (
-            <RecipeDialog
-              recipe={selectedRecipe}
-              ingredients={ingredients}
-              onClose={handleCloseDialog}
-              initialEditHeader={isNew}
-            />
+            <RecipeDialog recipe={selectedRecipe} ingredients={ingredients} recipes={recipes} onClose={handleCloseDialog} initialEditHeader={isNew} />
           )}
         </div>
         <form method="dialog" className="modal-backdrop">

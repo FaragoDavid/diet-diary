@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { Trash2, Pencil } from 'lucide-react';
 import { updateRecipe } from '../services/recipes';
 import IngredientSelector from './IngredientSelector';
-import { calculateRecipeNutrition, calculateIngredientNutrition, round, formatNutrition } from '../utils/nutrition';
+import { calculateRecipeNutrition, calculateIngredientNutrition, round, formatNutrition, buildNutritionMap, recipeToIngredient } from '../utils/nutrition';
 import { TEXTS } from '../constants/texts';
 import type { Recipe, RecipeIngredient } from '../types/recipe';
 import type { Ingredient } from '../types/ingredient';
@@ -10,23 +10,25 @@ import type { Ingredient } from '../types/ingredient';
 export default function RecipeDialog({
   recipe,
   ingredients,
+  recipes,
   onClose,
   initialEditHeader = false,
   baseRecipeName,
 }: {
   recipe: Recipe;
   ingredients: Ingredient[];
+  recipes: Recipe[];
   onClose: () => void;
   initialEditHeader?: boolean;
   baseRecipeName?: string;
 }) {
-  const ingredientsMap = useMemo(() => new Map(ingredients.map((i) => [i.id, i])), [ingredients]);
+  const nutritionMap = useMemo(() => buildNutritionMap(ingredients, recipes), [ingredients, recipes]);
   const [editingHeader, setEditingHeader] = useState(initialEditHeader);
   const [focusIngredientId, setFocusIngredientId] = useState<string | null>(null);
 
   const saveIngredients = useCallback(
     async (updated: RecipeIngredient[]) => {
-      const nutrition = calculateRecipeNutrition(updated, ingredientsMap);
+      const nutrition = calculateRecipeNutrition(updated, nutritionMap);
       await updateRecipe(recipe.id, {
         ingredients: updated,
         calories: round(nutrition.calories),
@@ -34,11 +36,17 @@ export default function RecipeDialog({
         fat: round(nutrition.fat),
       });
     },
-    [recipe.id, ingredientsMap],
+    [recipe.id, nutritionMap],
   );
 
-  const nutrition = calculateRecipeNutrition(recipe.ingredients, ingredientsMap);
-  const availableIngredients = ingredients.filter((i) => !recipe.ingredients.some((ri) => ri.ingredientId === i.id));
+  const nutrition = calculateRecipeNutrition(recipe.ingredients, nutritionMap);
+  const available = useMemo(() => {
+    const usedIds = new Set(recipe.ingredients.map((ri) => ri.ingredientId));
+    const recipeItems = recipes
+      .filter((r) => r.id !== recipe.id && !r.ingredients.some((ri) => ri.ingredientId === recipe.id))
+      .map(recipeToIngredient);
+    return [...ingredients, ...recipeItems].filter((i) => !usedIds.has(i.id));
+  }, [ingredients, recipes, recipe.id, recipe.ingredients]);
 
   return (
     <div className="space-y-4">
@@ -74,7 +82,7 @@ export default function RecipeDialog({
         <h4 className="font-semibold">{TEXTS.recipes.ingredients}</h4>
         <AddIngredientRow
           recipeIngredients={recipe.ingredients}
-          available={availableIngredients}
+          available={available}
           onSave={saveIngredients}
           onAdded={setFocusIngredientId}
         />
@@ -98,7 +106,7 @@ export default function RecipeDialog({
                   <RecipeIngredientRow
                     key={ri.ingredientId}
                     ri={ri}
-                    ingredient={ingredientsMap.get(ri.ingredientId)}
+                    ingredient={nutritionMap.get(ri.ingredientId)}
                     allIngredients={recipe.ingredients}
                     onSave={saveIngredients}
                     autoFocus={focusIngredientId === ri.ingredientId}

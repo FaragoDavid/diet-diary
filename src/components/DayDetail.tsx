@@ -4,7 +4,7 @@ import { ArrowLeft, Plus } from 'lucide-react';
 import { useDays, updateDay } from '../services/days';
 import { useIngredients } from '../services/ingredients';
 import { useRecipes } from '../services/recipes';
-import { round, getNutrientColor } from '../utils/nutrition';
+import { round, getNutrientColor, buildNutritionMap } from '../utils/nutrition';
 import { formatDate, formatDateShort } from '../utils/format';
 import { MEAL_TYPES, MEAL_TYPE_LABELS } from '../types/day';
 import { TEXTS } from '../constants/texts';
@@ -20,7 +20,7 @@ export default function DayDetail() {
   const { recipes, loading: recipesLoading } = useRecipes();
 
   const day = days.find((d) => d.id === dayId);
-  const ingredientsMap = useMemo(() => new Map(ingredients.map((i) => [i.id, i])), [ingredients]);
+  const ingredientsMap = useMemo(() => buildNutritionMap(ingredients, recipes), [ingredients, recipes]);
   const recipesMap = useMemo(() => new Map(recipes.map((r) => [r.id, r])), [recipes]);
   const [editingVariantId, setEditingVariantId] = useState<string | null>(null);
 
@@ -110,12 +110,7 @@ export default function DayDetail() {
         </div>
       )}
 
-      <VariantDialog
-        variantId={editingVariantId}
-        recipes={recipes}
-        ingredients={ingredients}
-        onClose={() => setEditingVariantId(null)}
-      />
+      <VariantDialog variantId={editingVariantId} recipes={recipes} ingredients={ingredients} onClose={() => setEditingVariantId(null)} />
     </div>
   );
 }
