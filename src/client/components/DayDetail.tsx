@@ -5,6 +5,7 @@ import { useDays, updateDay } from '../services/days';
 import { useIngredients } from '../services/ingredients';
 import { useRecipes } from '../services/recipes';
 import { calculateIngredientNutrition, calculateRecipeNutrition, round, formatNutrition } from '../utils/nutrition';
+import { formatDate } from '../utils/format';
 import { MEAL_TYPES, MEAL_TYPE_LABELS } from '../types/day';
 import { TEXTS } from '../constants/texts';
 import DishSelector from './DishSelector';
@@ -193,13 +194,7 @@ function MealSection({
           </div>
         </div>
 
-        <AddDishRow
-          dishes={meal.dishes}
-          ingredients={ingredients}
-          recipes={recipes}
-          onSave={updateDishes}
-          onAdded={setFocusDishId}
-        />
+        <AddDishRow dishes={meal.dishes} ingredients={ingredients} recipes={recipes} onSave={updateDishes} onAdded={setFocusDishId} />
 
         {meal.dishes.length > 0 && (
           <div className="overflow-x-auto">
@@ -373,9 +368,4 @@ function DishRow({
       </td>
     </tr>
   );
-}
-
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('hu-HU', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
 }

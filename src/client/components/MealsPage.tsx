@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Plus, Trash2, Calendar } from 'lucide-react';
 import { useDays, createDay, deleteDay } from '../services/days';
 import { formatNutrition } from '../utils/nutrition';
+import { formatDate } from '../utils/format';
 import { TEXTS } from '../constants/texts';
 import type { Day } from '../types/day';
 
@@ -111,9 +112,4 @@ function DayCard({ day, onDelete, deleting }: { day: Day; onDelete: () => void; 
       </div>
     </div>
   );
-}
-
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('hu-HU', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
 }
