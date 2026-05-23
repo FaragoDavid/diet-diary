@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Trash2, Calendar } from 'lucide-react';
 import { useDays, createDay, deleteDay } from '../services/days';
-import { round } from '../utils/nutrition';
+import { formatNutrition } from '../utils/nutrition';
 import { TEXTS } from '../constants/texts';
 import type { Day } from '../types/day';
 
@@ -96,8 +96,7 @@ function DayCard({ day, onDelete, deleting }: { day: Day; onDelete: () => void; 
             {formatDate(day.date)}
           </Link>
           <div className="text-sm text-base-content/60 mt-1">
-            {round(totals.calories)} {TEXTS.nutrients.cal.toLowerCase()} · {round(totals.carbs)}g {TEXTS.nutrients.ch.toLowerCase()} ·{' '}
-            {round(totals.fat)}g {TEXTS.nutrients.fat.toLowerCase()}
+            {formatNutrition(totals)}
             {dishCount > 0 && (
               <span>
                 {' '}

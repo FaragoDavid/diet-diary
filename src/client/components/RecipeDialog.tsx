@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { Trash2, Pencil } from 'lucide-react';
 import { updateRecipe } from '../services/recipes';
 import IngredientSelector from './IngredientSelector';
-import { calculateRecipeNutrition, calculateIngredientNutrition, round } from '../utils/nutrition';
+import { calculateRecipeNutrition, calculateIngredientNutrition, round, formatNutrition } from '../utils/nutrition';
 import { TEXTS } from '../constants/texts';
 import type { Recipe, RecipeIngredient } from '../types/recipe';
 import type { Ingredient } from '../types/ingredient';
@@ -56,9 +56,8 @@ export default function RecipeDialog({
           <div>
             <h3 className="font-bold text-lg">{recipe.name}</h3>
             <div className="text-sm text-base-content/70">
-              {recipe.amount ? `${recipe.amount}g` : '—'} · {recipe.servings} {TEXTS.recipes.servings.toLowerCase()} · {TEXTS.nutrients.cal}
-              : {round(nutrition.calories)} · {TEXTS.nutrients.ch}: {round(nutrition.carbs)}g · {TEXTS.nutrients.fat}:{' '}
-              {round(nutrition.fat)}g
+              {recipe.amount ? `${recipe.amount}g` : '—'} · {recipe.servings} {TEXTS.recipes.servings.toLowerCase()} ·{' '}
+              {formatNutrition(nutrition)}
             </div>
           </div>
           <button onClick={() => setEditingHeader(true)} className="btn btn-ghost btn-xs">

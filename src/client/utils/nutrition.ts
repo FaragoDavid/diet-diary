@@ -1,3 +1,4 @@
+import { TEXTS } from '../constants/texts';
 import type { Ingredient } from '../types/ingredient';
 import type { RecipeIngredient } from '../types/recipe';
 
@@ -30,4 +31,11 @@ export function calculateRecipeNutrition(recipeIngredients: RecipeIngredient[], 
 export function round(value: number, decimals = 1): number {
   const factor = 10 ** decimals;
   return Math.round(value * factor) / factor;
+}
+
+export function formatNutrition(values: { calories: number; carbs: number; fat: number }): string {
+  const cal = TEXTS.nutrients.cal.toLowerCase();
+  const ch = TEXTS.nutrients.ch.toLowerCase();
+  const fat = TEXTS.nutrients.fat.toLowerCase();
+  return `${round(values.calories)} ${cal} · ${round(values.carbs)}g ${ch} · ${round(values.fat)}g ${fat}`;
 }

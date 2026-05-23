@@ -1,10 +1,10 @@
 import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Plus, Trash2, Save } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import { useDays, updateDay } from '../services/days';
 import { useIngredients } from '../services/ingredients';
 import { useRecipes } from '../services/recipes';
-import { calculateIngredientNutrition, calculateRecipeNutrition, round } from '../utils/nutrition';
+import { calculateIngredientNutrition, calculateRecipeNutrition, round, formatNutrition } from '../utils/nutrition';
 import { MEAL_TYPES, MEAL_TYPE_LABELS } from '../types/day';
 import { TEXTS } from '../constants/texts';
 import type { Meal, Dish, MealType } from '../types/day';
@@ -184,7 +184,7 @@ function MealSection({
           <h3 className="card-title text-base">{MEAL_TYPE_LABELS[meal.type]}</h3>
           <div className="flex items-center gap-2">
             <span className="text-sm text-base-content/60">
-              {round(mealTotals.calories)} {TEXTS.nutrients.cal.toLowerCase()} · {round(mealTotals.carbs)}c · {round(mealTotals.fat)}f
+              {formatNutrition(mealTotals)}
             </span>
             <button onClick={removeMeal} className="btn btn-ghost btn-xs text-error">
               <Trash2 className="w-3.5 h-3.5" />
@@ -345,11 +345,9 @@ function DishRow({ dish, allDishes, onSave }: { dish: Dish; allDishes: Dish[]; o
   const [editAmount, setEditAmount] = useState(dish.amount.toString());
   const [saving, setSaving] = useState(false);
 
-  const amountChanged = parseFloat(editAmount) !== dish.amount;
-
-  const handleUpdateAmount = async () => {
+  const handleBlur = async () => {
     const newAmount = parseFloat(editAmount);
-    if (!newAmount || newAmount <= 0) return;
+    if (!newAmount || newAmount <= 0 || newAmount === dish.amount) return;
     const factor = newAmount / dish.amount;
     setSaving(true);
     try {
@@ -378,21 +376,15 @@ function DishRow({ dish, allDishes, onSave }: { dish: Dish; allDishes: Dish[]; o
     <tr>
       <td className="font-medium">{dish.name}</td>
       <td className="text-right">
-        <div className="flex items-center justify-end gap-1">
-          <input
-            type="number"
-            min="0"
-            step="1"
-            value={editAmount}
-            onChange={(e) => setEditAmount(e.target.value)}
-            className="input input-bordered input-xs w-20 text-right"
-          />
-          {amountChanged && (
-            <button onClick={handleUpdateAmount} disabled={saving} className="btn btn-ghost btn-xs">
-              <Save className="w-3 h-3" />
-            </button>
-          )}
-        </div>
+        <input
+          type="number"
+          min="0"
+          step="1"
+          value={editAmount}
+          onChange={(e) => setEditAmount(e.target.value)}
+          onBlur={handleBlur}
+          className="input input-bordered input-xs w-20 text-right"
+        />
       </td>
       <td className="text-right tabular-nums">{round(dish.calories)}</td>
       <td className="text-right tabular-nums">{round(dish.carbs)}</td>
