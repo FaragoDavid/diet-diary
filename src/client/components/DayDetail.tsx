@@ -69,21 +69,7 @@ export default function DayDetail({ uid }: { uid: string }) {
       </Link>
 
       <h2 className="text-2xl font-bold">{formatDate(day.date)}</h2>
-
-      <div className="stats shadow">
-        <div className="stat">
-          <div className="stat-title">{TEXTS.nutrients.calories}</div>
-          <div className="stat-value text-lg">{round(dayTotals.calories)}</div>
-        </div>
-        <div className="stat">
-          <div className="stat-title">{TEXTS.nutrients.ch}</div>
-          <div className="stat-value text-lg">{round(dayTotals.carbs)}g</div>
-        </div>
-        <div className="stat">
-          <div className="stat-title">{TEXTS.nutrients.fat}</div>
-          <div className="stat-value text-lg">{round(dayTotals.fat)}g</div>
-        </div>
-      </div>
+      <p className="text-base-content/60">{formatNutrition(dayTotals)}</p>
 
       <AddMealButton availableTypes={availableMealTypes} meals={day.meals} onSave={saveMeals} />
 
