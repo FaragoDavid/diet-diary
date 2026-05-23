@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { collection, doc, setDoc, deleteDoc, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { collection, doc, setDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
 import { getDb } from './firebase';
 import { createDevStore } from '../utils/dev-store';
+import { createLiveStore, useStore } from '../utils/live-store';
 import { MOCK_DAYS } from '../constants/mock-data';
 import type { Day, Meal } from '../types/day';
 
@@ -9,35 +9,12 @@ function daysCol() {
   return collection(getDb(), 'days');
 }
 
-const devStore = createDevStore(MOCK_DAYS);
-
-function sortedDesc(items: Day[]): Day[] {
-  return [...items].sort((a, b) => b.date.localeCompare(a.date));
-}
+const devStore = createDevStore([...MOCK_DAYS].sort((a, b) => b.date.localeCompare(a.date)));
+const store = import.meta.env.DEV ? devStore : createLiveStore<Day>(query(daysCol(), orderBy('date', 'desc')));
 
 export function useDays() {
-  const [days, setDays] = useState<Day[]>(import.meta.env.DEV ? sortedDesc(devStore.getItems()) : []);
-  const [loading, setLoading] = useState(!import.meta.env.DEV);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (import.meta.env.DEV) return devStore.subscribe((items) => setDays(sortedDesc(items)));
-    const q = query(daysCol(), orderBy('date', 'desc'));
-    const unsub = onSnapshot(
-      q,
-      (snap) => {
-        setDays(snap.docs.map((d) => ({ id: d.id, ...d.data() }) as Day));
-        setLoading(false);
-      },
-      (err) => {
-        setError(err.message);
-        setLoading(false);
-      },
-    );
-    return () => unsub();
-  }, []);
-
-  return { days, loading, error };
+  const { items, loading, error } = useStore(store);
+  return { days: items, loading, error };
 }
 
 export async function createDay(date: string) {

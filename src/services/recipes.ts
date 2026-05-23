@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { collection, doc, addDoc, updateDoc, deleteDoc, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { collection, doc, addDoc, updateDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
 import { getDb } from './firebase';
 import { createDevStore } from '../utils/dev-store';
+import { createLiveStore, useStore } from '../utils/live-store';
 import { MOCK_RECIPES } from '../constants/mock-data';
 import type { Recipe, RecipeUpdate } from '../types/recipe';
 
@@ -10,30 +10,11 @@ function recipesCol() {
 }
 
 const devStore = createDevStore(MOCK_RECIPES);
+const store = import.meta.env.DEV ? devStore : createLiveStore<Recipe>(query(recipesCol(), orderBy('name')));
 
 export function useRecipes() {
-  const [recipes, setRecipes] = useState<Recipe[]>(import.meta.env.DEV ? devStore.getItems() : []);
-  const [loading, setLoading] = useState(!import.meta.env.DEV);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (import.meta.env.DEV) return devStore.subscribe(setRecipes);
-    const q = query(recipesCol(), orderBy('name'));
-    const unsub = onSnapshot(
-      q,
-      (snap) => {
-        setRecipes(snap.docs.map((d) => ({ id: d.id, ...d.data() }) as Recipe));
-        setLoading(false);
-      },
-      (err) => {
-        setError(err.message);
-        setLoading(false);
-      },
-    );
-    return () => unsub();
-  }, []);
-
-  return { recipes, loading, error };
+  const { items, loading, error } = useStore(store);
+  return { recipes: items, loading, error };
 }
 
 export async function createRecipe(name: string): Promise<string> {

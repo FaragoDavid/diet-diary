@@ -1,6 +1,8 @@
 export interface DevStore<T extends { id: string }> {
   getItems(): T[];
-  subscribe(listener: (items: T[]) => void): () => void;
+  getLoading(): boolean;
+  getError(): string | null;
+  subscribe(listener: () => void): () => void;
   add(item: T): void;
   update(id: string, data: Partial<T>): void;
   remove(id: string): void;
@@ -8,15 +10,16 @@ export interface DevStore<T extends { id: string }> {
 
 export function createDevStore<T extends { id: string }>(initialData: T[]): DevStore<T> {
   let items = [...initialData];
-  let listeners: Array<(items: T[]) => void> = [];
+  let listeners: Array<() => void> = [];
 
   function notify() {
-    const snapshot = [...items];
-    listeners.forEach((fn) => fn(snapshot));
+    listeners.forEach((fn) => fn());
   }
 
   return {
     getItems: () => items,
+    getLoading: () => false,
+    getError: () => null,
     subscribe(listener) {
       listeners.push(listener);
       return () => {
