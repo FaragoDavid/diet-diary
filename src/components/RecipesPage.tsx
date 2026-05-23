@@ -10,10 +10,10 @@ import { round } from '../utils/nutrition';
 import { formatDate } from '../utils/format';
 import { TEXTS } from '../constants/texts';
 
-export default function RecipesPage({ uid }: { uid: string }) {
-  const { recipes, loading, error } = useRecipes(uid);
-  const { ingredients } = useIngredients(uid);
-  const { days } = useDays(uid);
+export default function RecipesPage() {
+  const { recipes, loading, error } = useRecipes();
+  const { ingredients } = useIngredients();
+  const { days } = useDays();
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedQuery = useDebounce(searchQuery, 200);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -46,14 +46,14 @@ export default function RecipesPage({ uid }: { uid: string }) {
   };
 
   const handleCreate = async () => {
-    const id = await createRecipe(uid, '');
+    const id = await createRecipe('');
     setIsNew(true);
     setSelectedId(id);
   };
 
   const handleCloseDialog = () => {
     if (isNew && selectedRecipe && !selectedRecipe.name.trim()) {
-      deleteRecipe(uid, selectedRecipe.id);
+      deleteRecipe(selectedRecipe.id);
     }
     closeDialog();
   };
@@ -73,7 +73,7 @@ export default function RecipesPage({ uid }: { uid: string }) {
       return;
     }
     setDeletingId(id);
-    await deleteRecipe(uid, id);
+    await deleteRecipe(id);
     setDeletingId(null);
   };
 
@@ -81,7 +81,7 @@ export default function RecipesPage({ uid }: { uid: string }) {
     if (!confirmDeleteId) return;
     setConfirmDeleteId(null);
     setDeletingId(confirmDeleteId);
-    await deleteRecipe(uid, confirmDeleteId);
+    await deleteRecipe(confirmDeleteId);
     setDeletingId(null);
   };
 
@@ -186,7 +186,6 @@ export default function RecipesPage({ uid }: { uid: string }) {
         <div className="modal-box">
           {selectedRecipe && (
             <RecipeDialog
-              uid={uid}
               recipe={selectedRecipe}
               ingredients={ingredients}
               onClose={handleCloseDialog}

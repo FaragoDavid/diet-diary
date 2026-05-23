@@ -10,10 +10,10 @@ import IngredientForm from './IngredientForm';
 import ConfirmDialog from './ConfirmDialog';
 import type { Ingredient, NewIngredient } from '../types/ingredient';
 
-export default function IngredientsPage({ uid }: { uid: string }) {
-  const { ingredients, loading, error } = useIngredients(uid);
-  const { recipes } = useRecipes(uid);
-  const { days } = useDays(uid);
+export default function IngredientsPage() {
+  const { ingredients, loading, error } = useIngredients();
+  const { recipes } = useRecipes();
+  const { days } = useDays();
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedQuery = useDebounce(searchQuery, 200);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -44,12 +44,12 @@ export default function IngredientsPage({ uid }: { uid: string }) {
   };
 
   const handleAdd = async (data: NewIngredient) => {
-    await createIngredient(uid, data);
+    await createIngredient(data);
     closeDialog();
   };
 
   const handleUpdate = async (id: string, data: NewIngredient) => {
-    await updateIngredient(uid, id, data);
+    await updateIngredient(id, data);
     closeDialog();
   };
 
@@ -73,7 +73,7 @@ export default function IngredientsPage({ uid }: { uid: string }) {
       return;
     }
     setDeletingId(id);
-    await deleteIngredient(uid, id);
+    await deleteIngredient(id);
     setDeletingId(null);
   };
 
@@ -81,7 +81,7 @@ export default function IngredientsPage({ uid }: { uid: string }) {
     if (!confirmDeleteId) return;
     setConfirmDeleteId(null);
     setDeletingId(confirmDeleteId);
-    await deleteIngredient(uid, confirmDeleteId);
+    await deleteIngredient(confirmDeleteId);
     setDeletingId(null);
   };
 

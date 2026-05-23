@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import { UtensilsCrossed, Leaf, LogOut, Calendar } from 'lucide-react';
-import { signOut, type AppUser } from '../services/auth';
+import { signOut } from '../services/auth';
 import { TEXTS } from '../constants/texts';
 
 const navItems = [
@@ -10,7 +10,7 @@ const navItems = [
   { to: '/ingredients', label: TEXTS.nav.ingredients, icon: Leaf },
 ];
 
-export default function Layout({ user: _ }: { user: AppUser }) {
+export default function Layout() {
   const [signingOut, setSigningOut] = useState(false);
 
   const handleSignOut = async () => {

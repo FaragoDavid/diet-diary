@@ -4,13 +4,11 @@ import type { Ingredient } from '../types/ingredient';
 import type { Recipe } from '../types/recipe';
 
 export default function VariantDialog({
-  uid,
   variantId,
   recipes,
   ingredients,
   onClose,
 }: {
-  uid: string;
   variantId: string | null;
   recipes: Recipe[];
   ingredients: Ingredient[];
@@ -31,7 +29,7 @@ export default function VariantDialog({
   return (
     <dialog ref={dialogRef} className="modal" onClose={onClose}>
       <div className="modal-box">
-        {variant && <RecipeDialog uid={uid} recipe={variant} ingredients={ingredients} onClose={onClose} baseRecipeName={baseName} />}
+        {variant && <RecipeDialog recipe={variant} ingredients={ingredients} onClose={onClose} baseRecipeName={baseName} />}
       </div>
       <form method="dialog" className="modal-backdrop">
         <button>close</button>

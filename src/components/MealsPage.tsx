@@ -11,10 +11,10 @@ import { TEXTS } from '../constants/texts';
 import ShoppingList, { aggregateIngredients } from './ShoppingList';
 import type { Day } from '../types/day';
 
-export default function MealsPage({ uid }: { uid: string }) {
-  const { days, loading, error } = useDays(uid);
-  const { ingredients } = useIngredients(uid);
-  const { recipes } = useRecipes(uid);
+export default function MealsPage() {
+  const { days, loading, error } = useDays();
+  const { ingredients } = useIngredients();
+  const { recipes } = useRecipes();
   const [creating, setCreating] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [shoppingStartDate, setShoppingStartDate] = useState<string | null>(null);
@@ -49,7 +49,7 @@ export default function MealsPage({ uid }: { uid: string }) {
         date.setDate(date.getDate() + 1);
       }
       const dateStr = date.toISOString().slice(0, 10);
-      await createDay(uid, dateStr);
+      await createDay(dateStr);
       navigate(`/meals/${dateStr}`);
     } finally {
       setCreating(false);
@@ -58,7 +58,7 @@ export default function MealsPage({ uid }: { uid: string }) {
 
   const handleDelete = async (dayId: string) => {
     setDeletingId(dayId);
-    await deleteDay(uid, dayId);
+    await deleteDay(dayId);
     setDeletingId(null);
   };
 

@@ -5,21 +5,20 @@ import { createDevStore } from '../utils/dev-store';
 import { MOCK_INGREDIENTS } from '../constants/mock-data';
 import type { Ingredient, NewIngredient, IngredientUpdate } from '../types/ingredient';
 
-function ingredientsCol(uid: string) {
-  return collection(getDb(), 'users', uid, 'ingredients');
+function ingredientsCol() {
+  return collection(getDb(), 'ingredients');
 }
 
 const devStore = createDevStore(MOCK_INGREDIENTS);
 
-export function useIngredients(uid: string | undefined) {
+export function useIngredients() {
   const [ingredients, setIngredients] = useState<Ingredient[]>(import.meta.env.DEV ? devStore.getItems() : []);
   const [loading, setLoading] = useState(!import.meta.env.DEV);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (import.meta.env.DEV) return devStore.subscribe(setIngredients);
-    if (!uid) return;
-    const q = query(ingredientsCol(uid), orderBy('name'));
+    const q = query(ingredientsCol(), orderBy('name'));
     const unsub = onSnapshot(
       q,
       (snap) => {
@@ -32,31 +31,31 @@ export function useIngredients(uid: string | undefined) {
       },
     );
     return () => unsub();
-  }, [uid]);
+  }, []);
 
   return { ingredients, loading, error };
 }
 
-export async function createIngredient(uid: string, data: NewIngredient) {
+export async function createIngredient(data: NewIngredient) {
   if (import.meta.env.DEV) {
     devStore.add({ ...data, id: `ing-${Date.now()}` });
     return;
   }
-  await addDoc(ingredientsCol(uid), data);
+  await addDoc(ingredientsCol(), data);
 }
 
-export async function updateIngredient(uid: string, id: string, data: IngredientUpdate) {
+export async function updateIngredient(id: string, data: IngredientUpdate) {
   if (import.meta.env.DEV) {
     devStore.update(id, data);
     return;
   }
-  await updateDoc(doc(getDb(), 'users', uid, 'ingredients', id), data);
+  await updateDoc(doc(getDb(), 'ingredients', id), data);
 }
 
-export async function deleteIngredient(uid: string, id: string) {
+export async function deleteIngredient(id: string) {
   if (import.meta.env.DEV) {
     devStore.remove(id);
     return;
   }
-  await deleteDoc(doc(getDb(), 'users', uid, 'ingredients', id));
+  await deleteDoc(doc(getDb(), 'ingredients', id));
 }

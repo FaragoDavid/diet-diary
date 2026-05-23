@@ -8,14 +8,12 @@ import type { Recipe, RecipeIngredient } from '../types/recipe';
 import type { Ingredient } from '../types/ingredient';
 
 export default function RecipeDialog({
-  uid,
   recipe,
   ingredients,
   onClose,
   initialEditHeader = false,
   baseRecipeName,
 }: {
-  uid: string;
   recipe: Recipe;
   ingredients: Ingredient[];
   onClose: () => void;
@@ -29,14 +27,14 @@ export default function RecipeDialog({
   const saveIngredients = useCallback(
     async (updated: RecipeIngredient[]) => {
       const nutrition = calculateRecipeNutrition(updated, ingredientsMap);
-      await updateRecipe(uid, recipe.id, {
+      await updateRecipe(recipe.id, {
         ingredients: updated,
         calories: round(nutrition.calories),
         carbs: round(nutrition.carbs),
         fat: round(nutrition.fat),
       });
     },
-    [uid, recipe.id, ingredientsMap],
+    [recipe.id, ingredientsMap],
   );
 
   const nutrition = calculateRecipeNutrition(recipe.ingredients, ingredientsMap);
@@ -51,7 +49,6 @@ export default function RecipeDialog({
       )}
       {editingHeader ? (
         <RecipeHeaderForm
-          uid={uid}
           recipeId={recipe.id}
           name={recipe.name}
           amount={recipe.amount}
@@ -123,14 +120,12 @@ export default function RecipeDialog({
 }
 
 function RecipeHeaderForm({
-  uid,
   recipeId,
   name,
   amount,
   servings,
   onClose,
 }: {
-  uid: string;
   recipeId: string;
   name: string;
   amount: number | null;
@@ -148,7 +143,7 @@ function RecipeHeaderForm({
     if (!trimmed) return;
     setSaving(true);
     try {
-      await updateRecipe(uid, recipeId, {
+      await updateRecipe(recipeId, {
         name: trimmed,
         amount: editAmount ? parseFloat(editAmount) : null,
         servings: parseInt(editServings) || 1,

@@ -3,11 +3,11 @@ import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: 'diet-diary-ca28e.firebaseapp.com',
-  projectId: 'diet-diary-ca28e',
-  storageBucket: 'diet-diary-ca28e.appspot.com',
-  messagingSenderId: '123456789',
-  appId: '1:123456789:web:abcdef123456',
+  authDomain: 'diet-diary-314bd.firebaseapp.com',
+  projectId: 'diet-diary-314bd',
+  storageBucket: 'diet-diary-314bd.firebasestorage.app',
+  messagingSenderId: '561494276242',
+  appId: '1:561494276242:web:254b2da1d6263fb4040e4b',
 };
 
 const app = initializeApp(firebaseConfig);

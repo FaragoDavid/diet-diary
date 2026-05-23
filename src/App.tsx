@@ -20,25 +20,25 @@ function LoadingScreen() {
 }
 
 export default function App() {
-  const user = useAuth();
+  const loggedIn = useAuth();
 
-  if (user === undefined) {
+  if (loggedIn === undefined) {
     return <LoadingScreen />;
   }
 
-  if (user === null) {
+  if (!loggedIn) {
     return <Login />;
   }
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<Layout user={user} />}>
-          <Route index element={<MealsPage uid={user.uid} />} />
-          <Route path="meals" element={<MealsPage uid={user.uid} />} />
-          <Route path="meals/:dayId" element={<DayDetail uid={user.uid} />} />
-          <Route path="ingredients" element={<IngredientsPage uid={user.uid} />} />
-          <Route path="recipes" element={<RecipesPage uid={user.uid} />} />
+        <Route element={<Layout />}>
+          <Route index element={<MealsPage />} />
+          <Route path="meals" element={<MealsPage />} />
+          <Route path="meals/:dayId" element={<DayDetail />} />
+          <Route path="ingredients" element={<IngredientsPage />} />
+          <Route path="recipes" element={<RecipesPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

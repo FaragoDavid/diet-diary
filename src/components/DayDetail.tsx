@@ -13,11 +13,11 @@ import DayMeal from './DayMeal';
 import VariantDialog from './VariantDialog';
 import type { Meal, MealType } from '../types/day';
 
-export default function DayDetail({ uid }: { uid: string }) {
+export default function DayDetail() {
   const { dayId } = useParams<{ dayId: string }>();
-  const { days, loading: daysLoading } = useDays(uid);
-  const { ingredients, loading: ingredientsLoading } = useIngredients(uid);
-  const { recipes, loading: recipesLoading } = useRecipes(uid);
+  const { days, loading: daysLoading } = useDays();
+  const { ingredients, loading: ingredientsLoading } = useIngredients();
+  const { recipes, loading: recipesLoading } = useRecipes();
 
   const day = days.find((d) => d.id === dayId);
   const ingredientsMap = useMemo(() => new Map(ingredients.map((i) => [i.id, i])), [ingredients]);
@@ -59,7 +59,7 @@ export default function DayDetail({ uid }: { uid: string }) {
   const availableMealTypes = MEAL_TYPES.filter((t) => !existingMealTypes.has(t));
 
   const saveMeals = async (meals: Meal[]) => {
-    await updateDay(uid, day.id, meals);
+    await updateDay(day.id, meals);
   };
 
   return (
@@ -97,7 +97,6 @@ export default function DayDetail({ uid }: { uid: string }) {
           {day.meals.map((meal) => (
             <DayMeal
               key={meal.type}
-              uid={uid}
               meal={meal}
               allMeals={day.meals}
               ingredients={ingredients}
@@ -112,7 +111,6 @@ export default function DayDetail({ uid }: { uid: string }) {
       )}
 
       <VariantDialog
-        uid={uid}
         variantId={editingVariantId}
         recipes={recipes}
         ingredients={ingredients}

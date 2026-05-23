@@ -12,7 +12,6 @@ import type { Ingredient } from '../types/ingredient';
 import type { Recipe } from '../types/recipe';
 
 export default function DayMeal({
-  uid,
   meal,
   allMeals,
   ingredients,
@@ -22,7 +21,6 @@ export default function DayMeal({
   onSave,
   onEditVariant,
 }: {
-  uid: string;
   meal: Meal;
   allMeals: Meal[];
   ingredients: Ingredient[];
@@ -116,7 +114,6 @@ export default function DayMeal({
                 {meal.dishes.map((dish) => (
                   <DishRow
                     key={dish.id}
-                    uid={uid}
                     dish={dish}
                     allDishes={meal.dishes}
                     ingredientsMap={ingredientsMap}
@@ -136,7 +133,6 @@ export default function DayMeal({
 }
 
 function DishRow({
-  uid,
   dish,
   allDishes,
   ingredientsMap,
@@ -145,7 +141,6 @@ function DishRow({
   onEditVariant,
   autoFocus,
 }: {
-  uid: string;
   dish: Dish;
   allDishes: Dish[];
   ingredientsMap: Map<string, Ingredient>;
@@ -212,7 +207,7 @@ function DishRow({
     if (!recipe) return;
     setSaving(true);
     try {
-      const variantId = await createVariant(uid, recipe);
+      const variantId = await createVariant(recipe);
       await onSave(allDishes.map((d) => (d.id === dish.id ? { ...d, recipeId: variantId } : d)));
       onEditVariant(variantId);
     } finally {

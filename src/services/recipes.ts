@@ -5,21 +5,20 @@ import { createDevStore } from '../utils/dev-store';
 import { MOCK_RECIPES } from '../constants/mock-data';
 import type { Recipe, RecipeUpdate } from '../types/recipe';
 
-function recipesCol(uid: string) {
-  return collection(getDb(), 'users', uid, 'recipes');
+function recipesCol() {
+  return collection(getDb(), 'recipes');
 }
 
 const devStore = createDevStore(MOCK_RECIPES);
 
-export function useRecipes(uid: string | undefined) {
+export function useRecipes() {
   const [recipes, setRecipes] = useState<Recipe[]>(import.meta.env.DEV ? devStore.getItems() : []);
   const [loading, setLoading] = useState(!import.meta.env.DEV);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (import.meta.env.DEV) return devStore.subscribe(setRecipes);
-    if (!uid) return;
-    const q = query(recipesCol(uid), orderBy('name'));
+    const q = query(recipesCol(), orderBy('name'));
     const unsub = onSnapshot(
       q,
       (snap) => {
@@ -32,12 +31,12 @@ export function useRecipes(uid: string | undefined) {
       },
     );
     return () => unsub();
-  }, [uid]);
+  }, []);
 
   return { recipes, loading, error };
 }
 
-export async function createRecipe(uid: string, name: string): Promise<string> {
+export async function createRecipe(name: string): Promise<string> {
   const newRecipe: Recipe = {
     id: `rec-${Date.now()}`,
     name,
@@ -53,27 +52,27 @@ export async function createRecipe(uid: string, name: string): Promise<string> {
     devStore.add(newRecipe);
     return newRecipe.id;
   }
-  const ref = await addDoc(recipesCol(uid), newRecipe);
+  const ref = await addDoc(recipesCol(), newRecipe);
   return ref.id;
 }
 
-export async function updateRecipe(uid: string, id: string, data: RecipeUpdate) {
+export async function updateRecipe(id: string, data: RecipeUpdate) {
   if (import.meta.env.DEV) {
     devStore.update(id, data);
     return;
   }
-  await updateDoc(doc(getDb(), 'users', uid, 'recipes', id), data);
+  await updateDoc(doc(getDb(), 'recipes', id), data);
 }
 
-export async function deleteRecipe(uid: string, id: string) {
+export async function deleteRecipe(id: string) {
   if (import.meta.env.DEV) {
     devStore.remove(id);
     return;
   }
-  await deleteDoc(doc(getDb(), 'users', uid, 'recipes', id));
+  await deleteDoc(doc(getDb(), 'recipes', id));
 }
 
-export async function createVariant(uid: string, baseRecipe: Recipe): Promise<string> {
+export async function createVariant(baseRecipe: Recipe): Promise<string> {
   const variant: Recipe = {
     id: `rec-${Date.now()}`,
     name: baseRecipe.name,
@@ -89,6 +88,6 @@ export async function createVariant(uid: string, baseRecipe: Recipe): Promise<st
     devStore.add(variant);
     return variant.id;
   }
-  const ref = await addDoc(recipesCol(uid), variant);
+  const ref = await addDoc(recipesCol(), variant);
   return ref.id;
 }
