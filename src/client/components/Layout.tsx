@@ -37,8 +37,7 @@ export default function Layout({ user }: { user: AppUser }) {
             </NavLink>
           ))}
         </div>
-        <div className="flex-none flex items-center gap-3 ml-2">
-          <span className="text-sm text-base-content/70 hidden sm:inline">{user.displayName || user.email}</span>
+        <div className="flex-none ml-2">
           <button onClick={handleSignOut} disabled={signingOut} className="btn btn-sm btn-ghost">
             <LogOut className="w-4 h-4" />
           </button>
