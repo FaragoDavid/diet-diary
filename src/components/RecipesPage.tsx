@@ -11,7 +11,7 @@ import { formatDate } from '../utils/format';
 import { TEXTS } from '../constants/texts';
 
 export default function RecipesPage() {
-  const { recipes, loading, error } = useRecipes();
+  const { recipes } = useRecipes();
   const { ingredients } = useIngredients();
   const { days } = useDays();
   const [searchQuery, setSearchQuery] = useState('');
@@ -84,24 +84,6 @@ export default function RecipesPage() {
     await deleteRecipe(confirmDeleteId);
     setDeletingId(null);
   };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center py-12">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="alert alert-error">
-        <span>
-          {TEXTS.recipes.loadError}: {error}
-        </span>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-4">
@@ -185,7 +167,13 @@ export default function RecipesPage() {
       <dialog ref={dialogRef} className="modal" onClose={handleCloseDialog}>
         <div className="modal-box">
           {selectedRecipe && (
-            <RecipeDialog recipe={selectedRecipe} ingredients={ingredients} recipes={recipes} onClose={handleCloseDialog} initialEditHeader={isNew} />
+            <RecipeDialog
+              recipe={selectedRecipe}
+              ingredients={ingredients}
+              recipes={recipes}
+              onClose={handleCloseDialog}
+              initialEditHeader={isNew}
+            />
           )}
         </div>
         <form method="dialog" className="modal-backdrop">

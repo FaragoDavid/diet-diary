@@ -12,7 +12,7 @@ import ShoppingList, { aggregateIngredients } from './ShoppingList';
 import type { Day } from '../types/day';
 
 export default function MealsPage() {
-  const { days, loading, error } = useDays();
+  const { days } = useDays();
   const { ingredients } = useIngredients();
   const { recipes } = useRecipes();
   const [creating, setCreating] = useState(false);
@@ -78,24 +78,6 @@ export default function MealsPage() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center py-12">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="alert alert-error">
-        <span>
-          {TEXTS.meals.loadError}: {error}
-        </span>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-4">

@@ -15,22 +15,14 @@ import type { Meal, MealType } from '../types/day';
 
 export default function DayDetail() {
   const { dayId } = useParams<{ dayId: string }>();
-  const { days, loading: daysLoading } = useDays();
-  const { ingredients, loading: ingredientsLoading } = useIngredients();
-  const { recipes, loading: recipesLoading } = useRecipes();
+  const { days } = useDays();
+  const { ingredients } = useIngredients();
+  const { recipes } = useRecipes();
 
   const day = days.find((d) => d.id === dayId);
   const ingredientsMap = useMemo(() => buildNutritionMap(ingredients, recipes), [ingredients, recipes]);
   const recipesMap = useMemo(() => new Map(recipes.map((r) => [r.id, r])), [recipes]);
   const [editingVariantId, setEditingVariantId] = useState<string | null>(null);
-
-  if (daysLoading || ingredientsLoading || recipesLoading) {
-    return (
-      <div className="flex justify-center py-12">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
-    );
-  }
 
   if (!day) {
     return (

@@ -1,43 +1,58 @@
-import { collection, doc, setDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
+import { useState, useEffect } from 'react';
+import { collection, doc, setDoc, deleteDoc, query, orderBy, getDocs } from 'firebase/firestore';
 import { getDb } from './firebase';
-import { createDevStore } from '../utils/dev-store';
-import { createLiveStore, useStore } from '../utils/live-store';
 import { MOCK_DAYS } from '../constants/mock-data';
 import type { Day, Meal } from '../types/day';
 
-function daysCol() {
-  return collection(getDb(), 'days');
+const KEY = 'days';
+
+if (import.meta.env.DEV && !localStorage.getItem(KEY)) {
+  localStorage.setItem(KEY, JSON.stringify([...MOCK_DAYS].sort((d1, d2) => d2.date.localeCompare(d1.date))));
 }
 
-const devStore = createDevStore([...MOCK_DAYS].sort((a, b) => b.date.localeCompare(a.date)));
-const store = import.meta.env.DEV ? devStore : createLiveStore<Day>(query(daysCol(), orderBy('date', 'desc')));
+let notify: ((items: Day[]) => void) | null = null;
+
+function read(): Day[] {
+  return JSON.parse(localStorage.getItem(KEY) || '[]');
+}
+
+function set(items: Day[]) {
+  localStorage.setItem(KEY, JSON.stringify(items));
+  notify?.(items);
+}
 
 export function useDays() {
-  const { items, loading, error } = useStore(store);
-  return { days: items, loading, error };
+  const [days, setDays] = useState<Day[]>(read);
+  notify = setDays;
+  useEffect(() => {
+    if (!import.meta.env.DEV && localStorage.getItem(KEY) === null) {
+      refreshDays();
+    }
+  }, []);
+  return { days };
 }
 
 export async function createDay(date: string) {
-  if (import.meta.env.DEV) {
-    devStore.add({ id: date, date, meals: [] });
-    return;
-  }
-  const ref = doc(daysCol(), date);
-  await setDoc(ref, { date, meals: [] });
+  const newDay: Day = { id: date, date, meals: [] };
+  set([newDay, ...read()]);
+  if (import.meta.env.DEV) return;
+  await setDoc(doc(collection(getDb(), 'days'), date), { date, meals: [] });
 }
 
 export async function updateDay(dayId: string, meals: Meal[]) {
-  if (import.meta.env.DEV) {
-    devStore.update(dayId, { meals } as Partial<Day>);
-    return;
-  }
+  set(read().map((day) => (day.id === dayId ? { ...day, meals } : day)));
+  if (import.meta.env.DEV) return;
   await setDoc(doc(getDb(), 'days', dayId), { date: dayId, meals }, { merge: false });
 }
 
 export async function deleteDay(dayId: string) {
-  if (import.meta.env.DEV) {
-    devStore.remove(dayId);
-    return;
-  }
+  set(read().filter((day) => day.id !== dayId));
+  if (import.meta.env.DEV) return;
   await deleteDoc(doc(getDb(), 'days', dayId));
+}
+
+export async function refreshDays() {
+  if (import.meta.env.DEV) return;
+  const snap = await getDocs(query(collection(getDb(), 'days'), orderBy('date', 'desc')));
+  set(snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as Day));
 }

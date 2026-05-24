@@ -1,25 +1,40 @@
-import { collection, doc, addDoc, updateDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
+import { useState, useEffect } from 'react';
+import { collection, doc, addDoc, updateDoc, deleteDoc, query, orderBy, getDocs } from 'firebase/firestore';
 import { getDb } from './firebase';
-import { createDevStore } from '../utils/dev-store';
-import { createLiveStore, useStore } from '../utils/live-store';
 import { MOCK_RECIPES } from '../constants/mock-data';
 import type { Recipe, RecipeUpdate } from '../types/recipe';
 
-function recipesCol() {
-  return collection(getDb(), 'recipes');
+const KEY = 'recipes';
+
+if (import.meta.env.DEV && !localStorage.getItem(KEY)) {
+  localStorage.setItem(KEY, JSON.stringify(MOCK_RECIPES));
 }
 
-const devStore = createDevStore(MOCK_RECIPES);
-const store = import.meta.env.DEV ? devStore : createLiveStore<Recipe>(query(recipesCol(), orderBy('name')));
+let notify: ((items: Recipe[]) => void) | null = null;
+
+function read(): Recipe[] {
+  return JSON.parse(localStorage.getItem(KEY) || '[]');
+}
+
+function set(items: Recipe[]) {
+  localStorage.setItem(KEY, JSON.stringify(items));
+  notify?.(items);
+}
 
 export function useRecipes() {
-  const { items, loading, error } = useStore(store);
-  return { recipes: items, loading, error };
+  const [recipes, setRecipes] = useState<Recipe[]>(read);
+  notify = setRecipes;
+  useEffect(() => {
+    if (!import.meta.env.DEV && localStorage.getItem(KEY) === null) {
+      refreshRecipes();
+    }
+  }, []);
+  return { recipes };
 }
 
 export async function createRecipe(name: string): Promise<string> {
   const newRecipe: Recipe = {
-    id: `rec-${Date.now()}`,
+    id: '',
     name,
     calories: 0,
     carbs: 0,
@@ -29,33 +44,26 @@ export async function createRecipe(name: string): Promise<string> {
     baseRecipeId: null,
     ingredients: [],
   };
-  if (import.meta.env.DEV) {
-    devStore.add(newRecipe);
-    return newRecipe.id;
-  }
-  const ref = await addDoc(recipesCol(), newRecipe);
-  return ref.id;
+  const id = import.meta.env.DEV ? `rec-${Date.now()}` : (await addDoc(collection(getDb(), 'recipes'), newRecipe)).id;
+  set([...read(), { ...newRecipe, id }].sort((r1, r2) => r1.name.localeCompare(r2.name)));
+  return id;
 }
 
 export async function updateRecipe(id: string, data: RecipeUpdate) {
-  if (import.meta.env.DEV) {
-    devStore.update(id, data);
-    return;
-  }
+  set(read().map((rec) => (rec.id === id ? { ...rec, ...data } : rec)));
+  if (import.meta.env.DEV) return;
   await updateDoc(doc(getDb(), 'recipes', id), data);
 }
 
 export async function deleteRecipe(id: string) {
-  if (import.meta.env.DEV) {
-    devStore.remove(id);
-    return;
-  }
+  set(read().filter((rec) => rec.id !== id));
+  if (import.meta.env.DEV) return;
   await deleteDoc(doc(getDb(), 'recipes', id));
 }
 
 export async function createVariant(baseRecipe: Recipe): Promise<string> {
   const variant: Recipe = {
-    id: `rec-${Date.now()}`,
+    id: '',
     name: baseRecipe.name,
     calories: baseRecipe.calories,
     carbs: baseRecipe.carbs,
@@ -65,10 +73,13 @@ export async function createVariant(baseRecipe: Recipe): Promise<string> {
     baseRecipeId: baseRecipe.baseRecipeId ?? baseRecipe.id,
     ingredients: [...baseRecipe.ingredients],
   };
-  if (import.meta.env.DEV) {
-    devStore.add(variant);
-    return variant.id;
-  }
-  const ref = await addDoc(recipesCol(), variant);
-  return ref.id;
+  const id = import.meta.env.DEV ? `rec-${Date.now()}` : (await addDoc(collection(getDb(), 'recipes'), variant)).id;
+  set([...read(), { ...variant, id }].sort((r1, r2) => r1.name.localeCompare(r2.name)));
+  return id;
+}
+
+export async function refreshRecipes() {
+  if (import.meta.env.DEV) return;
+  const snap = await getDocs(query(collection(getDb(), 'recipes'), orderBy('name')));
+  set(snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as Recipe));
 }

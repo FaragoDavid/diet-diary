@@ -2,7 +2,14 @@ import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { Trash2, Pencil } from 'lucide-react';
 import { updateRecipe } from '../services/recipes';
 import IngredientSelector from './IngredientSelector';
-import { calculateRecipeNutrition, calculateIngredientNutrition, round, formatNutrition, buildNutritionMap, recipeToIngredient } from '../utils/nutrition';
+import {
+  calculateRecipeNutrition,
+  calculateIngredientNutrition,
+  round,
+  formatNutrition,
+  buildNutritionMap,
+  recipeToIngredient,
+} from '../utils/nutrition';
 import { TEXTS } from '../constants/texts';
 import type { Recipe, RecipeIngredient } from '../types/recipe';
 import type { Ingredient } from '../types/ingredient';

@@ -11,7 +11,7 @@ import ConfirmDialog from './ConfirmDialog';
 import type { Ingredient, NewIngredient } from '../types/ingredient';
 
 export default function IngredientsPage() {
-  const { ingredients, loading, error } = useIngredients();
+  const { ingredients } = useIngredients();
   const { recipes } = useRecipes();
   const { days } = useDays();
   const [searchQuery, setSearchQuery] = useState('');
@@ -84,24 +84,6 @@ export default function IngredientsPage() {
     await deleteIngredient(confirmDeleteId);
     setDeletingId(null);
   };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center py-12">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="alert alert-error">
-        <span>
-          {TEXTS.ingredients.loadError}: {error}
-        </span>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-4">

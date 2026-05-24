@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
-import { UtensilsCrossed, Leaf, LogOut, Calendar } from 'lucide-react';
+import { UtensilsCrossed, Leaf, LogOut, Calendar, RefreshCw } from 'lucide-react';
 import { signOut } from '../services/auth';
+import { refreshIngredients } from '../services/ingredients';
+import { refreshRecipes } from '../services/recipes';
+import { refreshDays } from '../services/days';
 import { TEXTS } from '../constants/texts';
 
 const navItems = [
@@ -12,6 +15,12 @@ const navItems = [
 
 export default function Layout() {
   const [signingOut, setSigningOut] = useState(false);
+
+  const handleRefresh = () => {
+    refreshIngredients();
+    refreshRecipes();
+    refreshDays();
+  };
 
   const handleSignOut = async () => {
     setSigningOut(true);
@@ -36,7 +45,10 @@ export default function Layout() {
             </NavLink>
           ))}
         </div>
-        <div className="flex-none ml-2">
+        <div className="flex-none ml-2 flex items-center gap-1">
+          <button onClick={handleRefresh} className="btn btn-sm btn-ghost">
+            <RefreshCw className="w-4 h-4" />
+          </button>
           <button onClick={handleSignOut} disabled={signingOut} className="btn btn-sm btn-ghost">
             <LogOut className="w-4 h-4" />
           </button>
