@@ -132,7 +132,7 @@ function AddMealButton({
   return (
     <div className="dropdown">
       <div tabIndex={0} role="button" className="btn btn-primary btn-sm">
-        <Plus className="w-4 h-4" /> <span className="hidden sm:inline">{TEXTS.meals.addMeal}</span>
+        <Plus className="w-4 h-4" />
       </div>
       <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow">
         {availableTypes.map((type) => (

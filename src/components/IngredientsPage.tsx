@@ -91,7 +91,6 @@ export default function IngredientsPage() {
       <PageHeader title={TEXTS.nav.ingredients}>
         <button onClick={() => setShowAddForm(true)} className="btn btn-primary btn-sm">
           <Plus className="w-4 h-4" />
-          {TEXTS.common.add}
         </button>
       </PageHeader>
 

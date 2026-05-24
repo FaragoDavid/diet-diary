@@ -91,7 +91,6 @@ export default function RecipesPage() {
       <PageHeader title={TEXTS.nav.recipes}>
         <button onClick={handleCreate} className="btn btn-primary btn-sm">
           <Plus className="w-4 h-4" />
-          {TEXTS.common.add}
         </button>
       </PageHeader>
 

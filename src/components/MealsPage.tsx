@@ -84,7 +84,7 @@ export default function MealsPage() {
     <div className="space-y-4">
       <PageHeader title={TEXTS.nav.meals}>
         <button onClick={handleCreate} disabled={creating} className="btn btn-primary btn-sm">
-          <Plus className="w-4 h-4" /> {TEXTS.meals.newDay}
+          <Plus className="w-4 h-4" />
         </button>
       </PageHeader>
 
