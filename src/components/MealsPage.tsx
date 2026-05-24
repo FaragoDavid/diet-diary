@@ -9,6 +9,7 @@ import { formatDate } from '../utils/format';
 import { DAY_TARGETS } from '../constants/meal-targets';
 import { TEXTS } from '../constants/texts';
 import ShoppingList, { aggregateIngredients } from './ShoppingList';
+import PageHeader from './PageHeader';
 import type { Day } from '../types/day';
 
 export default function MealsPage() {
@@ -81,12 +82,11 @@ export default function MealsPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">{TEXTS.nav.meals}</h2>
+      <PageHeader title={TEXTS.nav.meals}>
         <button onClick={handleCreate} disabled={creating} className="btn btn-primary btn-sm">
           <Plus className="w-4 h-4" /> {TEXTS.meals.newDay}
         </button>
-      </div>
+      </PageHeader>
 
       {days.length === 0 ? (
         <div className="text-center py-12 text-base-content/50">{TEXTS.meals.noDays}</div>

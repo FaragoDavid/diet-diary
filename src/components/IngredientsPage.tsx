@@ -8,6 +8,7 @@ import { TEXTS } from '../constants/texts';
 import { formatDate } from '../utils/format';
 import IngredientForm from './IngredientForm';
 import ConfirmDialog from './ConfirmDialog';
+import PageHeader from './PageHeader';
 import type { Ingredient, NewIngredient } from '../types/ingredient';
 
 export default function IngredientsPage() {
@@ -87,13 +88,12 @@ export default function IngredientsPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">{TEXTS.nav.ingredients}</h2>
+      <PageHeader title={TEXTS.nav.ingredients}>
         <button onClick={() => setShowAddForm(true)} className="btn btn-primary btn-sm">
           <Plus className="w-4 h-4" />
           {TEXTS.common.add}
         </button>
-      </div>
+      </PageHeader>
 
       <div className="form-control">
         <label className="input input-bordered flex items-center gap-2">

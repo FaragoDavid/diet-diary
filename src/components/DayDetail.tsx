@@ -11,6 +11,7 @@ import { TEXTS } from '../constants/texts';
 import { DAY_TARGETS } from '../constants/meal-targets';
 import DayMeal from './DayMeal';
 import VariantDialog from './VariantDialog';
+import PageHeader from './PageHeader';
 import type { Meal, MealType } from '../types/day';
 
 export default function DayDetail() {
@@ -56,31 +57,29 @@ export default function DayDetail() {
 
   return (
     <div className="space-y-4">
-      <div className="sticky top-16 z-10 bg-base-200 -mx-4 px-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Link to="/meals" className="btn btn-ghost btn-sm btn-square">
-              <ArrowLeft className="w-4 h-4" />
-            </Link>
-            <h2 className="text-xl font-bold">
-              <span className="sm:hidden">{formatDateShort(day.date)}</span>
-              <span className="hidden sm:inline">{formatDate(day.date)}</span>
-            </h2>
-            <span className="text text-base-content/60">
-              <span className={getNutrientColor(dayTotals.calories, DAY_TARGETS.calories)}>
-                {round(dayTotals.calories)} {TEXTS.nutrients.cal.toLowerCase()}
-              </span>
-              {' · '}
-              <span className={getNutrientColor(dayTotals.carbs, DAY_TARGETS.carbs)}>
-                {round(dayTotals.carbs)}g {TEXTS.nutrients.ch.toLowerCase()}
-              </span>
-              {' · '}
-              {round(dayTotals.fat)}g {TEXTS.nutrients.fat.toLowerCase()}
+      <PageHeader>
+        <div className="flex items-center gap-2">
+          <Link to="/meals" className="btn btn-ghost btn-sm btn-square">
+            <ArrowLeft className="w-4 h-4" />
+          </Link>
+          <h2 className="text-xl font-bold">
+            <span className="sm:hidden">{formatDateShort(day.date)}</span>
+            <span className="hidden sm:inline">{formatDate(day.date)}</span>
+          </h2>
+          <span className="text text-base-content/60">
+            <span className={getNutrientColor(dayTotals.calories, DAY_TARGETS.calories)}>
+              {round(dayTotals.calories)} {TEXTS.nutrients.cal.toLowerCase()}
             </span>
-          </div>
-          <AddMealButton availableTypes={availableMealTypes} meals={day.meals} onSave={saveMeals} />
+            {' · '}
+            <span className={getNutrientColor(dayTotals.carbs, DAY_TARGETS.carbs)}>
+              {round(dayTotals.carbs)}g {TEXTS.nutrients.ch.toLowerCase()}
+            </span>
+            {' · '}
+            {round(dayTotals.fat)}g {TEXTS.nutrients.fat.toLowerCase()}
+          </span>
         </div>
-      </div>
+        <AddMealButton availableTypes={availableMealTypes} meals={day.meals} onSave={saveMeals} />
+      </PageHeader>
 
       {day.meals.length === 0 ? (
         <p className="text-center py-8 text-base-content/50">{TEXTS.meals.noMeals}</p>

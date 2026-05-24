@@ -9,6 +9,7 @@ import ConfirmDialog from './ConfirmDialog';
 import { round } from '../utils/nutrition';
 import { formatDate } from '../utils/format';
 import { TEXTS } from '../constants/texts';
+import PageHeader from './PageHeader';
 
 export default function RecipesPage() {
   const { recipes } = useRecipes();
@@ -87,13 +88,12 @@ export default function RecipesPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">{TEXTS.nav.recipes}</h2>
+      <PageHeader title={TEXTS.nav.recipes}>
         <button onClick={handleCreate} className="btn btn-primary btn-sm">
           <Plus className="w-4 h-4" />
           {TEXTS.common.add}
         </button>
-      </div>
+      </PageHeader>
 
       <div className="form-control">
         <label className="input input-bordered flex items-center gap-2">
