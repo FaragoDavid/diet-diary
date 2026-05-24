@@ -55,7 +55,6 @@ export const TEXTS = {
     addIngredient: 'Alapanyag hozzáadása...',
     noIngredients: 'Még nincsenek alapanyagok. Adj hozzá egyet fent.',
     noRecipes: 'Még nincsenek receptek. Hozd létre az elsőt!',
-    nIngredients: (n: number): string => `${n} alapanyag`,
     loadError: 'Receptek betöltése sikertelen',
     g: 'g',
     variant: 'Variáns',

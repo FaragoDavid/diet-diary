@@ -91,7 +91,7 @@ export default function RecipesPage() {
       <PageHeader
         title={TEXTS.nav.recipes}
         search={
-          <label className="input input-bordered flex items-center gap-2">
+          <label className="input input-bordered input-sm flex items-center gap-2">
             <Search className="w-4 h-4 opacity-50" />
             <input
               type="text"
@@ -117,24 +117,20 @@ export default function RecipesPage() {
           <table className="table table-zebra">
             <thead>
               <tr>
-                <th className="sticky left-0 z-[1] bg-base-200">{TEXTS.common.name}</th>
-                <th className="text-right whitespace-nowrap">{TEXTS.nutrients.cal}</th>
-                <th className="text-right whitespace-nowrap">{TEXTS.nutrients.ch}</th>
-                <th className="text-right whitespace-nowrap">{TEXTS.nutrients.fat}</th>
-                <th className="text-right whitespace-nowrap">{TEXTS.common.actions}</th>
+                <th className="sticky left-0 top-0 z-[2] bg-base-200">{TEXTS.common.name}</th>
+                <th className="text-right whitespace-nowrap sticky top-0 bg-base-200">{TEXTS.nutrients.cal}</th>
+                <th className="text-right whitespace-nowrap sticky top-0 bg-base-200">{TEXTS.nutrients.ch}</th>
+                <th className="text-right whitespace-nowrap sticky top-0 bg-base-200">{TEXTS.nutrients.fat}</th>
+                <th className="text-right whitespace-nowrap sticky top-0 bg-base-200">{TEXTS.common.actions}</th>
               </tr>
             </thead>
             <tbody>
               {filtered.map((recipe) => (
                 <tr key={recipe.id}>
                   <td className="sticky left-0 z-[1] bg-base-200">
-                    <button onClick={() => setSelectedId(recipe.id)} className="link link-hover font-medium">
+                    <button onClick={() => setSelectedId(recipe.id)} className="link link-hover font-medium text-left">
                       {recipe.name}
                     </button>
-                    <div className="text-xs text-base-content/50">
-                      {recipe.amount != null && <span>{recipe.amount}g · </span>}
-                      {TEXTS.recipes.nIngredients(recipe.ingredients.length)}
-                    </div>
                   </td>
                   <td className="text-right tabular-nums whitespace-nowrap">{round(recipe.calories)}</td>
                   <td className="text-right tabular-nums whitespace-nowrap">{round(recipe.carbs)}</td>

@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { Search, Plus, Pencil, Trash2, Check, X } from 'lucide-react';
+import { Search, Plus, Pencil, Trash2 } from 'lucide-react';
 import { useIngredients, createIngredient, updateIngredient, deleteIngredient } from '../services/ingredients';
 import { useRecipes } from '../services/recipes';
 import { useDays } from '../services/days';
@@ -91,7 +91,7 @@ export default function IngredientsPage() {
       <PageHeader
         title={TEXTS.nav.ingredients}
         search={
-          <label className="input input-bordered flex items-center gap-2">
+          <label className="input input-bordered input-sm flex items-center gap-2">
             <Search className="w-4 h-4 opacity-50" />
             <input
               type="text"
@@ -117,13 +117,11 @@ export default function IngredientsPage() {
           <table className="table table-zebra">
             <thead>
               <tr>
-                <th className="sticky left-0 z-[1] bg-base-200">{TEXTS.common.name}</th>
-                <th className="text-right whitespace-nowrap">{TEXTS.nutrients.cal}</th>
-                <th className="text-right whitespace-nowrap">{TEXTS.nutrients.ch}</th>
-                <th className="text-right whitespace-nowrap">{TEXTS.nutrients.fat}</th>
-                <th className="text-center whitespace-nowrap">{TEXTS.ingredients.vegetable}</th>
-                <th className="text-center whitespace-nowrap">{TEXTS.ingredients.carbLimit}</th>
-                <th className="text-right whitespace-nowrap">{TEXTS.common.actions}</th>
+                <th className="sticky left-0 top-0 z-[2] bg-base-200">{TEXTS.common.name}</th>
+                <th className="text-right whitespace-nowrap sticky top-0 bg-base-200">{TEXTS.nutrients.cal}</th>
+                <th className="text-right whitespace-nowrap sticky top-0 bg-base-200">{TEXTS.nutrients.ch}</th>
+                <th className="text-right whitespace-nowrap sticky top-0 bg-base-200">{TEXTS.nutrients.fat}</th>
+                <th className="text-right whitespace-nowrap sticky top-0 bg-base-200">{TEXTS.common.actions}</th>
               </tr>
             </thead>
             <tbody>
@@ -186,10 +184,6 @@ function IngredientRow({
       <td className="text-right tabular-nums whitespace-nowrap">{ing.caloriesPer100}</td>
       <td className="text-right tabular-nums whitespace-nowrap">{ing.carbsPer100}</td>
       <td className="text-right tabular-nums whitespace-nowrap">{ing.fatPer100}</td>
-      <td className="text-center whitespace-nowrap">{ing.isVegetable && <Check className="w-4 h-4 inline" />}</td>
-      <td className="text-center tabular-nums whitespace-nowrap">
-        {ing.carbLimit === null ? <X className="w-4 h-4 inline" /> : ing.carbLimit > 0 ? ing.carbLimit : null}
-      </td>
       <td className="text-right whitespace-nowrap">
         <div className="flex justify-end gap-1">
           <button onClick={onEdit} className="btn btn-ghost btn-xs">
