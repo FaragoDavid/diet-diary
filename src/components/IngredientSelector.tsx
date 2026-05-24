@@ -50,17 +50,20 @@ export default function IngredientSelector({
         className="input input-bordered w-full"
       />
       {open && results.length > 0 && (
-        <ul className="menu bg-base-100 shadow-lg rounded-box absolute z-50 w-full mt-1 max-h-60 overflow-y-auto">
+        <ul className="bg-base-100 shadow-lg rounded-box absolute z-50 w-full mt-1 max-h-60 overflow-y-auto p-2">
           {results.map((ing) => (
-            <li key={ing.id}>
-              <button type="button" onMouseDown={() => handleSelect(ing)} className="flex justify-between">
-                <span>{ing.name}</span>
-                <span className="text-xs text-base-content/50">
-                  {ing.caloriesPer100} {TEXTS.nutrients.kcalUnit} · {ing.carbsPer100} {TEXTS.nutrients.chUnit} ·{' '}
-                  {ing.fatPer100} {TEXTS.nutrients.fatUnit}
-                </span>
-              </button>
-            </li>
+            <button
+              key={ing.id}
+              type="button"
+              onMouseDown={() => handleSelect(ing)}
+              className="flex w-full items-center justify-between px-3 py-2 rounded-lg hover:bg-base-200 text-sm"
+            >
+              <span>{ing.name}</span>
+              <span className="text-xs text-base-content/50 ml-2 shrink-0">
+                {ing.caloriesPer100} {TEXTS.nutrients.kcalUnit} · {ing.carbsPer100} {TEXTS.nutrients.chUnit} · {ing.fatPer100}{' '}
+                {TEXTS.nutrients.fatUnit}
+              </span>
+            </button>
           ))}
         </ul>
       )}

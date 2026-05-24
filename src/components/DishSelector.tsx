@@ -73,19 +73,22 @@ export default function DishSelector({
         className="input input-bordered input-sm w-full"
       />
       {open && results.length > 0 && (
-        <ul className="menu bg-base-100 shadow-lg rounded-box absolute z-50 w-full mt-1 max-h-60 overflow-y-auto">
+        <ul className="bg-base-100 shadow-lg rounded-box absolute z-50 w-full mt-1 max-h-60 overflow-y-auto p-2">
           {results.map((item) => (
-            <li key={`${item.type}:${item.id}`}>
-              <button type="button" onMouseDown={() => handleSelect(item)} className="flex justify-between">
-                <span>
-                  {item.name}
-                  {item.subtitle && <span className="text-xs text-base-content/50 ml-1">({item.subtitle})</span>}
-                </span>
-                <span className="text-xs text-base-content/50">
-                  {item.type === 'ingredient' ? TEXTS.dishes.ingredient : TEXTS.dishes.recipe}
-                </span>
-              </button>
-            </li>
+            <button
+              key={`${item.type}:${item.id}`}
+              type="button"
+              onMouseDown={() => handleSelect(item)}
+              className="flex w-full items-center justify-between px-3 py-2 rounded-lg hover:bg-base-200 text-sm overflow-hidden"
+            >
+              <span className="truncate">
+                {item.name}
+                {item.subtitle && <span className="text-xs text-base-content/50 ml-1">({item.subtitle})</span>}
+              </span>
+              <span className="text-xs text-base-content/50 ml-2 shrink-0">
+                {item.type === 'ingredient' ? TEXTS.dishes.ingredient : TEXTS.dishes.recipe}
+              </span>
+            </button>
           ))}
         </ul>
       )}
