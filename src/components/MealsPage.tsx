@@ -153,14 +153,14 @@ function DayCard({ day, onDelete, onShopping, deleting }: { day: Day; onDelete: 
           </div>
           <div className="text-sm text-base-content/60 mt-1">
             <span className={getNutrientColor(totals.calories, DAY_TARGETS.calories)}>
-              {round(totals.calories)} {TEXTS.nutrients.cal.toLowerCase()}
+              {round(totals.calories)} {TEXTS.nutrients.kcalUnit}
             </span>
             {' · '}
             <span className={getNutrientColor(totals.carbs, DAY_TARGETS.carbs)}>
-              {round(totals.carbs)}g {TEXTS.nutrients.ch.toLowerCase()}
+              {round(totals.carbs)}g {TEXTS.nutrients.chUnit}
             </span>
             {' · '}
-            {round(totals.fat)}g {TEXTS.nutrients.fat.toLowerCase()}
+            {round(totals.fat)}g {TEXTS.nutrients.fatUnit}
           </div>
         </div>
         <div className="flex items-center gap-1">

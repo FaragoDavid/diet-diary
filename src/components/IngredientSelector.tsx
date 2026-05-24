@@ -56,8 +56,8 @@ export default function IngredientSelector({
               <button type="button" onMouseDown={() => handleSelect(ing)} className="flex justify-between">
                 <span>{ing.name}</span>
                 <span className="text-xs text-base-content/50">
-                  {ing.caloriesPer100} {TEXTS.nutrients.cal.toLowerCase()} · {ing.carbsPer100} {TEXTS.nutrients.ch.toLowerCase()} ·{' '}
-                  {ing.fatPer100} {TEXTS.nutrients.fat.toLowerCase()}
+                  {ing.caloriesPer100} {TEXTS.nutrients.kcalUnit} · {ing.carbsPer100} {TEXTS.nutrients.chUnit} ·{' '}
+                  {ing.fatPer100} {TEXTS.nutrients.fatUnit}
                 </span>
               </button>
             </li>

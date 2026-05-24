@@ -68,14 +68,14 @@ export default function DayDetail() {
           </h2>
           <span className="text text-base-content/60">
             <span className={getNutrientColor(dayTotals.calories, DAY_TARGETS.calories)}>
-              {round(dayTotals.calories)} {TEXTS.nutrients.cal.toLowerCase()}
+              {round(dayTotals.calories)} {TEXTS.nutrients.kcalUnit}
             </span>
             {' · '}
             <span className={getNutrientColor(dayTotals.carbs, DAY_TARGETS.carbs)}>
-              {round(dayTotals.carbs)}g {TEXTS.nutrients.ch.toLowerCase()}
+              {round(dayTotals.carbs)}g {TEXTS.nutrients.chUnit}
             </span>
             {' · '}
-            {round(dayTotals.fat)}g {TEXTS.nutrients.fat.toLowerCase()}
+            {round(dayTotals.fat)}g {TEXTS.nutrients.fatUnit}
           </span>
         </div>
         <AddMealButton availableTypes={availableMealTypes} meals={day.meals} onSave={saveMeals} />

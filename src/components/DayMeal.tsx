@@ -82,14 +82,14 @@ export default function DayMeal({
           <div className="flex items-center gap-2">
             <span className="text-sm text-base-content/60">
               <span className={getNutrientColor(mealTotals.calories, targets?.calories)}>
-                {round(mealTotals.calories)} {TEXTS.nutrients.cal.toLowerCase()}
+                {round(mealTotals.calories)} {TEXTS.nutrients.kcalUnit}
               </span>
               {' · '}
               <span className={getNutrientColor(mealTotals.carbs, targets?.carbs)}>
-                {round(mealTotals.carbs)}g {TEXTS.nutrients.ch.toLowerCase()}
+                {round(mealTotals.carbs)}g {TEXTS.nutrients.chUnit}
               </span>
               {' · '}
-              {round(mealTotals.fat)}g {TEXTS.nutrients.fat.toLowerCase()}
+              {round(mealTotals.fat)}g {TEXTS.nutrients.fatUnit}
             </span>
             <button onClick={removeMeal} className="btn btn-ghost btn-xs text-error">
               <Trash2 className="w-3.5 h-3.5" />

@@ -34,10 +34,7 @@ export function round(value: number, decimals = 1): number {
 }
 
 export function formatNutrition(values: { calories: number; carbs: number; fat: number }): string {
-  const cal = TEXTS.nutrients.cal.toLowerCase();
-  const ch = TEXTS.nutrients.ch.toLowerCase();
-  const fat = TEXTS.nutrients.fat.toLowerCase();
-  return `${round(values.calories)} ${cal} · ${round(values.carbs)}g ${ch} · ${round(values.fat)}g ${fat}`;
+  return `${round(values.calories)} ${TEXTS.nutrients.kcalUnit} · ${round(values.carbs)}g ${TEXTS.nutrients.chUnit} · ${round(values.fat)}g ${TEXTS.nutrients.fatUnit}`;
 }
 
 export function getNutrientColor(actual: number, target: number | undefined): string {

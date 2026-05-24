@@ -29,6 +29,9 @@ export const TEXTS = {
     carbs: 'Szénhidrát',
     ch: 'CH',
     fat: 'Zsír',
+    kcalUnit: 'kCal',
+    chUnit: 'CH',
+    fatUnit: 'zsír',
   },
   ingredients: {
     search: 'Alapanyag keresése...',
