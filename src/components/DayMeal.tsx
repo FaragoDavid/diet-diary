@@ -71,7 +71,14 @@ export default function DayMeal({
     <div className="card bg-base-100 shadow-sm">
       <div className="card-body p-4 space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="card-title text-base">{MEAL_TYPE_LABELS[meal.type]}</h3>
+          <h3 className="card-title text-base">
+            {MEAL_TYPE_LABELS[meal.type]}
+            {targets && (
+              <span className="text-xs font-normal text-base-content/40">
+                ({targets.calories} kCal, {targets.carbs} CH)
+              </span>
+            )}
+          </h3>
           <div className="flex items-center gap-2">
             <span className="text-sm text-base-content/60">
               <span className={getNutrientColor(mealTotals.calories, targets?.calories)}>
