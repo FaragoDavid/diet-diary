@@ -35,7 +35,7 @@ export default function Layout() {
     <div className="h-screen flex flex-col bg-base-200">
       <nav className="navbar bg-base-100 shadow-sm px-4">
         <div className="flex-1">
-          <span className="text-xl font-bold">{TEXTS.app.title}</span>
+          <span className="text-2xl font-bold">{TEXTS.app.title}</span>
         </div>
         <div className="flex items-center gap-1">
           {navItems.map(({ to, label, icon: Icon }) => (
