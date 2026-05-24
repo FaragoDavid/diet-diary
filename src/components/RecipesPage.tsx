@@ -127,11 +127,7 @@ export default function RecipesPage() {
             <tbody>
               {filtered.map((recipe) => (
                 <tr key={recipe.id}>
-                  <td className="sticky left-0 z-[1] bg-base-200">
-                    <button onClick={() => setSelectedId(recipe.id)} className="link link-hover font-medium text-left">
-                      {recipe.name}
-                    </button>
-                  </td>
+                  <td className="font-medium sticky left-0 z-[1] bg-base-200">{recipe.name}</td>
                   <td className="text-right tabular-nums whitespace-nowrap">{round(recipe.calories)}</td>
                   <td className="text-right tabular-nums whitespace-nowrap">{round(recipe.carbs)}</td>
                   <td className="text-right tabular-nums whitespace-nowrap">{round(recipe.fat)}</td>
