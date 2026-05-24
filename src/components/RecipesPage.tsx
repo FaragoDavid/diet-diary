@@ -160,10 +160,6 @@ export default function RecipesPage() {
         </div>
       )}
 
-      <div className="text-sm text-base-content/50 text-right">
-        {filtered.length} / {recipes.length}
-      </div>
-
       <dialog ref={dialogRef} className="modal" onClose={handleCloseDialog}>
         <div className="modal-box">
           {selectedRecipe && (

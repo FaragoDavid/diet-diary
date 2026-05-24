@@ -141,10 +141,6 @@ export default function IngredientsPage() {
         </div>
       )}
 
-      <div className="text-sm text-base-content/50 text-right">
-        {filtered.length} / {ingredients.length}
-      </div>
-
       <dialog ref={dialogRef} className="modal" onClose={closeDialog}>
         <div className="modal-box">
           <h3 className="font-bold text-lg">{editingIngredient ? TEXTS.common.update : TEXTS.ingredients.newIngredient}</h3>
