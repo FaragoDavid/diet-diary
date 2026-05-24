@@ -130,7 +130,7 @@ function AddMealButton({
   };
 
   return (
-    <div className="dropdown">
+    <div className="dropdown dropdown-end">
       <div tabIndex={0} role="button" className="btn btn-primary btn-sm">
         <Plus className="w-4 h-4" />
       </div>

@@ -88,24 +88,25 @@ export default function RecipesPage() {
 
   return (
     <div className="space-y-4">
-      <PageHeader title={TEXTS.nav.recipes}>
+      <PageHeader
+        title={TEXTS.nav.recipes}
+        search={
+          <label className="input input-bordered flex items-center gap-2">
+            <Search className="w-4 h-4 opacity-50" />
+            <input
+              type="text"
+              placeholder={TEXTS.recipes.search}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="grow"
+            />
+          </label>
+        }
+      >
         <button onClick={handleCreate} className="btn btn-primary btn-sm">
           <Plus className="w-4 h-4" />
         </button>
       </PageHeader>
-
-      <div className="form-control">
-        <label className="input input-bordered flex items-center gap-2">
-          <Search className="w-4 h-4 opacity-50" />
-          <input
-            type="text"
-            placeholder={TEXTS.recipes.search}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="grow"
-          />
-        </label>
-      </div>
 
       {filtered.length === 0 ? (
         <div className="text-center py-12 text-base-content/50">
@@ -116,17 +117,17 @@ export default function RecipesPage() {
           <table className="table table-zebra">
             <thead>
               <tr>
-                <th>{TEXTS.common.name}</th>
-                <th className="text-right">{TEXTS.nutrients.cal}</th>
-                <th className="text-right">{TEXTS.nutrients.ch}</th>
-                <th className="text-right">{TEXTS.nutrients.fat}</th>
-                <th className="text-right">{TEXTS.common.actions}</th>
+                <th className="sticky left-0 z-10">{TEXTS.common.name}</th>
+                <th className="text-right whitespace-nowrap">{TEXTS.nutrients.cal}</th>
+                <th className="text-right whitespace-nowrap">{TEXTS.nutrients.ch}</th>
+                <th className="text-right whitespace-nowrap">{TEXTS.nutrients.fat}</th>
+                <th className="text-right whitespace-nowrap">{TEXTS.common.actions}</th>
               </tr>
             </thead>
             <tbody>
               {filtered.map((recipe) => (
                 <tr key={recipe.id}>
-                  <td>
+                  <td className="sticky left-0 z-10">
                     <button onClick={() => setSelectedId(recipe.id)} className="link link-hover font-medium">
                       {recipe.name}
                     </button>
@@ -135,10 +136,10 @@ export default function RecipesPage() {
                       {TEXTS.recipes.nIngredients(recipe.ingredients.length)}
                     </div>
                   </td>
-                  <td className="text-right tabular-nums">{round(recipe.calories)}</td>
-                  <td className="text-right tabular-nums">{round(recipe.carbs)}</td>
-                  <td className="text-right tabular-nums">{round(recipe.fat)}</td>
-                  <td className="text-right">
+                  <td className="text-right tabular-nums whitespace-nowrap">{round(recipe.calories)}</td>
+                  <td className="text-right tabular-nums whitespace-nowrap">{round(recipe.carbs)}</td>
+                  <td className="text-right tabular-nums whitespace-nowrap">{round(recipe.fat)}</td>
+                  <td className="text-right whitespace-nowrap">
                     <div className="flex justify-end gap-1">
                       <button onClick={() => setSelectedId(recipe.id)} className="btn btn-ghost btn-xs">
                         <Pencil className="w-3.5 h-3.5" />
