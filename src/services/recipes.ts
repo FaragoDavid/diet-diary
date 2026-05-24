@@ -79,7 +79,10 @@ export async function createVariant(baseRecipe: Recipe): Promise<string> {
 }
 
 export async function refreshRecipes() {
-  if (import.meta.env.DEV) return;
+  if (import.meta.env.DEV) {
+    set(MOCK_RECIPES);
+    return;
+  }
   const snap = await getDocs(query(collection(getDb(), 'recipes'), orderBy('name')));
   set(snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as Recipe));
 }

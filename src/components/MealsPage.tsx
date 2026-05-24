@@ -81,7 +81,7 @@ export default function MealsPage() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col flex-1 min-h-0 gap-4">
       <PageHeader title={TEXTS.nav.meals}>
         <button onClick={handleCreate} disabled={creating} className="btn btn-primary btn-sm">
           <Plus className="w-4 h-4" />
@@ -91,7 +91,7 @@ export default function MealsPage() {
       {days.length === 0 ? (
         <div className="text-center py-12 text-base-content/50">{TEXTS.meals.noDays}</div>
       ) : (
-        <div className="grid gap-2">
+        <div className="flex-1 overflow-auto grid gap-2 content-start">
           {days.map((day) => (
             <DayCard
               key={day.id}

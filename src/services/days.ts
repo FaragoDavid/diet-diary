@@ -52,7 +52,10 @@ export async function deleteDay(dayId: string) {
 }
 
 export async function refreshDays() {
-  if (import.meta.env.DEV) return;
+  if (import.meta.env.DEV) {
+    set([...MOCK_DAYS].sort((d1, d2) => d2.date.localeCompare(d1.date)));
+    return;
+  }
   const snap = await getDocs(query(collection(getDb(), 'days'), orderBy('date', 'desc')));
   set(snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as Day));
 }

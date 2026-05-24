@@ -87,7 +87,7 @@ export default function RecipesPage() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col flex-1 min-h-0 gap-4">
       <PageHeader
         title={TEXTS.nav.recipes}
         search={
@@ -113,11 +113,11 @@ export default function RecipesPage() {
           {recipes.length === 0 ? TEXTS.recipes.noRecipes : TEXTS.common.noMatches}
         </div>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="flex-1 overflow-auto">
           <table className="table table-zebra">
             <thead>
               <tr>
-                <th className="sticky left-0 z-10">{TEXTS.common.name}</th>
+                <th className="sticky left-0 z-[1] bg-base-200">{TEXTS.common.name}</th>
                 <th className="text-right whitespace-nowrap">{TEXTS.nutrients.cal}</th>
                 <th className="text-right whitespace-nowrap">{TEXTS.nutrients.ch}</th>
                 <th className="text-right whitespace-nowrap">{TEXTS.nutrients.fat}</th>
@@ -127,7 +127,7 @@ export default function RecipesPage() {
             <tbody>
               {filtered.map((recipe) => (
                 <tr key={recipe.id}>
-                  <td className="sticky left-0 z-10">
+                  <td className="sticky left-0 z-[1] bg-base-200">
                     <button onClick={() => setSelectedId(recipe.id)} className="link link-hover font-medium">
                       {recipe.name}
                     </button>

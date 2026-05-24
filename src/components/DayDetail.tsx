@@ -56,7 +56,7 @@ export default function DayDetail() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col flex-1 min-h-0 gap-4">
       <PageHeader>
         <div className="flex items-center gap-2">
           <Link to="/meals" className="btn btn-ghost btn-sm btn-square">
@@ -84,7 +84,7 @@ export default function DayDetail() {
       {day.meals.length === 0 ? (
         <p className="text-center py-8 text-base-content/50">{TEXTS.meals.noMeals}</p>
       ) : (
-        <div className="grid gap-2">
+        <div className="flex-1 overflow-auto grid gap-2 content-start">
           {day.meals.map((meal) => (
             <DayMeal
               key={meal.type}

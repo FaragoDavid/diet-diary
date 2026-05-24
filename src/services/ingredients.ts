@@ -50,7 +50,10 @@ export async function deleteIngredient(id: string) {
 }
 
 export async function refreshIngredients() {
-  if (import.meta.env.DEV) return;
+  if (import.meta.env.DEV) {
+    set(MOCK_INGREDIENTS);
+    return;
+  }
   const snap = await getDocs(query(collection(getDb(), 'ingredients'), orderBy('name')));
   set(snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as Ingredient));
 }

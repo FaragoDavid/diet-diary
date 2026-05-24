@@ -32,8 +32,8 @@ export default function Layout() {
   };
 
   return (
-    <div className="min-h-screen bg-base-200">
-      <nav className="navbar bg-base-100 shadow-sm px-4 sticky top-0 z-20">
+    <div className="h-screen flex flex-col bg-base-200">
+      <nav className="navbar bg-base-100 shadow-sm px-4">
         <div className="flex-1">
           <span className="text-xl font-bold">{TEXTS.app.title}</span>
         </div>
@@ -54,7 +54,7 @@ export default function Layout() {
           </button>
         </div>
       </nav>
-      <main className="max-w-7xl mx-auto px-4 py-6">
+      <main className="flex-1 min-h-0 max-w-7xl w-full mx-auto px-4 py-4 flex flex-col">
         <Outlet />
       </main>
     </div>

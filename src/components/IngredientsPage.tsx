@@ -87,7 +87,7 @@ export default function IngredientsPage() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col flex-1 min-h-0 gap-4">
       <PageHeader
         title={TEXTS.nav.ingredients}
         search={
@@ -113,11 +113,11 @@ export default function IngredientsPage() {
           {ingredients.length === 0 ? TEXTS.ingredients.noIngredients : TEXTS.common.noMatches}
         </div>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="flex-1 overflow-auto">
           <table className="table table-zebra">
             <thead>
               <tr>
-                <th className="sticky left-0 z-10">{TEXTS.common.name}</th>
+                <th className="sticky left-0 z-[1] bg-base-200">{TEXTS.common.name}</th>
                 <th className="text-right whitespace-nowrap">{TEXTS.nutrients.cal}</th>
                 <th className="text-right whitespace-nowrap">{TEXTS.nutrients.ch}</th>
                 <th className="text-right whitespace-nowrap">{TEXTS.nutrients.fat}</th>
@@ -182,7 +182,7 @@ function IngredientRow({
 }) {
   return (
     <tr>
-      <td className="font-medium sticky left-0 z-10">{ing.name}</td>
+      <td className="font-medium sticky left-0 z-[1] bg-base-200">{ing.name}</td>
       <td className="text-right tabular-nums whitespace-nowrap">{ing.caloriesPer100}</td>
       <td className="text-right tabular-nums whitespace-nowrap">{ing.carbsPer100}</td>
       <td className="text-right tabular-nums whitespace-nowrap">{ing.fatPer100}</td>
