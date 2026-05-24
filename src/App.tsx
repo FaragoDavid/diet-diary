@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { useAuth } from './services/auth';
 import Login from './components/Login';
 import Layout from './components/Layout';
@@ -31,7 +31,7 @@ export default function App() {
   }
 
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
+    <HashRouter>
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<MealsPage />} />
@@ -41,6 +41,6 @@ export default function App() {
           <Route path="recipes" element={<RecipesPage />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
