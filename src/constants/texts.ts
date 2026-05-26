@@ -99,6 +99,11 @@ export const TEXTS = {
     itemCount: 'tétel',
     daysCount: 'Napok',
   },
+  copyDay: {
+    title: 'Nap másolása',
+    copy: 'Másolás',
+    dateExists: 'Ez a nap már létezik',
+  },
   confirm: {
     deleteIngredient: 'Alapanyag törlése',
     deleteRecipe: 'Recept törlése',

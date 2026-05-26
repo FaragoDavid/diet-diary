@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Trash2, Calendar, ShoppingCart } from 'lucide-react';
+import { Trash2, Calendar, ShoppingCart, Copy } from 'lucide-react';
 import { round, getNutrientColor, formatDate } from '../../utils/format';
 import { DAY_TARGETS } from '../../constants/meal-targets';
 import { TEXTS } from '../../constants/texts';
@@ -9,11 +9,13 @@ export default function DayCard({
   day,
   onDelete,
   onShopping,
+  onCopy,
   deleting,
 }: {
   day: Day;
   onDelete: () => void;
   onShopping: () => void;
+  onCopy: () => void;
   deleting: boolean;
 }) {
   const totals = day.meals.reduce(
@@ -56,6 +58,15 @@ export default function DayCard({
             className="btn btn-ghost btn-sm"
           >
             <ShoppingCart className="w-4 h-4" />
+          </button>
+          <button
+            onClick={(event) => {
+              event.preventDefault();
+              onCopy();
+            }}
+            className="btn btn-ghost btn-sm"
+          >
+            <Copy className="w-4 h-4" />
           </button>
           <button
             onClick={(event) => {

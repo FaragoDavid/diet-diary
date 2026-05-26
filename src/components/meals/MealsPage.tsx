@@ -1,15 +1,17 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Copy, Check } from 'lucide-react';
-import { useDays, createDay, deleteDay } from '../../services/days';
+import { useDays, createDay, updateDay, deleteDay } from '../../services/days';
 import { useIngredients } from '../../services/ingredients';
 import { useRecipes } from '../../services/recipes';
 import { buildIngredientMap } from '../../utils/nutrition';
 import { round } from '../../utils/format';
 import { TEXTS } from '../../constants/texts';
 import ShoppingList, { aggregateIngredients } from './ShoppingList';
+import CopyDayDialog from './CopyDayDialog';
 import PageHeader from '../PageHeader';
 import DayCard from './DayCard';
+import type { Day } from '../../types/day';
 
 export default function MealsPage() {
   const { days } = useDays();
@@ -19,6 +21,7 @@ export default function MealsPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [shoppingStartDate, setShoppingStartDate] = useState<string | null>(null);
   const [shoppingDaysCount, setShoppingDaysCount] = useState(1);
+  const [copyingDay, setCopyingDay] = useState<Day | null>(null);
   const [copied, setCopied] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const navigate = useNavigate();
@@ -71,6 +74,17 @@ export default function MealsPage() {
     setShoppingStartDate(null);
   };
 
+  const existingDates = useMemo(() => new Set(days.map((day) => day.date)), [days]);
+
+  const handleConfirmCopy = async (targetDate: string) => {
+    if (!copyingDay) return;
+    const meals = copyingDay.meals;
+    setCopyingDay(null);
+    await createDay(targetDate);
+    await updateDay(targetDate, meals);
+    navigate(`/meals/${targetDate}`);
+  };
+
   const handleCopy = async () => {
     const items = aggregateIngredients(shoppingDay, ingredientsMap, recipesMap);
     const text = items.map((item) => `- [ ] ${item.name}: ${round(item.totalAmount * shoppingDaysCount)}g`).join('\n');
@@ -97,6 +111,7 @@ export default function MealsPage() {
               day={day}
               onDelete={() => handleDelete(day.id)}
               onShopping={() => handleOpenShopping(day.date)}
+              onCopy={() => setCopyingDay(day)}
               deleting={deletingId === day.id}
             />
           ))}
@@ -126,6 +141,13 @@ export default function MealsPage() {
           <button>close</button>
         </form>
       </dialog>
+
+      <CopyDayDialog
+        sourceDay={copyingDay}
+        existingDates={existingDates}
+        onConfirm={handleConfirmCopy}
+        onClose={() => setCopyingDay(null)}
+      />
     </div>
   );
 }
