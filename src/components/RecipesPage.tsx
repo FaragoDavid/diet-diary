@@ -117,7 +117,7 @@ export default function RecipesPage() {
           <table className="table table-zebra">
             <thead>
               <tr>
-                <th className="sticky left-0 top-0 z-[2] bg-base-200">{TEXTS.common.name}</th>
+                <th className="w-full sticky left-0 top-0 z-[2] bg-base-200">{TEXTS.common.name}</th>
                 <th className="text-right whitespace-nowrap sticky top-0 bg-base-200">{TEXTS.nutrients.cal}</th>
                 <th className="text-right whitespace-nowrap sticky top-0 bg-base-200">{TEXTS.nutrients.ch}</th>
                 <th className="text-right whitespace-nowrap sticky top-0 bg-base-200">{TEXTS.nutrients.fat}</th>
