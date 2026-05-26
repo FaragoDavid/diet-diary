@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import RecipeDialog from './RecipeDialog';
+import RecipeDialog from './recipes/RecipeDialog';
 import type { Ingredient } from '../types/ingredient';
 import type { Recipe } from '../types/recipe';
 

@@ -1,15 +1,16 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
-import { Search, Plus, Pencil, Trash2 } from 'lucide-react';
-import { useIngredients, createIngredient, updateIngredient, deleteIngredient } from '../services/ingredients';
-import { useRecipes } from '../services/recipes';
-import { useDays } from '../services/days';
-import { useDebounce } from '../hooks/useDebounce';
-import { TEXTS } from '../constants/texts';
-import { formatDate } from '../utils/format';
-import IngredientForm from './IngredientForm';
-import ConfirmDialog from './ConfirmDialog';
-import PageHeader from './PageHeader';
-import type { Ingredient, NewIngredient } from '../types/ingredient';
+import { useState, useMemo } from 'react';
+import { Search, Plus } from 'lucide-react';
+import { useIngredients, createIngredient, updateIngredient, deleteIngredient } from '../../services/ingredients';
+import { useRecipes } from '../../services/recipes';
+import { useDays } from '../../services/days';
+import { useDebounce } from '../../hooks/useDebounce';
+import { TEXTS } from '../../constants/texts';
+import { formatDate } from '../../utils/format';
+import IngredientDialog from './IngredientDialog';
+import ConfirmDialog from '../ConfirmDialog';
+import PageHeader from '../PageHeader';
+import IngredientRow from './IngredientRow';
+import type { Ingredient, NewIngredient } from '../../types/ingredient';
 
 export default function IngredientsPage() {
   const { ingredients } = useIngredients();
@@ -17,11 +18,9 @@ export default function IngredientsPage() {
   const { days } = useDays();
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedQuery = useDebounce(searchQuery, 200);
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [editingIngredient, setEditingIngredient] = useState<Ingredient | null>(null);
+  const [editing, setEditing] = useState<Ingredient | 'new' | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
-  const dialogRef = useRef<HTMLDialogElement>(null);
 
   const filtered = useMemo(() => {
     if (!debouncedQuery) return ingredients;
@@ -29,28 +28,14 @@ export default function IngredientsPage() {
     return ingredients.filter((i) => i.name.toLowerCase().includes(q));
   }, [ingredients, debouncedQuery]);
 
-  const dialogOpen = showAddForm || editingIngredient !== null;
+  const closeDialog = () => setEditing(null);
 
-  useEffect(() => {
-    if (dialogOpen) {
-      dialogRef.current?.showModal();
-    } else {
-      dialogRef.current?.close();
+  const handleSave = async (data: NewIngredient) => {
+    if (editing === 'new') {
+      await createIngredient(data);
+    } else if (editing) {
+      await updateIngredient(editing.id, data);
     }
-  }, [dialogOpen]);
-
-  const closeDialog = () => {
-    setShowAddForm(false);
-    setEditingIngredient(null);
-  };
-
-  const handleAdd = async (data: NewIngredient) => {
-    await createIngredient(data);
-    closeDialog();
-  };
-
-  const handleUpdate = async (id: string, data: NewIngredient) => {
-    await updateIngredient(id, data);
     closeDialog();
   };
 
@@ -103,7 +88,7 @@ export default function IngredientsPage() {
           </label>
         }
       >
-        <button onClick={() => setShowAddForm(true)} className="btn btn-primary btn-sm">
+        <button onClick={() => setEditing('new')} className="btn btn-primary btn-sm">
           <Plus className="w-4 h-4" />
         </button>
       </PageHeader>
@@ -129,7 +114,7 @@ export default function IngredientsPage() {
                 <IngredientRow
                   key={ing.id}
                   ingredient={ing}
-                  onEdit={() => setEditingIngredient(ing)}
+                  onEdit={() => setEditing(ing)}
                   onDelete={() => handleDelete(ing.id)}
                   deleting={deletingId === ing.id}
                 />
@@ -139,22 +124,7 @@ export default function IngredientsPage() {
         </div>
       )}
 
-      <dialog ref={dialogRef} className="modal" onClose={closeDialog}>
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">{editingIngredient ? TEXTS.common.update : TEXTS.ingredients.newIngredient}</h3>
-          {showAddForm && <IngredientForm onSave={handleAdd} onCancel={closeDialog} />}
-          {editingIngredient && (
-            <IngredientForm
-              initial={editingIngredient}
-              onSave={(data) => handleUpdate(editingIngredient.id, data)}
-              onCancel={closeDialog}
-            />
-          )}
-        </div>
-        <form method="dialog" className="modal-backdrop">
-          <button>close</button>
-        </form>
-      </dialog>
+      <IngredientDialog editing={editing} onSave={handleSave} onClose={closeDialog} />
 
       <ConfirmDialog
         open={confirmDeleteId !== null}
@@ -164,36 +134,5 @@ export default function IngredientsPage() {
         onClose={() => setConfirmDeleteId(null)}
       />
     </div>
-  );
-}
-
-function IngredientRow({
-  ingredient: ing,
-  onEdit,
-  onDelete,
-  deleting,
-}: {
-  ingredient: Ingredient;
-  onEdit: () => void;
-  onDelete: () => void;
-  deleting: boolean;
-}) {
-  return (
-    <tr>
-      <td className="font-medium sticky left-0 z-[1] bg-base-200">{ing.name}</td>
-      <td className="text-right tabular-nums whitespace-nowrap">{ing.caloriesPer100}</td>
-      <td className="text-right tabular-nums whitespace-nowrap">{ing.carbsPer100}</td>
-      <td className="text-right tabular-nums whitespace-nowrap">{ing.fatPer100}</td>
-      <td className="text-right whitespace-nowrap">
-        <div className="flex justify-end gap-1">
-          <button onClick={onEdit} className="btn btn-ghost btn-xs">
-            <Pencil className="w-3.5 h-3.5" />
-          </button>
-          <button onClick={onDelete} disabled={deleting} className="btn btn-ghost btn-xs text-error">
-            <Trash2 className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      </td>
-    </tr>
   );
 }

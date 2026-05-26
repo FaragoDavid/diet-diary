@@ -1,16 +1,14 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Trash2, Calendar, ShoppingCart, Copy, Check } from 'lucide-react';
-import { useDays, createDay, deleteDay } from '../services/days';
-import { useIngredients } from '../services/ingredients';
-import { useRecipes } from '../services/recipes';
-import { round, getNutrientColor, buildNutritionMap } from '../utils/nutrition';
-import { formatDate } from '../utils/format';
-import { DAY_TARGETS } from '../constants/meal-targets';
-import { TEXTS } from '../constants/texts';
+import { useNavigate } from 'react-router-dom';
+import { Plus, Copy, Check } from 'lucide-react';
+import { useDays, createDay, deleteDay } from '../../services/days';
+import { useIngredients } from '../../services/ingredients';
+import { useRecipes } from '../../services/recipes';
+import { round, buildNutritionMap } from '../../utils/nutrition';
+import { TEXTS } from '../../constants/texts';
 import ShoppingList, { aggregateIngredients } from './ShoppingList';
-import PageHeader from './PageHeader';
-import type { Day } from '../types/day';
+import PageHeader from '../PageHeader';
+import DayCard from './DayCard';
 
 export default function MealsPage() {
   const { days } = useDays();
@@ -128,63 +126,5 @@ export default function MealsPage() {
         </form>
       </dialog>
     </div>
-  );
-}
-
-function DayCard({ day, onDelete, onShopping, deleting }: { day: Day; onDelete: () => void; onShopping: () => void; deleting: boolean }) {
-  const totals = day.meals.reduce(
-    (acc, meal) => {
-      meal.dishes.forEach((d) => {
-        acc.calories += d.calories;
-        acc.carbs += d.carbs;
-        acc.fat += d.fat;
-      });
-      return acc;
-    },
-    { calories: 0, carbs: 0, fat: 0 },
-  );
-  return (
-    <Link to={`/meals/${day.id}`} className="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
-      <div className="card-body p-4 flex-row items-center justify-between">
-        <div>
-          <div className="card-title text-base gap-2">
-            <Calendar className="w-4 h-4" />
-            {formatDate(day.date)}
-          </div>
-          <div className="text-sm text-base-content/60 mt-1">
-            <span className={getNutrientColor(totals.calories, DAY_TARGETS.calories)}>
-              {round(totals.calories)} {TEXTS.nutrients.kcalUnit}
-            </span>
-            {' · '}
-            <span className={getNutrientColor(totals.carbs, DAY_TARGETS.carbs)}>
-              {round(totals.carbs)}g {TEXTS.nutrients.chUnit}
-            </span>
-            {' · '}
-            {round(totals.fat)}g {TEXTS.nutrients.fatUnit}
-          </div>
-        </div>
-        <div className="flex items-center gap-1">
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              onShopping();
-            }}
-            className="btn btn-ghost btn-sm"
-          >
-            <ShoppingCart className="w-4 h-4" />
-          </button>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              onDelete();
-            }}
-            disabled={deleting}
-            className="btn btn-ghost btn-sm text-error"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-    </Link>
   );
 }

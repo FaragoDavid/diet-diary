@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
-import { round } from '../utils/nutrition';
-import { TEXTS } from '../constants/texts';
-import type { Day } from '../types/day';
-import type { Ingredient } from '../types/ingredient';
-import type { Recipe } from '../types/recipe';
+import { round } from '../../utils/nutrition';
+import { TEXTS } from '../../constants/texts';
+import type { Day } from '../../types/day';
+import type { Ingredient } from '../../types/ingredient';
+import type { Recipe } from '../../types/recipe';
 
 interface AggregatedIngredient {
   ingredientId: string;

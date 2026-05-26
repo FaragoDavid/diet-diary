@@ -1,15 +1,15 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { Search, Plus, Trash2, Pencil } from 'lucide-react';
-import { useRecipes, createRecipe, deleteRecipe } from '../services/recipes';
-import { useIngredients } from '../services/ingredients';
-import { useDays } from '../services/days';
-import { useDebounce } from '../hooks/useDebounce';
+import { useRecipes, createRecipe, deleteRecipe } from '../../services/recipes';
+import { useIngredients } from '../../services/ingredients';
+import { useDays } from '../../services/days';
+import { useDebounce } from '../../hooks/useDebounce';
 import RecipeDialog from './RecipeDialog';
-import ConfirmDialog from './ConfirmDialog';
-import { round } from '../utils/nutrition';
-import { formatDate } from '../utils/format';
-import { TEXTS } from '../constants/texts';
-import PageHeader from './PageHeader';
+import ConfirmDialog from '../ConfirmDialog';
+import { round } from '../../utils/nutrition';
+import { formatDate } from '../../utils/format';
+import { TEXTS } from '../../constants/texts';
+import PageHeader from '../PageHeader';
 
 export default function RecipesPage() {
   const { recipes } = useRecipes();

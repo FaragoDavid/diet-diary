@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
-import type { Ingredient, NewIngredient } from '../types/ingredient';
-import { TEXTS } from '../constants/texts';
+import type { Ingredient, NewIngredient } from '../../types/ingredient';
+import { TEXTS } from '../../constants/texts';
 
 const emptyIngredient: NewIngredient = {
   name: '',

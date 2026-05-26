@@ -1,18 +1,19 @@
 import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Plus } from 'lucide-react';
-import { useDays, updateDay } from '../services/days';
-import { useIngredients } from '../services/ingredients';
-import { useRecipes } from '../services/recipes';
-import { round, getNutrientColor, buildNutritionMap } from '../utils/nutrition';
-import { formatDate, formatDateShort } from '../utils/format';
-import { MEAL_TYPES, MEAL_TYPE_LABELS } from '../types/day';
-import { TEXTS } from '../constants/texts';
-import { DAY_TARGETS } from '../constants/meal-targets';
+import { ArrowLeft } from 'lucide-react';
+import { useDays, updateDay } from '../../services/days';
+import { useIngredients } from '../../services/ingredients';
+import { useRecipes } from '../../services/recipes';
+import { round, getNutrientColor, buildNutritionMap } from '../../utils/nutrition';
+import { formatDate, formatDateShort } from '../../utils/format';
+import { MEAL_TYPES } from '../../types/day';
+import { TEXTS } from '../../constants/texts';
+import { DAY_TARGETS } from '../../constants/meal-targets';
 import DayMeal from './DayMeal';
-import VariantDialog from './VariantDialog';
-import PageHeader from './PageHeader';
-import type { Meal, MealType } from '../types/day';
+import VariantDialog from '../VariantDialog';
+import PageHeader from '../PageHeader';
+import AddMealButton from './AddMealButton';
+import type { Meal } from '../../types/day';
 
 export default function DayDetail() {
   const { dayId } = useParams<{ dayId: string }>();
@@ -102,47 +103,6 @@ export default function DayDetail() {
       )}
 
       <VariantDialog variantId={editingVariantId} recipes={recipes} ingredients={ingredients} onClose={() => setEditingVariantId(null)} />
-    </div>
-  );
-}
-
-function AddMealButton({
-  availableTypes,
-  meals,
-  onSave,
-}: {
-  availableTypes: MealType[];
-  meals: Meal[];
-  onSave: (meals: Meal[]) => Promise<void>;
-}) {
-  const [adding, setAdding] = useState(false);
-
-  if (availableTypes.length === 0) return null;
-
-  const handleAdd = async (type: MealType) => {
-    setAdding(true);
-    try {
-      const sorted = [...meals, { type, dishes: [] }].sort((a, b) => MEAL_TYPES.indexOf(a.type) - MEAL_TYPES.indexOf(b.type));
-      await onSave(sorted);
-    } finally {
-      setAdding(false);
-    }
-  };
-
-  return (
-    <div className="dropdown dropdown-end">
-      <div tabIndex={0} role="button" className="btn btn-primary btn-sm">
-        <Plus className="w-4 h-4" />
-      </div>
-      <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow">
-        {availableTypes.map((type) => (
-          <li key={type}>
-            <button onClick={() => handleAdd(type)} disabled={adding}>
-              {MEAL_TYPE_LABELS[type]}
-            </button>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }

@@ -2,10 +2,10 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import { useAuth } from './services/auth';
 import Login from './components/Login';
 import Layout from './components/Layout';
-import IngredientsPage from './components/IngredientsPage';
-import RecipesPage from './components/RecipesPage';
-import MealsPage from './components/MealsPage';
-import DayDetail from './components/DayDetail';
+import IngredientsPage from './components/ingredients/IngredientsPage';
+import RecipesPage from './components/recipes/RecipesPage';
+import MealsPage from './components/meals/MealsPage';
+import DayDetail from './components/meals/DayDetail';
 import { TEXTS } from './constants/texts';
 
 function LoadingScreen() {
