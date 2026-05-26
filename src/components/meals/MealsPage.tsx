@@ -119,7 +119,7 @@ export default function MealsPage() {
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
             </button>
           </div>
-          <ShoppingList days={shoppingDay} ingredientsMap={ingredientsMap} recipesMap={recipesMap} multiplier={shoppingDaysCount} />
+          <ShoppingList days={shoppingDay} multiplier={shoppingDaysCount} />
         </div>
         <form method="dialog" className="modal-backdrop">
           <button>close</button>

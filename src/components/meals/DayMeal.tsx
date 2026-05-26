@@ -8,25 +8,15 @@ import DishSelector from '../DishSelector';
 import DishRow from './DishRow';
 import type { DishSelection } from '../DishSelector';
 import type { Meal, Dish } from '../../types/day';
-import type { Ingredient } from '../../types/ingredient';
-import type { Recipe } from '../../types/recipe';
 
 export default function DayMeal({
   meal,
   allMeals,
-  ingredients,
-  ingredientsMap,
-  recipes,
-  recipesMap,
   onSave,
   onEditVariant,
 }: {
   meal: Meal;
   allMeals: Meal[];
-  ingredients: Ingredient[];
-  ingredientsMap: Map<string, Ingredient>;
-  recipes: Recipe[];
-  recipesMap: Map<string, Recipe>;
   onSave: (meals: Meal[]) => Promise<void>;
   onEditVariant: (variantId: string) => void;
 }) {
@@ -99,7 +89,7 @@ export default function DayMeal({
 
         <div className="flex gap-2 items-center">
           <div className="flex-1">
-            <DishSelector ingredients={ingredients} recipes={recipes} onSelect={handleAddDish} />
+            <DishSelector onSelect={handleAddDish} />
           </div>
           {addingSaving && <span className="loading loading-spinner loading-sm"></span>}
         </div>
@@ -123,8 +113,6 @@ export default function DayMeal({
                     key={dish.id}
                     dish={dish}
                     allDishes={meal.dishes}
-                    ingredientsMap={ingredientsMap}
-                    recipesMap={recipesMap}
                     onSave={updateDishes}
                     onEditVariant={onEditVariant}
                     autoFocus={focusDishId === dish.id}

@@ -1,7 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { Search, Plus, Trash2, Pencil } from 'lucide-react';
 import { useRecipes, createRecipe, deleteRecipe } from '../../services/recipes';
-import { useIngredients } from '../../services/ingredients';
 import { useDays } from '../../services/days';
 import { useDebounce } from '../../hooks/useDebounce';
 import RecipeDialog from './RecipeDialog';
@@ -13,7 +12,6 @@ import PageHeader from '../PageHeader';
 
 export default function RecipesPage() {
   const { recipes } = useRecipes();
-  const { ingredients } = useIngredients();
   const { days } = useDays();
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedQuery = useDebounce(searchQuery, 200);
@@ -154,15 +152,7 @@ export default function RecipesPage() {
 
       <dialog ref={dialogRef} className="modal" onClose={handleCloseDialog}>
         <div className="modal-box">
-          {selectedRecipe && (
-            <RecipeDialog
-              recipe={selectedRecipe}
-              ingredients={ingredients}
-              recipes={recipes}
-              onClose={handleCloseDialog}
-              initialEditHeader={isNew}
-            />
-          )}
+          {selectedRecipe && <RecipeDialog recipe={selectedRecipe} onClose={handleCloseDialog} initialEditHeader={isNew} />}
         </div>
         <form method="dialog" className="modal-backdrop">
           <button>close</button>

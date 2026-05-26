@@ -1,29 +1,29 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { Trash2, GitBranch } from 'lucide-react';
+import { useIngredients } from '../../services/ingredients';
+import { useRecipes } from '../../services/recipes';
 import { createVariant } from '../../services/recipes';
-import { calculateIngredientNutrition, calculateRecipeNutrition, round } from '../../utils/nutrition';
+import { calculateIngredientNutrition, calculateRecipeNutrition, round, buildNutritionMap } from '../../utils/nutrition';
 import { TEXTS } from '../../constants/texts';
 import type { Dish } from '../../types/day';
-import type { Ingredient } from '../../types/ingredient';
-import type { Recipe } from '../../types/recipe';
 
 export default function DishRow({
   dish,
   allDishes,
-  ingredientsMap,
-  recipesMap,
   onSave,
   onEditVariant,
   autoFocus,
 }: {
   dish: Dish;
   allDishes: Dish[];
-  ingredientsMap: Map<string, Ingredient>;
-  recipesMap: Map<string, Recipe>;
   onSave: (dishes: Dish[]) => Promise<void>;
   onEditVariant: (variantId: string) => void;
   autoFocus?: boolean;
 }) {
+  const { ingredients } = useIngredients();
+  const { recipes } = useRecipes();
+  const ingredientsMap = useMemo(() => buildNutritionMap(ingredients, recipes), [ingredients, recipes]);
+  const recipesMap = useMemo(() => new Map(recipes.map((recipe) => [recipe.id, recipe])), [recipes]);
   const [editAmount, setEditAmount] = useState(dish.amount ? dish.amount.toString() : '');
   const [saving, setSaving] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);

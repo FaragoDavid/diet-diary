@@ -1,9 +1,9 @@
 import { useState, useRef, useMemo } from 'react';
 import { useDebounce } from '../hooks/useDebounce';
+import { useIngredients } from '../services/ingredients';
+import { useRecipes } from '../services/recipes';
 import { round } from '../utils/nutrition';
 import { TEXTS } from '../constants/texts';
-import type { Ingredient } from '../types/ingredient';
-import type { Recipe } from '../types/recipe';
 
 export interface DishSelection {
   type: 'ingredient' | 'recipe';
@@ -12,20 +12,14 @@ export interface DishSelection {
 }
 
 interface DishSelectorProps {
-  ingredients: Ingredient[];
-  recipes: Recipe[];
   onSelect: (selection: DishSelection) => void;
   placeholder?: string;
   maxResults?: number;
 }
 
-export default function DishSelector({
-  ingredients,
-  recipes,
-  onSelect,
-  placeholder = TEXTS.meals.addDish,
-  maxResults = 15,
-}: DishSelectorProps) {
+export default function DishSelector({ onSelect, placeholder = TEXTS.meals.addDish, maxResults = 15 }: DishSelectorProps) {
+  const { ingredients } = useIngredients();
+  const { recipes } = useRecipes();
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const debouncedQuery = useDebounce(query, 150);

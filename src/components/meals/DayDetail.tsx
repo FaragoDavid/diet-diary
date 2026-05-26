@@ -1,10 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useDays, updateDay } from '../../services/days';
-import { useIngredients } from '../../services/ingredients';
-import { useRecipes } from '../../services/recipes';
-import { round, getNutrientColor, buildNutritionMap } from '../../utils/nutrition';
+import { round, getNutrientColor } from '../../utils/nutrition';
 import { formatDate, formatDateShort } from '../../utils/format';
 import { MEAL_TYPES } from '../../types/day';
 import { TEXTS } from '../../constants/texts';
@@ -18,12 +16,8 @@ import type { Meal } from '../../types/day';
 export default function DayDetail() {
   const { dayId } = useParams<{ dayId: string }>();
   const { days } = useDays();
-  const { ingredients } = useIngredients();
-  const { recipes } = useRecipes();
 
   const day = days.find((d) => d.id === dayId);
-  const ingredientsMap = useMemo(() => buildNutritionMap(ingredients, recipes), [ingredients, recipes]);
-  const recipesMap = useMemo(() => new Map(recipes.map((r) => [r.id, r])), [recipes]);
   const [editingVariantId, setEditingVariantId] = useState<string | null>(null);
 
   if (!day) {
@@ -87,22 +81,12 @@ export default function DayDetail() {
       ) : (
         <div className="flex-1 overflow-auto grid gap-2 content-start">
           {day.meals.map((meal) => (
-            <DayMeal
-              key={meal.type}
-              meal={meal}
-              allMeals={day.meals}
-              ingredients={ingredients}
-              ingredientsMap={ingredientsMap}
-              recipes={recipes}
-              recipesMap={recipesMap}
-              onSave={saveMeals}
-              onEditVariant={setEditingVariantId}
-            />
+            <DayMeal key={meal.type} meal={meal} allMeals={day.meals} onSave={saveMeals} onEditVariant={setEditingVariantId} />
           ))}
         </div>
       )}
 
-      <VariantDialog variantId={editingVariantId} recipes={recipes} ingredients={ingredients} onClose={() => setEditingVariantId(null)} />
+      <VariantDialog variantId={editingVariantId} onClose={() => setEditingVariantId(null)} />
     </div>
   );
 }
