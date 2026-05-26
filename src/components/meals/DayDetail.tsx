@@ -52,15 +52,15 @@ export default function DayDetail() {
   return (
     <div className="flex flex-col flex-1 min-h-0 gap-4">
       <PageHeader>
-        <div className="flex items-center gap-2">
-          <Link to="/meals" className="btn btn-ghost btn-sm btn-square">
+        <div className="flex items-center gap-2 min-w-0">
+          <Link to="/meals" className="btn btn-ghost btn-sm btn-square shrink-0">
             <ArrowLeft className="w-4 h-4" />
           </Link>
-          <h2 className="text-xl font-bold">
+          <h2 className="font-bold truncate text-[clamp(1rem,3vw,1.25rem)]">
             <span className="sm:hidden">{formatDateShort(day.date)}</span>
             <span className="hidden sm:inline">{formatDate(day.date)}</span>
           </h2>
-          <span className="text text-base-content/60">
+          <span className="text-base-content/60 whitespace-nowrap text-[clamp(0.7rem,2.5vw,1rem)]">
             <span className={getNutrientColor(dayTotals.calories, DAY_TARGETS.calories)}>
               {round(dayTotals.calories)} {TEXTS.nutrients.kcalUnit}
             </span>
