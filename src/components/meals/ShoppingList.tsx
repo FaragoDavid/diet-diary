@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useIngredients } from '../../services/ingredients';
 import { useRecipes } from '../../services/recipes';
-import { round, buildNutritionMap } from '../../utils/nutrition';
+import { buildIngredientMap } from '../../utils/nutrition';
+import { round } from '../../utils/format';
 import { TEXTS } from '../../constants/texts';
 import type { Day } from '../../types/day';
 import type { Ingredient } from '../../types/ingredient';
@@ -16,7 +17,7 @@ interface AggregatedIngredient {
 export default function ShoppingList({ days, multiplier = 1 }: { days: Day[]; multiplier?: number }) {
   const { ingredients } = useIngredients();
   const { recipes } = useRecipes();
-  const ingredientsMap = useMemo(() => buildNutritionMap(ingredients, recipes), [ingredients, recipes]);
+  const ingredientsMap = useMemo(() => buildIngredientMap(ingredients, recipes), [ingredients, recipes]);
   const recipesMap = useMemo(() => new Map(recipes.map((recipe) => [recipe.id, recipe])), [recipes]);
   const items = useMemo(() => aggregateIngredients(days, ingredientsMap, recipesMap), [days, ingredientsMap, recipesMap]);
 

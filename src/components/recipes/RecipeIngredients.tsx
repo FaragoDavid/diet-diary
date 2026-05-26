@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Trash2 } from 'lucide-react';
-import { calculateIngredientNutrition, round } from '../../utils/nutrition';
+import { calculateIngredientNutrition } from '../../utils/nutrition';
+import { round } from '../../utils/format';
 import { TEXTS } from '../../constants/texts';
 import type { RecipeIngredient } from '../../types/recipe';
 import type { Ingredient } from '../../types/ingredient';

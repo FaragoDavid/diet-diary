@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Trash2, Calendar, ShoppingCart } from 'lucide-react';
-import { round, getNutrientColor } from '../../utils/nutrition';
-import { formatDate } from '../../utils/format';
+import { round, getNutrientColor, formatDate } from '../../utils/format';
 import { DAY_TARGETS } from '../../constants/meal-targets';
 import { TEXTS } from '../../constants/texts';
 import type { Day } from '../../types/day';

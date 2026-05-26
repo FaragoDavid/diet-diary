@@ -1,4 +1,3 @@
-import { TEXTS } from '../constants/texts';
 import type { Ingredient } from '../types/ingredient';
 import type { Recipe, RecipeIngredient } from '../types/recipe';
 
@@ -18,31 +17,14 @@ export function calculateIngredientNutrition(ingredient: Ingredient, amount: num
 
 export function calculateRecipeNutrition(recipeIngredients: RecipeIngredient[], ingredientsMap: Map<string, Ingredient>): NutritionValues {
   return recipeIngredients.reduce(
-    (totals, ri) => {
-      const ingredient = ingredientsMap.get(ri.ingredientId);
-      if (!ingredient) return totals;
-      const n = calculateIngredientNutrition(ingredient, ri.amount);
-      return { calories: totals.calories + n.calories, carbs: totals.carbs + n.carbs, fat: totals.fat + n.fat };
+    (recipeNutrition, { ingredientId, amount }) => {
+      const ingredient = ingredientsMap.get(ingredientId);
+      if (!ingredient) return recipeNutrition;
+      const { calories, carbs, fat } = calculateIngredientNutrition(ingredient, amount);
+      return { calories: recipeNutrition.calories + calories, carbs: recipeNutrition.carbs + carbs, fat: recipeNutrition.fat + fat };
     },
     { calories: 0, carbs: 0, fat: 0 },
   );
-}
-
-export function round(value: number, decimals = 1): number {
-  const factor = 10 ** decimals;
-  return Math.round(value * factor) / factor;
-}
-
-export function formatNutrition(values: { calories: number; carbs: number; fat: number }): string {
-  return `${round(values.calories)} ${TEXTS.nutrients.kcalUnit} · ${round(values.carbs)}g ${TEXTS.nutrients.chUnit} · ${round(values.fat)}g ${TEXTS.nutrients.fatUnit}`;
-}
-
-export function getNutrientColor(actual: number, target: number | undefined): string {
-  if (!target) return '';
-  const deviation = Math.abs(actual - target) / target;
-  if (deviation > 0.2) return 'text-error';
-  if (deviation > 0.1) return 'text-warning';
-  return '';
 }
 
 export function recipeToIngredient(recipe: Recipe): Ingredient {
@@ -58,10 +40,10 @@ export function recipeToIngredient(recipe: Recipe): Ingredient {
   };
 }
 
-export function buildNutritionMap(ingredients: Ingredient[], recipes: Recipe[]): Map<string, Ingredient> {
-  const map = new Map(ingredients.map((i) => [i.id, i]));
-  for (const r of recipes) {
-    if (!map.has(r.id)) map.set(r.id, recipeToIngredient(r));
+export function buildIngredientMap(ingredients: Ingredient[], recipes: Recipe[]): Map<string, Ingredient> {
+  const map = new Map(ingredients.map((ingredient) => [ingredient.id, ingredient]));
+  for (const recipe of recipes) {
+    if (!map.has(recipe.id)) map.set(recipe.id, recipeToIngredient(recipe));
   }
   return map;
 }

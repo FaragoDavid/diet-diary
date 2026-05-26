@@ -2,7 +2,7 @@ import { useState, useRef, useMemo } from 'react';
 import { useDebounce } from '../hooks/useDebounce';
 import { useIngredients } from '../services/ingredients';
 import { useRecipes } from '../services/recipes';
-import { round } from '../utils/nutrition';
+import { round } from '../utils/format';
 import { TEXTS } from '../constants/texts';
 
 export interface DishSelection {

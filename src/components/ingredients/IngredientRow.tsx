@@ -1,5 +1,5 @@
 import { Pencil, Trash2 } from 'lucide-react';
-import { round } from '../../utils/nutrition';
+import { round } from '../../utils/format';
 import type { Ingredient } from '../../types/ingredient';
 
 export default function IngredientRow({

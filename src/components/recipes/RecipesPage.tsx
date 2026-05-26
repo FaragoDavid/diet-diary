@@ -5,7 +5,7 @@ import { useDays } from '../../services/days';
 import { useDebounce } from '../../hooks/useDebounce';
 import RecipeDialog from './RecipeDialog';
 import ConfirmDialog from '../ConfirmDialog';
-import { round } from '../../utils/nutrition';
+import { round } from '../../utils/format';
 import { formatDate } from '../../utils/format';
 import { TEXTS } from '../../constants/texts';
 import PageHeader from '../PageHeader';

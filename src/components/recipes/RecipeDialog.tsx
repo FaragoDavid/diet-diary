@@ -1,7 +1,8 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useIngredients } from '../../services/ingredients';
 import { useRecipes, updateRecipe } from '../../services/recipes';
-import { calculateRecipeNutrition, round, formatNutrition, buildNutritionMap, recipeToIngredient } from '../../utils/nutrition';
+import { calculateRecipeNutrition, buildIngredientMap, recipeToIngredient } from '../../utils/nutrition';
+import { round, formatNutrition } from '../../utils/format';
 import { TEXTS } from '../../constants/texts';
 import RecipeHeaderForm from './RecipeHeaderForm';
 import IngredientSelector from '../ingredients/IngredientSelector';
@@ -22,7 +23,7 @@ export default function RecipeDialog({
 }) {
   const { ingredients } = useIngredients();
   const { recipes } = useRecipes();
-  const nutritionMap = useMemo(() => buildNutritionMap(ingredients, recipes), [ingredients, recipes]);
+  const nutritionMap = useMemo(() => buildIngredientMap(ingredients, recipes), [ingredients, recipes]);
   const [focusIngredientId, setFocusIngredientId] = useState<string | null>(null);
 
   const saveIngredients = useCallback(

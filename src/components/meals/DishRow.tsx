@@ -3,7 +3,8 @@ import { Trash2, GitBranch } from 'lucide-react';
 import { useIngredients } from '../../services/ingredients';
 import { useRecipes } from '../../services/recipes';
 import { createVariant } from '../../services/recipes';
-import { calculateIngredientNutrition, calculateRecipeNutrition, round, buildNutritionMap } from '../../utils/nutrition';
+import { calculateIngredientNutrition, calculateRecipeNutrition, buildIngredientMap } from '../../utils/nutrition';
+import { round } from '../../utils/format';
 import { TEXTS } from '../../constants/texts';
 import type { Dish } from '../../types/day';
 
@@ -22,7 +23,7 @@ export default function DishRow({
 }) {
   const { ingredients } = useIngredients();
   const { recipes } = useRecipes();
-  const ingredientsMap = useMemo(() => buildNutritionMap(ingredients, recipes), [ingredients, recipes]);
+  const ingredientsMap = useMemo(() => buildIngredientMap(ingredients, recipes), [ingredients, recipes]);
   const recipesMap = useMemo(() => new Map(recipes.map((recipe) => [recipe.id, recipe])), [recipes]);
   const [editAmount, setEditAmount] = useState(dish.amount ? dish.amount.toString() : '');
   const [saving, setSaving] = useState(false);

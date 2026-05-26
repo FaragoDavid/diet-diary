@@ -1,6 +1,6 @@
 import { useState, useRef, useMemo } from 'react';
 import { useDebounce } from '../../hooks/useDebounce';
-import { round } from '../../utils/nutrition';
+import { round } from '../../utils/format';
 import { TEXTS } from '../../constants/texts';
 import type { Ingredient } from '../../types/ingredient';
 

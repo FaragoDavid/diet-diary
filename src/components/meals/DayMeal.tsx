@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Trash2 } from 'lucide-react';
-import { round, getNutrientColor } from '../../utils/nutrition';
+import { round, getNutrientColor } from '../../utils/format';
 import { MEAL_TYPE_LABELS } from '../../types/day';
 import { TEXTS } from '../../constants/texts';
 import { MEAL_TARGETS } from '../../constants/meal-targets';
