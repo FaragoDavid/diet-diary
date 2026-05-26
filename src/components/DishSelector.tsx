@@ -1,5 +1,6 @@
 import { useState, useRef, useMemo } from 'react';
 import { useDebounce } from '../hooks/useDebounce';
+import { round } from '../utils/nutrition';
 import { TEXTS } from '../constants/texts';
 import type { Ingredient } from '../types/ingredient';
 import type { Recipe } from '../types/recipe';
@@ -43,7 +44,7 @@ export default function DishSelector({
         let subtitle: string | null = null;
         if (r.baseRecipeId) {
           const base = recipesMap.get(r.baseRecipeId);
-          subtitle = r.amount ? `${r.amount}g` : base ? `${TEXTS.recipes.variant}` : null;
+          subtitle = r.amount ? `${round(r.amount)}g` : base ? `${TEXTS.recipes.variant}` : null;
         }
         return { type: 'recipe' as const, id: r.id, name: r.name, subtitle };
       });

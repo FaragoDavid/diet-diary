@@ -53,7 +53,7 @@ export default function RecipeDialog({
     await saveIngredients([...recipe.ingredients, { ingredientId: ingredient.id, name: ingredient.name, amount: 0 }]);
   };
 
-  const subtitle = `${recipe.amount ? `${recipe.amount}g` : '—'} · ${recipe.servings} ${TEXTS.recipes.servings.toLowerCase()} · ${formatNutrition(nutrition)}`;
+  const subtitle = `${recipe.amount ? `${round(recipe.amount)}g` : '—'} · ${recipe.servings} ${TEXTS.recipes.servings.toLowerCase()} · ${formatNutrition(nutrition)}`;
 
   return (
     <div className="space-y-4">

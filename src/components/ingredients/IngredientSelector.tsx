@@ -1,5 +1,6 @@
 import { useState, useRef, useMemo } from 'react';
 import { useDebounce } from '../../hooks/useDebounce';
+import { round } from '../../utils/nutrition';
 import { TEXTS } from '../../constants/texts';
 import type { Ingredient } from '../../types/ingredient';
 
@@ -70,8 +71,8 @@ export default function IngredientSelector({
               >
                 <span>{ing.name}</span>
                 <span className="text-xs text-base-content/50 ml-2 shrink-0">
-                  {ing.caloriesPer100} {TEXTS.nutrients.kcalUnit} · {ing.carbsPer100} {TEXTS.nutrients.chUnit} · {ing.fatPer100}{' '}
-                  {TEXTS.nutrients.fatUnit}
+                  {round(ing.caloriesPer100)} {TEXTS.nutrients.kcalUnit} · {round(ing.carbsPer100)} {TEXTS.nutrients.chUnit} ·{' '}
+                  {round(ing.fatPer100)} {TEXTS.nutrients.fatUnit}
                 </span>
               </button>
             ))}
