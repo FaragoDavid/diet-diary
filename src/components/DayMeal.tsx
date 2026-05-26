@@ -110,7 +110,7 @@ export default function DayMeal({
               <thead>
                 <tr>
                   <th>{TEXTS.meals.dish}</th>
-                  <th className="text-right">{TEXTS.meals.amount}</th>
+                  <th className="text-right">{TEXTS.meals.g}</th>
                   <th className="text-right">{TEXTS.nutrients.cal}</th>
                   <th className="text-right">{TEXTS.nutrients.ch}</th>
                   <th className="text-right">{TEXTS.nutrients.fat}</th>
