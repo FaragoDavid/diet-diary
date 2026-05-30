@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { collection, doc, addDoc, updateDoc, deleteDoc, query, orderBy, getDocs } from 'firebase/firestore';
+import { collection, doc, setDoc, deleteDoc, query, orderBy, getDocs } from 'firebase/firestore';
 import { getDb } from './firebase';
-import { debouncedWrite, cancelWrite } from './debounced-write';
+
 import { MOCK_RECIPES } from '../constants/mock-data';
 import type { Recipe, RecipeUpdate } from '../types/recipe';
 
@@ -17,9 +17,18 @@ function read(): Recipe[] {
   return JSON.parse(localStorage.getItem(KEY) || '[]');
 }
 
-function set(items: Recipe[]) {
+function saveRecipesToLocalStorage(items: Recipe[]) {
   localStorage.setItem(KEY, JSON.stringify(items));
   notify?.(items);
+}
+
+let isDirty = false;
+
+export async function syncRecipes(): Promise<void> {
+  if (!isDirty) return;
+  isDirty = false;
+  const recipes = read();
+  await Promise.all(recipes.map((recipe) => setDoc(doc(getDb(), 'recipes', recipe.id), recipe)));
 }
 
 export function useRecipes() {
@@ -33,7 +42,7 @@ export function useRecipes() {
   return { recipes };
 }
 
-export async function createRecipe(name: string): Promise<string> {
+export function createRecipe(name: string): string {
   const newRecipe: Recipe = {
     id: '',
     name,
@@ -45,25 +54,25 @@ export async function createRecipe(name: string): Promise<string> {
     baseRecipeId: null,
     ingredients: [],
   };
-  const id = import.meta.env.DEV ? `rec-${Date.now()}` : (await addDoc(collection(getDb(), 'recipes'), newRecipe)).id;
-  set([...read(), { ...newRecipe, id }].sort((r1, r2) => r1.name.localeCompare(r2.name)));
+  const id = import.meta.env.DEV ? `rec-${Date.now()}` : doc(collection(getDb(), 'recipes')).id;
+  saveRecipesToLocalStorage([...read(), { ...newRecipe, id }].sort((r1, r2) => r1.name.localeCompare(r2.name)));
+  if (!import.meta.env.DEV) isDirty = true;
   return id;
 }
 
-export async function updateRecipe(id: string, data: RecipeUpdate) {
-  set(read().map((rec) => (rec.id === id ? { ...rec, ...data } : rec)));
+export function updateRecipe(id: string, data: RecipeUpdate) {
+  saveRecipesToLocalStorage(read().map((rec) => (rec.id === id ? { ...rec, ...data } : rec)));
   if (import.meta.env.DEV) return;
-  debouncedWrite(`recipes/${id}`, () => updateDoc(doc(getDb(), 'recipes', id), data));
+  isDirty = true;
 }
 
 export async function deleteRecipe(id: string) {
-  cancelWrite(`recipes/${id}`);
-  set(read().filter((rec) => rec.id !== id));
+  saveRecipesToLocalStorage(read().filter((rec) => rec.id !== id));
   if (import.meta.env.DEV) return;
   await deleteDoc(doc(getDb(), 'recipes', id));
 }
 
-export async function createVariant(baseRecipe: Recipe): Promise<string> {
+export function createVariant(baseRecipe: Recipe): string {
   const variant: Recipe = {
     id: '',
     name: baseRecipe.name,
@@ -75,16 +84,17 @@ export async function createVariant(baseRecipe: Recipe): Promise<string> {
     baseRecipeId: baseRecipe.baseRecipeId ?? baseRecipe.id,
     ingredients: [...baseRecipe.ingredients],
   };
-  const id = import.meta.env.DEV ? `rec-${Date.now()}` : (await addDoc(collection(getDb(), 'recipes'), variant)).id;
-  set([...read(), { ...variant, id }].sort((r1, r2) => r1.name.localeCompare(r2.name)));
+  const id = import.meta.env.DEV ? `rec-${Date.now()}` : doc(collection(getDb(), 'recipes')).id;
+  saveRecipesToLocalStorage([...read(), { ...variant, id }].sort((r1, r2) => r1.name.localeCompare(r2.name)));
+  if (!import.meta.env.DEV) isDirty = true;
   return id;
 }
 
 export async function refreshRecipes() {
   if (import.meta.env.DEV) {
-    set(MOCK_RECIPES);
+    saveRecipesToLocalStorage(MOCK_RECIPES);
     return;
   }
-  const snap = await getDocs(query(collection(getDb(), 'recipes'), orderBy('name')));
-  set(snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as Recipe));
+  const recipesInFirestore = (await getDocs(query(collection(getDb(), 'recipes'), orderBy('name')))).docs;
+  saveRecipesToLocalStorage(recipesInFirestore.map((recipeDoc) => ({ id: recipeDoc.id, ...recipeDoc.data() }) as Recipe));
 }

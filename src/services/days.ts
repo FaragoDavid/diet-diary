@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { collection, doc, setDoc, deleteDoc, query, orderBy, getDocs } from 'firebase/firestore';
 import { getDb } from './firebase';
-import { debouncedWrite, cancelWrite } from './debounced-write';
+
 import { MOCK_DAYS } from '../constants/mock-data';
 import type { Day, Meal } from '../types/day';
 
@@ -17,9 +17,18 @@ function read(): Day[] {
   return JSON.parse(localStorage.getItem(KEY) || '[]');
 }
 
-function set(items: Day[]) {
+function saveDaysToLocalStorage(items: Day[]) {
   localStorage.setItem(KEY, JSON.stringify(items));
   notify?.(items);
+}
+
+let isDirty = false;
+
+export async function syncDays(): Promise<void> {
+  if (!isDirty) return;
+  isDirty = false;
+  const days = read();
+  await Promise.all(days.map((day) => setDoc(doc(getDb(), 'days', day.id), { date: day.date, meals: day.meals }, { merge: false })));
 }
 
 export function useDays() {
@@ -34,27 +43,26 @@ export function useDays() {
 }
 
 export function createDay(date: string) {
-  set([{ id: date, date, meals: [] }, ...read()]);
+  saveDaysToLocalStorage([{ id: date, date, meals: [] }, ...read()]);
 }
 
 export function updateDay(dayId: string, meals: Meal[]) {
-  set(read().map((day) => (day.id === dayId ? { ...day, meals } : day)));
+  saveDaysToLocalStorage(read().map((day) => (day.id === dayId ? { ...day, meals } : day)));
   if (import.meta.env.DEV) return;
-  debouncedWrite(`days/${dayId}`, () => setDoc(doc(getDb(), 'days', dayId), { date: dayId, meals }, { merge: false }));
+  isDirty = true;
 }
 
 export async function deleteDay(dayId: string) {
-  cancelWrite(`days/${dayId}`);
-  set(read().filter((day) => day.id !== dayId));
+  saveDaysToLocalStorage(read().filter((day) => day.id !== dayId));
   if (import.meta.env.DEV) return;
   await deleteDoc(doc(getDb(), 'days', dayId));
 }
 
 export async function refreshDays() {
   if (import.meta.env.DEV) {
-    set([...MOCK_DAYS].sort((d1, d2) => d2.date.localeCompare(d1.date)));
+    saveDaysToLocalStorage([...MOCK_DAYS].sort((d1, d2) => d2.date.localeCompare(d1.date)));
     return;
   }
-  const snap = await getDocs(query(collection(getDb(), 'days'), orderBy('date', 'desc')));
-  set(snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as Day));
+  const daysInFirestore = (await getDocs(query(collection(getDb(), 'days'), orderBy('date', 'desc')))).docs;
+  saveDaysToLocalStorage(daysInFirestore.map((dayDoc) => ({ id: dayDoc.id, ...dayDoc.data() }) as Day));
 }
