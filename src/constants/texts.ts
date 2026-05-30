@@ -21,6 +21,7 @@ export const TEXTS = {
   nav: {
     ingredients: 'Alapanyagok',
     recipes: 'Receptek',
+    gallery: 'Galéria',
     meals: 'Étkezések',
   },
   nutrients: {
@@ -103,6 +104,15 @@ export const TEXTS = {
     title: 'Nap másolása',
     copy: 'Másolás',
     dateExists: 'Ez a nap már létezik',
+  },
+  recipeGallery: {
+    noImage: 'Nincs kép',
+    changeImage: 'Kép módosítása',
+    selectImage: 'Kép kiválasztása',
+    loadingImages: 'Képek betöltése...',
+    uploadImage: 'Kép feltöltése',
+    uploading: 'Feltöltés...',
+    uploadError: 'Feltöltés sikertelen',
   },
   confirm: {
     deleteIngredient: 'Alapanyag törlése',

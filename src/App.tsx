@@ -4,6 +4,8 @@ import Login from './components/Login';
 import Layout from './components/Layout';
 import IngredientsPage from './components/ingredients/IngredientsPage';
 import RecipesPage from './components/recipes/RecipesPage';
+import RecipeGalleryPage from './components/recipes/RecipeGalleryPage';
+import RecipeDetailPage from './components/recipes/RecipeDetailPage';
 import MealsPage from './components/meals/MealsPage';
 import DayDetail from './components/meals/DayDetail';
 import { TEXTS } from './constants/texts';
@@ -39,6 +41,8 @@ export default function App() {
           <Route path="meals/:dayId" element={<DayDetail />} />
           <Route path="ingredients" element={<IngredientsPage />} />
           <Route path="recipes" element={<RecipesPage />} />
+          <Route path="gallery" element={<RecipeGalleryPage />} />
+          <Route path="gallery/:recipeId" element={<RecipeDetailPage />} />
         </Route>
       </Routes>
     </HashRouter>

@@ -1,6 +1,7 @@
 import type { Ingredient } from '../types/ingredient';
 import type { Recipe } from '../types/recipe';
 import type { Day } from '../types/day';
+import type { DriveImage } from '../services/drive';
 
 export const MOCK_INGREDIENTS: Ingredient[] = [
   { id: 'ing-1', name: 'Csirkemell', caloriesPer100: 165, carbsPer100: 0, fatPer100: 3.6, isVegetable: false, carbLimit: 0 },
@@ -382,5 +383,32 @@ export const MOCK_DAYS: Day[] = [
         ],
       },
     ],
+  },
+];
+
+export const MOCK_DRIVE_IMAGES: DriveImage[] = [
+  {
+    id: 'mock-1',
+    name: 'csirkemell-brokkolival.jpg',
+    thumbnailLink: 'https://placehold.co/400x300/e2c6ff/333?text=Csirkemell',
+    webContentLink: 'https://placehold.co/800x600/e2c6ff/333?text=Csirkemell',
+  },
+  {
+    id: 'mock-2',
+    name: 'toltott-paprika.jpg',
+    thumbnailLink: 'https://placehold.co/400x300/ffd6e0/333?text=T%C3%B6lt%C3%B6tt+paprika',
+    webContentLink: 'https://placehold.co/800x600/ffd6e0/333?text=T%C3%B6lt%C3%B6tt+paprika',
+  },
+  {
+    id: 'mock-3',
+    name: 'gombaleves.jpg',
+    thumbnailLink: 'https://placehold.co/400x300/d6f5d6/333?text=Gombaleves',
+    webContentLink: 'https://placehold.co/800x600/d6f5d6/333?text=Gombaleves',
+  },
+  {
+    id: 'mock-4',
+    name: 'turos-teszta.jpg',
+    thumbnailLink: 'https://placehold.co/400x300/fff3cd/333?text=T%C3%BAr%C3%B3s+t%C3%A9szta',
+    webContentLink: 'https://placehold.co/800x600/fff3cd/333?text=T%C3%BAr%C3%B3s+t%C3%A9szta',
   },
 ];

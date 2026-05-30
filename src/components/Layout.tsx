@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
-import { UtensilsCrossed, Leaf, LogOut, Calendar, RefreshCw } from 'lucide-react';
+import { UtensilsCrossed, Leaf, LogOut, Calendar, RefreshCw, Image } from 'lucide-react';
 import { signOut } from '../services/auth';
+import { isDriveEnabled } from '../services/drive';
 import { refreshIngredients } from '../services/ingredients';
 import { refreshRecipes } from '../services/recipes';
 import { refreshDays } from '../services/days';
@@ -10,6 +11,7 @@ import { TEXTS } from '../constants/texts';
 const navItems = [
   { to: '/', label: TEXTS.nav.meals, icon: Calendar },
   { to: '/recipes', label: TEXTS.nav.recipes, icon: UtensilsCrossed },
+  ...(isDriveEnabled ? [{ to: '/gallery', label: TEXTS.nav.gallery, icon: Image }] : []),
   { to: '/ingredients', label: TEXTS.nav.ingredients, icon: Leaf },
 ];
 

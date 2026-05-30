@@ -13,6 +13,7 @@ export interface Recipe {
   amount: number | null;
   servings: number;
   baseRecipeId: string | null;
+  imageUrl?: string;
   ingredients: RecipeIngredient[];
 }
 
