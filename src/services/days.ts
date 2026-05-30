@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { collection, doc, setDoc, deleteDoc, query, orderBy, getDocs } from 'firebase/firestore';
 import { getDb } from './firebase';
+import { debouncedWrite, cancelWrite } from './debounced-write';
 import { MOCK_DAYS } from '../constants/mock-data';
 import type { Day, Meal } from '../types/day';
 
@@ -32,20 +33,18 @@ export function useDays() {
   return { days };
 }
 
-export async function createDay(date: string) {
-  const newDay: Day = { id: date, date, meals: [] };
-  set([newDay, ...read()]);
-  if (import.meta.env.DEV) return;
-  await setDoc(doc(collection(getDb(), 'days'), date), { date, meals: [] });
+export function createDay(date: string) {
+  set([{ id: date, date, meals: [] }, ...read()]);
 }
 
-export async function updateDay(dayId: string, meals: Meal[]) {
+export function updateDay(dayId: string, meals: Meal[]) {
   set(read().map((day) => (day.id === dayId ? { ...day, meals } : day)));
   if (import.meta.env.DEV) return;
-  await setDoc(doc(getDb(), 'days', dayId), { date: dayId, meals }, { merge: false });
+  debouncedWrite(`days/${dayId}`, () => setDoc(doc(getDb(), 'days', dayId), { date: dayId, meals }, { merge: false }));
 }
 
 export async function deleteDay(dayId: string) {
+  cancelWrite(`days/${dayId}`);
   set(read().filter((day) => day.id !== dayId));
   if (import.meta.env.DEV) return;
   await deleteDoc(doc(getDb(), 'days', dayId));

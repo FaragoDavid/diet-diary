@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { collection, doc, addDoc, updateDoc, deleteDoc, query, orderBy, getDocs } from 'firebase/firestore';
 import { getDb } from './firebase';
+import { debouncedWrite, cancelWrite } from './debounced-write';
 import { MOCK_RECIPES } from '../constants/mock-data';
 import type { Recipe, RecipeUpdate } from '../types/recipe';
 
@@ -52,10 +53,11 @@ export async function createRecipe(name: string): Promise<string> {
 export async function updateRecipe(id: string, data: RecipeUpdate) {
   set(read().map((rec) => (rec.id === id ? { ...rec, ...data } : rec)));
   if (import.meta.env.DEV) return;
-  await updateDoc(doc(getDb(), 'recipes', id), data);
+  debouncedWrite(`recipes/${id}`, () => updateDoc(doc(getDb(), 'recipes', id), data));
 }
 
 export async function deleteRecipe(id: string) {
+  cancelWrite(`recipes/${id}`);
   set(read().filter((rec) => rec.id !== id));
   if (import.meta.env.DEV) return;
   await deleteDoc(doc(getDb(), 'recipes', id));
