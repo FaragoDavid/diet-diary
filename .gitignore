@@ -3,4 +3,4 @@ dist/
 .env
 .env.development
 .vscode/
-cypress/screenshots/
+test-results/
