@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from 'firebase/auth';
 import { getApp } from './firebase';
 
 const provider = new GoogleAuthProvider();
@@ -45,10 +45,4 @@ export async function refreshAccessToken(): Promise<string | null> {
   const credential = GoogleAuthProvider.credentialFromResult(result);
   storeAccessToken(credential?.accessToken);
   return credential?.accessToken ?? null;
-}
-
-export async function signOut() {
-  const auth = getAuth(getApp());
-  sessionStorage.removeItem('driveAccessToken');
-  await firebaseSignOut(auth);
 }
