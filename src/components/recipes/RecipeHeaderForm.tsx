@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pencil } from 'lucide-react';
-import { updateRecipe } from '../../services/recipes';
 import { TEXTS } from '../../constants/texts';
+import type { RecipeUpdate } from '../../types/recipe';
 
 function HeaderDisplay({ name, subtitle, onEdit }: { name: string; subtitle: string; onEdit: () => void }) {
   return (
@@ -18,19 +18,19 @@ function HeaderDisplay({ name, subtitle, onEdit }: { name: string; subtitle: str
 }
 
 export default function RecipeHeaderForm({
-  recipeId,
   name,
   amount,
   servings,
   subtitle,
   initialEditing = false,
+  onSave,
 }: {
-  recipeId: string;
   name: string;
   amount: number | null;
   servings: number;
   subtitle: string;
   initialEditing?: boolean;
+  onSave: (changes: RecipeUpdate) => void | Promise<void>;
 }) {
   const [editing, setEditing] = useState(initialEditing);
   const [editName, setEditName] = useState(name);
@@ -48,7 +48,7 @@ export default function RecipeHeaderForm({
     if (!trimmed) return;
     setSaving(true);
     try {
-      await updateRecipe(recipeId, {
+      await onSave({
         name: trimmed,
         amount: editAmount ? parseFloat(editAmount) : null,
         servings: parseInt(editServings) || 1,

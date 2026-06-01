@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { collection, doc, setDoc, deleteDoc, query, orderBy, getDocs } from 'firebase/firestore';
 import { getDb } from './firebase';
 
@@ -11,38 +10,24 @@ if (import.meta.env.DEV && !localStorage.getItem(KEY)) {
   localStorage.setItem(KEY, JSON.stringify(MOCK_RECIPES));
 }
 
-let notify: ((items: Recipe[]) => void) | null = null;
+let isDirty = false;
 
-function read(): Recipe[] {
+function saveRecipes(recipes: Recipe[]): void {
+  localStorage.setItem(KEY, JSON.stringify(recipes));
+}
+
+export function readRecipes(): Recipe[] {
   return JSON.parse(localStorage.getItem(KEY) || '[]');
 }
-
-function saveRecipesToLocalStorage(items: Recipe[]) {
-  localStorage.setItem(KEY, JSON.stringify(items));
-  notify?.(items);
-}
-
-let isDirty = false;
 
 export async function syncRecipes(): Promise<void> {
   if (!isDirty) return;
   isDirty = false;
-  const recipes = read();
+  const recipes = readRecipes();
   await Promise.all(recipes.map((recipe) => setDoc(doc(getDb(), 'recipes', recipe.id), recipe)));
 }
 
-export function useRecipes() {
-  const [recipes, setRecipes] = useState<Recipe[]>(read);
-  notify = setRecipes;
-  useEffect(() => {
-    if (!import.meta.env.DEV && localStorage.getItem(KEY) === null) {
-      refreshRecipes();
-    }
-  }, []);
-  return { recipes };
-}
-
-export function createRecipe(name: string): string {
+export function createRecipe(name: string): { id: string; recipes: Recipe[] } {
   const newRecipe: Recipe = {
     id: '',
     name,
@@ -55,24 +40,29 @@ export function createRecipe(name: string): string {
     ingredients: [],
   };
   const id = import.meta.env.DEV ? `rec-${Date.now()}` : doc(collection(getDb(), 'recipes')).id;
-  saveRecipesToLocalStorage([...read(), { ...newRecipe, id }].sort((r1, r2) => r1.name.localeCompare(r2.name)));
+  const updated = [...readRecipes(), { ...newRecipe, id }].sort((r1, r2) => r1.name.localeCompare(r2.name));
+  saveRecipes(updated);
   if (!import.meta.env.DEV) isDirty = true;
-  return id;
+  return { id, recipes: updated };
 }
 
-export function updateRecipe(id: string, data: RecipeUpdate) {
-  saveRecipesToLocalStorage(read().map((rec) => (rec.id === id ? { ...rec, ...data } : rec)));
-  if (import.meta.env.DEV) return;
-  isDirty = true;
+export function updateRecipe(id: string, data: RecipeUpdate): Recipe[] {
+  const updated = readRecipes().map((rec) => (rec.id === id ? { ...rec, ...data } : rec));
+  saveRecipes(updated);
+  if (!import.meta.env.DEV) isDirty = true;
+  return updated;
 }
 
-export async function deleteRecipe(id: string) {
-  saveRecipesToLocalStorage(read().filter((rec) => rec.id !== id));
-  if (import.meta.env.DEV) return;
-  await deleteDoc(doc(getDb(), 'recipes', id));
+export async function deleteRecipe(id: string): Promise<Recipe[]> {
+  const updated = readRecipes().filter((rec) => rec.id !== id);
+  saveRecipes(updated);
+  if (!import.meta.env.DEV) {
+    await deleteDoc(doc(getDb(), 'recipes', id));
+  }
+  return updated;
 }
 
-export function createVariant(baseRecipe: Recipe): string {
+export function createVariant(baseRecipe: Recipe): { id: string; recipes: Recipe[] } {
   const variant: Recipe = {
     id: '',
     name: baseRecipe.name,
@@ -85,16 +75,24 @@ export function createVariant(baseRecipe: Recipe): string {
     ingredients: [...baseRecipe.ingredients],
   };
   const id = import.meta.env.DEV ? `rec-${Date.now()}` : doc(collection(getDb(), 'recipes')).id;
-  saveRecipesToLocalStorage([...read(), { ...variant, id }].sort((r1, r2) => r1.name.localeCompare(r2.name)));
+  const updated = [...readRecipes(), { ...variant, id }].sort((r1, r2) => r1.name.localeCompare(r2.name));
+  saveRecipes(updated);
   if (!import.meta.env.DEV) isDirty = true;
-  return id;
+  return { id, recipes: updated };
 }
 
-export async function refreshRecipes() {
+export async function refreshRecipes(): Promise<Recipe[]> {
   if (import.meta.env.DEV) {
-    saveRecipesToLocalStorage(MOCK_RECIPES);
-    return;
+    saveRecipes(MOCK_RECIPES);
+    return MOCK_RECIPES;
   }
   const recipesInFirestore = (await getDocs(query(collection(getDb(), 'recipes'), orderBy('name')))).docs;
-  saveRecipesToLocalStorage(recipesInFirestore.map((recipeDoc) => ({ id: recipeDoc.id, ...recipeDoc.data() }) as Recipe));
+  const recipes = recipesInFirestore.map((recipeDoc) => ({ id: recipeDoc.id, ...recipeDoc.data() }) as Recipe);
+  saveRecipes(recipes);
+  return recipes;
+}
+
+export async function refreshRecipesIfNeeded(): Promise<Recipe[] | null> {
+  if (import.meta.env.DEV || localStorage.getItem(KEY) !== null) return null;
+  return refreshRecipes();
 }

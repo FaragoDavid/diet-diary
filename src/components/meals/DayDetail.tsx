@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { useDays, updateDay } from '../../services/days';
+import { readDays, updateDay } from '../../services/days';
 import { round, getNutrientColor, formatDate, formatDateShort } from '../../utils/format';
 import { MEAL_TYPES } from '../../types/day';
 import { TEXTS } from '../../constants/texts';
@@ -14,9 +14,7 @@ import type { Meal } from '../../types/day';
 
 export default function DayDetail() {
   const { dayId } = useParams<{ dayId: string }>();
-  const { days } = useDays();
-
-  const day = days.find((d) => d.id === dayId);
+  const [day, setDay] = useState(() => readDays().find((d) => d.id === dayId) ?? null);
   const [editingVariantId, setEditingVariantId] = useState<string | null>(null);
 
   if (!day) {
@@ -46,7 +44,8 @@ export default function DayDetail() {
   const availableMealTypes = MEAL_TYPES.filter((t) => !existingMealTypes.has(t));
 
   const saveMeals = async (meals: Meal[]) => {
-    await updateDay(day.id, meals);
+    updateDay(day.id, meals);
+    setDay((prev) => (prev ? { ...prev, meals } : prev));
   };
 
   return (

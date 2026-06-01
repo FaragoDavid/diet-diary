@@ -1,7 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Plus, UtensilsCrossed } from 'lucide-react';
-import { useRecipes, createRecipe } from '../../services/recipes';
+import { readRecipes, createRecipe, refreshRecipesIfNeeded } from '../../services/recipes';
 import { useDebounce } from '../../hooks/useDebounce';
 import { formatNutrition } from '../../utils/format';
 import { TEXTS } from '../../constants/texts';
@@ -31,10 +31,14 @@ function RecipeTile({ recipe, onClick }: { recipe: Recipe; onClick: () => void }
 }
 
 export default function RecipeGalleryPage() {
-  const { recipes } = useRecipes();
+  const [recipes, setRecipes] = useState(readRecipes);
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedQuery = useDebounce(searchQuery, 200);
+
+  useEffect(() => {
+    refreshRecipesIfNeeded().then((updated) => updated && setRecipes(updated));
+  }, []);
 
   const baseRecipes = useMemo(() => recipes.filter((recipe) => !recipe.baseRecipeId), [recipes]);
 
@@ -44,8 +48,8 @@ export default function RecipeGalleryPage() {
     return baseRecipes.filter((recipe) => recipe.name.toLowerCase().includes(query));
   }, [baseRecipes, debouncedQuery]);
 
-  const handleCreate = async () => {
-    const id = await createRecipe('');
+  const handleCreate = () => {
+    const { id } = createRecipe('');
     navigate(`/gallery/${id}`);
   };
 

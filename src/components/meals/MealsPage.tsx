@@ -1,9 +1,9 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Copy, Check } from 'lucide-react';
-import { useDays, createDay, updateDay, deleteDay } from '../../services/days';
-import { useIngredients } from '../../services/ingredients';
-import { useRecipes } from '../../services/recipes';
+import { readDays, createDay, updateDay, deleteDay, refreshDaysIfNeeded } from '../../services/days';
+import { readIngredients } from '../../services/ingredients';
+import { readRecipes } from '../../services/recipes';
 import { buildIngredientMap } from '../../utils/nutrition';
 import { round } from '../../utils/format';
 import { TEXTS } from '../../constants/texts';
@@ -14,9 +14,9 @@ import DayCard from './DayCard';
 import type { Day } from '../../types/day';
 
 export default function MealsPage() {
-  const { days } = useDays();
-  const { ingredients } = useIngredients();
-  const { recipes } = useRecipes();
+  const [days, setDays] = useState(readDays);
+  const ingredients = useMemo(() => readIngredients(), []);
+  const recipes = useMemo(() => readRecipes(), []);
   const [creating, setCreating] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [shoppingStartDate, setShoppingStartDate] = useState<string | null>(null);
@@ -25,6 +25,10 @@ export default function MealsPage() {
   const [copied, setCopied] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    refreshDaysIfNeeded().then((updated) => updated && setDays(updated));
+  }, []);
 
   const ingredientsMap = useMemo(() => buildIngredientMap(ingredients, recipes), [ingredients, recipes]);
   const recipesMap = useMemo(() => new Map(recipes.map((r) => [r.id, r])), [recipes]);
@@ -46,13 +50,13 @@ export default function MealsPage() {
   const handleCreate = async () => {
     setCreating(true);
     try {
-      const existingDates = new Set(days.map((d) => d.date));
+      const existingDates = new Set(days.map((day) => day.date));
       const date = new Date();
       while (existingDates.has(date.toISOString().slice(0, 10))) {
         date.setDate(date.getDate() + 1);
       }
       const dateStr = date.toISOString().slice(0, 10);
-      await createDay(dateStr);
+      setDays(createDay(dateStr));
       navigate(`/meals/${dateStr}`);
     } finally {
       setCreating(false);
@@ -61,7 +65,7 @@ export default function MealsPage() {
 
   const handleDelete = async (dayId: string) => {
     setDeletingId(dayId);
-    await deleteDay(dayId);
+    setDays(await deleteDay(dayId));
     setDeletingId(null);
   };
 
@@ -80,8 +84,8 @@ export default function MealsPage() {
     if (!copyingDay) return;
     const meals = copyingDay.meals;
     setCopyingDay(null);
-    await createDay(targetDate);
-    await updateDay(targetDate, meals);
+    createDay(targetDate);
+    updateDay(targetDate, meals);
     navigate(`/meals/${targetDate}`);
   };
 

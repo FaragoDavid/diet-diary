@@ -1,7 +1,7 @@
 import { useState, useRef, useMemo } from 'react';
 import { useDebounce } from '../hooks/useDebounce';
-import { useIngredients } from '../services/ingredients';
-import { useRecipes } from '../services/recipes';
+import { readIngredients } from '../services/ingredients';
+import { readRecipes } from '../services/recipes';
 import { round } from '../utils/format';
 import { TEXTS } from '../constants/texts';
 
@@ -18,8 +18,8 @@ interface DishSelectorProps {
 }
 
 export default function DishSelector({ onSelect, placeholder = TEXTS.meals.addDish, maxResults = 15 }: DishSelectorProps) {
-  const { ingredients } = useIngredients();
-  const { recipes } = useRecipes();
+  const ingredients = useMemo(() => readIngredients(), []);
+  const recipes = useMemo(() => readRecipes(), []);
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const debouncedQuery = useDebounce(query, 150);

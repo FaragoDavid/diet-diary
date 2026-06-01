@@ -1,7 +1,8 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { Search, Plus, Trash2, Pencil } from 'lucide-react';
-import { useRecipes, createRecipe, deleteRecipe } from '../../services/recipes';
-import { useDays } from '../../services/days';
+import { readRecipes, createRecipe, deleteRecipe } from '../../services/recipes';
+import { readDays } from '../../services/days';
+import { refreshRecipesIfNeeded } from '../../services/recipes';
 import { useDebounce } from '../../hooks/useDebounce';
 import RecipeDialog from './RecipeDialog';
 import ConfirmDialog from '../ConfirmDialog';
@@ -9,10 +10,10 @@ import { round } from '../../utils/format';
 import { formatDate } from '../../utils/format';
 import { TEXTS } from '../../constants/texts';
 import PageHeader from '../PageHeader';
+import type { Recipe } from '../../types/recipe';
 
 export default function RecipesPage() {
-  const { recipes } = useRecipes();
-  const { days } = useDays();
+  const [recipes, setRecipes] = useState(readRecipes);
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedQuery = useDebounce(searchQuery, 200);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -21,15 +22,19 @@ export default function RecipesPage() {
   const [isNew, setIsNew] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
-  const baseRecipes = useMemo(() => recipes.filter((r) => !r.baseRecipeId), [recipes]);
+  useEffect(() => {
+    refreshRecipesIfNeeded().then((updated) => updated && setRecipes(updated));
+  }, []);
+
+  const baseRecipes = useMemo(() => recipes.filter((recipe) => !recipe.baseRecipeId), [recipes]);
 
   const filtered = useMemo(() => {
     if (!debouncedQuery) return baseRecipes;
     const q = debouncedQuery.toLowerCase();
-    return baseRecipes.filter((r) => r.name.toLowerCase().includes(q));
+    return baseRecipes.filter((recipe) => recipe.name.toLowerCase().includes(q));
   }, [baseRecipes, debouncedQuery]);
 
-  const selectedRecipe = selectedId ? (recipes.find((r) => r.id === selectedId) ?? null) : null;
+  const selectedRecipe = selectedId ? (recipes.find((recipe) => recipe.id === selectedId) ?? null) : null;
 
   useEffect(() => {
     if (selectedRecipe) {
@@ -39,28 +44,34 @@ export default function RecipesPage() {
     }
   }, [selectedRecipe]);
 
+  const handleRecipeChange = useCallback((updated: Recipe) => {
+    setRecipes((prev) => prev.map((recipe) => (recipe.id === updated.id ? updated : recipe)));
+  }, []);
+
   const closeDialog = () => {
     setSelectedId(null);
     setIsNew(false);
   };
 
-  const handleCreate = async () => {
-    const id = await createRecipe('');
+  const handleCreate = () => {
+    const { id, recipes: updated } = createRecipe('');
+    setRecipes(updated);
     setIsNew(true);
     setSelectedId(id);
   };
 
   const handleCloseDialog = () => {
     if (isNew && selectedRecipe && !selectedRecipe.name.trim()) {
-      deleteRecipe(selectedRecipe.id);
+      deleteRecipe(selectedRecipe.id).then(setRecipes);
     }
     closeDialog();
   };
 
   const getUsageLines = (id: string): string[] => {
-    const usedInDays = days.filter((d) => d.meals.some((m) => m.dishes.some((dish) => dish.recipeId === id)));
+    const days = readDays();
+    const usedInDays = days.filter((day) => day.meals.some((meal) => meal.dishes.some((dish) => dish.recipeId === id)));
     if (usedInDays.length > 0) {
-      return [`${TEXTS.confirm.usedInDays}: ${usedInDays.map((d) => formatDate(d.date)).join(', ')}`];
+      return [`${TEXTS.confirm.usedInDays}: ${usedInDays.map((day) => formatDate(day.date)).join(', ')}`];
     }
     return [];
   };
@@ -72,7 +83,7 @@ export default function RecipesPage() {
       return;
     }
     setDeletingId(id);
-    await deleteRecipe(id);
+    setRecipes(await deleteRecipe(id));
     setDeletingId(null);
   };
 
@@ -80,7 +91,7 @@ export default function RecipesPage() {
     if (!confirmDeleteId) return;
     setConfirmDeleteId(null);
     setDeletingId(confirmDeleteId);
-    await deleteRecipe(confirmDeleteId);
+    setRecipes(await deleteRecipe(confirmDeleteId));
     setDeletingId(null);
   };
 
@@ -152,7 +163,14 @@ export default function RecipesPage() {
 
       <dialog ref={dialogRef} className="modal" onClose={handleCloseDialog}>
         <div className="modal-box">
-          {selectedRecipe && <RecipeDialog recipe={selectedRecipe} onClose={handleCloseDialog} initialEditHeader={isNew} />}
+          {selectedRecipe && (
+            <RecipeDialog
+              recipe={selectedRecipe}
+              onClose={handleCloseDialog}
+              onRecipeChange={handleRecipeChange}
+              initialEditHeader={isNew}
+            />
+          )}
         </div>
         <form method="dialog" className="modal-backdrop">
           <button>close</button>

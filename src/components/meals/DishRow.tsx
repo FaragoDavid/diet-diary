@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { Trash2, GitBranch } from 'lucide-react';
-import { useIngredients } from '../../services/ingredients';
-import { useRecipes } from '../../services/recipes';
-import { createVariant } from '../../services/recipes';
+import { readIngredients } from '../../services/ingredients';
+import { readRecipes, createVariant } from '../../services/recipes';
 import { calculateIngredientNutrition, calculateRecipeNutrition, buildIngredientMap } from '../../utils/nutrition';
 import { round } from '../../utils/format';
 import { TEXTS } from '../../constants/texts';
@@ -21,8 +20,8 @@ export default function DishRow({
   onEditVariant: (variantId: string) => void;
   autoFocus?: boolean;
 }) {
-  const { ingredients } = useIngredients();
-  const { recipes } = useRecipes();
+  const ingredients = useMemo(() => readIngredients(), []);
+  const recipes = useMemo(() => readRecipes(), []);
   const ingredientsMap = useMemo(() => buildIngredientMap(ingredients, recipes), [ingredients, recipes]);
   const recipesMap = useMemo(() => new Map(recipes.map((recipe) => [recipe.id, recipe])), [recipes]);
   const [editAmount, setEditAmount] = useState(dish.amount ? dish.amount.toString() : '');
@@ -91,7 +90,7 @@ export default function DishRow({
     if (!recipe) return;
     setSaving(true);
     try {
-      const variantId = await createVariant(recipe);
+      const { id: variantId } = createVariant(recipe);
       await onSave(allDishes.map((existing) => (existing.id === dish.id ? { ...existing, recipeId: variantId } : existing)));
       onEditVariant(variantId);
     } finally {

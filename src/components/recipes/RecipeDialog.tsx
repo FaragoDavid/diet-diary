@@ -1,56 +1,70 @@
 import { useState, useMemo, useCallback } from 'react';
-import { useIngredients } from '../../services/ingredients';
-import { useRecipes, updateRecipe } from '../../services/recipes';
+import { readIngredients } from '../../services/ingredients';
+import { readRecipes, updateRecipe } from '../../services/recipes';
 import { calculateRecipeNutrition, buildIngredientMap, recipeToIngredient } from '../../utils/nutrition';
 import { round, formatNutrition } from '../../utils/format';
 import { TEXTS } from '../../constants/texts';
 import RecipeHeaderForm from './RecipeHeaderForm';
 import IngredientSelector from '../ingredients/IngredientSelector';
 import RecipeIngredients from './RecipeIngredients';
-import type { Recipe, RecipeIngredient } from '../../types/recipe';
+import type { Recipe, RecipeIngredient, RecipeUpdate } from '../../types/recipe';
 import type { Ingredient } from '../../types/ingredient';
 
 export default function RecipeDialog({
   recipe,
   onClose,
+  onRecipeChange,
   initialEditHeader = false,
   baseRecipeName,
 }: {
   recipe: Recipe;
   onClose: () => void;
+  onRecipeChange: (recipe: Recipe) => void;
   initialEditHeader?: boolean;
   baseRecipeName?: string;
 }) {
-  const { ingredients } = useIngredients();
-  const { recipes } = useRecipes();
-  const nutritionMap = useMemo(() => buildIngredientMap(ingredients, recipes), [ingredients, recipes]);
+  const allIngredients = useMemo(() => readIngredients(), []);
+  const allRecipes = useMemo(() => readRecipes(), []);
+  const nutritionMap = useMemo(() => buildIngredientMap(allIngredients, allRecipes), [allIngredients, allRecipes]);
   const [focusIngredientId, setFocusIngredientId] = useState<string | null>(null);
+
+  const handleRecipeChange = useCallback(
+    (changes: RecipeUpdate) => {
+      updateRecipe(recipe.id, changes);
+      onRecipeChange({ ...recipe, ...changes });
+    },
+    [recipe, onRecipeChange],
+  );
 
   const saveIngredients = useCallback(
     async (updated: RecipeIngredient[]) => {
       const nutrition = calculateRecipeNutrition(updated, nutritionMap);
-      await updateRecipe(recipe.id, {
+      handleRecipeChange({
         ingredients: updated,
         calories: round(nutrition.calories),
         carbs: round(nutrition.carbs),
         fat: round(nutrition.fat),
       });
     },
-    [recipe.id, nutritionMap],
+    [nutritionMap, handleRecipeChange],
   );
 
   const nutrition = calculateRecipeNutrition(recipe.ingredients, nutritionMap);
   const available = useMemo(() => {
     const usedIds = new Set(recipe.ingredients.map((ri) => ri.ingredientId));
-    const recipeItems = recipes
-      .filter((r) => r.id !== recipe.id && !r.ingredients.some((ri) => ri.ingredientId === recipe.id))
+    const recipeItems = allRecipes
+      .filter((rec) => rec.id !== recipe.id && !rec.ingredients.some((ri) => ri.ingredientId === recipe.id))
       .map(recipeToIngredient);
-    return [...ingredients, ...recipeItems].filter((i) => !usedIds.has(i.id));
-  }, [ingredients, recipes, recipe.id, recipe.ingredients]);
+    return [...allIngredients, ...recipeItems].filter((item) => !usedIds.has(item.id));
+  }, [allIngredients, allRecipes, recipe.id, recipe.ingredients]);
 
-  const handleAddIngredient = async (ingredient: Ingredient) => {
+  const handleAddIngredient = (ingredient: Ingredient) => {
     setFocusIngredientId(ingredient.id);
-    await saveIngredients([...recipe.ingredients, { ingredientId: ingredient.id, name: ingredient.name, amount: 0 }]);
+    saveIngredients([...recipe.ingredients, { ingredientId: ingredient.id, name: ingredient.name, amount: 0 }]);
+  };
+
+  const handleHeaderSave = (changes: RecipeUpdate) => {
+    handleRecipeChange(changes);
   };
 
   const subtitle = `${recipe.amount ? `${round(recipe.amount)}g` : '—'} · ${recipe.servings} ${TEXTS.recipes.servings.toLowerCase()} · ${formatNutrition(nutrition)}`;
@@ -63,12 +77,12 @@ export default function RecipeDialog({
         </div>
       )}
       <RecipeHeaderForm
-        recipeId={recipe.id}
         name={recipe.name}
         amount={recipe.amount}
         servings={recipe.servings}
         subtitle={subtitle}
         initialEditing={initialEditHeader}
+        onSave={handleHeaderSave}
       />
 
       <div className="space-y-3">

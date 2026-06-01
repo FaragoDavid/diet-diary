@@ -1,8 +1,14 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Search, Plus } from 'lucide-react';
-import { useIngredients, createIngredient, updateIngredient, deleteIngredient } from '../../services/ingredients';
-import { useRecipes } from '../../services/recipes';
-import { useDays } from '../../services/days';
+import {
+  readIngredients,
+  createIngredient,
+  updateIngredient,
+  deleteIngredient,
+  refreshIngredientsIfNeeded,
+} from '../../services/ingredients';
+import { readRecipes } from '../../services/recipes';
+import { readDays } from '../../services/days';
 import { useDebounce } from '../../hooks/useDebounce';
 import { TEXTS } from '../../constants/texts';
 import { formatDate } from '../../utils/format';
@@ -13,14 +19,16 @@ import IngredientRow from './IngredientRow';
 import type { Ingredient, NewIngredient } from '../../types/ingredient';
 
 export default function IngredientsPage() {
-  const { ingredients } = useIngredients();
-  const { recipes } = useRecipes();
-  const { days } = useDays();
+  const [ingredients, setIngredients] = useState(readIngredients);
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedQuery = useDebounce(searchQuery, 200);
   const [editing, setEditing] = useState<Ingredient | 'new' | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  useEffect(() => {
+    refreshIngredientsIfNeeded().then((updated) => updated && setIngredients(updated));
+  }, []);
 
   const filtered = useMemo(() => {
     if (!debouncedQuery) return ingredients;
@@ -32,22 +40,24 @@ export default function IngredientsPage() {
 
   const handleSave = async (data: NewIngredient) => {
     if (editing === 'new') {
-      await createIngredient(data);
+      setIngredients(createIngredient(data));
     } else if (editing) {
-      await updateIngredient(editing.id, data);
+      setIngredients(updateIngredient(editing.id, data));
     }
     closeDialog();
   };
 
   const getUsageLines = (id: string): string[] => {
     const lines: string[] = [];
-    const usedInRecipes = recipes.filter((r) => r.ingredients.some((ri) => ri.ingredientId === id));
+    const recipes = readRecipes();
+    const usedInRecipes = recipes.filter((recipe) => recipe.ingredients.some((ri) => ri.ingredientId === id));
     if (usedInRecipes.length > 0) {
-      lines.push(`${TEXTS.confirm.usedInRecipes}: ${usedInRecipes.map((r) => r.name).join(', ')}`);
+      lines.push(`${TEXTS.confirm.usedInRecipes}: ${usedInRecipes.map((recipe) => recipe.name).join(', ')}`);
     }
-    const usedInDays = days.filter((d) => d.meals.some((m) => m.dishes.some((dish) => dish.ingredientId === id)));
+    const days = readDays();
+    const usedInDays = days.filter((day) => day.meals.some((meal) => meal.dishes.some((dish) => dish.ingredientId === id)));
     if (usedInDays.length > 0) {
-      lines.push(`${TEXTS.confirm.usedInDays}: ${usedInDays.map((d) => formatDate(d.date)).join(', ')}`);
+      lines.push(`${TEXTS.confirm.usedInDays}: ${usedInDays.map((day) => formatDate(day.date)).join(', ')}`);
     }
     return lines;
   };
@@ -59,7 +69,7 @@ export default function IngredientsPage() {
       return;
     }
     setDeletingId(id);
-    await deleteIngredient(id);
+    setIngredients(await deleteIngredient(id));
     setDeletingId(null);
   };
 
@@ -67,7 +77,7 @@ export default function IngredientsPage() {
     if (!confirmDeleteId) return;
     setConfirmDeleteId(null);
     setDeletingId(confirmDeleteId);
-    await deleteIngredient(confirmDeleteId);
+    setIngredients(await deleteIngredient(confirmDeleteId));
     setDeletingId(null);
   };
 

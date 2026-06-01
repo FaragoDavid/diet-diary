@@ -1,9 +1,9 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ImageIcon, Trash2, UtensilsCrossed } from 'lucide-react';
-import { useRecipes, updateRecipe, deleteRecipe } from '../../services/recipes';
-import { useIngredients } from '../../services/ingredients';
-import { useDays } from '../../services/days';
+import { readRecipes, updateRecipe, deleteRecipe } from '../../services/recipes';
+import { readIngredients } from '../../services/ingredients';
+import { readDays } from '../../services/days';
 import { calculateRecipeNutrition, buildIngredientMap, recipeToIngredient } from '../../utils/nutrition';
 import { round, formatNutrition, formatDate } from '../../utils/format';
 import { TEXTS } from '../../constants/texts';
@@ -13,46 +13,53 @@ import RecipeIngredients from './RecipeIngredients';
 import ImagePickerDialog from './ImagePickerDialog';
 import ConfirmDialog from '../ConfirmDialog';
 import PageHeader from '../PageHeader';
-import type { RecipeIngredient } from '../../types/recipe';
+import type { Recipe, RecipeIngredient, RecipeUpdate } from '../../types/recipe';
 import type { Ingredient } from '../../types/ingredient';
 
 export default function RecipeDetailPage() {
   const { recipeId } = useParams<{ recipeId: string }>();
-  const { recipes } = useRecipes();
-  const { ingredients } = useIngredients();
-  const { days } = useDays();
+  const allRecipes = useMemo(() => readRecipes(), []);
+  const allIngredients = useMemo(() => readIngredients(), []);
   const navigate = useNavigate();
 
-  const recipe = recipes.find((rec) => rec.id === recipeId) ?? null;
+  const [recipe, setRecipe] = useState<Recipe | null>(() => allRecipes.find((rec) => rec.id === recipeId) ?? null);
   const [focusIngredientId, setFocusIngredientId] = useState<string | null>(null);
   const [imagePickerOpen, setImagePickerOpen] = useState(false);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
-  const nutritionMap = useMemo(() => buildIngredientMap(ingredients, recipes), [ingredients, recipes]);
+  const nutritionMap = useMemo(() => buildIngredientMap(allIngredients, allRecipes), [allIngredients, allRecipes]);
+
+  const handleRecipeChange = useCallback(
+    (changes: RecipeUpdate) => {
+      updateRecipe(recipe!.id, changes);
+      setRecipe((prev) => (prev ? { ...prev, ...changes } : prev));
+    },
+    [recipe],
+  );
 
   const saveIngredients = useCallback(
     async (updated: RecipeIngredient[]) => {
       if (!recipe) return;
       const nutrition = calculateRecipeNutrition(updated, nutritionMap);
-      await updateRecipe(recipe.id, {
+      handleRecipeChange({
         ingredients: updated,
         calories: round(nutrition.calories),
         carbs: round(nutrition.carbs),
         fat: round(nutrition.fat),
       });
     },
-    [recipe, nutritionMap],
+    [recipe, nutritionMap, handleRecipeChange],
   );
 
   const available = useMemo(() => {
     if (!recipe) return [];
     const usedIds = new Set(recipe.ingredients.map((ri) => ri.ingredientId));
-    const recipeItems = recipes
+    const recipeItems = allRecipes
       .filter((rec) => rec.id !== recipe.id && !rec.ingredients.some((ri) => ri.ingredientId === recipe.id))
       .map(recipeToIngredient);
-    return [...ingredients, ...recipeItems].filter((item) => !usedIds.has(item.id));
-  }, [ingredients, recipes, recipe]);
+    return [...allIngredients, ...recipeItems].filter((item) => !usedIds.has(item.id));
+  }, [allIngredients, allRecipes, recipe]);
 
   if (!recipe) {
     return (
@@ -65,17 +72,22 @@ export default function RecipeDetailPage() {
     );
   }
 
-  const handleAddIngredient = async (ingredient: Ingredient) => {
+  const handleAddIngredient = (ingredient: Ingredient) => {
     setFocusIngredientId(ingredient.id);
-    await saveIngredients([...recipe.ingredients, { ingredientId: ingredient.id, name: ingredient.name, amount: 0 }]);
+    saveIngredients([...recipe.ingredients, { ingredientId: ingredient.id, name: ingredient.name, amount: 0 }]);
   };
 
-  const handleSelectImage = async (imageUrl: string) => {
-    await updateRecipe(recipe.id, { imageUrl });
+  const handleSelectImage = (imageUrl: string) => {
+    handleRecipeChange({ imageUrl });
     setImagePickerOpen(false);
   };
 
+  const handleHeaderSave = (changes: RecipeUpdate) => {
+    handleRecipeChange(changes);
+  };
+
   const getUsageLines = (): string[] => {
+    const days = readDays();
     const usedInDays = days.filter((day) => day.meals.some((meal) => meal.dishes.some((dish) => dish.recipeId === recipe.id)));
     if (usedInDays.length > 0) {
       return [`${TEXTS.confirm.usedInDays}: ${usedInDays.map((day) => formatDate(day.date)).join(', ')}`];
@@ -104,7 +116,7 @@ export default function RecipeDetailPage() {
   };
 
   const nutrition = calculateRecipeNutrition(recipe.ingredients, nutritionMap);
-  const baseRecipe = recipe.baseRecipeId ? recipes.find((rec) => rec.id === recipe.baseRecipeId) : null;
+  const baseRecipe = recipe.baseRecipeId ? allRecipes.find((rec) => rec.id === recipe.baseRecipeId) : null;
   const subtitle = `${recipe.amount ? `${round(recipe.amount)}g` : '—'} · ${recipe.servings} ${TEXTS.recipes.servings.toLowerCase()} · ${formatNutrition(nutrition)}`;
 
   return (
@@ -143,7 +155,13 @@ export default function RecipeDetailPage() {
           </div>
         )}
 
-        <RecipeHeaderForm recipeId={recipe.id} name={recipe.name} amount={recipe.amount} servings={recipe.servings} subtitle={subtitle} />
+        <RecipeHeaderForm
+          name={recipe.name}
+          amount={recipe.amount}
+          servings={recipe.servings}
+          subtitle={subtitle}
+          onSave={handleHeaderSave}
+        />
 
         <div className="space-y-3">
           <h4 className="font-semibold">{TEXTS.recipes.ingredients}</h4>
