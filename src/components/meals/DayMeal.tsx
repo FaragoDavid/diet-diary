@@ -58,7 +58,7 @@ export default function DayMeal({
   };
 
   return (
-    <div className="card bg-base-100 shadow-sm">
+    <div data-testid={`meal-${meal.type}`} className="card bg-base-100 shadow-sm">
       <div className="card-body p-4 space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="card-title text-base">
@@ -81,7 +81,7 @@ export default function DayMeal({
               {' · '}
               {round(mealTotals.fat)}g {TEXTS.nutrients.fatUnit}
             </span>
-            <button onClick={removeMeal} className="btn btn-ghost btn-xs text-error">
+            <button onClick={removeMeal} data-testid="delete-meal-button" className="btn btn-ghost btn-xs text-error">
               <Trash2 className="w-3.5 h-3.5" />
             </button>
           </div>

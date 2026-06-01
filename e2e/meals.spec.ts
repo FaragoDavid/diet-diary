@@ -7,22 +7,22 @@ test.describe('meals list', () => {
   });
 
   test('displays day cards with nutrition totals', async ({ page }) => {
-    await expect(page.locator('.card')).toHaveCount(3);
-    const firstCard = page.locator('.card').first();
-    await expect(firstCard).toContainText('kCal');
-    await expect(firstCard).toContainText('CH');
-    await expect(firstCard).toContainText('zsír');
+    await expect(page.locator('[data-testid^="day-card-"]')).toHaveCount(3);
+    const dayCard = page.getByTestId('day-card-2026-05-22');
+    await expect(dayCard).toContainText('kCal');
+    await expect(dayCard).toContainText('CH');
+    await expect(dayCard).toContainText('zsír');
   });
 
   test('navigates to day detail on card click', async ({ page }) => {
-    await page.locator('.card').first().locator('.card-title').click();
-    await expect(page).toHaveURL(/#\/meals\/.+/);
+    await page.getByTestId('day-card-2026-05-22').click();
+    await expect(page).toHaveURL(/#\/meals\/2026-05-22/);
   });
 
   test('deletes a day from the list', async ({ page }) => {
-    await expect(page.locator('.card')).toHaveCount(3);
-    await page.locator('.card').first().locator('button.text-error').click();
-    await expect(page.locator('.card')).toHaveCount(2);
+    await expect(page.locator('[data-testid^="day-card-"]')).toHaveCount(3);
+    await page.getByTestId('day-card-2026-05-22').getByTestId('delete-button').click();
+    await expect(page.locator('[data-testid^="day-card-"]')).toHaveCount(2);
   });
 });
 
@@ -33,7 +33,7 @@ test.describe('create day', () => {
       localStorage.setItem('days', JSON.stringify([]));
     });
     await page.goto('/');
-    await page.locator('main .btn-primary').first().click();
+    await page.getByTestId('create-button').click();
 
     await expect(page).toHaveURL(/#\/meals\/.+/);
     await expect(page.getByText('Még nincsenek étkezések')).toBeVisible();
@@ -47,10 +47,8 @@ test.describe('shopping list', () => {
   });
 
   test('opens shopping list dialog with ingredients', async ({ page }) => {
-    // Open shopping list for last day card (2026-05-20)
-    // Buttons: shopping (1st non-error), copy (2nd non-error), delete (text-error)
-    const lastCard = page.locator('.card').last();
-    await lastCard.locator('button:not(.text-error)').first().click();
+    // Open shopping list for day 2026-05-20
+    await page.getByTestId('day-card-2026-05-20').getByTestId('shopping-button').click();
 
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
@@ -67,8 +65,7 @@ test.describe('shopping list', () => {
   });
 
   test('multiplier buttons change shopping list amounts', async ({ page }) => {
-    const lastCard = page.locator('.card').last();
-    await lastCard.locator('button:not(.text-error)').first().click();
+    await page.getByTestId('day-card-2026-05-20').getByTestId('shopping-button').click();
 
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
@@ -91,9 +88,7 @@ test.describe('copy day', () => {
   });
 
   test('copies a day to a new date', async ({ page }) => {
-    const firstCard = page.locator('.card').first();
-    // Click copy button (2nd non-error button)
-    await firstCard.locator('button:not(.text-error)').nth(1).click();
+    await page.getByTestId('day-card-2026-05-22').getByTestId('copy-button').click();
 
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
@@ -111,15 +106,14 @@ test.describe('copy day', () => {
   });
 
   test('cancels copy day dialog', async ({ page }) => {
-    const firstCard = page.locator('.card').first();
-    await firstCard.locator('button:not(.text-error)').nth(1).click();
+    await page.getByTestId('day-card-2026-05-22').getByTestId('copy-button').click();
 
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
 
     await dialog.getByRole('button', { name: 'Mégse' }).click();
     await expect(dialog).not.toBeVisible();
-    await expect(page.locator('.card')).toHaveCount(3);
+    await expect(page.locator('[data-testid^="day-card-"]')).toHaveCount(3);
   });
 });
 
@@ -128,12 +122,13 @@ test.describe('day detail', () => {
     await page.addInitScript(() => localStorage.clear());
     await page.goto('/#/meals/2026-05-20');
 
-    // Day 2026-05-20: lunch (469.4+130=599.4 cal) + dinner (330+68=398 cal) = 997.4 total
-    await expect(page.locator('.card')).toHaveCount(2);
-    await expect(page.locator('.card').first()).toContainText('Ebéd');
-    await expect(page.locator('.card').last()).toContainText('Vacsora');
+    // Day 2026-05-20 has 2 meals (Ebéd + Vacsora)
+    await expect(page.locator('[data-testid^="meal-"]')).toHaveCount(2);
+    await expect(page.getByTestId('meal-lunch')).toContainText('Ebéd');
+    await expect(page.getByTestId('meal-dinner')).toContainText('Vacsora');
 
-    const headerNutrition = page.locator('.whitespace-nowrap').first();
+    // Day totals in header: 997.4 cal, 52.5 carbs, 26.1 fat
+    const headerNutrition = page.getByTestId('day-nutrition');
     await expect(headerNutrition).toContainText('997.4 kCal');
     await expect(headerNutrition).toContainText('52.5g CH');
     await expect(headerNutrition).toContainText('26.1g zsír');
@@ -143,8 +138,8 @@ test.describe('day detail', () => {
     await page.addInitScript(() => localStorage.clear());
     await page.goto('/#/meals/2026-05-20');
 
-    await page.locator('.btn-square').click();
-    await expect(page.locator('.card')).toHaveCount(3);
+    await page.getByTestId('back-button').click();
+    await expect(page.locator('[data-testid^="day-card-"]')).toHaveCount(3);
   });
 });
 
@@ -155,26 +150,26 @@ test.describe('day meals and dishes', () => {
       localStorage.setItem('days', JSON.stringify([]));
     });
     await page.goto('/');
-    await page.locator('main .btn-primary').first().click();
+    await page.getByTestId('create-button').click();
     await expect(page).toHaveURL(/#\/meals\/.+/);
   });
 
   test('adds and removes a meal', async ({ page }) => {
-    await page.locator('main .btn-primary').first().click();
+    await page.getByTestId('add-meal-button').click();
     await page.getByText('Reggeli', { exact: true }).click();
 
-    const mealCard = page.locator('.card').filter({ hasText: 'Reggeli' });
+    const mealCard = page.getByTestId('meal-breakfast');
     await expect(mealCard).toBeVisible();
 
-    await mealCard.locator('button.text-error').click();
+    await mealCard.getByTestId('delete-meal-button').click();
     await expect(mealCard).not.toBeVisible();
   });
 
   test('adds a dish to a meal and sets amount', async ({ page }) => {
-    await page.locator('main .btn-primary').first().click();
+    await page.getByTestId('add-meal-button').click();
     await page.getByText('Reggeli', { exact: true }).click();
 
-    const mealCard = page.locator('.card').filter({ hasText: 'Reggeli' });
+    const mealCard = page.getByTestId('meal-breakfast');
     await mealCard.getByPlaceholder('Étel hozzáadása...').fill('Csirke');
     await mealCard.locator('ul button').first().click();
 
@@ -189,10 +184,10 @@ test.describe('day meals and dishes', () => {
   });
 
   test('removes a dish from a meal', async ({ page }) => {
-    await page.locator('main .btn-primary').first().click();
+    await page.getByTestId('add-meal-button').click();
     await page.getByText('Reggeli', { exact: true }).click();
 
-    const mealCard = page.locator('.card').filter({ hasText: 'Reggeli' });
+    const mealCard = page.getByTestId('meal-breakfast');
     await mealCard.getByPlaceholder('Étel hozzáadása...').fill('Csirke');
     await mealCard.locator('ul button').first().click();
 
@@ -200,24 +195,22 @@ test.describe('day meals and dishes', () => {
     await mealCard.locator('input[type="number"]').fill('100');
     await mealCard.locator('input[type="number"]').blur();
 
-    await mealCard.locator('table button.text-error').click();
+    await mealCard.getByTestId('delete-button').click();
     await expect(mealCard.getByText(dishName!)).not.toBeVisible();
   });
 
   test('creates a recipe variant from a dish', async ({ page }) => {
-    await page.locator('main .btn-primary').first().click();
+    await page.getByTestId('add-meal-button').click();
     await page.getByText('Reggeli', { exact: true }).click();
 
-    const mealCard = page.locator('.card').filter({ hasText: 'Reggeli' });
+    const mealCard = page.getByTestId('meal-breakfast');
     await mealCard.getByPlaceholder('Étel hozzáadása...').fill('Csirkemell brokkolival');
     await mealCard.locator('ul button').filter({ hasText: 'Csirkemell brokkolival' }).first().click();
 
     await mealCard.locator('input[type="number"]').fill('100');
     await mealCard.locator('input[type="number"]').blur();
 
-    const variantButton = mealCard.getByRole('button', { name: 'Testreszabás' });
-    await expect(variantButton).toBeVisible();
-    await variantButton.click();
+    await mealCard.getByTestId('customize-button').click();
 
     await expect(async () => {
       const hasVariant = await page.evaluate(() => {

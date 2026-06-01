@@ -21,10 +21,10 @@ export default function IngredientRow({
       <td className="text-right tabular-nums whitespace-nowrap">{round(ing.fatPer100)}</td>
       <td className="text-right whitespace-nowrap">
         <div className="flex justify-end gap-1">
-          <button onClick={onEdit} className="btn btn-ghost btn-xs">
+          <button onClick={onEdit} data-testid="edit-button" className="btn btn-ghost btn-xs">
             <Pencil className="w-3.5 h-3.5" />
           </button>
-          <button onClick={onDelete} disabled={deleting} className="btn btn-ghost btn-xs text-error">
+          <button onClick={onDelete} disabled={deleting} data-testid="delete-button" className="btn btn-ghost btn-xs text-error">
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>

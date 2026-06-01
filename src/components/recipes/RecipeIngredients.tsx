@@ -71,7 +71,7 @@ function IngredientRow({
       <td className="text-right tabular-nums">{round(nutrition.carbs)}</td>
       <td className="text-right tabular-nums">{round(nutrition.fat)}</td>
       <td>
-        <button onClick={handleDelete} disabled={saving} className="btn btn-ghost btn-xs text-error">
+        <button onClick={handleDelete} disabled={saving} data-testid="delete-button" className="btn btn-ghost btn-xs text-error">
           <Trash2 className="w-3.5 h-3.5" />
         </button>
       </td>

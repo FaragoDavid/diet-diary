@@ -100,7 +100,7 @@ export default function MealsPage() {
   return (
     <div className="flex flex-col flex-1 min-h-0 gap-4">
       <PageHeader title={TEXTS.nav.meals}>
-        <button onClick={handleCreate} disabled={creating} className="btn btn-primary btn-sm">
+        <button onClick={handleCreate} disabled={creating} data-testid="create-button" className="btn btn-primary btn-sm">
           <Plus className="w-4 h-4" />
         </button>
       </PageHeader>

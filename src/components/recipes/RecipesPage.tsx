@@ -112,7 +112,7 @@ export default function RecipesPage() {
           </label>
         }
       >
-        <button onClick={handleCreate} className="btn btn-primary btn-sm">
+        <button onClick={handleCreate} data-testid="create-button" className="btn btn-primary btn-sm">
           <Plus className="w-4 h-4" />
         </button>
       </PageHeader>
@@ -142,12 +142,13 @@ export default function RecipesPage() {
                   <td className="text-right tabular-nums whitespace-nowrap">{round(recipe.fat)}</td>
                   <td className="text-right whitespace-nowrap">
                     <div className="flex justify-end gap-1">
-                      <button onClick={() => setSelectedId(recipe.id)} className="btn btn-ghost btn-xs">
+                      <button onClick={() => setSelectedId(recipe.id)} data-testid="edit-button" className="btn btn-ghost btn-xs">
                         <Pencil className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleDelete(recipe.id)}
                         disabled={deletingId === recipe.id}
+                        data-testid="delete-button"
                         className="btn btn-ghost btn-xs text-error"
                       >
                         <Trash2 className="w-3.5 h-3.5" />

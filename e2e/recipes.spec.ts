@@ -36,7 +36,7 @@ test.describe('create recipe', () => {
   test('creates and persists a new recipe', async ({ page }) => {
     const initialRows = await page.locator('table tbody tr').count();
 
-    await page.locator('main .btn-primary').first().click();
+    await page.getByTestId('create-button').click();
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
 
@@ -57,7 +57,7 @@ test.describe('create recipe', () => {
   });
 
   test('cancels header editing without saving', async ({ page }) => {
-    await page.locator('main .btn-primary').first().click();
+    await page.getByTestId('create-button').click();
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
 
@@ -71,11 +71,11 @@ test.describe('create recipe', () => {
   });
 
   test('cancels recipe creation and removes empty recipe', async ({ page }) => {
-    await page.locator('main .btn-primary').first().click();
+    await page.getByTestId('create-button').click();
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
 
-    await dialog.locator('button.float-right').click();
+    await dialog.getByTestId('close-button').click();
     await expect(dialog).not.toBeVisible();
 
     const recipes = await page.evaluate(() => JSON.parse(localStorage.getItem('recipes') || '[]'));
@@ -83,7 +83,7 @@ test.describe('create recipe', () => {
   });
 
   test('adds ingredient to newly created recipe', async ({ page }) => {
-    await page.locator('main .btn-primary').first().click();
+    await page.getByTestId('create-button').click();
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
 
@@ -106,12 +106,12 @@ test.describe('create recipe', () => {
 test.describe('edit recipe header', () => {
   test('edits name, amount and servings', async ({ page }) => {
     const row = page.locator('table tbody tr').filter({ hasText: 'Csirkemell brokkolival' });
-    await row.locator('button:not(.text-error)').click();
+    await row.getByTestId('edit-button').click();
 
     const dialog = page.getByRole('dialog');
     await expect(dialog.locator('h3')).toHaveText('Csirkemell brokkolival');
 
-    await dialog.locator('button.btn-xs:not(.text-error)').first().click();
+    await dialog.getByTestId('edit-header-button').click();
 
     const form = dialog.locator('form');
     await form.getByRole('textbox').fill('Updated Recipe');
@@ -132,10 +132,10 @@ test.describe('edit recipe header', () => {
 
   test('cancels header edit without saving', async ({ page }) => {
     const row = page.locator('table tbody tr').filter({ hasText: 'Csirkemell brokkolival' });
-    await row.locator('button:not(.text-error)').click();
+    await row.getByTestId('edit-button').click();
 
     const dialog = page.getByRole('dialog');
-    await dialog.locator('button.btn-xs:not(.text-error)').first().click();
+    await dialog.getByTestId('edit-header-button').click();
 
     const form = dialog.locator('form');
     await form.getByRole('textbox').fill('Should Not Save');
@@ -152,7 +152,7 @@ test.describe('edit recipe header', () => {
 test.describe('edit recipe ingredients', () => {
   test('adds an ingredient via search', async ({ page }) => {
     const row = page.locator('table tbody tr').filter({ hasText: 'Csirkemell brokkolival' });
-    await row.locator('button:not(.text-error)').click();
+    await row.getByTestId('edit-button').click();
 
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
@@ -172,7 +172,7 @@ test.describe('edit recipe ingredients', () => {
 
   test('sets ingredient amount and recalculates nutrition', async ({ page }) => {
     const row = page.locator('table tbody tr').filter({ hasText: 'Csirkemell brokkolival' });
-    await row.locator('button:not(.text-error)').click();
+    await row.getByTestId('edit-button').click();
 
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
@@ -197,13 +197,13 @@ test.describe('edit recipe ingredients', () => {
 
   test('removes ingredient and recalculates nutrition', async ({ page }) => {
     const row = page.locator('table tbody tr').filter({ hasText: 'Csirkemell brokkolival' });
-    await row.locator('button:not(.text-error)').click();
+    await row.getByTestId('edit-button').click();
 
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
 
     const brokkoliRow = dialog.locator('table tbody tr').filter({ hasText: 'Brokkoli' });
-    await brokkoliRow.locator('button.text-error').click();
+    await brokkoliRow.getByTestId('delete-button').click();
     await expect(brokkoliRow).not.toBeVisible();
 
     // Csirkemell 200g + Olivaolaj 10g = 418.4 cal, 0 carbs, 17.2 fat
@@ -223,14 +223,14 @@ test.describe('delete recipe', () => {
   test('deletes a recipe not used in days', async ({ page }) => {
     const row = page.locator('table tbody tr').filter({ hasText: 'Csirkés rizstál' });
     await expect(row).toHaveCount(1);
-    await row.locator('button.text-error').click();
+    await row.getByTestId('delete-button').click();
 
     await expect(row).toHaveCount(0);
   });
 
   test('shows confirmation when deleting a recipe used in days', async ({ page }) => {
     const row = page.locator('table tbody tr').filter({ hasText: 'Csirkemell brokkolival' });
-    await row.locator('button.text-error').click();
+    await row.getByTestId('delete-button').click();
 
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
@@ -245,7 +245,7 @@ test.describe('delete recipe', () => {
   test('confirms deletion of a recipe used in days', async ({ page }) => {
     const row = page.locator('table tbody tr').filter({ hasText: 'Csirkemell brokkolival' });
     await expect(row).toHaveCount(1);
-    await row.locator('button.text-error').click();
+    await row.getByTestId('delete-button').click();
 
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();

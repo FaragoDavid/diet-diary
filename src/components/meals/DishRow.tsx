@@ -119,11 +119,17 @@ export default function DishRow({
       <td>
         <div className="flex gap-0.5">
           {dish.recipeId && (
-            <button onClick={handleCustomize} disabled={saving} className="btn btn-ghost btn-xs" title={TEXTS.meals.customize}>
+            <button
+              onClick={handleCustomize}
+              disabled={saving}
+              data-testid="customize-button"
+              className="btn btn-ghost btn-xs"
+              title={TEXTS.meals.customize}
+            >
               <GitBranch className="w-3.5 h-3.5" />
             </button>
           )}
-          <button onClick={handleDelete} disabled={saving} className="btn btn-ghost btn-xs text-error">
+          <button onClick={handleDelete} disabled={saving} data-testid="delete-button" className="btn btn-ghost btn-xs text-error">
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>

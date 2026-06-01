@@ -98,7 +98,7 @@ export default function IngredientsPage() {
           </label>
         }
       >
-        <button onClick={() => setEditing('new')} className="btn btn-primary btn-sm">
+        <button onClick={() => setEditing('new')} data-testid="create-button" className="btn btn-primary btn-sm">
           <Plus className="w-4 h-4" />
         </button>
       </PageHeader>

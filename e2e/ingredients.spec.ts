@@ -35,7 +35,7 @@ test.describe('create ingredient', () => {
   test('creates a new ingredient with all fields', async ({ page }) => {
     const initialRows = await page.locator('table tbody tr').count();
 
-    await page.locator('main .btn-primary').first().click();
+    await page.getByTestId('create-button').click();
     const dialog = page.getByRole('dialog');
     await expect(dialog.getByRole('heading', { name: 'Új Alapanyag' })).toBeVisible();
 
@@ -68,7 +68,7 @@ test.describe('create ingredient', () => {
 test.describe('edit ingredient', () => {
   test('edits all fields including name, vegetable and carb limit', async ({ page }) => {
     const row = page.locator('table tbody tr').filter({ hasText: 'Brokkoli' });
-    await row.locator('button:not(.text-error)').click();
+    await row.getByTestId('edit-button').click();
 
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
@@ -98,7 +98,7 @@ test.describe('edit ingredient', () => {
 
   test('cancels edit without saving', async ({ page }) => {
     const row = page.locator('table tbody tr').filter({ hasText: 'Brokkoli' });
-    await row.locator('button:not(.text-error)').click();
+    await row.getByTestId('edit-button').click();
 
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
@@ -115,7 +115,7 @@ test.describe('edit ingredient', () => {
 
 test.describe('delete ingredient', () => {
   test('deletes an ingredient not used elsewhere', async ({ page }) => {
-    await page.locator('main .btn-primary').first().click();
+    await page.getByTestId('create-button').click();
     const dialog = page.getByRole('dialog');
     await dialog.getByRole('textbox').fill('To Delete');
     await dialog.getByRole('button', { name: 'Új' }).click();
@@ -123,14 +123,14 @@ test.describe('delete ingredient', () => {
 
     await expect(page.getByText('To Delete')).toBeVisible();
     const row = page.locator('table tbody tr').filter({ hasText: 'To Delete' });
-    await row.locator('button.text-error').click();
+    await row.getByTestId('delete-button').click();
 
     await expect(page.getByText('To Delete')).not.toBeVisible();
   });
 
   test('shows confirmation when deleting an ingredient used in recipes', async ({ page }) => {
     const row = page.locator('table tbody tr').filter({ hasText: 'Csirkemell' }).first();
-    await row.locator('button.text-error').click();
+    await row.getByTestId('delete-button').click();
 
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
@@ -145,7 +145,7 @@ test.describe('delete ingredient', () => {
   test('confirms deletion of an ingredient used in recipes', async ({ page }) => {
     const row = page.locator('table tbody tr').filter({ hasText: /^Csirkemell/ });
     await expect(row).toHaveCount(1);
-    await row.locator('button.text-error').click();
+    await row.getByTestId('delete-button').click();
 
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();

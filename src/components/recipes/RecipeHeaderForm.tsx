@@ -10,7 +10,7 @@ function HeaderDisplay({ name, subtitle, onEdit }: { name: string; subtitle: str
         <h3 className="font-bold text-base">{name}</h3>
         <div className="text-sm text-base-content/70">{subtitle}</div>
       </div>
-      <button onClick={onEdit} className="btn btn-ghost btn-xs">
+      <button onClick={onEdit} data-testid="edit-header-button" className="btn btn-ghost btn-xs">
         <Pencil className="w-3.5 h-3.5" />
       </button>
     </div>

@@ -96,7 +96,7 @@ export default function RecipeDialog({
         />
       </div>
 
-      <button onClick={onClose} className="btn btn-ghost btn-sm float-right">
+      <button onClick={onClose} data-testid="close-button" className="btn btn-ghost btn-sm float-right">
         {TEXTS.common.cancel}
       </button>
     </div>

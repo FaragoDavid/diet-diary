@@ -30,7 +30,11 @@ export default function DayCard({
     { calories: 0, carbs: 0, fat: 0 },
   );
   return (
-    <Link to={`/meals/${day.id}`} className="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
+    <Link
+      to={`/meals/${day.id}`}
+      data-testid={`day-card-${day.id}`}
+      className="card bg-base-100 shadow-sm hover:shadow-md transition-shadow"
+    >
       <div className="card-body p-4 flex-row items-center justify-between">
         <div>
           <div className="card-title text-base gap-2">
@@ -55,6 +59,7 @@ export default function DayCard({
               event.preventDefault();
               onShopping();
             }}
+            data-testid="shopping-button"
             className="btn btn-ghost btn-sm"
           >
             <ShoppingCart className="w-4 h-4" />
@@ -64,6 +69,7 @@ export default function DayCard({
               event.preventDefault();
               onCopy();
             }}
+            data-testid="copy-button"
             className="btn btn-ghost btn-sm"
           >
             <Copy className="w-4 h-4" />
@@ -74,6 +80,7 @@ export default function DayCard({
               onDelete();
             }}
             disabled={deleting}
+            data-testid="delete-button"
             className="btn btn-ghost btn-sm text-error"
           >
             <Trash2 className="w-4 h-4" />
