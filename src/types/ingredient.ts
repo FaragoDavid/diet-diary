@@ -1,3 +1,5 @@
+export const CARB_LIMIT_NOT_APPLICABLE = null;
+
 export interface Ingredient {
   id: string;
   name: string;

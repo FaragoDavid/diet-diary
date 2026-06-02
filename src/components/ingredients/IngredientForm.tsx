@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { X } from 'lucide-react';
 import type { Ingredient, NewIngredient } from '../../types/ingredient';
+import { CARB_LIMIT_NOT_APPLICABLE } from '../../types/ingredient';
 import { TEXTS } from '../../constants/texts';
 
 const emptyIngredient: NewIngredient = {
@@ -112,16 +112,18 @@ export default function IngredientForm({ initial, onSave, onCancel }: Ingredient
                   step="1"
                   placeholder="—"
                   value={form.carbLimit ?? ''}
-                  onChange={(e) => setField('carbLimit', e.target.value === '' ? null : parseFloat(e.target.value) || 0)}
+                  onChange={(event) =>
+                    setField('carbLimit', event.target.value === '' ? CARB_LIMIT_NOT_APPLICABLE : parseFloat(event.target.value) || 0)
+                  }
                   className="input input-bordered input-sm w-full"
+                  disabled={form.carbLimit === CARB_LIMIT_NOT_APPLICABLE}
                 />
                 <button
                   type="button"
-                  onClick={() => setField('carbLimit', null)}
-                  disabled={form.carbLimit === null}
-                  className="btn btn-ghost btn-xs"
+                  onClick={() => setField('carbLimit', form.carbLimit === CARB_LIMIT_NOT_APPLICABLE ? 0 : CARB_LIMIT_NOT_APPLICABLE)}
+                  className={`btn btn-xs whitespace-nowrap ${form.carbLimit === CARB_LIMIT_NOT_APPLICABLE ? 'btn-active' : 'btn-ghost'}`}
                 >
-                  <X className="w-3.5 h-3.5" />
+                  {TEXTS.ingredients.carbNotApplicable}
                 </button>
               </div>
             </td>

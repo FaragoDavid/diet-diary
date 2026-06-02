@@ -1,4 +1,5 @@
 import type { Ingredient } from '../types/ingredient';
+import { CARB_LIMIT_NOT_APPLICABLE } from '../types/ingredient';
 import type { Recipe, RecipeIngredient } from '../types/recipe';
 
 interface NutritionValues {
@@ -36,7 +37,7 @@ export function recipeToIngredient(recipe: Recipe): Ingredient {
     carbsPer100: (recipe.carbs / amount) * 100,
     fatPer100: (recipe.fat / amount) * 100,
     isVegetable: false,
-    carbLimit: null,
+    carbLimit: CARB_LIMIT_NOT_APPLICABLE,
   };
 }
 

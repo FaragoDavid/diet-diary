@@ -9,7 +9,7 @@ export const TEXTS = {
     signInFailed: 'Sikertelen bejelentkezés',
   },
   common: {
-    add: 'Új',
+    add: 'Hozzáadás',
     cancel: 'Mégse',
     save: 'Mentés',
     saving: 'Mentés...',
@@ -42,6 +42,7 @@ export const TEXTS = {
     fatPer100g: 'Zsír / 100g',
     vegetable: 'Zöldség',
     carbLimit: 'CH limit',
+    carbNotApplicable: 'Nincs',
     noIngredients: 'Még nincsenek alapanyagok. Add hozzá az elsőt!',
     loadError: 'Alapanyagok betöltése sikertelen',
     noFound: 'Nincs ilyen alapanyag',
