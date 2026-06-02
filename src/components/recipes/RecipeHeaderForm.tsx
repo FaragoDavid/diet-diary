@@ -29,12 +29,14 @@ const RecipeHeaderForm = forwardRef<
     servings: number;
     subtitle: string;
     initialEditing?: boolean;
+    onSave: (changes: RecipeUpdate) => void | Promise<void>;
   }
->(function RecipeHeaderForm({ name, amount, servings, subtitle, initialEditing = false }, ref) {
+>(function RecipeHeaderForm({ name, amount, servings, subtitle, initialEditing = false, onSave }, ref) {
   const [editing, setEditing] = useState(initialEditing);
   const [editName, setEditName] = useState(name);
   const [editAmount, setEditAmount] = useState(amount?.toString() ?? '');
   const [editServings, setEditServings] = useState(servings.toString());
+  const [saving, setSaving] = useState(false);
 
   useImperativeHandle(
     ref,
@@ -57,8 +59,25 @@ const RecipeHeaderForm = forwardRef<
     return <HeaderDisplay name={name} subtitle={subtitle} onEdit={() => setEditing(true)} />;
   }
 
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const trimmed = editName.trim();
+    if (!trimmed) return;
+    setSaving(true);
+    try {
+      await onSave({
+        name: trimmed,
+        amount: editAmount ? parseFloat(editAmount) : null,
+        servings: parseInt(editServings) || 1,
+      });
+      setEditing(false);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
-    <div>
+    <form onSubmit={handleSubmit}>
       <table className="table">
         <tbody>
           <tr>
@@ -69,6 +88,7 @@ const RecipeHeaderForm = forwardRef<
                 value={editName}
                 onChange={(event) => setEditName(event.target.value)}
                 className="input input-bordered input-sm w-full"
+                required
                 autoFocus
               />
             </td>
@@ -102,7 +122,17 @@ const RecipeHeaderForm = forwardRef<
           </tr>
         </tbody>
       </table>
-    </div>
+      {name.trim() && (
+        <div className="flex justify-end gap-2 pt-2">
+          <button type="button" onClick={() => setEditing(false)} className="btn btn-ghost btn-sm">
+            {TEXTS.common.cancel}
+          </button>
+          <button type="submit" disabled={saving || !editName.trim()} className="btn btn-primary btn-sm">
+            {saving ? TEXTS.common.saving : TEXTS.common.save}
+          </button>
+        </div>
+      )}
+    </form>
   );
 });
 

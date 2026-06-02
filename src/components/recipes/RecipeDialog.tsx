@@ -65,9 +65,13 @@ export default function RecipeDialog({
     saveIngredients([...recipe.ingredients, { ingredientId: ingredient.id, name: ingredient.name, amount: 0 }]);
   };
 
+  const handleHeaderSave = (changes: RecipeUpdate) => {
+    handleRecipeChange(changes);
+  };
+
   const handleClose = () => {
     const pending = headerRef.current?.getPendingChanges();
-    if (pending) {
+    if (pending && !recipe.name.trim()) {
       handleRecipeChange(pending);
     }
     onClose();
@@ -89,6 +93,7 @@ export default function RecipeDialog({
         servings={recipe.servings}
         subtitle={subtitle}
         initialEditing={initialEditHeader}
+        onSave={handleHeaderSave}
       />
 
       <div className="space-y-3">
