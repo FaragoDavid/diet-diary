@@ -29,7 +29,7 @@ export async function syncIngredients(): Promise<void> {
 
 export function createIngredient(data: NewIngredient): Ingredient[] {
   const id = import.meta.env.DEV ? `ing-${Date.now()}` : doc(collection(getDb(), 'ingredients')).id;
-  const updated = [...readIngredients(), { ...data, id } as Ingredient].sort((i1, i2) => i1.name.localeCompare(i2.name));
+  const updated = [...readIngredients(), { ...data, id } as Ingredient];
   saveIngredients(updated);
   if (!import.meta.env.DEV) isDirty = true;
   return updated;

@@ -28,7 +28,7 @@ export async function syncDays(): Promise<void> {
 }
 
 export function createDay(date: string): Day[] {
-  const updated = [{ id: date, date, meals: [] }, ...readDays()];
+  const updated = [...readDays(), { id: date, date, meals: [] }];
   saveDays(updated);
   return updated;
 }

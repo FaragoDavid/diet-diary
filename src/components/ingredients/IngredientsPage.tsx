@@ -30,11 +30,13 @@ export default function IngredientsPage() {
     refreshIngredientsIfNeeded().then((updated) => updated && setIngredients(updated));
   }, []);
 
+  const sorted = useMemo(() => [...ingredients].sort((i1, i2) => i1.name.localeCompare(i2.name)), [ingredients]);
+
   const filtered = useMemo(() => {
-    if (!debouncedQuery) return ingredients;
+    if (!debouncedQuery) return sorted;
     const q = debouncedQuery.toLowerCase();
-    return ingredients.filter((i) => i.name.toLowerCase().includes(q));
-  }, [ingredients, debouncedQuery]);
+    return sorted.filter((ingredient) => ingredient.name.toLowerCase().includes(q));
+  }, [sorted, debouncedQuery]);
 
   const closeDialog = () => setEditing(null);
 

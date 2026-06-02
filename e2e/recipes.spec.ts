@@ -30,6 +30,12 @@ test.describe('recipe list', () => {
     await expect(cells.nth(2)).toHaveText('10.5');
     await expect(cells.nth(3)).toHaveText('17.8');
   });
+
+  test('displays recipes sorted alphabetically by name', async ({ page }) => {
+    const names = await page.locator('table tbody tr td:first-child').allTextContents();
+    const sorted = [...names].sort((a, b) => a.localeCompare(b));
+    expect(names).toEqual(sorted);
+  });
 });
 
 test.describe('create recipe', () => {

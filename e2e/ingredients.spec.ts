@@ -15,6 +15,12 @@ test.describe('ingredient list', () => {
     await expect(cells.nth(3)).toHaveText('0.4');
   });
 
+  test('displays ingredients sorted alphabetically by name', async ({ page }) => {
+    const names = await page.locator('table tbody tr td:first-child').allTextContents();
+    const sorted = [...names].sort((a, b) => a.localeCompare(b));
+    expect(names).toEqual(sorted);
+  });
+
   test('filters ingredients by search', async ({ page }) => {
     const totalRows = await page.locator('table tbody tr').count();
     expect(totalRows).toBeGreaterThan(1);

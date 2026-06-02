@@ -40,7 +40,7 @@ export function createRecipe(name: string): { id: string; recipes: Recipe[] } {
     ingredients: [],
   };
   const id = import.meta.env.DEV ? `rec-${Date.now()}` : doc(collection(getDb(), 'recipes')).id;
-  const updated = [...readRecipes(), { ...newRecipe, id }].sort((r1, r2) => r1.name.localeCompare(r2.name));
+  const updated = [...readRecipes(), { ...newRecipe, id }];
   saveRecipes(updated);
   if (!import.meta.env.DEV) isDirty = true;
   return { id, recipes: updated };
@@ -75,7 +75,7 @@ export function createVariant(baseRecipe: Recipe): { id: string; recipes: Recipe
     ingredients: [...baseRecipe.ingredients],
   };
   const id = import.meta.env.DEV ? `rec-${Date.now()}` : doc(collection(getDb(), 'recipes')).id;
-  const updated = [...readRecipes(), { ...variant, id }].sort((r1, r2) => r1.name.localeCompare(r2.name));
+  const updated = [...readRecipes(), { ...variant, id }];
   saveRecipes(updated);
   if (!import.meta.env.DEV) isDirty = true;
   return { id, recipes: updated };

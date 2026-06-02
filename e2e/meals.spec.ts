@@ -6,6 +6,14 @@ test.describe('meals list', () => {
     await page.goto('/');
   });
 
+  test('displays day cards sorted by date descending', async ({ page }) => {
+    const cards = page.locator('[data-testid^="day-card-"]');
+    await expect(cards).toHaveCount(3);
+    await expect(cards.nth(0)).toHaveAttribute('data-testid', 'day-card-2026-05-22');
+    await expect(cards.nth(1)).toHaveAttribute('data-testid', 'day-card-2026-05-21');
+    await expect(cards.nth(2)).toHaveAttribute('data-testid', 'day-card-2026-05-20');
+  });
+
   test('displays day cards with nutrition totals', async ({ page }) => {
     await expect(page.locator('[data-testid^="day-card-"]')).toHaveCount(3);
     const dayCard = page.getByTestId('day-card-2026-05-22');
@@ -103,6 +111,26 @@ test.describe('copy day', () => {
 
     await expect(dialog).not.toBeVisible();
     await expect(page).toHaveURL(/#\/meals\/.+/);
+  });
+
+  test('maintains date-descending order after copying to an earlier date', async ({ page }) => {
+    await page.getByTestId('day-card-2026-05-22').getByTestId('copy-button').click();
+    const dialog = page.getByRole('dialog');
+
+    // Navigate back to May in the day picker and select day 15
+    await dialog.locator('.rdp-button_previous').click();
+    await dialog.locator('.react-day-picker button').filter({ hasText: /^15$/ }).click();
+    await dialog.getByRole('button', { name: 'Másolás' }).click();
+
+    // Navigate back to list
+    await page.getByTestId('back-button').click();
+
+    const cards = page.locator('[data-testid^="day-card-"]');
+    await expect(cards).toHaveCount(4);
+    await expect(cards.nth(0)).toHaveAttribute('data-testid', 'day-card-2026-05-22');
+    await expect(cards.nth(1)).toHaveAttribute('data-testid', 'day-card-2026-05-21');
+    await expect(cards.nth(2)).toHaveAttribute('data-testid', 'day-card-2026-05-20');
+    await expect(cards.nth(3)).toHaveAttribute('data-testid', 'day-card-2026-05-15');
   });
 
   test('cancels copy day dialog', async ({ page }) => {

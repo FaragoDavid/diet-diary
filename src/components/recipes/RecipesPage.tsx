@@ -26,7 +26,10 @@ export default function RecipesPage() {
     refreshRecipesIfNeeded().then((updated) => updated && setRecipes(updated));
   }, []);
 
-  const baseRecipes = useMemo(() => recipes.filter((recipe) => !recipe.baseRecipeId), [recipes]);
+  const baseRecipes = useMemo(
+    () => recipes.filter((recipe) => !recipe.baseRecipeId).sort((r1, r2) => r1.name.localeCompare(r2.name)),
+    [recipes],
+  );
 
   const filtered = useMemo(() => {
     if (!debouncedQuery) return baseRecipes;

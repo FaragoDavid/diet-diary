@@ -85,7 +85,7 @@ export default function MealsPage() {
     const meals = copyingDay.meals;
     setCopyingDay(null);
     createDay(targetDate);
-    updateDay(targetDate, meals);
+    setDays(updateDay(targetDate, meals));
     navigate(`/meals/${targetDate}`);
   };
 
@@ -97,6 +97,8 @@ export default function MealsPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const sortedDays = useMemo(() => [...days].sort((d1, d2) => d2.date.localeCompare(d1.date)), [days]);
+
   return (
     <div className="flex flex-col flex-1 min-h-0 gap-4">
       <PageHeader title={TEXTS.nav.meals}>
@@ -105,11 +107,11 @@ export default function MealsPage() {
         </button>
       </PageHeader>
 
-      {days.length === 0 ? (
+      {sortedDays.length === 0 ? (
         <div className="text-center py-12 text-base-content/50">{TEXTS.meals.noDays}</div>
       ) : (
         <div className="flex-1 overflow-auto grid gap-2 content-start">
-          {days.map((day) => (
+          {sortedDays.map((day) => (
             <DayCard
               key={day.id}
               day={day}
