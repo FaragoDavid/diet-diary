@@ -46,10 +46,10 @@ test.describe('create recipe', () => {
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
 
-    await dialog.locator('form').getByRole('textbox').fill('Test Recipe');
-    await dialog.locator('form tr').filter({ hasText: 'Mennyiség (g)' }).locator('input').fill('500');
-    await dialog.locator('form tr').filter({ hasText: 'Adag' }).locator('input').fill('4');
-    await dialog.getByRole('button', { name: 'Mentés' }).click();
+    await dialog.locator('tr').filter({ hasText: 'Név' }).locator('input').fill('Test Recipe');
+    await dialog.locator('tr').filter({ hasText: 'Mennyiség (g)' }).locator('input').fill('500');
+    await dialog.locator('tr').filter({ hasText: 'Adag' }).locator('input').fill('4');
+    await dialog.getByTestId('close-button').click();
 
     await expect(async () => {
       const recipes = await page.evaluate(() => JSON.parse(localStorage.getItem('recipes') || '[]'));
@@ -62,18 +62,29 @@ test.describe('create recipe', () => {
     await expect(page.locator('table tbody tr')).toHaveCount(initialRows + 1);
   });
 
-  test('cancels header editing without saving', async ({ page }) => {
+  test('saves recipe on Done without explicit header Save', async ({ page }) => {
+    const initialRows = await page.locator('table tbody tr').count();
+
     await page.getByTestId('create-button').click();
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
 
-    await dialog.locator('form').getByRole('textbox').fill('Discarded Name');
-    await dialog.locator('form').getByRole('button', { name: 'Mégse' }).click();
+    await dialog.locator('tr').filter({ hasText: 'Név' }).locator('input').fill('Auto Saved Recipe');
+    await dialog.locator('tr').filter({ hasText: 'Mennyiség (g)' }).locator('input').fill('300');
+    await dialog.locator('tr').filter({ hasText: 'Adag' }).locator('input').fill('2');
+    await dialog.getByTestId('close-button').click();
 
-    await expect(dialog.getByRole('button', { name: 'Mentés' })).not.toBeVisible();
+    await expect(dialog).not.toBeVisible();
 
-    const recipes = await page.evaluate(() => JSON.parse(localStorage.getItem('recipes') || '[]'));
-    expect(recipes.some((rec: { name: string }) => rec.name === 'Discarded Name')).toBe(false);
+    await expect(async () => {
+      const recipes = await page.evaluate(() => JSON.parse(localStorage.getItem('recipes') || '[]'));
+      const recipe = recipes.find((rec: { name: string }) => rec.name === 'Auto Saved Recipe');
+      expect(recipe).toBeTruthy();
+      expect(recipe.amount).toBe(300);
+      expect(recipe.servings).toBe(2);
+    }).toPass();
+
+    await expect(page.locator('table tbody tr')).toHaveCount(initialRows + 1);
   });
 
   test('cancels recipe creation and removes empty recipe', async ({ page }) => {
@@ -93,8 +104,11 @@ test.describe('create recipe', () => {
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
 
-    await dialog.locator('form').getByRole('textbox').fill('Test Recipe');
-    await dialog.getByRole('button', { name: 'Mentés' }).click();
+    await dialog.locator('tr').filter({ hasText: 'Név' }).locator('input').fill('Test Recipe');
+    await dialog.getByTestId('close-button').click();
+
+    await page.locator('table tbody tr').filter({ hasText: 'Test Recipe' }).getByTestId('edit-button').click();
+    await expect(dialog).toBeVisible();
 
     const searchInput = dialog.getByPlaceholder('Alapanyag hozzáadása...');
     await searchInput.click();
@@ -119,13 +133,12 @@ test.describe('edit recipe header', () => {
 
     await dialog.getByTestId('edit-header-button').click();
 
-    const form = dialog.locator('form');
-    await form.getByRole('textbox').fill('Updated Recipe');
-    await form.locator('tr').filter({ hasText: 'Mennyiség (g)' }).locator('input').fill('500');
-    await form.locator('tr').filter({ hasText: 'Adag' }).locator('input').fill('3');
-    await dialog.getByRole('button', { name: 'Mentés' }).click();
+    await dialog.locator('tr').filter({ hasText: 'Név' }).locator('input').fill('Updated Recipe');
+    await dialog.locator('tr').filter({ hasText: 'Mennyiség (g)' }).locator('input').fill('500');
+    await dialog.locator('tr').filter({ hasText: 'Adag' }).locator('input').fill('3');
+    await dialog.getByTestId('close-button').click();
 
-    await expect(dialog.locator('h3')).toHaveText('Updated Recipe');
+    await expect(dialog).not.toBeVisible();
 
     await expect(async () => {
       const recipes = await page.evaluate(() => JSON.parse(localStorage.getItem('recipes') || '[]'));
@@ -134,24 +147,6 @@ test.describe('edit recipe header', () => {
       expect(recipe.amount).toBe(500);
       expect(recipe.servings).toBe(3);
     }).toPass();
-  });
-
-  test('cancels header edit without saving', async ({ page }) => {
-    const row = page.locator('table tbody tr').filter({ hasText: 'Csirkemell brokkolival' });
-    await row.getByTestId('edit-button').click();
-
-    const dialog = page.getByRole('dialog');
-    await dialog.getByTestId('edit-header-button').click();
-
-    const form = dialog.locator('form');
-    await form.getByRole('textbox').fill('Should Not Save');
-    await form.getByRole('button', { name: 'Mégse' }).click();
-
-    await expect(dialog.locator('h3')).toHaveText('Csirkemell brokkolival');
-
-    const recipes = await page.evaluate(() => JSON.parse(localStorage.getItem('recipes') || '[]'));
-    expect(recipes.some((rec: { name: string }) => rec.name === 'Should Not Save')).toBe(false);
-    expect(recipes.some((rec: { name: string }) => rec.name === 'Csirkemell brokkolival')).toBe(true);
   });
 });
 

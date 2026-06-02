@@ -16,6 +16,7 @@ export const TEXTS = {
     update: 'Módosítás',
     name: 'Név',
     actions: 'Műveletek',
+    done: 'Kész',
     noMatches: 'Nincs találat.',
   },
   nav: {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, forwardRef, useImperativeHandle } from 'react';
 import { Pencil } from 'lucide-react';
 import { TEXTS } from '../../constants/texts';
 import type { RecipeUpdate } from '../../types/recipe';
@@ -17,50 +17,48 @@ function HeaderDisplay({ name, subtitle, onEdit }: { name: string; subtitle: str
   );
 }
 
-export default function RecipeHeaderForm({
-  name,
-  amount,
-  servings,
-  subtitle,
-  initialEditing = false,
-  onSave,
-}: {
-  name: string;
-  amount: number | null;
-  servings: number;
-  subtitle: string;
-  initialEditing?: boolean;
-  onSave: (changes: RecipeUpdate) => void | Promise<void>;
-}) {
+export interface RecipeHeaderFormRef {
+  getPendingChanges: () => RecipeUpdate | null;
+}
+
+const RecipeHeaderForm = forwardRef<
+  RecipeHeaderFormRef,
+  {
+    name: string;
+    amount: number | null;
+    servings: number;
+    subtitle: string;
+    initialEditing?: boolean;
+  }
+>(function RecipeHeaderForm({ name, amount, servings, subtitle, initialEditing = false }, ref) {
   const [editing, setEditing] = useState(initialEditing);
   const [editName, setEditName] = useState(name);
   const [editAmount, setEditAmount] = useState(amount?.toString() ?? '');
   const [editServings, setEditServings] = useState(servings.toString());
-  const [saving, setSaving] = useState(false);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      getPendingChanges: () => {
+        if (!editing) return null;
+        const trimmed = editName.trim();
+        if (!trimmed) return null;
+        return {
+          name: trimmed,
+          amount: editAmount ? parseFloat(editAmount) : null,
+          servings: parseInt(editServings) || 1,
+        };
+      },
+    }),
+    [editing, editName, editAmount, editServings],
+  );
 
   if (!editing) {
     return <HeaderDisplay name={name} subtitle={subtitle} onEdit={() => setEditing(true)} />;
   }
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    const trimmed = editName.trim();
-    if (!trimmed) return;
-    setSaving(true);
-    try {
-      await onSave({
-        name: trimmed,
-        amount: editAmount ? parseFloat(editAmount) : null,
-        servings: parseInt(editServings) || 1,
-      });
-      setEditing(false);
-    } finally {
-      setSaving(false);
-    }
-  };
-
   return (
-    <form onSubmit={handleSubmit}>
+    <div>
       <table className="table">
         <tbody>
           <tr>
@@ -71,7 +69,6 @@ export default function RecipeHeaderForm({
                 value={editName}
                 onChange={(event) => setEditName(event.target.value)}
                 className="input input-bordered input-sm w-full"
-                required
                 autoFocus
               />
             </td>
@@ -105,14 +102,8 @@ export default function RecipeHeaderForm({
           </tr>
         </tbody>
       </table>
-      <div className="flex justify-end gap-2 pt-2">
-        <button type="button" onClick={() => setEditing(false)} className="btn btn-ghost btn-sm">
-          {TEXTS.common.cancel}
-        </button>
-        <button type="submit" disabled={saving || !editName.trim()} className="btn btn-primary btn-sm">
-          {saving ? TEXTS.common.saving : TEXTS.common.save}
-        </button>
-      </div>
-    </form>
+    </div>
   );
-}
+});
+
+export default RecipeHeaderForm;

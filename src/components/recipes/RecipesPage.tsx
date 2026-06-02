@@ -19,7 +19,7 @@ export default function RecipesPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [isNew, setIsNew] = useState(false);
+  const [draftRecipe, setDraftRecipe] = useState<Recipe | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -38,36 +38,39 @@ export default function RecipesPage() {
   }, [baseRecipes, debouncedQuery]);
 
   const selectedRecipe = selectedId ? (recipes.find((recipe) => recipe.id === selectedId) ?? null) : null;
+  const dialogRecipe = draftRecipe ?? selectedRecipe;
 
   useEffect(() => {
-    if (selectedRecipe) {
+    if (dialogRecipe) {
       dialogRef.current?.showModal();
     } else {
       dialogRef.current?.close();
     }
-  }, [selectedRecipe]);
+  }, [dialogRecipe]);
 
   const handleRecipeChange = useCallback((updated: Recipe) => {
+    setDraftRecipe((draft) => (draft?.id === updated.id ? updated : draft));
     setRecipes((prev) => prev.map((recipe) => (recipe.id === updated.id ? updated : recipe)));
   }, []);
 
-  const closeDialog = () => {
-    setSelectedId(null);
-    setIsNew(false);
-  };
-
   const handleCreate = () => {
-    const { id, recipes: updated } = createRecipe('');
-    setRecipes(updated);
-    setIsNew(true);
-    setSelectedId(id);
+    const { id } = createRecipe('');
+    const created = readRecipes().find((recipe) => recipe.id === id)!;
+    setDraftRecipe(created);
   };
 
   const handleCloseDialog = () => {
-    if (isNew && selectedRecipe && !selectedRecipe.name.trim()) {
-      deleteRecipe(selectedRecipe.id).then(setRecipes);
+    if (draftRecipe) {
+      const currentRecipes = readRecipes();
+      const currentRecipe = currentRecipes.find((recipe) => recipe.id === draftRecipe.id);
+      if (currentRecipe && currentRecipe.name.trim()) {
+        setRecipes(currentRecipes);
+      } else {
+        deleteRecipe(draftRecipe.id).then(setRecipes);
+      }
+      setDraftRecipe(null);
     }
-    closeDialog();
+    setSelectedId(null);
   };
 
   const getUsageLines = (id: string): string[] => {
@@ -167,12 +170,12 @@ export default function RecipesPage() {
 
       <dialog ref={dialogRef} className="modal" onClose={handleCloseDialog}>
         <div className="modal-box">
-          {selectedRecipe && (
+          {dialogRecipe && (
             <RecipeDialog
-              recipe={selectedRecipe}
+              recipe={dialogRecipe}
               onClose={handleCloseDialog}
               onRecipeChange={handleRecipeChange}
-              initialEditHeader={isNew}
+              initialEditHeader={!!draftRecipe}
             />
           )}
         </div>

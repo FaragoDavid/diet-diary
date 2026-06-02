@@ -82,10 +82,6 @@ export default function RecipeDetailPage() {
     setImagePickerOpen(false);
   };
 
-  const handleHeaderSave = (changes: RecipeUpdate) => {
-    handleRecipeChange(changes);
-  };
-
   const getUsageLines = (): string[] => {
     const days = readDays();
     const usedInDays = days.filter((day) => day.meals.some((meal) => meal.dishes.some((dish) => dish.recipeId === recipe.id)));
@@ -155,13 +151,7 @@ export default function RecipeDetailPage() {
           </div>
         )}
 
-        <RecipeHeaderForm
-          name={recipe.name}
-          amount={recipe.amount}
-          servings={recipe.servings}
-          subtitle={subtitle}
-          onSave={handleHeaderSave}
-        />
+        <RecipeHeaderForm name={recipe.name} amount={recipe.amount} servings={recipe.servings} subtitle={subtitle} />
 
         <div className="space-y-3">
           <h4 className="font-semibold">{TEXTS.recipes.ingredients}</h4>

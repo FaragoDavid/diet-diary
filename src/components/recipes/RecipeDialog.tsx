@@ -1,10 +1,11 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import { readIngredients } from '../../services/ingredients';
 import { readRecipes, updateRecipe } from '../../services/recipes';
 import { calculateRecipeNutrition, buildIngredientMap, recipeToIngredient } from '../../utils/nutrition';
 import { round, formatNutrition } from '../../utils/format';
 import { TEXTS } from '../../constants/texts';
 import RecipeHeaderForm from './RecipeHeaderForm';
+import type { RecipeHeaderFormRef } from './RecipeHeaderForm';
 import IngredientSelector from '../ingredients/IngredientSelector';
 import RecipeIngredients from './RecipeIngredients';
 import type { Recipe, RecipeIngredient, RecipeUpdate } from '../../types/recipe';
@@ -27,6 +28,7 @@ export default function RecipeDialog({
   const allRecipes = useMemo(() => readRecipes(), []);
   const nutritionMap = useMemo(() => buildIngredientMap(allIngredients, allRecipes), [allIngredients, allRecipes]);
   const [focusIngredientId, setFocusIngredientId] = useState<string | null>(null);
+  const headerRef = useRef<RecipeHeaderFormRef>(null);
 
   const handleRecipeChange = useCallback(
     (changes: RecipeUpdate) => {
@@ -63,8 +65,12 @@ export default function RecipeDialog({
     saveIngredients([...recipe.ingredients, { ingredientId: ingredient.id, name: ingredient.name, amount: 0 }]);
   };
 
-  const handleHeaderSave = (changes: RecipeUpdate) => {
-    handleRecipeChange(changes);
+  const handleClose = () => {
+    const pending = headerRef.current?.getPendingChanges();
+    if (pending) {
+      handleRecipeChange(pending);
+    }
+    onClose();
   };
 
   const subtitle = `${recipe.amount ? `${round(recipe.amount)}g` : '—'} · ${recipe.servings} ${TEXTS.recipes.servings.toLowerCase()} · ${formatNutrition(nutrition)}`;
@@ -77,12 +83,12 @@ export default function RecipeDialog({
         </div>
       )}
       <RecipeHeaderForm
+        ref={headerRef}
         name={recipe.name}
         amount={recipe.amount}
         servings={recipe.servings}
         subtitle={subtitle}
         initialEditing={initialEditHeader}
-        onSave={handleHeaderSave}
       />
 
       <div className="space-y-3">
@@ -96,8 +102,8 @@ export default function RecipeDialog({
         />
       </div>
 
-      <button onClick={onClose} data-testid="close-button" className="btn btn-ghost btn-sm float-right">
-        {TEXTS.common.cancel}
+      <button onClick={handleClose} data-testid="close-button" className="btn btn-ghost btn-sm float-right">
+        {TEXTS.common.done}
       </button>
     </div>
   );
