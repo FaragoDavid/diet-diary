@@ -13,6 +13,7 @@ async function flushWrites(): Promise<void> {
 
 setInterval(flushWrites, WRITE_DEBOUNCE_MS);
 window.addEventListener('beforeunload', () => flushWrites());
+window.addEventListener('pagehide', () => flushWrites());
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
