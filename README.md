@@ -1,153 +1,67 @@
 # Diet Diary
 
-A meal tracking application for managing daily nutrition intake. Built with Fastify, HTMX, and PostgreSQL.
+A meal tracking app for managing daily nutrition intake. Built with React, Vite, Firebase, and DaisyUI.
 
-## Main Workflows
+## Features
 
-### 1. Ingredient Management
+- **Ingredients** — create and manage ingredients with nutritional values (calories, carbs, fat per 100g). Editing an ingredient automatically recalculates all recipes that use it.
+- **Recipes** — combine ingredients with specific amounts. Set the cooked weight to enable portion-based calculations. Create dated variants to track what you actually cooked.
+- **Meals** — track daily meals (breakfast, lunch, dinner, snacks) by adding ingredients or recipes as dishes with adjustable portions.
+- **Recipe gallery** — browse recipes with photos stored in Google Drive.
+- **Shopping list** — generate an aggregated ingredient list for a date range.
 
-Create and manage ingredients with nutritional information (calories, carbs, fat per 100g).
-
-- Navigate to the **Ingredients** tab
-- Add new ingredients with nutrition values
-- Edit existing ingredients (changes automatically recalculate all recipes using them)
-
-### 2. Recipe Management
-
-Create recipes by combining ingredients with specific amounts.
-
-- Navigate to the **Recipes** tab
-- Create a new recipe and add ingredients
-- Nutrition totals are automatically calculated from ingredients
-- Set the cooked amount after cooking to enable weight-based portion calculations
-
-### 3. Meal Planning
-
-Track daily meals by adding dishes (ingredients or recipes) to meals.
-
-- Navigate to the **Meals** tab
-- Create a day entry
-- Add meals (breakfast, lunch, dinner, snacks)
-- Add dishes to each meal - either raw ingredients or recipes
-- Adjust portion amounts as needed
-
-### 4. Recipe Versions (Cooking Sessions)
-
-When you cook a recipe, create a version to track the actual outcome:
-
-- Add a recipe to a meal
-- Click the copy icon to "Save as cooking version"
-- This creates a dated copy (e.g., "Chicken Curry (Jan 30)")
-- Modify the version's ingredients/amounts to match what you actually cooked
-- Reuse this version for subsequent meals throughout the week
+Data is cached in localStorage for fast reads and synced to Firestore periodically.
 
 ## Setup
 
 ### Prerequisites
 
-- Node.js v24+
-- PostgreSQL 15+
-- Docker (optional, for database)
+- Node.js 20+
+- A Firebase project with Firestore and Authentication (Google provider) enabled
 
-### Database Setup
+### Environment Variables
 
-**Option 1: Docker**
+Copy `.env.example` to `.env` and configure:
 
-```bash
-docker-compose up -d postgres
-```
+| Variable                      | Required | Description                                        |
+| ----------------------------- | -------- | -------------------------------------------------- |
+| `VITE_FIREBASE_API_KEY`       | yes      | Firebase project API key from the Firebase Console |
+| `VITE_DRIVE_FOLDER_ID`        | no       | Google Drive folder ID for recipe gallery images   |
+| `VITE_WRITE_DEBOUNCE_MINUTES` | no       | Firestore sync interval in minutes (default: 10)   |
 
-**Option 2: Local PostgreSQL**
+### Recipe Gallery
 
-Create a database and set the connection string in `.env`:
-
-```
-DB_CONN_STRING=postgresql://user:password@localhost:5432/diet_diary
-```
+To enable the recipe gallery, create a Google Drive folder for recipe images and set `VITE_DRIVE_FOLDER_ID` to its ID. The app uses the signed-in user's Google access token to list and upload images. Without this variable, the gallery uses placeholder images.
 
 ### Installation
 
-```bash
-npm install
-npx prisma migrate deploy
-npm run build
-```
+1. Configure `.env` as described above
+2. Run `npm install`
 
 ### Development
 
-Terminal 1 - Build TypeScript (watch mode):
-
 ```bash
-npm run build -- --watch
+npm run dev
 ```
 
-Terminal 2 - Start server:
+The app runs at `http://localhost:5173`.
+
+In dev mode, authentication is bypassed and data stays in localStorage only.
+
+### Production Build
 
 ```bash
-npm run start:dev
+npm run build
+npm run preview
 ```
-
-Terminal 3 - Build CSS (watch mode):
-
-```bash
-npm run css
-```
-
-The app runs at `http://localhost:3000`
-
-### Authentication Setup (Google OAuth)
-
-The app uses Google OAuth for authentication.
-
-**1. Create Google OAuth credentials:**
-
-- Go to [Google Cloud Console](https://console.cloud.google.com/)
-- Create a new project or select an existing one
-- Navigate to **APIs & Services** > **Credentials**
-- Click **Create Credentials** > **OAuth client ID**
-- Select **Web application**
-- Add authorized redirect URI: `http://localhost:3000/auth/google/callback`
-- Copy the Client ID and Client Secret
-
-**2. Configure environment variables:**
-
-Create a `.env` file with:
-
-```bash
-# Database
-DB_CONN_STRING=postgresql://user:password@localhost:5432/diet_diary
-
-# Session security (generate random strings for production)
-COOKIE_SECRET=your_cookie_secret_here
-SESSION_SECRET=your_session_secret_here
-
-# Google OAuth
-GOOGLE_CLIENT_ID=your_google_client_id.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-
-# Callback URL (update for production)
-GOOGLE_CALLBACK_URL=http://localhost:3000/auth/google/callback
-
-# Restrict access to specific email addresses (comma-separated)
-ALLOWED_EMAILS=user1@gmail.com,user2@gmail.com
-```
-
-**3. Production deployment:**
-
-Update `GOOGLE_CALLBACK_URL` to your production URL and add it to the authorized redirect URIs in Google Cloud Console.
 
 ### Testing
 
 ```bash
-# Run all tests
-npm test
-
-# Unit tests only
-npm run test:unit
-
-# E2E tests (Cypress)
-npm run test:e2e
-
-# E2E tests with UI
-npm run test:e2e:dev
+npm test              # Playwright E2E tests (headless)
+npm run test:e2e:dev  # Playwright UI mode
 ```
+
+### Deployment
+
+Pushing to `main` triggers a GitHub Actions workflow that builds the app and deploys it to GitHub Pages. The workflow reads `VITE_FIREBASE_API_KEY` and `VITE_DRIVE_FOLDER_ID` from repository secrets.
