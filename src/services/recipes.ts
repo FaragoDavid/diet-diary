@@ -23,8 +23,7 @@ export function readRecipes(): Recipe[] {
 export async function syncRecipes(): Promise<void> {
   if (!isDirty) return;
   isDirty = false;
-  const recipes = readRecipes();
-  await Promise.all(recipes.map((recipe) => setDoc(doc(getDb(), 'recipes', recipe.id), recipe)));
+  await Promise.all(readRecipes().map((recipe) => setDoc(doc(getDb(), 'recipes', recipe.id), recipe)));
 }
 
 export function createRecipe(name: string): { id: string; recipes: Recipe[] } {

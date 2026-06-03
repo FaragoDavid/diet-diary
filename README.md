@@ -23,11 +23,10 @@ Data is cached in localStorage for fast reads and synced to Firestore periodical
 
 Copy `.env.example` to `.env` and configure:
 
-| Variable                      | Required | Description                                        |
-| ----------------------------- | -------- | -------------------------------------------------- |
-| `VITE_FIREBASE_API_KEY`       | yes      | Firebase project API key from the Firebase Console |
-| `VITE_DRIVE_FOLDER_ID`        | no       | Google Drive folder ID for recipe gallery images   |
-| `VITE_WRITE_DEBOUNCE_MINUTES` | no       | Firestore sync interval in minutes (default: 10)   |
+| Variable                | Required | Description                                        |
+| ----------------------- | -------- | -------------------------------------------------- |
+| `VITE_FIREBASE_API_KEY` | yes      | Firebase project API key from the Firebase Console |
+| `VITE_DRIVE_FOLDER_ID`  | no       | Google Drive folder ID for recipe gallery images   |
 
 ### Recipe Gallery
 

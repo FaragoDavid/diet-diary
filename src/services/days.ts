@@ -23,8 +23,7 @@ export function readDays(): Day[] {
 export async function syncDays(): Promise<void> {
   if (!isDirty) return;
   isDirty = false;
-  const days = readDays();
-  await Promise.all(days.map((day) => setDoc(doc(getDb(), 'days', day.id), { date: day.date, meals: day.meals }, { merge: false })));
+  await Promise.all(readDays().map((day) => setDoc(doc(getDb(), 'days', day.id), { date: day.date, meals: day.meals }, { merge: false })));
 }
 
 export function createDay(date: string): Day[] {

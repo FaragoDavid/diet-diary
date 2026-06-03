@@ -1,9 +1,9 @@
 import { Outlet, NavLink } from 'react-router-dom';
-import { UtensilsCrossed, Leaf, Calendar, RefreshCw, Image } from 'lucide-react';
+import { UtensilsCrossed, Leaf, Calendar, RefreshCw, Image, Upload } from 'lucide-react';
 import { isDriveEnabled } from '../services/drive';
-import { refreshIngredients } from '../services/ingredients';
-import { refreshRecipes } from '../services/recipes';
-import { refreshDays } from '../services/days';
+import { refreshIngredients, syncIngredients } from '../services/ingredients';
+import { refreshRecipes, syncRecipes } from '../services/recipes';
+import { refreshDays, syncDays } from '../services/days';
 import { TEXTS } from '../constants/texts';
 
 const navItems = [
@@ -14,6 +14,12 @@ const navItems = [
 ];
 
 export default function Layout() {
+  const handleUpload = () => {
+    syncDays();
+    syncRecipes();
+    syncIngredients();
+  };
+
   const handleRefresh = () => {
     refreshIngredients();
     refreshRecipes();
@@ -35,6 +41,9 @@ export default function Layout() {
           ))}
         </div>
         <div className="flex-none ml-2">
+          <button onClick={handleUpload} className="btn btn-sm btn-ghost">
+            <Upload className="w-4 h-4" />
+          </button>
           <button onClick={handleRefresh} className="btn btn-sm btn-ghost">
             <RefreshCw className="w-4 h-4" />
           </button>

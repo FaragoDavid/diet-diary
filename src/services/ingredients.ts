@@ -23,8 +23,7 @@ export function readIngredients(): Ingredient[] {
 export async function syncIngredients(): Promise<void> {
   if (!isDirty) return;
   isDirty = false;
-  const ingredients = readIngredients();
-  await Promise.all(ingredients.map((ingredient) => setDoc(doc(getDb(), 'ingredients', ingredient.id), ingredient)));
+  await Promise.all(readIngredients().map((ingredient) => setDoc(doc(getDb(), 'ingredients', ingredient.id), ingredient)));
 }
 
 export function createIngredient(data: NewIngredient): Ingredient[] {
