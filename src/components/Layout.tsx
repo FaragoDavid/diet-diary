@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import { UtensilsCrossed, Leaf, Calendar, RefreshCw, Image, Upload } from 'lucide-react';
 import { isDriveEnabled } from '../services/drive';
@@ -14,16 +15,29 @@ const navItems = [
 ];
 
 export default function Layout() {
-  const handleUpload = () => {
-    syncDays();
-    syncRecipes();
-    syncIngredients();
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+  const showToast = (message: string, type: 'success' | 'error') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 2000);
   };
 
-  const handleRefresh = () => {
-    refreshIngredients();
-    refreshRecipes();
-    refreshDays();
+  const handleUpload = async () => {
+    try {
+      await Promise.all([syncDays(), syncRecipes(), syncIngredients()]);
+      showToast(TEXTS.upload.success, 'success');
+    } catch {
+      showToast(TEXTS.upload.error, 'error');
+    }
+  };
+
+  const handleRefresh = async () => {
+    try {
+      await Promise.all([refreshIngredients(), refreshRecipes(), refreshDays()]);
+      showToast(TEXTS.refresh.success, 'success');
+    } catch {
+      showToast(TEXTS.refresh.error, 'error');
+    }
   };
 
   return (
@@ -52,6 +66,13 @@ export default function Layout() {
       <main className="flex-1 min-h-0 max-w-7xl w-full mx-auto px-4 py-4 flex flex-col">
         <Outlet />
       </main>
+      {toast && (
+        <div className="toast toast-top toast-center z-50">
+          <div className={`alert ${toast.type === 'success' ? 'alert-success' : 'alert-error'}`}>
+            <span>{toast.message}</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

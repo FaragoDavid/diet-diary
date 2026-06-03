@@ -107,6 +107,14 @@ export const TEXTS = {
     copy: 'Másolás',
     dateExists: 'Ez a nap már létezik',
   },
+  upload: {
+    success: 'Feltöltés sikeres!',
+    error: 'Feltöltés sikertelen',
+  },
+  refresh: {
+    success: 'Frissítés sikeres!',
+    error: 'Frissítés sikertelen',
+  },
   recipeGallery: {
     noImage: 'Nincs kép',
     changeImage: 'Kép módosítása',
