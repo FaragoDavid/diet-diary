@@ -3,11 +3,20 @@ import type { Ingredient, NewIngredient } from '../../types/ingredient';
 import { CARB_LIMIT_NOT_APPLICABLE } from '../../types/ingredient';
 import { TEXTS } from '../../constants/texts';
 
-const emptyIngredient: NewIngredient = {
+type IngredientFormData = {
+  name: string;
+  caloriesPer100: number | undefined;
+  carbsPer100: number | undefined;
+  fatPer100: number | undefined;
+  isVegetable: boolean;
+  carbLimit: number | null;
+};
+
+const emptyForm: IngredientFormData = {
   name: '',
-  caloriesPer100: 0,
-  carbsPer100: 0,
-  fatPer100: 0,
+  caloriesPer100: undefined,
+  carbsPer100: undefined,
+  fatPer100: undefined,
   isVegetable: false,
   carbLimit: 0,
 };
@@ -19,21 +28,33 @@ interface IngredientFormProps {
 }
 
 export default function IngredientForm({ initial, onSave, onCancel }: IngredientFormProps) {
-  const [form, setForm] = useState<NewIngredient>(initial ? { ...initial } : { ...emptyIngredient });
+  const [form, setForm] = useState<IngredientFormData>(initial ? { ...initial } : { ...emptyForm });
   const [saving, setSaving] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     if (!form.name.trim()) return;
     setSaving(true);
     try {
-      await onSave({ ...form, name: form.name.trim() });
+      await onSave({
+        ...form,
+        name: form.name.trim(),
+        caloriesPer100: form.caloriesPer100 ?? 0,
+        carbsPer100: form.carbsPer100 ?? 0,
+        fatPer100: form.fatPer100 ?? 0,
+      });
     } finally {
       setSaving(false);
     }
   };
 
-  const setField = <K extends keyof NewIngredient>(key: K, value: NewIngredient[K]) => setForm((prev) => ({ ...prev, [key]: value }));
+  const setField = <K extends keyof IngredientFormData>(key: K, value: IngredientFormData[K]) =>
+    setForm((prev) => ({ ...prev, [key]: value }));
+
+  const parseNumber = (value: string): number | undefined => {
+    if (value === '') return undefined;
+    return parseFloat(value) || 0;
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -45,7 +66,7 @@ export default function IngredientForm({ initial, onSave, onCancel }: Ingredient
               <input
                 type="text"
                 value={form.name}
-                onChange={(e) => setField('name', e.target.value)}
+                onChange={(event) => setField('name', event.target.value)}
                 className="input input-bordered input-sm w-full"
                 required
                 autoFocus
@@ -59,8 +80,8 @@ export default function IngredientForm({ initial, onSave, onCancel }: Ingredient
                 type="number"
                 min="0"
                 step="0.1"
-                value={form.caloriesPer100}
-                onChange={(e) => setField('caloriesPer100', parseFloat(e.target.value) || 0)}
+                value={form.caloriesPer100 ?? ''}
+                onChange={(event) => setField('caloriesPer100', parseNumber(event.target.value))}
                 className="input input-bordered input-sm w-full"
               />
             </td>
@@ -72,8 +93,8 @@ export default function IngredientForm({ initial, onSave, onCancel }: Ingredient
                 type="number"
                 min="0"
                 step="0.1"
-                value={form.carbsPer100}
-                onChange={(e) => setField('carbsPer100', parseFloat(e.target.value) || 0)}
+                value={form.carbsPer100 ?? ''}
+                onChange={(event) => setField('carbsPer100', parseNumber(event.target.value))}
                 className="input input-bordered input-sm w-full"
               />
             </td>
@@ -85,8 +106,8 @@ export default function IngredientForm({ initial, onSave, onCancel }: Ingredient
                 type="number"
                 min="0"
                 step="0.1"
-                value={form.fatPer100}
-                onChange={(e) => setField('fatPer100', parseFloat(e.target.value) || 0)}
+                value={form.fatPer100 ?? ''}
+                onChange={(event) => setField('fatPer100', parseNumber(event.target.value))}
                 className="input input-bordered input-sm w-full"
               />
             </td>
