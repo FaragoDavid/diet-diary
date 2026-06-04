@@ -16,6 +16,7 @@ const navItems = [
 
 export default function Layout() {
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const [syncing, setSyncing] = useState(false);
 
   const showToast = (message: string, type: 'success' | 'error') => {
     setToast({ message, type });
@@ -23,25 +24,36 @@ export default function Layout() {
   };
 
   const handleUpload = async () => {
+    setSyncing(true);
     try {
       await Promise.all([syncDays(), syncRecipes(), syncIngredients()]);
       showToast(TEXTS.upload.success, 'success');
     } catch {
       showToast(TEXTS.upload.error, 'error');
+    } finally {
+      setSyncing(false);
     }
   };
 
   const handleRefresh = async () => {
+    setSyncing(true);
     try {
       await Promise.all([refreshIngredients(), refreshRecipes(), refreshDays()]);
       showToast(TEXTS.refresh.success, 'success');
     } catch {
       showToast(TEXTS.refresh.error, 'error');
+    } finally {
+      setSyncing(false);
     }
   };
 
   return (
     <div className="h-screen flex flex-col bg-base-200">
+      {syncing && (
+        <div data-testid="sync-overlay" className="fixed inset-0 z-50 flex items-center justify-center bg-base-200/60">
+          <div className="w-12 h-12 animate-spin rounded-full border-4 border-primary/30 border-t-primary"></div>
+        </div>
+      )}
       <nav className="navbar bg-base-100 shadow-sm px-4">
         <div className="flex-1">
           <span className="text-2xl font-bold">{TEXTS.app.title}</span>
@@ -55,10 +67,10 @@ export default function Layout() {
           ))}
         </div>
         <div className="flex-none ml-2">
-          <button onClick={handleUpload} className="btn btn-sm btn-ghost">
+          <button onClick={handleUpload} data-testid="upload-button" className="btn btn-sm btn-ghost">
             <Upload className="w-4 h-4" />
           </button>
-          <button onClick={handleRefresh} className="btn btn-sm btn-ghost">
+          <button onClick={handleRefresh} data-testid="refresh-button" className="btn btn-sm btn-ghost">
             <RefreshCw className="w-4 h-4" />
           </button>
         </div>

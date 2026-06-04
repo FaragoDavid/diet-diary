@@ -1,6 +1,4 @@
-import { collection, doc, setDoc, deleteDoc, query, orderBy, getDocs } from 'firebase/firestore';
-import { getDb } from './firebase';
-
+import { firestoreClient } from './firestore-client';
 import { MOCK_INGREDIENTS } from '../constants/mock-data';
 import type { Ingredient, NewIngredient, IngredientUpdate } from '../types/ingredient';
 
@@ -21,42 +19,36 @@ export function readIngredients(): Ingredient[] {
 }
 
 export async function syncIngredients(): Promise<void> {
-  if (!isDirty) return;
+  if (!import.meta.env.DEV && !isDirty) return;
   isDirty = false;
-  await Promise.all(readIngredients().map((ingredient) => setDoc(doc(getDb(), 'ingredients', ingredient.id), ingredient)));
+  await Promise.all(readIngredients().map((ingredient) => firestoreClient.setDocument('ingredients', ingredient.id, ingredient)));
 }
 
 export function createIngredient(data: NewIngredient): Ingredient[] {
-  const id = import.meta.env.DEV ? `ing-${Date.now()}` : doc(collection(getDb(), 'ingredients')).id;
+  const id = firestoreClient.generateId('ingredients');
   const updated = [...readIngredients(), { ...data, id } as Ingredient];
   saveIngredients(updated);
-  if (!import.meta.env.DEV) isDirty = true;
+  isDirty = true;
   return updated;
 }
 
 export function updateIngredient(id: string, data: IngredientUpdate): Ingredient[] {
   const updated = readIngredients().map((ing) => (ing.id === id ? { ...ing, ...data } : ing));
   saveIngredients(updated);
-  if (!import.meta.env.DEV) isDirty = true;
+  isDirty = true;
   return updated;
 }
 
 export async function deleteIngredient(id: string): Promise<Ingredient[]> {
   const updated = readIngredients().filter((ing) => ing.id !== id);
   saveIngredients(updated);
-  if (!import.meta.env.DEV) {
-    await deleteDoc(doc(getDb(), 'ingredients', id));
-  }
+  await firestoreClient.deleteDocument('ingredients', id);
   return updated;
 }
 
 export async function refreshIngredients(): Promise<Ingredient[]> {
-  if (import.meta.env.DEV) {
-    saveIngredients(MOCK_INGREDIENTS);
-    return MOCK_INGREDIENTS;
-  }
-  const ingredientsInFirestore = (await getDocs(query(collection(getDb(), 'ingredients'), orderBy('name')))).docs;
-  const ingredients = ingredientsInFirestore.map((ingredientDoc) => ({ id: ingredientDoc.id, ...ingredientDoc.data() }) as Ingredient);
+  const docs = await firestoreClient.getAll('ingredients', { orderByField: 'name' });
+  const ingredients = docs as unknown as Ingredient[];
   saveIngredients(ingredients);
   return ingredients;
 }

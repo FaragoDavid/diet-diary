@@ -1,6 +1,4 @@
-import { collection, doc, setDoc, deleteDoc, query, orderBy, getDocs } from 'firebase/firestore';
-import { getDb } from './firebase';
-
+import { firestoreClient } from './firestore-client';
 import { MOCK_DAYS } from '../constants/mock-data';
 import type { Day, Meal } from '../types/day';
 
@@ -21,9 +19,9 @@ export function readDays(): Day[] {
 }
 
 export async function syncDays(): Promise<void> {
-  if (!isDirty) return;
+  if (!import.meta.env.DEV && !isDirty) return;
   isDirty = false;
-  await Promise.all(readDays().map((day) => setDoc(doc(getDb(), 'days', day.id), { date: day.date, meals: day.meals }, { merge: false })));
+  await Promise.all(readDays().map(({ id, date, meals }) => firestoreClient.setDocument('days', id, { date, meals })));
 }
 
 export function createDay(date: string): Day[] {
@@ -35,27 +33,20 @@ export function createDay(date: string): Day[] {
 export function updateDay(dayId: string, meals: Meal[]): Day[] {
   const updated = readDays().map((day) => (day.id === dayId ? { ...day, meals } : day));
   saveDays(updated);
-  if (!import.meta.env.DEV) isDirty = true;
+  isDirty = true;
   return updated;
 }
 
 export async function deleteDay(dayId: string): Promise<Day[]> {
   const updated = readDays().filter((day) => day.id !== dayId);
   saveDays(updated);
-  if (!import.meta.env.DEV) {
-    await deleteDoc(doc(getDb(), 'days', dayId));
-  }
+  await firestoreClient.deleteDocument('days', dayId);
   return updated;
 }
 
 export async function refreshDays(): Promise<Day[]> {
-  if (import.meta.env.DEV) {
-    const days = [...MOCK_DAYS].sort((d1, d2) => d2.date.localeCompare(d1.date));
-    saveDays(days);
-    return days;
-  }
-  const daysInFirestore = (await getDocs(query(collection(getDb(), 'days'), orderBy('date', 'desc')))).docs;
-  const days = daysInFirestore.map((dayDoc) => ({ id: dayDoc.id, ...dayDoc.data() }) as Day);
+  const docs = await firestoreClient.getAll('days', { orderByField: 'date', direction: 'desc' });
+  const days = docs as unknown as Day[];
   saveDays(days);
   return days;
 }

@@ -53,7 +53,7 @@ test.describe('create ingredient', () => {
     await form.locator('tr').filter({ hasText: 'Zöldség' }).locator('input').check();
     await form.locator('tr').filter({ hasText: 'CH limit' }).locator('input[type="number"]').fill('5');
 
-    await dialog.getByRole('button', { name: 'Új' }).click();
+    await dialog.getByRole('button', { name: 'Hozzáadás' }).click();
     await expect(dialog).not.toBeVisible();
 
     await expect(async () => {
@@ -124,7 +124,7 @@ test.describe('delete ingredient', () => {
     await page.getByTestId('create-button').click();
     const dialog = page.getByRole('dialog');
     await dialog.getByRole('textbox').fill('To Delete');
-    await dialog.getByRole('button', { name: 'Új' }).click();
+    await dialog.getByRole('button', { name: 'Hozzáadás' }).click();
     await expect(dialog).not.toBeVisible();
 
     await expect(page.getByText('To Delete')).toBeVisible();

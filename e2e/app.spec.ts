@@ -26,3 +26,23 @@ test('navigates between pages', async ({ page }) => {
   await page.getByRole('link', { name: 'Étkezések' }).click();
   await expect(page).toHaveURL(/\/$/);
 });
+
+test('shows loading overlay and success toast on upload', async ({ page }) => {
+  await page.goto('/');
+
+  await page.getByTestId('upload-button').click();
+  await expect(page.getByTestId('sync-overlay')).toBeVisible();
+
+  await expect(page.getByTestId('sync-overlay')).not.toBeVisible();
+  await expect(page.getByText('Feltöltés sikeres!')).toBeVisible();
+});
+
+test('shows loading overlay and success toast on refresh', async ({ page }) => {
+  await page.goto('/');
+
+  await page.getByTestId('refresh-button').click();
+  await expect(page.getByTestId('sync-overlay')).toBeVisible();
+
+  await expect(page.getByTestId('sync-overlay')).not.toBeVisible();
+  await expect(page.getByText('Frissítés sikeres!')).toBeVisible();
+});
