@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import { UtensilsCrossed, Leaf, Calendar, RefreshCw, Image, Upload } from 'lucide-react';
+import { useDirty } from '../contexts/dirty-context';
 import { isDriveEnabled } from '../services/drive';
 import { refreshIngredients, syncIngredients } from '../services/ingredients';
 import { refreshRecipes, syncRecipes } from '../services/recipes';
@@ -16,7 +17,8 @@ const navItems = [
 
 export default function Layout() {
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
-  const [syncing, setSyncing] = useState(false);
+  const [showSyncOverlay, setShowSyncOverlay] = useState(false);
+  const { dirty, clearDirty } = useDirty();
 
   const showToast = (message: string, type: 'success' | 'error') => {
     setToast({ message, type });
@@ -24,32 +26,33 @@ export default function Layout() {
   };
 
   const handleUpload = async () => {
-    setSyncing(true);
+    setShowSyncOverlay(true);
     try {
       await Promise.all([syncDays(), syncRecipes(), syncIngredients()]);
+      clearDirty();
       showToast(TEXTS.upload.success, 'success');
     } catch {
       showToast(TEXTS.upload.error, 'error');
     } finally {
-      setSyncing(false);
+      setShowSyncOverlay(false);
     }
   };
 
   const handleRefresh = async () => {
-    setSyncing(true);
+    setShowSyncOverlay(true);
     try {
       await Promise.all([refreshIngredients(), refreshRecipes(), refreshDays()]);
       showToast(TEXTS.refresh.success, 'success');
     } catch {
       showToast(TEXTS.refresh.error, 'error');
     } finally {
-      setSyncing(false);
+      setShowSyncOverlay(false);
     }
   };
 
   return (
     <div className="h-screen flex flex-col bg-base-200">
-      {syncing && (
+      {showSyncOverlay && (
         <div data-testid="sync-overlay" className="fixed inset-0 z-50 flex items-center justify-center bg-base-200/60">
           <div className="w-12 h-12 animate-spin rounded-full border-4 border-primary/30 border-t-primary"></div>
         </div>
@@ -67,7 +70,7 @@ export default function Layout() {
           ))}
         </div>
         <div className="flex-none ml-2">
-          <button onClick={handleUpload} data-testid="upload-button" className="btn btn-sm btn-ghost">
+          <button onClick={handleUpload} disabled={!dirty} data-testid="upload-button" className="btn btn-sm btn-ghost">
             <Upload className="w-4 h-4" />
           </button>
           <button onClick={handleRefresh} data-testid="refresh-button" className="btn btn-sm btn-ghost">

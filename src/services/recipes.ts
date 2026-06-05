@@ -1,4 +1,5 @@
 import { firestoreClient } from './firestore-client';
+import { notifyDirty } from '../contexts/dirty-context';
 import { MOCK_RECIPES } from '../constants/mock-data';
 import type { Recipe, RecipeUpdate } from '../types/recipe';
 
@@ -7,8 +8,6 @@ const KEY = 'recipes';
 if (import.meta.env.DEV && !localStorage.getItem(KEY)) {
   localStorage.setItem(KEY, JSON.stringify(MOCK_RECIPES));
 }
-
-let isDirty = false;
 
 function saveRecipes(recipes: Recipe[]): void {
   localStorage.setItem(KEY, JSON.stringify(recipes));
@@ -19,8 +18,6 @@ export function readRecipes(): Recipe[] {
 }
 
 export async function syncRecipes(): Promise<void> {
-  if (!import.meta.env.DEV && !isDirty) return;
-  isDirty = false;
   await Promise.all(readRecipes().map((recipe) => firestoreClient.setDocument('recipes', recipe.id, recipe)));
 }
 
@@ -39,14 +36,14 @@ export function createRecipe(name: string): { id: string; recipes: Recipe[] } {
   const id = firestoreClient.generateId('recipes');
   const updated = [...readRecipes(), { ...newRecipe, id }];
   saveRecipes(updated);
-  isDirty = true;
+  notifyDirty();
   return { id, recipes: updated };
 }
 
 export function updateRecipe(id: string, data: RecipeUpdate): Recipe[] {
   const updated = readRecipes().map((rec) => (rec.id === id ? { ...rec, ...data } : rec));
   saveRecipes(updated);
-  isDirty = true;
+  notifyDirty();
   return updated;
 }
 
@@ -72,7 +69,7 @@ export function createVariant(baseRecipe: Recipe): { id: string; recipes: Recipe
   const id = firestoreClient.generateId('recipes');
   const updated = [...readRecipes(), { ...variant, id }];
   saveRecipes(updated);
-  isDirty = true;
+  notifyDirty();
   return { id, recipes: updated };
 }
 

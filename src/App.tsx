@@ -1,5 +1,6 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { useAuth } from './services/auth';
+import { DirtyProvider } from './contexts/dirty-context';
 import Login from './components/Login';
 import Layout from './components/Layout';
 import IngredientsPage from './components/ingredients/IngredientsPage';
@@ -33,18 +34,20 @@ export default function App() {
   }
 
   return (
-    <HashRouter>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route index element={<MealsPage />} />
-          <Route path="meals" element={<MealsPage />} />
-          <Route path="meals/:dayId" element={<DayDetail />} />
-          <Route path="ingredients" element={<IngredientsPage />} />
-          <Route path="recipes" element={<RecipesPage />} />
-          <Route path="gallery" element={<RecipeGalleryPage />} />
-          <Route path="gallery/:recipeId" element={<RecipeDetailPage />} />
-        </Route>
-      </Routes>
-    </HashRouter>
+    <DirtyProvider>
+      <HashRouter>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route index element={<MealsPage />} />
+            <Route path="meals" element={<MealsPage />} />
+            <Route path="meals/:dayId" element={<DayDetail />} />
+            <Route path="ingredients" element={<IngredientsPage />} />
+            <Route path="recipes" element={<RecipesPage />} />
+            <Route path="gallery" element={<RecipeGalleryPage />} />
+            <Route path="gallery/:recipeId" element={<RecipeDetailPage />} />
+          </Route>
+        </Routes>
+      </HashRouter>
+    </DirtyProvider>
   );
 }
