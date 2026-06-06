@@ -18,7 +18,9 @@ export function readRecipes(): Recipe[] {
 }
 
 export async function syncRecipes(): Promise<void> {
-  await Promise.all(readRecipes().map((recipe) => firestoreClient.setDocument('recipes', recipe.id, recipe)));
+  const recipes = readRecipes().map((recipe) => (recipe.id ? recipe : { ...recipe, id: firestoreClient.generateId('recipes') }));
+  saveRecipes(recipes);
+  await Promise.all(recipes.map((recipe) => firestoreClient.setDocument('recipes', recipe.id, recipe)));
 }
 
 export function createRecipe(name: string): { id: string; recipes: Recipe[] } {
