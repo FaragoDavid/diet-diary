@@ -32,8 +32,9 @@ export default function Layout() {
       clearDirty();
       showToast(TEXTS.upload.success, 'success');
     } catch (error) {
-      console.error('Upload failed:', error);
-      showToast(TEXTS.upload.error, 'error');
+      const message = error instanceof Error ? error.message : JSON.stringify(error);
+      console.error('Upload failed:', message);
+      showToast(`${TEXTS.upload.error}: ${message}`, 'error');
     } finally {
       setShowSyncOverlay(false);
     }

@@ -16,7 +16,12 @@ export class FirestoreClient {
   }
 
   async setDocument(collectionName: string, docId: string, data: object): Promise<void> {
-    await setDoc(doc(getDb(), collectionName, docId), data as DocumentData);
+    try {
+      await setDoc(doc(getDb(), collectionName, docId), data as DocumentData);
+    } catch (error) {
+      console.error(`setDocument ${collectionName}/${docId} failed:`, error instanceof Error ? error.message : error, JSON.stringify(data));
+      throw error;
+    }
   }
 
   async deleteDocument(collectionName: string, docId: string): Promise<void> {
