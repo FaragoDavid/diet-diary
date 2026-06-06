@@ -31,7 +31,8 @@ export default function Layout() {
       await Promise.all([syncDays(), syncRecipes(), syncIngredients()]);
       clearDirty();
       showToast(TEXTS.upload.success, 'success');
-    } catch {
+    } catch (error) {
+      console.error('Upload failed:', error);
       showToast(TEXTS.upload.error, 'error');
     } finally {
       setShowSyncOverlay(false);
